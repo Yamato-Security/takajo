@@ -7,7 +7,7 @@
 
 import unittest
 
-import falconerpkg/submodule
+import takajopkg/submodule
 test "csv file path import":
   assert true
 

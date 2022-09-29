@@ -3,12 +3,12 @@ import falconerpkg/submodule
 import docopt
 
 let doc = """
-Falconer
+takajo
 
 Usage:
-  falconer <CSV-FILE>
-  falconer (-h | --help)
-  falconer --version
+  takajo <CSV-FILE>
+  takajo (-h | --help)
+  takajo --version
 
 Options:
   -h --help           Show this screen.
