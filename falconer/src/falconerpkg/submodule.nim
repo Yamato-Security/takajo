@@ -7,11 +7,11 @@ import std/tables
 import std/parsecsv
 from std/streams import newFileStream
 
-proc getWelcomeMessage*(): string = "Hello, World!"
 proc getHayabusaCsvData*(csvPath: string): Table =
   ## procedure for Hayabusa output csv read data.
-  var ret = initTable[string, string[]]();
+  var ret = initTable[string, []]();
   var s = newFileStream(csvPath, fmRead)
+  # if csvPath is not valid, error output and quit.
   if s == nil:
     quit("cannot open the file. Please check file format is csv. FilePath: " & csvPath)
 
@@ -25,6 +25,7 @@ proc getHayabusaCsvData*(csvPath: string): Table =
   for h in items(p.headers):
     ret[h] = []
 
+  # insert csv data to table
   while p.readRow():
     for h in items(p.headers):
       ret[h] = p.rowEntry(h)
