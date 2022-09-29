@@ -132,3 +132,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# OS X files
+.DS_Store
+
+# Hayabusa results
+*.csv
+*.json
+*.jsonl
+*.html
