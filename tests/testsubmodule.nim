@@ -6,8 +6,31 @@
 # To run these tests, simply execute `nimble test`.
 
 import unittest
+import std/tables
 
 import takajopkg/submodule
 test "csv file path import":
-  assert true
+  let expect_content = """rule_path
+  test1.yml
+  test2.yml
+  test3.yml
+  """
+  let expect_table = newTable[string, seq[string]]()
+  expect_table["no_data"] = @[
+    "",
+    "",
+    ""
+  ]
+  expect_table["part_space"] = @[
+    "space_1",
+    "",
+    "space_3"
+  ]
+  expect_table["rule_path"] = @[
+    "test1.yml",
+    "test2.yml",
+    "test3.yml"
+  ]
+  writeFile("temp.csv", expect_content)
+  check getHayabusaCsvData("./tests/data/1.csv") == expect_table
 

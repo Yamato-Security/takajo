@@ -7,7 +7,7 @@ import std/tables
 import std/parsecsv
 from std/streams import newFileStream
 
-proc getHayabusaCsvData*(csvPath: string): Table[string, seq[string]] =
+proc getHayabusaCsvData*(csvPath: string): Tableref[string, seq[string]] =
   ## procedure for Hayabusa output csv read data.
 
   var s = newFileStream(csvPath, fmRead)
@@ -29,3 +29,4 @@ proc getHayabusaCsvData*(csvPath: string): Table[string, seq[string]] =
   while p.readRow():
     for h in items(p.headers):
       r[h].add(p.rowEntry(h))
+  return r
