@@ -18,7 +18,6 @@ proc getHayabusaCsvData*(csvPath: string): Table[string, seq[string]] =
   # parse csv
   var p: CsvParser
   open(p, s, csvPath)
-  var header = true
   p.readHeaderRow()
 
   let r = newTable[string, seq[string]]()
