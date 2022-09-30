@@ -34,3 +34,6 @@ test "csv file path import":
   writeFile("temp.csv", expect_content)
   check getHayabusaCsvData("./tests/data/1.csv") == expect_table
 
+test "check getYMLLists":
+  let expect = @["tests\\data\\1.yml"]
+  check getYMLLists("./tests") == expect
