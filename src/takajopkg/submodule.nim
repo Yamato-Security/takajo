@@ -5,7 +5,16 @@
 
 import std/tables
 import std/parsecsv
+import std/os
+import std/strutils
 from std/streams import newFileStream
+
+proc getYMLLists*(targetDirPath: string): seq[string] =
+  var r: seq[string] = @[]
+  for f in walkDirRec(targetDirPath):
+    if f.endsWith(".yml"):
+      r.insert(f)
+  return r
 
 proc getHayabusaCsvData*(csvPath: string): Tableref[string, seq[string]] =
   ## procedure for Hayabusa output csv read data.
