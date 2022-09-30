@@ -20,5 +20,12 @@ Options:
 
 when isMainModule:
   let args = docopt(doc)
-  if args["c"] == true and not args["<CSV-FILE>"]:
+  if args["<CSV-FILE>"]:
     let csvData = getHayabusaCsvData($args["<CSV-FILE>"])
+    if args["<hayabusa-rulespath>"]:
+      let rulePath: string = args["<hayabusa-rulespath>"]
+      for f in walkDirRec(rulePath, "*.yml"):
+
+    if args["c"] == true and args["<column>"]:
+      let targetColumn = args["<column>"]
+      csvData[targetColumn]
