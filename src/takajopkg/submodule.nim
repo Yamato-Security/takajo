@@ -7,14 +7,19 @@ import std/tables
 import std/parsecsv
 import std/os
 import std/strutils
+import std/sequtils
 from std/streams import newFileStream
 
 proc getYMLLists*(targetDirPath: string): seq[string] =
+  ## extract yml file name seq to specified directory path
   var r: seq[string] = @[]
   for f in walkDirRec(targetDirPath):
     if f.endsWith(".yml"):
-      r.insert(f)
-  return r
+      var (_, file, ext) = splitFile(f)
+      file &= ext
+      r.insert(file)
+  # removed duplicated file name from seq
+  return deduplicate(r)
 
 proc getHayabusaCsvData*(csvPath: string): Tableref[string, seq[string]] =
   ## procedure for Hayabusa output csv read data.

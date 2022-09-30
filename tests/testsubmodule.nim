@@ -35,5 +35,5 @@ test "csv file path import":
   check getHayabusaCsvData("./tests/data/1.csv") == expect_table
 
 test "check getYMLLists":
-  let expect = @["tests\\data\\1.yml"]
+  let expect = @["1.yml"]
   check getYMLLists("./tests") == expect
