@@ -26,7 +26,7 @@ when isMainModule:
     var ymlLists: seq[string]
     if args["--check-undetected"]:
       let rulePath: string = $args["--check-undetected"]
-      ymlLists = getYMLLists(rulePath)
+      ymlLists = getTargetExtFileLLists(rulePath, "*.yml")
     if args["--target-column"]:
       let targetColumn = $args["--target-column"]
       var detectedRulePath: seq[string] = csvData[targetColumn]

@@ -10,11 +10,11 @@ import std/strutils
 import std/sequtils
 from std/streams import newFileStream
 
-proc getYMLLists*(targetDirPath: string): seq[string] =
+proc getTargetExtFileLLists*(targetDirPath: string, targetExt: string): seq[string] =
   ## extract yml file name seq to specified directory path
   var r: seq[string] = @[]
   for f in walkDirRec(targetDirPath):
-    if f.endsWith(".yml"):
+    if f.endsWith(targetExt):
       var (_, file, ext) = splitFile(f)
       file &= ext
       r.insert(file)
