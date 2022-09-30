@@ -1,4 +1,4 @@
-import falconerpkg/submodule
+import takajopkg/submodule
 
 import docopt
 
