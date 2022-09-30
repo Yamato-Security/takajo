@@ -7,42 +7,48 @@ let doc = """
 takajo
 
 Usage:
-  takajo <CSV-FILE> -c <hayabusa-rulespath> -t <column>
+  takajo [evtx|yml] <CSV-FILE> -c <target-path> -t <column>
   takajo (-h | --help)
   takajo --version
 
 Options:
   -h --help           Show this screen.
   --version           Show version.
-  -c --check-undetected=<hayabusa-rulespath> Check no detected rule file in hayabusa-rules directory.
+  -c --check-undetected=<target-path> Specified no detected file(rule or evtx) in hayabusa-rules directory.
   -t --target-column=<column> Specified target column header name when check detected rule file
 """
 
 
 when isMainModule:
   let args = docopt(doc)
-  if args["<CSV-FILE>"]:
+  if "<CSV-FILE>" in args:
     let csvData = getHayabusaCsvData($args["<CSV-FILE>"])
-    var ymlLists: seq[string]
-    if args["--check-undetected"]:
+    var fileLists: seq[string]
+    if "--check-undetected" in args:
       let rulePath: string = $args["--check-undetected"]
-      ymlLists = getTargetExtFileLLists(rulePath, "*.yml")
-    if args["--target-column"]:
+      if args["evtx"]:
+        fileLists = getTargetExtFileLLists(rulePath, ".evtx")
+      else:
+        fileLists = getTargetExtFileLLists(rulePath, ".yml")
+    if "--target-column" in args:
       let targetColumn = $args["--target-column"]
-      var detectedRulePath: seq[string] = csvData[targetColumn]
-      detectedRulePath = deduplicate(detectedRulePath)
-      if ymlLists.len() == 0:
-        quit("yml file does not exist in specified directory. Please check -c option.")
+      var detectedPaths: seq[string] = csvData[targetColumn]
+      detectedPaths = deduplicate(detectedPaths)
+      if fileLists.len() == 0:
+        quit("target file does not exist in specified directory. Please check -c option.")
       else:
         var output: seq[string] = @[]
         var cnt = 0
-        for ymlFile in ymlLists:
-          if ymlFile in detectedRulePath:
-            output.add(ymlFile)
+        for targetFile in fileLists:
+          if targetFile in detectedPaths:
+            output.add(targetFile)
           cnt += 1
         echo "Finished check. "
         echo "---------------"
-        echo "Undetected rules:"
-        for undetectedYmlFile in output:
-          echo "    - ", undetectedYmlFile
+        if output.len == 0:
+          echo "WellDone! Not found undetected file."
+        else:
+          echo "Undetected File:"
+          for undetectedFile in output:
+            echo "    - ", undetectedFile
 
