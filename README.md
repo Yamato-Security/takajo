@@ -37,8 +37,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 ## Features
 
 - Written in Nim so it is very easy to program, memory safe, almost as fast as native C code and works as a single standalone binary on any OS.
-- `list-undetected-evtx-files`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
-- `list-unused-rules`: List up all of the `.yml` detection rules that were not used. 
+- `list-undetected-evtx-files`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for. This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
+- `list-unused-rules`: List up all of the `.yml` detection rules that were not used. This is useful for finding out which rules are currently not proven to work and that need sample evtx files.
 
 ## Planned features
 
