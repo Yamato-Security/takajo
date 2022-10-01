@@ -71,11 +71,9 @@ You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
-* `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
-* `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
 
-Optional options:
-* `-o, --output undetected-evtx-files.txt`: Save the results to a text file. The default is to print to screen.
+- `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
+- `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
 
 Example 1:
 ```bash
