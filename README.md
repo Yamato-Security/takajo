@@ -88,11 +88,7 @@ You can see which columns Hayabusa saves according to the different profiles [he
 Required options:
 
 - `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
-- `-r, --rules-dir ../hayabusa-sample-evtx`: The directory of `.yml` rules files you used with Hayabusa.
-
-Optional options:
-
-- `-o, --output unused-rules.txt`: Save the results to a text file. The default is to print to screen.
+- `-r, --rules-dir ../hayabusa/rules`: The directory of `.yml` rules files you used with Hayabusa.
 
 Example 1:
 
