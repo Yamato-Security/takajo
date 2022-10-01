@@ -127,7 +127,7 @@ If you find any issues (false positives, bugs, etc...) with Sigma rules, please 
 
 ## License
 
-Takajō is released under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+Takajō is released under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html) license.
 
 ## Twitter
 
