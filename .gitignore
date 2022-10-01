@@ -141,3 +141,6 @@ dmypy.json
 *.json
 *.jsonl
 *.html
+
+#Takajo binaries
+takajo*

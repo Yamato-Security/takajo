@@ -1,18 +1,10 @@
 # Changes
 
-## vx.x.x [2021/12/25]
+## v1.0.0 [2022/10/28]
 
-- initial release
+- Official release at [Code Blue 2022 Bluebox](https://codeblue.jp/2022/en/talks/?content=talks_24).
 
 **New Features:**
 
-- Output undetected rule file list. (#4) (@hitenkoku)
-- Output undetected evtx file list. (#4) (@hitenkoku)
-
-**Enhancements:**
-
-- TODO: Created Documentaion.
-
-**Bug Fixes:**
-
-- XXX
+- `list-undetected-evtx-files`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for. (#4) (@hitenkoku)
+- `list-unused-rules`: List up all of the `.yml` detection rules that were not used. (#4) (@hitenkoku)
