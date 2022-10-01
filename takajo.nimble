@@ -3,7 +3,7 @@
 version       = "0.1.0"
 author        = "Yamato Security @SecurityYamato"
 description   = "Takajo is Hayabusa output analyzer."
-license       = "MIT"
+license       = "GPL-3.0-or-later"
 srcDir        = "src"
 installExt    = @["nim"]
 bin           = @["takajo"]
