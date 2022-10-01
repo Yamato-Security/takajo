@@ -76,6 +76,7 @@ Required options:
 - `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
 
 Example 1:
+
 ```bash
 takajo.exe list-undetected-evtx-files -t timeline.csv -e .\hayabusa-sample-evtx
 ```
@@ -110,7 +111,7 @@ At the least, if you like our tool then please give us a star on Github and show
 Please submit any bugs you find [here.](https://github.com/Yamato-Security/takajo/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5Bbug%5D)
 This project is currently actively maintained and we are happy to fix any bugs reported.
 
-If you find any issues (false positives, bugs, etc...) with Hayabusa, please report them to the hayabusa-rules github issues page [here](https://github.com/Yamato-Security/hayabusa/issues/new).
+If you find any issues (false positives, bugs, etc...) with Hayabusa, please report them to the hayabusa github issues page [here](https://github.com/Yamato-Security/takajo/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5Bbug%5D).
 
 If you find any issues (false positives, bugs, etc...) with Hayabusa rules, please report them to the hayabusa-rules github issues page [here](https://github.com/Yamato-Security/hayabusa-rules/issues/new).
 
