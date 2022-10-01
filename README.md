@@ -26,11 +26,37 @@ Takajo means ["A person skilled in the art of falconry"](https://en.wikipedia.or
 - [Takajo](#takajo)
 - [About Takajo](#about-takajo)
   - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Git cloning](#git-cloning)
+  - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
     - [Usage](#usage)
   - [Contribution](#contribution)
   - [Bug Submission](#bug-submission)
   - [License](#license)
   - [Twitter](#twitter)
+
+## Features
+
+- check undetected windows event file to Hayabusa csv output.
+- check undetected rule file to Hayabusa csv output.
+
+## Git cloning
+
+You can git clone the repository with the following command and compile binary from source code:
+
+Warning: The main branch of the repository is for development purposes so you may be able to access new features not yet officially released, however, there may be bugs so consider it unstable.
+
+git clone https://github.com/Yamato-Security/takajo.git
+
+## Advanced: Compiling From Source (Optional)
+
+If you have Nim installed, you can compile from source with the following command:
+
+```bash
+> nimble update
+> nimble install
+> nimble build
+```
 
 ### Usage
 
