@@ -82,30 +82,23 @@ Example 1:
 takajo.exe list-undetected-evtx-files -t timeline.csv -e .\hayabusa-sample-evtx
 ```
 
-Example 2:
-```bash
-takajo.exe list-undetected-evtx-files -t timeline.csv -e .\hayabusa-sample-evtx -o undetected-evtx-files.txt
-```
-
 3.`list-unused-rules`: List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested.
 You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.  
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
-* `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
-* `-r, --rules-dir ../hayabusa-sample-evtx`: The directory of `.yml` rules files you used with Hayabusa.
+
+- `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
+- `-r, --rules-dir ../hayabusa-sample-evtx`: The directory of `.yml` rules files you used with Hayabusa.
 
 Optional options:
-* `-o, --output unused-rules.txt`: Save the results to a text file. The default is to print to screen.
+
+- `-o, --output unused-rules.txt`: Save the results to a text file. The default is to print to screen.
 
 Example 1:
+
 ```bash
 takajo.exe list-unused-rules -t timeline.csv -r ../hayabusa/rules
-```
-
-Example 2:
-```bash
-takajo.exe list-unused-rules -t timeline.csv -r ../hayabusa/rules -o unused-rules.txt
 ```
 
 ## Contribution
