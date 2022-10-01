@@ -15,24 +15,22 @@
 
 ![tag-1] ![tag-2] <a href="https://github.com/Yamato-Security/hayabusa/releases">![tag-3]</a> ![tag-4]</a> ![tag-5]  <a href="https://twitter.com/SecurityYamato"></a>
 
-# About Takajō
+## About Takajō
 
 Takajō (鷹匠), created by [Yamato Security](https://github.com/Yamato-Security), is an analyzer for [Hayabusa](https://github.com/Yamato-Security/hayabusa) results written in [Nim](https://nim-lang.org/).
 Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese and was chosen as Hayabusa's catches (results) can be put to even better use.
 
 ## Table of Contents
 
-- [About Takajō](#about-takajō)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Planned features](#planned-features)
-  - [Git cloning](#git-cloning)
-  - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
-    - [Usage](#usage)
-  - [Contribution](#contribution)
-  - [Bug Submission](#bug-submission)
-  - [License](#license)
-  - [Twitter](#twitter)
+- [Features](#features)
+- [Planned features](#planned-features)
+- [Git cloning](#git-cloning)
+- [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
+  - [Usage](#usage)
+- [Contribution](#contribution)
+- [Bug Submission](#bug-submission)
+- [License](#license)
+- [Twitter](#twitter)
 
 ## Features
 
