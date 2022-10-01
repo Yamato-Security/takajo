@@ -22,6 +22,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 
 ## Table of Contents
 
+- [About Takajō](#about-takajō)
+- [Table of Contents](#table-of-contents)
 - [Features](#features)
 - [Planned features](#planned-features)
 - [Git cloning](#git-cloning)
@@ -69,11 +71,13 @@ You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
+  - `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
+  - `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
 
-- `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
-- `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
+Options:
+  - `-c, --column-name EvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
 
-Example 1:
+Example:
 
 ```bash
 takajo.exe list-undetected-evtx-files -t timeline.csv -e .\hayabusa-sample-evtx
@@ -88,7 +92,10 @@ Required options:
 - `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
 - `-r, --rules-dir ../hayabusa/rules`: The directory of `.yml` rules files you used with Hayabusa.
 
-Example 1:
+Options:
+  - `-c, --column-name EvtxColumn`: Optional: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
+
+Example:
 
 ```bash
 takajo.exe list-unused-rules -t timeline.csv -r ../hayabusa/rules

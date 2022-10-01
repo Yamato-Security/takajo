@@ -27,7 +27,7 @@ proc getHayabusaCsvData*(csvPath: string): Tableref[string, seq[string]] =
   var s = newFileStream(csvPath, fmRead)
   # if csvPath is not valid, error output and quit.
   if s == nil:
-    quit("cannot open the file. Please check file format is csv. FilePath: " & csvPath)
+    quit("Cannot open the file. Please check that the file format is CSV. FilePath: " & csvPath)
 
   # parse csv
   var p: CsvParser
