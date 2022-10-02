@@ -46,31 +46,31 @@ when isMainModule:
         "EvtxFile"
       else:
         "RuleFile"
-    echo targetColumn
-    var detectedPaths: seq[string] = csvData[targetColumn]
+    if not (targetColumn in csvData):
+      quit(fmt"Coud not fine the {targetColumn} column. Please run hayabusa with the verbose profile (-P option).")
+    var detectedPaths: seq[string] = csvData[targetColumn].map(getFileNameWithExt)
     detectedPaths = deduplicate(detectedPaths)
     if fileLists.len() == 0:
       quit("target file does not exist in specified directory. Please check option value.")
     else:
       var output: seq[string] = @[]
-      var cnt = 0
       let totalFileCnt = fileLists.len()
       for targetFile in fileLists:
-        if targetFile in detectedPaths:
+        if not(targetFile in detectedPaths):
           output.add(targetFile)
-        cnt += 1
       echo "Finished check. "
       echo "---------------"
-      if output.len == 0:
+
+      if output.len() == 0:
         echo "WellDone! Not found unused rule or undetected evtx file."
       else:
-        if "list-undetected-evtx-files" in args:
+        if args["list-undetected-evtx-files"]:
           let dirPath: string = $args["--evtx-dir"]
           fileLists = getTargetExtFileLLists(dirPath, ".evtx")
         var outputHeader =
-          if "list-unused-rules" in args:
+          if args["list-unused-rules"]:
             "Unused rule Files:"
-          elif "list-undetected-evtx-files" in args:
+          elif args["list-undetected-evtx-files"]:
             "Undetected evtx Files:"
           else:
             ""
@@ -79,9 +79,9 @@ when isMainModule:
           echo "    - ", undetectedFile
       let undetectedPercentage = (output.len() / totalFileCnt) * 100
       var resultsSummary =
-        if "list-undetected-evtx-files" in args:
+        if args["list-undetected-evtx-files"]:
           fmt"{ undetectedPercentage :.4}% of the evtx files did not have any detections."
-        elif "list-unused-rules" in args:
+        elif args["list-unused-rules"]:
           fmt"{ undetectedPercentage :.4}% of the yml rules were not used."
         else:
           ""

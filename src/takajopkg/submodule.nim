@@ -10,14 +10,18 @@ import std/strutils
 import std/sequtils
 from std/streams import newFileStream
 
+proc getFileNameWithExt*(targetPath: string): string =
+  ## get file name with ext from path
+  var (_, file, ext) = splitFile(targetPath)
+  file &= ext
+  return file
+
 proc getTargetExtFileLLists*(targetDirPath: string, targetExt: string): seq[string] =
   ## extract yml file name seq to specified directory path
   var r: seq[string] = @[]
   for f in walkDirRec(targetDirPath):
     if f.endsWith(targetExt):
-      var (_, file, ext) = splitFile(f)
-      file &= ext
-      r.insert(file)
+      r.insert(getFileNameWithExt(f))
   # removed duplicated file name from seq
   return deduplicate(r)
 
