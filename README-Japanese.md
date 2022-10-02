@@ -1,0 +1,126 @@
+<div align="center">
+ <p>
+     <img alt="Takajo Logō" src="logo.png" width="50%">
+ </p>
+ [ <a href="README.md"><b>English</b></a> ] | [ 日本語 ]
+</div>
+
+---
+
+[tag-1]: https://img.shields.io/github/downloads/Yamato-Secuirty/takajo/total?label=GitHub%F0%9F%8E%AFDownloads&style=plastic
+[tag-2]: https://img.shields.io/github/stars/Yamato-Security/takajo?style=plastic&label=GitHub%F0%9F%8E%AFStars
+[tag-3]: https://img.shields.io/github/v/release/Yamato-Security/takajo?display_name=tag&label=latest-version&style=plastic
+[tag-4]: https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg
+[tag-5]: https://img.shields.io/badge/Twitter-00acee?logo=twitter&logoColor=white
+
+![tag-1] ![tag-2] <a href="https://github.com/Yamato-Security/hayabusa/releases">![tag-3]</a> ![tag-4]</a> ![tag-5]  <a href="https://twitter.com/SecurityYamato"></a>
+
+## Takajoについて
+
+Takajō (鷹匠)は 日本の[Yamato Security](https://yamatosecurity.connpass.com/)グループによって作られた [Hayabusa](https://github.com/Yamato-Security/hayabusa)から得られた結果を解析するツールです。Takajōは[Nim](https://nim-lang.org/)で作られました。  
+Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wikipedia.org/wiki/Falconry)を意味し、ハヤブサが得た`結果をさらに活かすことから選ばれました。
+
+## 目次
+
+- [Takajoについて](#takajoについて)
+- [目次](#目次)
+- [機能](#機能)
+- [作成予定機能](#作成予定機能)
+- [Gitクローン](#gitクローン)
+- [アドバンス: ソースコードからのコンパイル(任意)](#アドバンス-ソースコードからのコンパイル任意)
+  - [使用方法](#使用方法)
+- [貢献](#貢献)
+- [バグの報告](#バグの報告)
+- [ライセンス](#ライセンス)
+- [Twitter](#twitter)
+
+## 機能
+
+- メモリセーフかつ、プログラムしやすいNimで作成することで、C言語と同じくらい早く、バイナリのクロスコンパイルが可能
+- `list-undetected-evtx-files`: Hayabusaのcsvの結果を比較して検知していない`.evtx`ファイルを一覧化
+- `list-unused-rules`: Hayabusaのcsvの結果(例: output.csv)を比較して検知していない`yml`ルールを一覧化
+
+## 作成予定機能
+
+- 行動分析機能
+- ログの情報の充実化(Geolocation、 ASN情報、IPアドレスに基づく今日インテリジェンスの追加)
+- 不審なプロセスツリーの表示機能
+
+## Gitクローン
+
+以下のgit cloneコマンドでレポジトリをダウンロードし、ソースコードからコンパイルして使用することも可能です：
+
+>> 注意： mainブランチは開発中のバージョンです。まだ正式にリリースされていない新機能が使えるかもしれないが、バグがある可能性もあるので、テスト版だと思って下さい。
+
+`git clone https://github.com/Yamato-Security/takajo.git`
+
+## アドバンス: ソースコードからのコンパイル(任意)
+
+Nimがインストールされている場合、以下のコマンドでソースコードからコンパイルすることができます。
+
+```bash
+> nimble update
+> nimble build
+```
+
+コンパイルされたバイナリはtakajoフォルダ配下で作成されます。
+
+### 使用方法
+
+1.`-h, --help`: ヘルプメニューの表示。
+2.`list-undetected-evtx-files`: Hayabusaのルールで検知しなかったevtxファイルを一覧化する。  
+Hayabusa実行時に`%EvtxFile%`の情報が含まれたプロファイルを使ってcsvを出力して下さい。プロファイルごとにHayabusaのcsvに出力される情報は異なります。詳細は[こちら](https://github.com/Yamato-Security/hayabusa#profiles)を確認して下さい。
+
+csv出力コマンド例: `./hayabusa.exe -d <dir> -P verbose -o timeline.csv`
+
+必須オプション:
+
+- -t, --timeline timeline.csv: Hayabusaで作成されたCSVタイムライン。
+- -e --evtx-dir ../hayabusa-sample-evtx: Hayabusaでスキャンした`.evtx`ファイルが存在するディレクトリ。
+
+例1:
+
+```bash
+takajo.exe list-undetected-evtx-files -t timeline.csv -e .\hayabusa-sample-evtx
+```
+
+3.`list-unused-rules`: Hayabusaのスキャンで1件も検知しなかった`.yml`ファイルを一覧化する。  
+Hayabusa実行時に`%RuleFile%`の情報が含まれたプロファイルを使ってcsvを出力して下さい。プロファイルごとにHayabusaのcsvに出力される情報は異なります。プロファイルごとにHayabusaのcsvに出力される情報は異なります。詳細は[こちら](https://github.com/Yamato-Security/hayabusa#profiles)を確認して下さい。
+
+csv出力コマンド例: `./hayabusa.exe -d <dir> -P verbose -o timeline.csv`
+
+必須オプション:
+
+- -t, --timeline timeline.csv: Hayabusaで作成されたCSVタイムライン。
+- -r --rules-dir ../hayabusa/rules: Hayabusaでスキャンした`.yml`ファイルが存在するディレクトリ。
+
+例1:
+
+```bash
+takajo.exe list-unused-rules -t timeline.csv -r ../hayabusa/rules```
+```
+
+## 貢献
+
+どのような形でも構いませんので、ご協力をお願いします。プルリクエスト、ルール作成、evtxログのサンプルなどがベストですが、機能リクエスト、バグの通知なども大歓迎です。
+
+少なくとも、私たちのツールを気に入っていただけたなら、Githubで星を付けて、あなたのサポートを表明してください。
+
+## バグの報告
+
+このプロジェクトは活発なメンテナンスを行っています。
+見つけたバグを[こちら](https://github.com/Yamato-Security/takajo/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5Bbug%5D)でご連絡ください。報告されたバグを喜んで修正します！
+
+もし、Hayabusaで何かしらの問題(フォルスポジティブ、 バグ、その他)を見つけましたら、[こちら](https://github.com/Yamato-Security/takajo/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5Bbug%5D) でご連絡ください。
+
+もし、Hayabusaルールで何かしらの問題(フォルスポジティブ、 バグ、その他)を見つけましたら、[こちら](https://github.com/Yamato-Security/hayabusa-rules/issues/new) でご連絡ください。
+
+もし、Sigmaルールで何かしらの問題(フォルスポジティブ、 バグ、その他)を見つけましたら、SigmaHQの[こちら](https://github.com/SigmaHQ/sigma/issues) でご連絡ください。
+
+## ライセンス
+
+Takajōは[GPLv3ライセンス](https://www.gnu.org/licenses/gpl-3.0.en.html)で公開されています。
+
+## Twitter
+
+[@SecurityYamato](https://twitter.com/SecurityYamato)でTakajō`、 Hayabusa、ルール更新、その他の大和セキュリティツール等々について情報を提供しています。

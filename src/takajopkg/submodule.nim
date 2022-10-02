@@ -7,14 +7,23 @@ import std/tables
 import std/parsecsv
 import std/os
 import std/strutils
+import std/sequtils
 from std/streams import newFileStream
 
-proc getYMLLists*(targetDirPath: string): seq[string] =
+proc getFileNameWithExt*(targetPath: string): string =
+  ## get file name with ext from path
+  var (_, file, ext) = splitFile(targetPath)
+  file &= ext
+  return file
+
+proc getTargetExtFileLLists*(targetDirPath: string, targetExt: string): seq[string] =
+  ## extract yml file name seq to specified directory path
   var r: seq[string] = @[]
   for f in walkDirRec(targetDirPath):
-    if f.endsWith(".yml"):
-      r.insert(f)
-  return r
+    if f.endsWith(targetExt):
+      r.insert(getFileNameWithExt(f))
+  # removed duplicated file name from seq
+  return deduplicate(r)
 
 proc getHayabusaCsvData*(csvPath: string): Tableref[string, seq[string]] =
   ## procedure for Hayabusa output csv read data.
@@ -22,7 +31,7 @@ proc getHayabusaCsvData*(csvPath: string): Tableref[string, seq[string]] =
   var s = newFileStream(csvPath, fmRead)
   # if csvPath is not valid, error output and quit.
   if s == nil:
-    quit("cannot open the file. Please check file format is csv. FilePath: " & csvPath)
+    quit("Cannot open the file. Please check that the file format is CSV. FilePath: " & csvPath)
 
   # parse csv
   var p: CsvParser
