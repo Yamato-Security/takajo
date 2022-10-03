@@ -18,18 +18,23 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
 
   let output = getUnlistedSeq(fileLists, detectedPaths)
 
-  echo "Finished check. "
+  echo "Finished. "
   echo "---------------"
 
   if output.len == 0:
-    echo "Great! No unused rules or undetected evtx files were found."
+    echo "Great! No undetected evtx files were found."
   else:
-    echo "Undetected evtx Files:"
+    echo "Undetected evtx files:"
+    echo ""
+    var numberOfEvtxFiles = 0
     for undetectedFile in output:
-      echo "    - ", undetectedFile
-
+      echo undetectedFile
+      inc numberOfEvtxFiles
     let undetectedPercentage = (output.len() / fileLists.len()) * 100
+    echo ""
     echo fmt"{ undetectedPercentage :.4}% of the evtx files did not have any detections."
+    echo "Number of evtx files not detected: ", numberOfEvtxFiles
+    echo ""
   discard
 
 
@@ -42,19 +47,23 @@ proc listUnusedRules(timeline: string, rulesDir: string,
   var detectedPaths: seq[string] = csvData[columnName].map(getFileNameWithExt)
   detectedPaths = deduplicate(detectedPaths)
 
-  echo "Finished check. "
+  echo "Finished. "
   echo "---------------"
 
   let output = getUnlistedSeq(fileLists, detectedPaths)
   if output.len == 0:
-    echo "Great! No unused rules or undetected evtx files were found."
+    echo "Great! No unused rule files were found."
   else:
-    echo "Unused rule Files:"
+    echo "Unused rule files:"
+    var numberOfUnusedRules = 0
     for undetectedFile in output:
-      echo "    - ", undetectedFile
+      echo undetectedFile
+      inc numberOfUnusedRules
     let undetectedPercentage = (output.len() / fileLists.len()) * 100
+    echo ""
     echo fmt"{ undetectedPercentage :.4}% of the yml rules were not used."
-
+    echo "Number of unused rule files: ", numberOfUnusedRules
+    echo ""
   discard
 
 
