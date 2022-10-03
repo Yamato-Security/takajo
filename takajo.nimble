@@ -12,4 +12,4 @@ bin           = @["takajo"]
 # Dependencies
 
 requires "nim >= 1.6.6"
-requires "docopt >= 0.6"
+requires "cligen >= 1.5"
