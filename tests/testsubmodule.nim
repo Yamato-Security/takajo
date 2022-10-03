@@ -32,8 +32,10 @@ test "csv file path import":
     "test3.yml"
   ]
   writeFile("temp.csv", expect_content)
-  check getHayabusaCsvData("./tests/data/1.csv") == expect_table
+  check getHayabusaCsvData("./tests/data/1.csv", "no_data") == expect_table
+  check getHayabusaCsvData("./tests/data/1.csv", "part_space") == expect_table
+  check getHayabusaCsvData("./tests/data/1.csv", "rule_path") == expect_table
 
 test "check getYMLLists":
   let expect = @["1.yml"]
-  check getTargetExtFileLLists("./tests", ".yml") == expect
+  check getTargetExtFileLists("./tests", ".yml") == expect

@@ -3,12 +3,21 @@
 # remove this file altogether. You may create additional modules alongside
 # this file as required.
 
-import std/tables
-import std/parsecsv
 import std/os
-import std/strutils
+import std/parsecsv
 import std/sequtils
+import std/strformat
+import std/strutils
+import std/tables
 from std/streams import newFileStream
+
+proc getUnlistedSeq*(targetSeq: seq[string], compareSeq: seq[string]): seq[string] =
+  ## get element not in compareSeq
+  var output: seq[string] = @[]
+  for target in targetSeq:
+    if not(target in compareSeq):
+      output.add(target)
+  return output
 
 proc getFileNameWithExt*(targetPath: string): string =
   ## get file name with ext from path
@@ -16,16 +25,22 @@ proc getFileNameWithExt*(targetPath: string): string =
   file &= ext
   return file
 
-proc getTargetExtFileLLists*(targetDirPath: string, targetExt: string): seq[string] =
+proc getTargetExtFileLists*(targetDirPath: string, targetExt: string): seq[string] =
   ## extract yml file name seq to specified directory path
   var r: seq[string] = @[]
   for f in walkDirRec(targetDirPath):
     if f.endsWith(targetExt):
       r.insert(getFileNameWithExt(f))
   # removed duplicated file name from seq
-  return deduplicate(r)
+  r = deduplicate(r)
+  if r.len() == 0:
+    quit("Target file does not exist in specified directory. Please check your option parameters.")
+  else:
+    r
 
-proc getHayabusaCsvData*(csvPath: string): Tableref[string, seq[string]] =
+
+proc getHayabusaCsvData*(csvPath: string, columnName: string): Tableref[string,
+    seq[string]] =
   ## procedure for Hayabusa output csv read data.
 
   var s = newFileStream(csvPath, fmRead)
@@ -47,4 +62,7 @@ proc getHayabusaCsvData*(csvPath: string): Tableref[string, seq[string]] =
   while p.readRow():
     for h in items(p.headers):
       r[h].add(p.rowEntry(h))
+  if not r.contains(columnName):
+    quit(fmt"Coud not find the {column_name} column. Please run hayabusa with the verbose profile (-P option).")
+
   return r
