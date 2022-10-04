@@ -11,7 +11,7 @@ import std/strutils
 import std/tables
 from std/streams import newFileStream
 
-proc outputLogo*() =
+proc outputLogo*(): string =
   ## output logo
   let logo = """
 ╔════════╦╗╔═╦═══╗ ╔╦═══╗
@@ -22,8 +22,8 @@ proc outputLogo*() =
  ╚══╝╚╝ ╚╩╝╚═╩╝ ╚╩══╩═══╝
    by Yamato Security
 
-  """
-  echo logo
+"""
+  return logo
 
 proc getUnlistedSeq*(targetSeq: seq[string], compareSeq: seq[string]): seq[string] =
   ## get element not in compareSeq

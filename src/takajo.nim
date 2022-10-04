@@ -8,10 +8,9 @@ import takajopkg/submodule
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
     columnName: system.string = "EvtxFile", quiet: bool = false): int =
-  ## List up undetected evtx files.
 
   if not quiet:
-    outputLogo()
+    echo outputLogo()
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(evtxDir, ".evtx")
@@ -43,10 +42,9 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
 
 proc listUnusedRules(timeline: string, rulesDir: string,
     columnName = "RuleFile", quiet: bool = false): int =
-  ## List up unused rules.
 
   if not quiet:
-    outputLogo()
+    echo outputLogo()
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml")
@@ -74,10 +72,12 @@ proc listUnusedRules(timeline: string, rulesDir: string,
 
 when isMainModule:
   clCfg.version = "0.0.1"
+  clCfg.useMulti = outputLogo() & "Usage:\n  $command {SUBCMD}  [sub-command options & parameters]\nwhere {SUBCMD} is one of:\n$subcmds\n$command {-h|--help} or with no args at all prints this message.\n$command --help-syntax gives general cligen syntax help.\nRun \"$command {help SUBCMD|SUBCMD --help}\" to see help for just SUBCMD.\nRun \"$command help\" to get *comprehensive* help.${ifVersion}\n"
 
   dispatchMulti(
     [
       listUndetectedEvtxFiles, cmdName = "list-undetected-evtx-files",
+      doc = "List up undetected evtx files.",
       help = {
       "timeline": "CSV timeline created by Hayabusa with verbose profile.",
       "evtxDir": "The directory of .evtx files you scanned with Hayabusa.",
@@ -87,6 +87,7 @@ when isMainModule:
     ],
     [
       listUnusedRules, cmdName = "list-unused-rules",
+      doc = "List up unused rules.",
       help = {
         "rulesDir": "Hayabusa rules directory."
       }
