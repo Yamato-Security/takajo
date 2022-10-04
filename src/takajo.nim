@@ -7,8 +7,11 @@ import std/tables
 import takajopkg/submodule
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
-    columnName: system.string = "EvtxFile"): int =
+    columnName: system.string = "EvtxFile", quiet: bool = false): int =
   ## List up undetected evtx files.
+
+  if not quiet:
+    outputLogo()
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(evtxDir, ".evtx")
@@ -39,8 +42,11 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
 
 
 proc listUnusedRules(timeline: string, rulesDir: string,
-    columnName = "RuleFile"): int =
+    columnName = "RuleFile", quiet: bool = false): int =
   ## List up unused rules.
+
+  if not quiet:
+    outputLogo()
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml")
@@ -66,7 +72,6 @@ proc listUnusedRules(timeline: string, rulesDir: string,
     echo ""
   discard
 
-
 when isMainModule:
   clCfg.version = "0.0.1"
 
@@ -76,7 +81,8 @@ when isMainModule:
       help = {
       "timeline": "CSV timeline created by Hayabusa with verbose profile.",
       "evtxDir": "The directory of .evtx files you scanned with Hayabusa.",
-      "columnName": "Column header name."
+      "columnName": "Column header name.",
+      "quiet": "Quiet mode: do not display the launch banner",
       }
     ],
     [
