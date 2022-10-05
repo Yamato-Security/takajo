@@ -1,16 +1,17 @@
 import cligen
+import os
+import terminal
 import std/sequtils
 import std/strformat
 import std/strutils
 import std/tables
-
 import takajopkg/submodule
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
     columnName: system.string = "EvtxFile", quiet: bool = false): int =
 
   if not quiet:
-    echo outputLogo()
+    styledEcho(fgGreen,outputLogo())
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(evtxDir, ".evtx")
@@ -44,7 +45,7 @@ proc listUnusedRules(timeline: string, rulesDir: string,
     columnName = "RuleFile", quiet: bool = false): int =
 
   if not quiet:
-    echo outputLogo()
+    styledEcho(fgGreen,outputLogo())
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml")
@@ -72,24 +73,29 @@ proc listUnusedRules(timeline: string, rulesDir: string,
 
 when isMainModule:
   clCfg.version = "0.0.1"
-  clCfg.useMulti = outputLogo() & "Usage:\n  $command {SUBCMD}  [sub-command options & parameters]\nwhere {SUBCMD} is one of:\n$subcmds\n$command {-h|--help} or with no args at all prints this message.\n$command --help-syntax gives general cligen syntax help.\nRun \"$command {help SUBCMD|SUBCMD --help}\" to see help for just SUBCMD.\nRun \"$command help\" to get *comprehensive* help.${ifVersion}\n"
 
+  if paramCount() == 0:
+    styledEcho(fgGreen,outputLogo())
   dispatchMulti(
     [
       listUndetectedEvtxFiles, cmdName = "list-undetected-evtx-files",
-      doc = "List up undetected evtx files.",
+      doc = "List up undetected evtx files",
       help = {
-      "timeline": "CSV timeline created by Hayabusa with verbose profile.",
-      "evtxDir": "The directory of .evtx files you scanned with Hayabusa.",
-      "columnName": "Column header name.",
-      "quiet": "Quiet mode: do not display the launch banner",
+        "timeline": "CSV timeline created by Hayabusa with verbose profile",
+        "evtxDir": "The directory of .evtx files you scanned with Hayabusa",
+        "columnName": "Optional: column header name",
+        "quiet": "Quiet mode: do not display the launch banner"
       }
     ],
     [
       listUnusedRules, cmdName = "list-unused-rules",
-      doc = "List up unused rules.",
+      doc = "List up unused rules",
       help = {
-        "rulesDir": "Hayabusa rules directory."
+        "timeline": "CSV timeline created by Hayabusa with verbose profile",
+        "rulesDir": "Hayabusa rules directory",
+        "columnName": "Optional: column header name",
+        "quiet": "Quiet mode: do not display the launch banner"
       }
     ]
   )
+

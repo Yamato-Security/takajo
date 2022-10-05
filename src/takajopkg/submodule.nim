@@ -1,8 +1,3 @@
-# This is just an example to get you started. Users of your hybrid library will
-# import this file by writing ``import takajopkg/submodule``. Feel free to rename or
-# remove this file altogether. You may create additional modules alongside
-# this file as required.
-
 import std/os
 import std/parsecsv
 import std/sequtils
@@ -12,16 +7,14 @@ import std/tables
 from std/streams import newFileStream
 
 proc outputLogo*(): string =
-  ## output logo
   let logo = """
-╔════════╦╗╔═╦═══╗ ╔╦═══╗
+╔════╦═══╦╗╔═╦═══╗ ╔╦═══╗
 ║╔╗╔╗║╔═╗║║║╔╣╔═╗║ ║║╔═╗║
 ╚╝║║╚╣║ ║║╚╝╝║║ ║║ ║║║ ║║
-  ║║ ║╚═╝║╔╗║║╚═╝╠╗║║║ ║║
+  ║║ ║╚═╝║╔╗╖║╚═╝╠╗║║║ ║║
  ╔╝╚╗║╔═╗║║║╚╣╔═╗║╚╝║╚═╝║
  ╚══╝╚╝ ╚╩╝╚═╩╝ ╚╩══╩═══╝
    by Yamato Security
-
 """
   return logo
 
