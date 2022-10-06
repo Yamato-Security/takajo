@@ -1,14 +1,17 @@
 import cligen
+import os
+import terminal
 import std/sequtils
 import std/strformat
 import std/strutils
 import std/tables
-
 import takajopkg/submodule
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
-    columnName: system.string = "EvtxFile"): int =
-  ## List up undetected evtx files.
+    columnName: system.string = "EvtxFile", quiet: bool = false): int =
+
+  if not quiet:
+    styledEcho(fgGreen,outputLogo())
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(evtxDir, ".evtx")
@@ -39,8 +42,10 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
 
 
 proc listUnusedRules(timeline: string, rulesDir: string,
-    columnName = "RuleFile"): int =
-  ## List up unused rules.
+    columnName = "RuleFile", quiet: bool = false): int =
+
+  if not quiet:
+    styledEcho(fgGreen,outputLogo())
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml")
@@ -66,23 +71,31 @@ proc listUnusedRules(timeline: string, rulesDir: string,
     echo ""
   discard
 
-
 when isMainModule:
   clCfg.version = "0.0.1"
 
+  if paramCount() == 0:
+    styledEcho(fgGreen,outputLogo())
   dispatchMulti(
     [
       listUndetectedEvtxFiles, cmdName = "list-undetected-evtx-files",
+      doc = "List up undetected evtx files",
       help = {
-      "timeline": "CSV timeline created by Hayabusa with verbose profile.",
-      "evtxDir": "The directory of .evtx files you scanned with Hayabusa.",
-      "columnName": "Column header name."
+        "timeline": "CSV timeline created by Hayabusa with verbose profile",
+        "evtxDir": "The directory of .evtx files you scanned with Hayabusa",
+        "columnName": "Optional: column header name",
+        "quiet": "Quiet mode: do not display the launch banner"
       }
     ],
     [
       listUnusedRules, cmdName = "list-unused-rules",
+      doc = "List up unused rules",
       help = {
-        "rulesDir": "Hayabusa rules directory."
+        "timeline": "CSV timeline created by Hayabusa with verbose profile",
+        "rulesDir": "Hayabusa rules directory",
+        "columnName": "Optional: column header name",
+        "quiet": "Quiet mode: do not display the launch banner"
       }
     ]
   )
+
