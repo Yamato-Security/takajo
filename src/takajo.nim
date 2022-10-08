@@ -73,28 +73,29 @@ proc listUnusedRules(timeline: string, rulesDir: string,
 
 when isMainModule:
   clCfg.version = "0.0.1"
+  clCfg.useMulti = "Usage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n"
 
   if paramCount() == 0:
     styledEcho(fgGreen,outputLogo())
   dispatchMulti(
     [
-      listUndetectedEvtxFiles, cmdName = "list-undetected-evtx-files",
-      doc = "List up undetected evtx files",
+      listUndetectedEvtxFiles, cmdName = "undetected-evtx",
+      doc = "List up undetected evtx files. (Ex: \"takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\")",
       help = {
         "timeline": "CSV timeline created by Hayabusa with verbose profile",
         "evtxDir": "The directory of .evtx files you scanned with Hayabusa",
-        "columnName": "Optional: column header name",
-        "quiet": "Quiet mode: do not display the launch banner"
+        "columnName": "Specify custom column header name",
+        "quiet": "Do not display the launch banner"
       }
     ],
     [
-      listUnusedRules, cmdName = "list-unused-rules",
-      doc = "List up unused rules",
+      listUnusedRules, cmdName = "unused-rules",
+      doc = "List up unused rules. (Ex: \"takajo.exe unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\")",
       help = {
         "timeline": "CSV timeline created by Hayabusa with verbose profile",
         "rulesDir": "Hayabusa rules directory",
-        "columnName": "Optional: column header name",
-        "quiet": "Quiet mode: do not display the launch banner"
+        "columnName": "Specify custom column header name",
+        "quiet": "Do not display the launch banner"
       }
     ]
   )

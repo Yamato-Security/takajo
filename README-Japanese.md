@@ -37,8 +37,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 ## 機能
 
 - メモリセーフかつ、プログラムしやすいNimで作成することで、C言語と同じくらい早く、バイナリのクロスコンパイルが可能
-- `list-undetected-evtx-files`: Hayabusaのcsvの結果を比較して検知していない`.evtx`ファイルを一覧化
-- `list-unused-rules`: Hayabusaのcsvの結果(例: output.csv)を比較して検知していない`yml`ルールを一覧化
+- `undetected-evtx`: Hayabusaのcsvの結果を比較して検知していない`.evtx`ファイルを一覧化
+- `unused-rules`: Hayabusaのcsvの結果(例: output.csv)を比較して検知していない`yml`ルールを一覧化
 
 ## 作成予定機能
 
@@ -60,44 +60,44 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 ```bash
 > nimble update
-> nimble build
+> nimble build -d:release
 ```
 
 コンパイルされたバイナリはtakajoフォルダ配下で作成されます。
 
 ### 使用方法
 
-1.`-h, --help`: ヘルプメニューの表示。
-2.`list-undetected-evtx-files`: Hayabusaのルールで検知しなかったevtxファイルを一覧化する。  
+1. `help`: 各コマンドのヘルプメニューを表示する。
+2. `undetected-evtxes`: Hayabusaのルールで検知しなかったevtxファイルを一覧化する。  
 Hayabusa実行時に`%EvtxFile%`の情報が含まれたプロファイルを使ってcsvを出力して下さい。プロファイルごとにHayabusaのcsvに出力される情報は異なります。詳細は[こちら](https://github.com/Yamato-Security/hayabusa#profiles)を確認して下さい。
 
-csv出力コマンド例: `./hayabusa.exe -d <dir> -P verbose -o timeline.csv`
-
 必須オプション:
+  - -t, --timeline ../hayabusa/timeline.csv: Hayabusaで作成されたCSVタイムライン。
+  - -e --evtx-dir ../hayabusa-sample-evtx: Hayabusaでスキャンした`.evtx`ファイルが存在するディレクトリ。
 
-- -t, --timeline timeline.csv: Hayabusaで作成されたCSVタイムライン。
-- -e --evtx-dir ../hayabusa-sample-evtx: Hayabusaでスキャンした`.evtx`ファイルが存在するディレクトリ。
+任意オプション:
+  - `-c, --column-name EvtxColumn`: カスタムなカラム名を指定する。デフォルトではHayabusaのデフォルトの`EvtxFile`が使用される。
+  - `-q, --quiet`: ロゴを表示しない。
 
-例1:
-
+例:
 ```bash
-takajo.exe list-undetected-evtx-files -t timeline.csv -e .\hayabusa-sample-evtx
+takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
 ```
 
-3.`list-unused-rules`: Hayabusaのスキャンで1件も検知しなかった`.yml`ファイルを一覧化する。  
+1. `unused-rules`: Hayabusaのスキャンで1件も検知しなかった`.yml`ファイルを一覧化する。  
 Hayabusa実行時に`%RuleFile%`の情報が含まれたプロファイルを使ってcsvを出力して下さい。プロファイルごとにHayabusaのcsvに出力される情報は異なります。プロファイルごとにHayabusaのcsvに出力される情報は異なります。詳細は[こちら](https://github.com/Yamato-Security/hayabusa#profiles)を確認して下さい。
 
-csv出力コマンド例: `./hayabusa.exe -d <dir> -P verbose -o timeline.csv`
-
 必須オプション:
+  - -t, --timeline timeline.csv: Hayabusaで作成されたCSVタイムライン。
+  - -r --rules-dir ../hayabusa/rules: Hayabusaでスキャンした`.yml`ファイルが存在するディレクトリ。
 
-- -t, --timeline timeline.csv: Hayabusaで作成されたCSVタイムライン。
-- -r --rules-dir ../hayabusa/rules: Hayabusaでスキャンした`.yml`ファイルが存在するディレクトリ。
+任意オプション:
+  - `-c, --column-name CustomRuleFileColumn`: カスタムなカラム名を指定する。デフォルトではHayabusaのデフォルトの`RuleFile`が使用される。
+  - `-q, --quiet`: ロゴを表示しない。
 
-例1:
-
+例:
 ```bash
-takajo.exe list-unused-rules -t timeline.csv -r ../hayabusa/rules```
+takajo.exe unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
 ```
 
 ## 貢献
