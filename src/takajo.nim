@@ -73,14 +73,15 @@ proc listUnusedRules(timeline: string, rulesDir: string,
 
 when isMainModule:
   clCfg.version = "0.0.1"
-  clCfg.useMulti = "Usage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n"
+  const examples = "Examples:\n  undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\n  unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\n" 
+  clCfg.useMulti = "Usage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n\n" & examples
 
   if paramCount() == 0:
     styledEcho(fgGreen,outputLogo())
   dispatchMulti(
     [
       listUndetectedEvtxFiles, cmdName = "undetected-evtx",
-      doc = "List up undetected evtx files. (Ex: \"takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\")",
+      doc = "List up undetected evtx files",
       help = {
         "timeline": "CSV timeline created by Hayabusa with verbose profile",
         "evtxDir": "The directory of .evtx files you scanned with Hayabusa",
@@ -90,7 +91,7 @@ when isMainModule:
     ],
     [
       listUnusedRules, cmdName = "unused-rules",
-      doc = "List up unused rules. (Ex: \"takajo.exe unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\")",
+      doc = "List up unused rules",
       help = {
         "timeline": "CSV timeline created by Hayabusa with verbose profile",
         "rulesDir": "Hayabusa rules directory",
