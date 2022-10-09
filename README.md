@@ -78,7 +78,7 @@ Required options:
 Options:
 
 - `-c, --column-name CustomEvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
-- `-o, --output`: Save the results to a text file. The default is to print to screen.
+- `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
 - `-q, --quiet`: Do not display logo.
 
 Example:
@@ -99,7 +99,7 @@ Required options:
 Options:
 
 - `-c, --column-name CustomRuleFileColumn`: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
-- `-o, --output`: Save the results to a text file. The default is to print to screen.
+- `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
 - `-q, --quiet`: Do not display logo.
 
 Example:
