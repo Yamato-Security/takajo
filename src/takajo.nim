@@ -97,7 +97,7 @@ proc listUnusedRules(timeline: string, rulesDir: string,
   discard
 
 when isMainModule:
-  clCfg.version = "0.0.1"
+  clCfg.version = "1.0.0-dev"
   const examples = "Examples:\n  undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\n  unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\n"
   clCfg.useMulti = "Usage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n\n" & examples
 
