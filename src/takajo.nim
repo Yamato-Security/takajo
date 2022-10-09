@@ -23,14 +23,14 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
   let checkResult = getUnlistedSeq(fileLists, detectedPaths)
   var outputStock: seq[string] = @[]
 
-  outputStock.add("Finished. ")
-  outputStock.add("---------------")
+  echo "Finished. "
+  echo "---------------"
 
   if checkResult.len == 0:
     echo "Great! No undetected evtx files were found."
     echo ""
   else:
-    echo "Undetected evtx file `identified."
+    echo "Undetected evtx file identified."
     echo ""
     var numberOfEvtxFiles = 0
     for undetectedFile in checkResult:
@@ -38,15 +38,16 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
       inc numberOfEvtxFiles
     outputStock.add("")
     let undetectedPercentage = (checkResult.len() / fileLists.len()) * 100
-    outputStock.add(fmt"{ undetectedPercentage :.4}% of the evtx files did not have any detections.")
-    outputStock.add(fmt"Number of evtx files not detected: {numberOfEvtxFiles}")
-    outputStock.add("")
+    echo fmt"{ undetectedPercentage :.4}% of the evtx files did not have any detections."
+    echo fmt"Number of evtx files not detected: {numberOfEvtxFiles}"
+    echo ""
   if output != "":
     let f = open(output, fmWrite)
     defer: f.close()
     for line in outputStock:
       f.writeLine(line)
     echo fmt"Saved File {output}"
+    echo ""
   else:
     echo outputstock.join("\n")
   discard
@@ -81,15 +82,16 @@ proc listUnusedRules(timeline: string, rulesDir: string,
       inc numberOfUnusedRules
     let undetectedPercentage = (checkResult.len() / fileLists.len()) * 100
     outputStock.add("")
-    outputStock.add(fmt"{ undetectedPercentage :.4}% of the yml rules were not used.")
-    outputStock.add(fmt"Number of unused rule files: {numberOfUnusedRules}")
-    outputStock.add("")
+    echo fmt"{ undetectedPercentage :.4}% of the yml rules were not used."
+    echo fmt"Number of unused rule files: {numberOfUnusedRules}"
+    echo ""
   if output != "":
     let f = open(output, fmWrite)
     defer: f.close()
     for line in outputStock:
       f.writeLine(line)
     echo fmt"Saved File {output}"
+    echo ""
   else:
     echo outputstock.join("\n")
   discard
