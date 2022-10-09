@@ -65,16 +65,16 @@ proc listUnusedRules(timeline: string, rulesDir: string,
   echo "Finished. "
   echo "---------------"
 
-  let output = getUnlistedSeq(fileLists, detectedPaths)
-  if output.len == 0:
+  let checkResult = getUnlistedSeq(fileLists, detectedPaths)
+  if checkResult.len == 0:
     echo "Great! No unused rule files were found."
   else:
     echo "Unused rule files:"
     var numberOfUnusedRules = 0
-    for undetectedFile in output:
+    for undetectedFile in checkResult:
       echo undetectedFile
       inc numberOfUnusedRules
-    let undetectedPercentage = (output.len() / fileLists.len()) * 100
+    let undetectedPercentage = (checkResult.len() / fileLists.len()) * 100
     echo ""
     echo fmt"{ undetectedPercentage :.4}% of the yml rules were not used."
     echo "Number of unused rule files: ", numberOfUnusedRules
