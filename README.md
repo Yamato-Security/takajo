@@ -37,8 +37,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 ## Features
 
 - Written in Nim so it is very easy to program, memory safe, almost as fast as native C code and works as a single standalone binary on any OS.
-- `list-undetected-evtx-files`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for. This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
-- `list-unused-rules`: List up all of the `.yml` detection rules that were not used. This is useful for finding out which rules are currently not proven to work and that need sample evtx files.
+- `undetected-evtx`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for. This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
+- `unused-rules`: List up all of the `.yml` detection rules that were not used. This is useful for finding out which rules are currently not proven to work and that need sample evtx files.
 
 ## Planned features
 
@@ -60,45 +60,45 @@ If you have Nim installed, you can compile from source with the following comman
 
 ```bash
 > nimble update
-> nimble build
+> nimble build -d:release
 ```
 
 ### Usage
 
-1. `-h, --help`: Print help menu.
-2. `list-undetected-evtx-files`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
+1. `help`: Print help menu for all commands.
+2. `undetected-evtx`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
 You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.  
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
-  - `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
+  - `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
   - `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
 
 Options:
-  - `-c, --column-name EvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
+  - `-c, --column-name CustomEvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
+  - `-q, --quiet`: Do not display logo.
 
 Example:
-
 ```bash
-takajo.exe list-undetected-evtx-files -t timeline.csv -e .\hayabusa-sample-evtx
+takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
 ```
 
-3.`list-unused-rules`: List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested.
+3. `unused-rules`: List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested.
 You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.  
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
 
-- `-t, --timeline timeline.csv`: CSV timeline created by Hayabusa.
+- `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
 - `-r, --rules-dir ../hayabusa/rules`: The directory of `.yml` rules files you used with Hayabusa.
 
 Options:
-  - `-c, --column-name EvtxColumn`: Optional: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
+  - `-c, --column-name CustomRuleFileColumn`: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
+  - `-q, --quiet`: Do not display logo.
 
 Example:
-
 ```bash
-takajo.exe list-unused-rules -t timeline.csv -r ../hayabusa/rules
+takajo.exe unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
 ```
 
 ## Contribution
