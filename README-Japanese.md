@@ -72,14 +72,18 @@ Nimがインストールされている場合、以下のコマンドでソー�
 Hayabusa実行時に`%EvtxFile%`の情報が含まれたプロファイルを使ってcsvを出力して下さい。プロファイルごとにHayabusaのcsvに出力される情報は異なります。詳細は[こちら](https://github.com/Yamato-Security/hayabusa#profiles)を確認して下さい。
 
 必須オプション:
-  - -t, --timeline ../hayabusa/timeline.csv: Hayabusaで作成されたCSVタイムライン。
-  - -e --evtx-dir ../hayabusa-sample-evtx: Hayabusaでスキャンした`.evtx`ファイルが存在するディレクトリ。
+
+- `-t, --timeline ../hayabusa/timeline.csv`: Hayabusaで作成されたCSVタイムライン。
+- `-e --evtx-dir ../hayabusa-sample-evtx`: Hayabusaでスキャンした`.evtx`ファイルが存在するディレクトリ。
 
 任意オプション:
-  - `-c, --column-name EvtxColumn`: カスタムなカラム名を指定する。デフォルトではHayabusaのデフォルトの`EvtxFile`が使用される。
-  - `-q, --quiet`: ロゴを表示しない。
+
+- `-c, --column-name EvtxColumn`: カスタムなカラム名を指定する。デフォルトではHayabusaのデフォルトの`EvtxFile`が使用される。
+- `-o, --output result.txt`: 結果をテキストファイルに保存する。デフォルトは画面出力になる。
+- `-q, --quiet`: ロゴを表示しない。
 
 例:
+
 ```bash
 takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
 ```
@@ -88,14 +92,18 @@ takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evt
 Hayabusa実行時に`%RuleFile%`の情報が含まれたプロファイルを使ってcsvを出力して下さい。プロファイルごとにHayabusaのcsvに出力される情報は異なります。プロファイルごとにHayabusaのcsvに出力される情報は異なります。詳細は[こちら](https://github.com/Yamato-Security/hayabusa#profiles)を確認して下さい。
 
 必須オプション:
-  - -t, --timeline timeline.csv: Hayabusaで作成されたCSVタイムライン。
-  - -r --rules-dir ../hayabusa/rules: Hayabusaでスキャンした`.yml`ファイルが存在するディレクトリ。
+
+- -t, --timeline timeline.csv: Hayabusaで作成されたCSVタイムライン。
+- -r --rules-dir ../hayabusa/rules: Hayabusaでスキャンした`.yml`ファイルが存在するディレクトリ。
 
 任意オプション:
-  - `-c, --column-name CustomRuleFileColumn`: カスタムなカラム名を指定する。デフォルトではHayabusaのデフォルトの`RuleFile`が使用される。
-  - `-q, --quiet`: ロゴを表示しない。
+
+- `-c, --column-name CustomRuleFileColumn`: カスタムなカラム名を指定する。デフォルトではHayabusaのデフォルトの`RuleFile`が使用される。
+- `-o, --output result.txt`: 結果をテキストファイルに保存する。デフォルトは画面出力になる。
+- `-q, --quiet`: ロゴを表示しない。
 
 例:
+
 ```bash
 takajo.exe unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
 ```
