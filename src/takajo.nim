@@ -8,10 +8,11 @@ import std/tables
 import takajopkg/submodule
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
-    columnName: system.string = "EvtxFile", quiet: bool = false): int =
+    columnName: system.string = "EvtxFile", quiet: bool = false,
+        output: string = ""): int =
 
   if not quiet:
-    styledEcho(fgGreen,outputLogo())
+    styledEcho(fgGreen, outputLogo())
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(evtxDir, ".evtx")
@@ -19,33 +20,42 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
   var detectedPaths: seq[string] = csvData[columnName].map(getFileNameWithExt)
   detectedPaths = deduplicate(detectedPaths)
 
-  let output = getUnlistedSeq(fileLists, detectedPaths)
+  let checkResult = getUnlistedSeq(fileLists, detectedPaths)
+  var outputStock: seq[string] = @[]
 
-  echo "Finished. "
-  echo "---------------"
+  outputStock.add("Finished. ")
+  outputStock.add("---------------")
 
-  if output.len == 0:
+  if checkResult.len == 0:
     echo "Great! No undetected evtx files were found."
   else:
     echo "Undetected evtx files:"
     echo ""
     var numberOfEvtxFiles = 0
-    for undetectedFile in output:
-      echo undetectedFile
+    for undetectedFile in checkResult:
+      outputStock.add(undetectedFile)
       inc numberOfEvtxFiles
-    let undetectedPercentage = (output.len() / fileLists.len()) * 100
-    echo ""
-    echo fmt"{ undetectedPercentage :.4}% of the evtx files did not have any detections."
-    echo "Number of evtx files not detected: ", numberOfEvtxFiles
-    echo ""
+    outputStock.add("")
+    let undetectedPercentage = (checkResult.len() / fileLists.len()) * 100
+    outputStock.add(fmt"{ undetectedPercentage :.4}% of the evtx files did not have any detections.")
+    outputStock.add(fmt"Number of evtx files not detected: {numberOfEvtxFiles}")
+    outputStock.add("")
+  if output != "":
+    let f = open(output, fmWrite)
+    defer: f.close()
+    for line in outputStock:
+      f.writeLine(line)
+  else:
+    echo outputstock.join("\n")
   discard
 
 
 proc listUnusedRules(timeline: string, rulesDir: string,
-    columnName = "RuleFile", quiet: bool = false): int =
+    columnName: string = "RuleFile", quiet: bool = false,
+        output: string = ""): int =
 
   if not quiet:
-    styledEcho(fgGreen,outputLogo())
+    styledEcho(fgGreen, outputLogo())
 
   let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
   var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml")
