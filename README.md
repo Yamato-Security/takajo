@@ -71,14 +71,18 @@ You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
-  - `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
-  - `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
+
+- `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
+- `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
 
 Options:
-  - `-c, --column-name CustomEvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
-  - `-q, --quiet`: Do not display logo.
+
+- `-c, --column-name CustomEvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
+- `-o, --output`: Save the results to a text file. The default is to print to screen.
+- `-q, --quiet`: Do not display logo.
 
 Example:
+
 ```bash
 takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
 ```
@@ -93,10 +97,13 @@ Required options:
 - `-r, --rules-dir ../hayabusa/rules`: The directory of `.yml` rules files you used with Hayabusa.
 
 Options:
-  - `-c, --column-name CustomRuleFileColumn`: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
-  - `-q, --quiet`: Do not display logo.
+
+- `-c, --column-name CustomRuleFileColumn`: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
+- `-o, --output`: Save the results to a text file. The default is to print to screen.
+- `-q, --quiet`: Do not display logo.
 
 Example:
+
 ```bash
 takajo.exe unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
 ```
