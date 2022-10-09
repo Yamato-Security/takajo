@@ -28,8 +28,9 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
 
   if checkResult.len == 0:
     echo "Great! No undetected evtx files were found."
+    echo ""
   else:
-    echo "Undetected evtx files:"
+    echo "Undetected evtx file `identified."
     echo ""
     var numberOfEvtxFiles = 0
     for undetectedFile in checkResult:
@@ -45,6 +46,7 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
     defer: f.close()
     for line in outputStock:
       f.writeLine(line)
+    echo fmt"Saved File {output}"
   else:
     echo outputstock.join("\n")
   discard
@@ -61,6 +63,7 @@ proc listUnusedRules(timeline: string, rulesDir: string,
   var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml")
   var detectedPaths: seq[string] = csvData[columnName].map(getFileNameWithExt)
   detectedPaths = deduplicate(detectedPaths)
+  var outputStock: seq[string] = @[]
 
   echo "Finished. "
   echo "---------------"
@@ -68,17 +71,27 @@ proc listUnusedRules(timeline: string, rulesDir: string,
   let checkResult = getUnlistedSeq(fileLists, detectedPaths)
   if checkResult.len == 0:
     echo "Great! No unused rule files were found."
+    echo ""
   else:
-    echo "Unused rule files:"
+    echo "Unused rule file identified."
+    echo ""
     var numberOfUnusedRules = 0
     for undetectedFile in checkResult:
-      echo undetectedFile
+      outputStock.add(undetectedFile)
       inc numberOfUnusedRules
     let undetectedPercentage = (checkResult.len() / fileLists.len()) * 100
-    echo ""
-    echo fmt"{ undetectedPercentage :.4}% of the yml rules were not used."
-    echo "Number of unused rule files: ", numberOfUnusedRules
-    echo ""
+    outputStock.add("")
+    outputStock.add(fmt"{ undetectedPercentage :.4}% of the yml rules were not used.")
+    outputStock.add(fmt"Number of unused rule files: {numberOfUnusedRules}")
+    outputStock.add("")
+  if output != "":
+    let f = open(output, fmWrite)
+    defer: f.close()
+    for line in outputStock:
+      f.writeLine(line)
+    echo fmt"Saved File {output}"
+  else:
+    echo outputstock.join("\n")
   discard
 
 when isMainModule:
