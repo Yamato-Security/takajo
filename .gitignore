@@ -145,3 +145,6 @@ dmypy.json
 #Takajo binaries
 takajo
 takajo*.exe
+
+#Results files
+*.txt
