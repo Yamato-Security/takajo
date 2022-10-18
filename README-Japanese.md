@@ -20,19 +20,27 @@
 Takajō (鷹匠)は 日本の[Yamato Security](https://yamatosecurity.connpass.com/)グループによって作られた [Hayabusa](https://github.com/Yamato-Security/hayabusa)から得られた結果を解析するツールです。Takajōは[Nim](https://nim-lang.org/)で作られました。  
 Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wikipedia.org/wiki/Falconry)を意味し、ハヤブサが得た`結果をさらに活かすことから選ばれました。
 
+# 関連プロジェクト
+
+* [EnableWindowsLogSettings](https://github.com/Yamato-Security/EnableWindowsLogSettings) - Sigmaベースの脅威ハンティングと、Windowsイベントログのファストフォレンジックタイムライン生成ツール。
+* [Hayabusa](https://github.com/Yamato-Security/hayabusa/blob/main/README-Japanese.md) - Windowsイベントログを正しく設定するためのドキュメンテーションとスクリプト。
+* [Hayabusa Rules](https://github.com/Yamato-Security/hayabusa-rules/blob/main/README-Japanese.md) - Hayabusaのための検知ルール。
+* [Hayabusa Sample EVTXs](https://github.com/Yamato-Security/hayabusa-sample-evtx) - Hayabusa/Sigma検出ルールをテストするためのサンプルevtxファイル。
+* [WELA (Windows Event Log Analyzer)](https://github.com/Yamato-Security/WELA/blob/main/README-Japanese.md) - PowerShellで書かれたWindowsイベントログの解析ツール。
+
 ## 目次
 
-- [Takajoについて](#takajoについて)
-- [目次](#目次)
-- [機能](#機能)
-- [作成予定機能](#作成予定機能)
-- [Gitクローン](#gitクローン)
-- [アドバンス: ソースコードからのコンパイル(任意)](#アドバンス-ソースコードからのコンパイル任意)
-  - [使用方法](#使用方法)
-- [貢献](#貢献)
-- [バグの報告](#バグの報告)
-- [ライセンス](#ライセンス)
-- [Twitter](#twitter)
+- [関連プロジェクト](#関連プロジェクト)
+  - [目次](#目次)
+  - [機能](#機能)
+  - [作成予定機能](#作成予定機能)
+  - [Gitクローン](#gitクローン)
+  - [アドバンス: ソースコードからのコンパイル(任意)](#アドバンス-ソースコードからのコンパイル任意)
+    - [使用方法](#使用方法)
+  - [貢献](#貢献)
+  - [バグの報告](#バグの報告)
+  - [ライセンス](#ライセンス)
+  - [Twitter](#twitter)
 
 ## 機能
 
