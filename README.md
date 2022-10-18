@@ -20,19 +20,27 @@
 Takajō (鷹匠), created by [Yamato Security](https://github.com/Yamato-Security), is an analyzer for [Hayabusa](https://github.com/Yamato-Security/hayabusa) results written in [Nim](https://nim-lang.org/).
 Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese and was chosen as Hayabusa's catches (results) can be put to even better use.
 
+# Companion Projects
+
+* [EnableWindowsLogSettings](https://github.com/Yamato-Security/EnableWindowsLogSettings) - documentation and scripts to properly enable Windows event logs.
+* [Hayabusa](https://github.com/Yamato-Security/hayabusa) - sigma-based threat hunting and fast forensics timeline generator for Windows event logs.
+* [Hayabusa Rules](https://github.com/Yamato-Security/hayabusa-rules) - detection rules for hayabusa.
+* [Hayabusa Sample EVTXs](https://github.com/Yamato-Security/hayabusa-sample-evtx) - sample evtx files to use for testing hayabusa/sigma detection rules.
+* [WELA (Windows Event Log Analyzer)](https://github.com/Yamato-Security/WELA) - analyzer for Windows event logs written in PowerShell.
+
 ## Table of Contents
 
-- [About Takajō](#about-takajō)
-- [Table of Contents](#table-of-contents)
-- [Features](#features)
-- [Planned features](#planned-features)
-- [Git cloning](#git-cloning)
-- [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
-  - [Usage](#usage)
-- [Contribution](#contribution)
-- [Bug Submission](#bug-submission)
-- [License](#license)
-- [Twitter](#twitter)
+- [Companion Projects](#companion-projects)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Planned features](#planned-features)
+  - [Git cloning](#git-cloning)
+  - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
+    - [Usage](#usage)
+  - [Contribution](#contribution)
+  - [Bug Submission](#bug-submission)
+  - [License](#license)
+  - [Twitter](#twitter)
 
 ## Features
 
