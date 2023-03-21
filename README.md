@@ -51,7 +51,6 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 ## Planned features
 
 - Behavior analysis
-- Log enrichment (Adding Geolocation, ASN info, threat intelligence based on IP addresses)
 - Malicious process tree visualization
 
 ## Git cloning
