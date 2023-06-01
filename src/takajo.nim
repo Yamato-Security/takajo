@@ -1,11 +1,23 @@
 import cligen
 import os
 import terminal
+import std/json
 import std/sequtils
 import std/strformat
 import std/strutils
 import std/tables
-import takajopkg/submodule
+import commands/general
+
+proc logonTimeline(timeline:string, quiet: bool = false, output: string = ""): int =
+
+    if not quiet:
+        styledEcho(fgGreen, outputLogo())
+
+    echo "Loading the Hayabusa JSON timeline"
+    echo ""
+
+    let jsonObj = parseFile(timeline)
+    echo jsonObj.pretty
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
         columnName: system.string = "EvtxFile", quiet: bool = false,
@@ -52,7 +64,6 @@ proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
         echo outputstock.join("\n")
     discard
 
-
 proc listUnusedRules(timeline: string, rulesDir: string,
         columnName: string = "RuleFile", quiet: bool = false,
                 output: string = ""): int =
@@ -98,15 +109,27 @@ proc listUnusedRules(timeline: string, rulesDir: string,
 
 when isMainModule:
     clCfg.version = "2.0.0-dev"
-    const examples = "Examples:\n  undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\n  unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\n"
-    clCfg.useMulti = "Usage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n\n" & examples
+    const examples_1 = "Examples:\n"
+    const examples_2 = "  logon-timeline -t ../hayabusa/timeline.json -o logon-timeline.csv\n"
+    const examples_3 = "  undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\n"
+    const examples_4 = "  unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\n"
+    clCfg.useMulti = "Usage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n\n" & examples_1 & examples_2 & examples_3 & examples_4
 
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
     dispatchMulti(
         [
+            logonTimeline, cmdName = "logon-timeline",
+            doc = "create a timeline of various logon events (input: JSON)",
+            help = {
+                "timeline": "JSON timeline created by Hayabusa",
+                "quiet": "Do not display the launch banner",
+                "output": "Save the results to a CSV file.",
+            }
+        ],
+        [
             listUndetectedEvtxFiles, cmdName = "undetected-evtx",
-            doc = "List up undetected evtx files",
+            doc = "list up undetected evtx files (input: CSV, profile: verbose)",
             help = {
                 "timeline": "CSV timeline created by Hayabusa with verbose profile",
                 "evtxDir": "The directory of .evtx files you scanned with Hayabusa",
@@ -117,7 +140,7 @@ when isMainModule:
         ],
         [
             listUnusedRules, cmdName = "unused-rules",
-            doc = "List up unused rules",
+            doc = "list up unused rules (input: CSV, profile: verbose)",
             help = {
                 "timeline": "CSV timeline created by Hayabusa with verbose profile",
                 "rulesDir": "Hayabusa rules directory",

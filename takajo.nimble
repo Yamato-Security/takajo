@@ -1,8 +1,8 @@
 # Package
 
-version       = "1.0.0"
+version       = "2.0.0-dev"
 author        = "Yamato Security @SecurityYamato"
-description   = "Takajo is Hayabusa output analyzer."
+description   = "Takajo is an analyzer for Hayabusa results."
 license       = "GPL-3.0"
 srcDir        = "src"
 installExt    = @["nim"]
