@@ -6,6 +6,7 @@ import std/sequtils
 import std/strformat
 import std/strutils
 import std/tables
+import streams
 import takajopkg/submodule
 
 proc logonTimeline(timeline:string, quiet: bool = false, output: string = ""): int =
@@ -13,19 +14,12 @@ proc logonTimeline(timeline:string, quiet: bool = false, output: string = ""): i
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    echo "Checking JSON structure"
+    echo "Loading the Hayabusa JSONL timeline"
     echo ""
 
-
-
-    echo "Loading the Hayabusa JSON timeline"
-    echo ""
-
-    try:
-        let jsonNode = parseFile(timeline)
-    except JsonParsingError as e:
-        echo e.msg
-    echo jsonObj.pretty
+    for line in lines(timeline):
+        let jsonLine = parseJson(line)
+        echo jsonLine.pretty
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
         columnName: system.string = "EvtxFile", quiet: bool = false,
@@ -118,7 +112,7 @@ proc listUnusedRules(timeline: string, rulesDir: string,
 when isMainModule:
     clCfg.version = "2.0.0-dev"
     const examples_1 = "Examples:\n"
-    const examples_2 = "  logon-timeline -t ../hayabusa/timeline.json -o logon-timeline.csv\n"
+    const examples_2 = "  logon-timeline -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\n"
     const examples_3 = "  undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\n"
     const examples_4 = "  unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\n"
     clCfg.useMulti = "Usage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n\n" & examples_1 & examples_2 & examples_3 & examples_4
@@ -128,9 +122,9 @@ when isMainModule:
     dispatchMulti(
         [
             logonTimeline, cmdName = "logon-timeline",
-            doc = "create a timeline of various logon events (input: JSON)",
+            doc = "create a timeline of various logon events (input: JSONL)",
             help = {
-                "timeline": "JSON timeline created by Hayabusa",
+                "timeline": "JSONL timeline created by Hayabusa",
                 "quiet": "Do not display the launch banner",
                 "output": "Save the results to a CSV file.",
             }
