@@ -6,7 +6,7 @@ import std/sequtils
 import std/strformat
 import std/strutils
 import std/tables
-import commands/general
+import takajopkg/general
 
 proc logonTimeline(timeline:string, quiet: bool = false, output: string = ""): int =
 
