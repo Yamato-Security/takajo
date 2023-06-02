@@ -1,12 +1,11 @@
 import cligen
 import os
 import terminal
-import std/json
-import std/sequtils
-import std/strformat
-import std/strutils
-import std/tables
-import streams
+import json
+import sequtils
+import strformat
+import strutils
+import tables
 import takajopkg/submodule
 
 proc logonTimeline(timeline:string, quiet: bool = false, output: string = ""): int =
@@ -17,9 +16,65 @@ proc logonTimeline(timeline:string, quiet: bool = false, output: string = ""): i
     echo "Loading the Hayabusa JSONL timeline"
     echo ""
 
+    var resultsTable: seq[Table[string, string]]
+
     for line in lines(timeline):
         let jsonLine = parseJson(line)
-        echo jsonLine.pretty
+        let channel = jsonLine["Channel"].getStr()
+        let eventId = jsonLine["EventID"].getInt()
+        let eventIdStr = $eventId
+        let ruleTitle = jsonLine["RuleTitle"].getStr()
+
+        #EID 4624 Logon Success
+        if checkLogonRule(ruleTitle) == true:
+            var singleResult = initTable[string, string]()
+            singleResult["Timestamp"] = jsonLine["Timestamp"].getStr()
+            singleResult["Channel"] = jsonLine["Channel"].getStr()
+            singleResult["EventID"] = eventIdStr
+            try:
+                let logonType = jsonLine["Details"]["Type"].getInt()
+                singleResult["Type"] = logonNumberToString(logonType)
+            except KeyError:
+                singleResult["Type"] = "n/a"
+            try:
+                singleResult["Auth"] = jsonLine["ExtraFieldInfo"]["AuthenticationPackageName"].getStr()
+            except KeyError:
+                singleResult["Auth"] = "n/a"
+            try:
+                singleResult["TargetComputer"] = jsonLine["Computer"].getStr()
+            except KeyError:
+                singleResult["TargetComputer"] = "n/a"
+            try:
+                singleResult["TargetUser"] = jsonLine["Details"]["TgtUser"].getStr()
+            except KeyError:
+                singleResult["TargetUser"] = "n/a"
+            try:
+                singleResult["SourceIP"] = jsonLine["Details"]["SrcIP"].getStr()
+            except KeyError:
+                singleResult["SourceIP"] = "n/a"
+            try:
+                singleResult["Process"] = jsonLine["Details"]["LogonProcessName"].getStr()
+            except KeyError:
+                singleResult["Process"] = "n/a"
+            try:
+                singleResult["LID"] = jsonLine["Details"]["LID"].getStr()
+            except KeyError:
+                singleResult["Process"] = "n/a"
+            try:
+                singleResult["LGUID"] = jsonLine["ExtraFieldInfo"]["LogonGuid"].getStr()
+            except KeyError:
+                singleResult["LGUID"] = "n/a"
+            try:
+                singleResult["SourceComputer"] = jsonLine["Details"]["SrcIP"].getStr()
+            except KeyError:
+                singleResult["SourceComputer"] = "n/a"
+            resultsTable.add(singleResult)
+    
+    
+    for table in resultsTable:
+        echo table
+        ##if jsonLine.hasKey("Timestamp"):
+        #    echo jsonLine["Timestamp"]
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
         columnName: system.string = "EvtxFile", quiet: bool = false,
