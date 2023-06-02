@@ -6,17 +6,25 @@ import std/sequtils
 import std/strformat
 import std/strutils
 import std/tables
-import takajopkg/general
+import takajopkg/submodule
 
 proc logonTimeline(timeline:string, quiet: bool = false, output: string = ""): int =
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    echo "Checking JSON structure"
+    echo ""
+
+
+
     echo "Loading the Hayabusa JSON timeline"
     echo ""
 
-    let jsonObj = parseFile(timeline)
+    try:
+        let jsonNode = parseFile(timeline)
+    except JsonParsingError as e:
+        echo e.msg
     echo jsonObj.pretty
 
 proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
