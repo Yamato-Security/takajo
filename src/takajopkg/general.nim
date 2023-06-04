@@ -87,10 +87,10 @@ proc logonNumberToString*(msgLogonType: int): string =
         of 11: result = "11 - CachedInteractive"
         of 12: result = "12 - CachedRemoteInteractive"
         of 13: result = "13 - CachedUnlock"
-        else: result = "Unknown"
+        else: result = "Unknown - " & $msgLogonType
     return result
 
-proc checkLogonRule*(msgLogonRule: string): bool =
+proc isEID_4624*(msgLogonRule: string): bool =
     case msgLogonRule:
         of "Logon (System) - Bootup": result = true  # 0
         of "Logon (Interactive) *Creds in memory*": result = true # 2
@@ -105,4 +105,36 @@ proc checkLogonRule*(msgLogonRule: string): bool =
         of "Logon (CachedRemoteInteractive) *Creds in memory*": result = true # 12
         of "Logon (CachedUnlock) *Creds in memory*": result = true # 13
         else: result = false
+    return result
+
+proc escapeCsvField*(s: string): string =
+    # If the field contains a quote, comma, or newline, enclose it in quotes
+    # and replace any internal quotes with double quotes.
+    if '"' in s or ',' in s or '\n' in s:
+        result = "\"" & s.replace("\"", "\"\"") & "\""
+    else:
+        result = s
+
+proc impersonationLevelIdToName*(impersonationLevelId: string): string =
+    case impersonationLevelId:
+        of "%%1832": result = "Identification"
+        of "%%1833": result = "Impersonation"
+        of "%%1840": result = "Delegation"
+        of "%%1841": result = "Denied by Process Trust Label ACE"
+        of "%%1842": result = "Yes"
+        of "%%1843": result = "No"
+        of "%%1844": result = "System"
+        of "%%1845": result = "Not Available"
+        of "%%1846": result = "Default"
+        of "%%1847": result = "DisallowMmConfig"
+        of "%%1848": result = "Off"
+        of "%%1849": result = "Auto"
+        else: result = "Unknown - " & impersonationLevelId
+    return result
+
+proc elevatedTokenIdToName*(elevatedTokenId: string): string =
+    case elevatedTokenId:
+        of "%%1842": result = "Yes"
+        of "%%1843": result = "No"
+        else: result = "Unknown - " & elevatedTokenId
     return result
