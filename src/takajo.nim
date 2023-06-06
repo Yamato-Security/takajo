@@ -35,6 +35,16 @@ when isMainModule:
             }
         ],
         [
+            printProcessTree, cmdName = "process-tree",
+            doc = "prints the process tree of a process (input: JSONL, profile: standard)",
+            help = {
+                "output": "save results to a CSV file",
+                "processGuid": "sysmon procress GUID",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
             listSuspiciousProcesses, cmdName = "suspicious-processes",
             doc = "list up suspicious processes. (input: JSONL, profile: standard)",
             help = {
@@ -64,16 +74,6 @@ when isMainModule:
                 "quiet": "do not display the launch banner",
                 "rulesDir": "Hayabusa rules directory",
                 "timeline": "CSV timeline created by Hayabusa with verbose profile",
-            }
-        ],
-        [
-            printProcessTree, cmdName = "process-tree",
-            doc = "prints the process tree of a process (input: JSONL, profile: standard)",
-            help = {
-                "output": "save results to a CSV file",
-                "processGuid": "sysmon procress GUID",
-                "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
             }
         ]
     )
