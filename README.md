@@ -7,13 +7,17 @@
 
 ---
 
-[tag-1]: https://img.shields.io/github/downloads/Yamato-Secuirty/takajo/total?label=GitHub%F0%9F%8E%AFDownloads&style=plastic
-[tag-2]: https://img.shields.io/github/stars/Yamato-Security/takajo?style=plastic&label=GitHub%F0%9F%8E%AFStars
-[tag-3]: https://img.shields.io/github/v/release/Yamato-Security/takajo?display_name=tag&label=latest-version&style=plastic
-[tag-4]: https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg
-[tag-5]: https://img.shields.io/badge/Twitter-00acee?logo=twitter&logoColor=white
-
-![tag-1] ![tag-2] <a href="https://github.com/Yamato-Security/hayabusa/releases">![tag-3]</a> ![tag-4]</a> ![tag-5]  <a href="https://twitter.com/SecurityYamato"></a>
+<p align="center">
+    <a href="https://github.com/Yamato-Security/hayabusa/releases"><img src="https://img.shields.io/github/v/release/Yamato-Security/takajo?color=blue&label=Stable%20Version&style=flat""/></a>
+    <a href="https://github.com/Yamato-Security/hayabusa/releases"><img src="https://img.shields.io/github/downloads/Yamato-Security/takajo/total?style=flat&label=GitHub%F0%9F%A6%85Downloads&color=blue"/></a>
+    <a href="https://github.com/Yamato-Security/hayabusa/stargazers"><img src="https://img.shields.io/github/stars/Yamato-Security/hayabusa?style=flat&label=GitHub%F0%9F%A6%85Stars"/></a>
+    <a href="https://www.blackhat.com/asia-22/arsenal/schedule/#hayabusa-26211"><img src="https://raw.githubusercontent.com/toolswatch/badges/master/arsenal/asia/2022.svg"></a>
+    <a href="https://codeblue.jp/2022/en/talks/?content=talks_24"><img src="https://img.shields.io/badge/CODE%20BLUE%20Bluebox-2022-blue"></a>
+    <a href="https://www.seccon.jp/2022/seccon_workshop/windows.html"><img src="https://img.shields.io/badge/SECCON-2023-blue"></a>
+    <a href="https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/"><img src="https://img.shields.io/badge/SANS%20DFIR%20Summit-2023-blue"></a>
+    <a href=""><img src="https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg" /></a>
+    <a href="https://twitter.com/SecurityYamato"><img src="https://img.shields.io/twitter/follow/SecurityYamato?style=social"/></a>
+</p>
 
 ## About Takajō
 
@@ -74,7 +78,7 @@ If you have Nim installed, you can compile from source with the following comman
 
 1. `help`: Print help menu for all commands.
 2. `undetected-evtx`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
-You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.  
+You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
@@ -95,7 +99,7 @@ takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evt
 ```
 
 3. `unused-rules`: List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested.
-You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.  
+You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:

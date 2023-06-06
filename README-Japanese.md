@@ -7,17 +7,21 @@
 
 ---
 
-[tag-1]: https://img.shields.io/github/downloads/Yamato-Secuirty/takajo/total?label=GitHub%F0%9F%8E%AFDownloads&style=plastic
-[tag-2]: https://img.shields.io/github/stars/Yamato-Security/takajo?style=plastic&label=GitHub%F0%9F%8E%AFStars
-[tag-3]: https://img.shields.io/github/v/release/Yamato-Security/takajo?display_name=tag&label=latest-version&style=plastic
-[tag-4]: https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg
-[tag-5]: https://img.shields.io/badge/Twitter-00acee?logo=twitter&logoColor=white
-
-![tag-1] ![tag-2] <a href="https://github.com/Yamato-Security/hayabusa/releases">![tag-3]</a> ![tag-4]</a> ![tag-5]  <a href="https://twitter.com/SecurityYamato"></a>
+<p align="center">
+    <a href="https://github.com/Yamato-Security/hayabusa/releases"><img src="https://img.shields.io/github/v/release/Yamato-Security/takajo?color=blue&label=Stable%20Version&style=flat""/></a>
+    <a href="https://github.com/Yamato-Security/hayabusa/releases"><img src="https://img.shields.io/github/downloads/Yamato-Security/takajo/total?style=flat&label=GitHub%F0%9F%A6%85Downloads&color=blue"/></a>
+    <a href="https://github.com/Yamato-Security/hayabusa/stargazers"><img src="https://img.shields.io/github/stars/Yamato-Security/hayabusa?style=flat&label=GitHub%F0%9F%A6%85Stars"/></a>
+    <a href="https://www.blackhat.com/asia-22/arsenal/schedule/#hayabusa-26211"><img src="https://raw.githubusercontent.com/toolswatch/badges/master/arsenal/asia/2022.svg"></a>
+    <a href="https://codeblue.jp/2022/en/talks/?content=talks_24"><img src="https://img.shields.io/badge/CODE%20BLUE%20Bluebox-2022-blue"></a>
+    <a href="https://www.seccon.jp/2022/seccon_workshop/windows.html"><img src="https://img.shields.io/badge/SECCON-2023-blue"></a>
+    <a href="https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/"><img src="https://img.shields.io/badge/SANS%20DFIR%20Summit-2023-blue"></a>
+    <a href=""><img src="https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg" /></a>
+    <a href="https://twitter.com/SecurityYamato"><img src="https://img.shields.io/twitter/follow/SecurityYamato?style=social"/></a>
+</p>
 
 ## Takajoについて
 
-Takajō (鷹匠)は 日本の[Yamato Security](https://yamatosecurity.connpass.com/)グループによって作られた [Hayabusa](https://github.com/Yamato-Security/hayabusa)から得られた結果を解析するツールです。Takajōは[Nim](https://nim-lang.org/)で作られました。  
+Takajō (鷹匠)は 日本の[Yamato Security](https://yamatosecurity.connpass.com/)グループによって作られた [Hayabusa](https://github.com/Yamato-Security/hayabusa)から得られた結果を解析するツールです。Takajōは[Nim](https://nim-lang.org/)で作られました。
 Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wikipedia.org/wiki/Falconry)を意味し、ハヤブサが得た`結果をさらに活かすことから選ばれました。
 
 # 関連プロジェクト
@@ -75,7 +79,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 ### 使用方法
 
 1. `help`: 各コマンドのヘルプメニューを表示する。
-2. `undetected-evtxes`: Hayabusaのルールで検知しなかったevtxファイルを一覧化する。  
+2. `undetected-evtxes`: Hayabusaのルールで検知しなかったevtxファイルを一覧化する。
 Hayabusa実行時に`%EvtxFile%`の情報が含まれたプロファイルを使ってcsvを出力して下さい。プロファイルごとにHayabusaのcsvに出力される情報は異なります。詳細は[こちら](https://github.com/Yamato-Security/hayabusa#profiles)を確認して下さい。
 
 必須オプション:
@@ -95,7 +99,7 @@ Hayabusa実行時に`%EvtxFile%`の情報が含まれたプロファイルを使
 takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
 ```
 
-1. `unused-rules`: Hayabusaのスキャンで1件も検知しなかった`.yml`ファイルを一覧化する。  
+1. `unused-rules`: Hayabusaのスキャンで1件も検知しなかった`.yml`ファイルを一覧化する。
 Hayabusa実行時に`%RuleFile%`の情報が含まれたプロファイルを使ってcsvを出力して下さい。プロファイルごとにHayabusaのcsvに出力される情報は異なります。プロファイルごとにHayabusaのcsvに出力される情報は異なります。詳細は[こちら](https://github.com/Yamato-Security/hayabusa#profiles)を確認して下さい。
 
 必須オプション:
