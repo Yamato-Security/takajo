@@ -6,6 +6,7 @@ import sequtils
 import strformat
 import strutils
 import tables
+import times
 import takajopkg/general
 include takajopkg/listUnusedRules
 include takajopkg/listUndetectedEvtxFiles
@@ -62,7 +63,7 @@ when isMainModule:
                 "output": "save the results to a text file (default: stdout)",
                 "quiet": "do not display the launch banner",
                 "rulesDir": "Hayabusa rules directory",
-                "timeline": "CSV timeline created by Hayabusa with verbose profile",    
+                "timeline": "CSV timeline created by Hayabusa with verbose profile",
             }
         ],
         [
@@ -72,7 +73,7 @@ when isMainModule:
                 "output": "save results to a CSV file",
                 "processGuid": "sysmon procress GUID",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa", 
+                "timeline": "JSONL timeline created by Hayabusa",
             }
         ]
     )
