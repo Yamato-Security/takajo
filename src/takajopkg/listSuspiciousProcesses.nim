@@ -14,6 +14,7 @@ proc isMinLevel(levelInLog: string, userSetLevel: string): bool =
             return false
 
 proc listSuspiciousProcesses(level: string = "high", timeline: string, quiet: bool = false, output: string = ""): int =
+    let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
@@ -37,6 +38,7 @@ proc listSuspiciousProcesses(level: string = "high", timeline: string, quiet: bo
         jsonLine: JsonNode
 
     for line in lines(timeline):
+
         jsonLine = parseJson(line)
         channel = jsonLine["Channel"].getStr()
         eventId = jsonLine["EventID"].getInt()
@@ -202,7 +204,7 @@ proc listSuspiciousProcesses(level: string = "high", timeline: string, quiet: bo
                 seqOfResultsTables.add(singleResultTable)
 
 
-    if output != "": # Save results to CSV
+    if output != "" and suspicousProcessCount_Sec_4688 != 0 and suspicousProcessCount_Sysmon_1 != 0: # Save results to CSV
         # Open file to save results
         var outputFile = open(output, fmWrite)
         ## Write CSV header
@@ -235,9 +237,8 @@ proc listSuspiciousProcesses(level: string = "high", timeline: string, quiet: bo
             outputFile.write("\p")
         outputFile.close()
 
-
-    echo "Saved results to " & output
-    echo ""
+        echo "Saved results to " & output
+        echo ""
 
     if suspicousProcessCount_Sec_4688 == 0 and suspicousProcessCount_Sysmon_1 == 0:
         echo "No suspicous processes were found. There are either no malicious processes or you need to change the level."
@@ -246,4 +247,12 @@ proc listSuspiciousProcesses(level: string = "high", timeline: string, quiet: bo
 
     echo "Suspicous processes in Security 4688 process creation events: " & $suspicousProcessCount_Sec_4688
     echo "Suspicious processes in Sysmon 1 process creation events: " & $suspicousProcessCount_Sysmon_1
+    echo ""
+    let endTime = epochTime()
+    let elapsedTime = int(endTime - startTime)
+    let hours = elapsedTime div 3600
+    let minutes = (elapsedTime mod 3600) div 60
+    let seconds = elapsedTime mod 60
+
+    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
     echo ""
