@@ -38,8 +38,8 @@ when isMainModule:
             printProcessTree, cmdName = "process-tree",
             doc = "prints the process tree of a process (input: JSONL, profile: standard)",
             help = {
-                "output": "save results to a CSV file",
-                "processGuid": "sysmon procress GUID",
+                "output": "save results to a text file",
+                "processGuid": "sysmon process GUID",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",
             }

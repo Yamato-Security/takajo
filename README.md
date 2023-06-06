@@ -20,7 +20,7 @@
 
 ## About Takajō
 
-Takajō (鷹匠), created by [Yamato Security](https://github.com/Yamato-Security), is an analyzer for [Hayabusa](https://github.com/Yamato-Security/hayabusa) results written in [Nim](https://nim-lang.org/).
+Takajō (鷹匠), created by [Yamato Security](https://github.com/Yamato-Security), is a fast forensics analyzer for [Hayabusa](https://github.com/Yamato-Security/hayabusa) results written in [Nim](https://nim-lang.org/).
 Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese and was chosen as Hayabusa's catches (results) can be put to even better use.
 
 # Companion Projects
@@ -36,10 +36,21 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 - [Companion Projects](#companion-projects)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
-  - [Planned features](#planned-features)
+- [Downloads](#downloads)
   - [Git cloning](#git-cloning)
   - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
-    - [Usage](#usage)
+- [Command List](#command-list)
+- [Command Usage](#command-usage)
+  - [`logon-timeline` command](#logon-timeline-command)
+    - [`logon-timeline` command example](#logon-timeline-command-example)
+  - [`process-tree` command](#process-tree-command)
+    - [`process-tree` command example](#process-tree-command-example)
+  - [`suspicious-processes` command](#suspicious-processes-command)
+    - [`suspicious-processes` command examples](#suspicious-processes-command-examples)
+  - [`undetected-evtx` command](#undetected-evtx-command)
+    - [`undetected-evtx` command example](#undetected-evtx-command-example)
+  - [`unused-rules` command](#unused-rules-command)
+    - [`unused-rules` command example](#unused-rules-command-example)
   - [Contribution](#contribution)
   - [Bug Submission](#bug-submission)
   - [License](#license)
@@ -47,14 +58,15 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 
 ## Features
 
-- Written in Nim so it is very easy to program, memory safe, almost as fast as native C code and works as a single standalone binary on any OS.
-- `undetected-evtx`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for. This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
-- `unused-rules`: List up all of the `.yml` detection rules that were not used. This is useful for finding out which rules are currently not proven to work and that need sample evtx files.
+- Written in Nim so it is very easy to program, memory safe, as fast as native C code and works as a single standalone binary on any OS.
+- Create a timeline of all of the various logon events.
+- Print the process trees of a malicious processes.
+- Create a list up suspicious processes.
+- List up all of `.evtx` files that Hayabusa does not have a detection rule for yet.
 
-## Planned features
+# Downloads
 
-- Behavior analysis
-- Malicious process tree visualization
+Please download the latest stable version of Takajo with compiled binaries or compile the source code from the [Releases](https://github.com/Yamato-Security/takajo/releases) page.
 
 ## Git cloning
 
@@ -73,11 +85,134 @@ If you have Nim installed, you can compile from source with the following comman
 > nimble build -d:release
 ```
 
-### Usage
+# Command List
 
-1. `help`: Print help menu for all commands.
-2. `undetected-evtx`: List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
-You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.
+```
+help                  print comprehensive or per-cmd help
+logon-timeline        create a timeline of various logon events (input: JSONL, profile: standard)
+process-tree          prints the process tree of a process (input: JSONL, profile: standard)
+suspicious-processes  list up suspicious processes. (input: JSONL, profile: standard)
+undetected-evtx       list up undetected evtx files (input: CSV, profile: verbose)
+unused-rules          list up unused rules (input: CSV, profile: verbose)
+```
+
+# Command Usage
+
+## `logon-timeline` command
+
+This command extracts information from the following logon events, normalizes the fields and saves the results to a CSV file.
+This makes it easier to detect lateral movement, password guessing/spraying, privilege escalation, etc...
+- `4624` - Successful Logon
+- `4625` - Failed Logon
+- `4634` - Account Logoff
+- `4647` - User Initiated Logoff
+- `4648` - Explicit Logon
+- `4672` - Admin Logon
+-
+
+Required options:
+
+- `-t, --timeline ../hayabusa/timeline.jsonl`: JSONL timeline created by Hayabusa.
+- `-o, --output logon-timeline.csv`: The CSV file to save the results to.
+
+Options:
+
+- `-q, --quiet`: Do not display logo.
+
+### `logon-timeline` command example
+
+Prepare JSONL timeline with Hayabusa:
+
+```bash
+hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
+```
+
+Save logon timeline to a CSV file:
+
+```bash
+takajo.exe logon-timeline -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
+```
+
+## `process-tree` command
+
+This command will print out the process tree of a suspicious or malicious process.
+
+Required options:
+
+- `-t, --timeline ../hayabusa/timeline.jsonl`: JSONL timeline created by Hayabusa.
+- `-o, --output process-tree.txt`: A text file to save the results to.
+- `-p, --processGuid`: Sysmon process GUID
+
+Options:
+
+- `-q, --quiet`: Do not display logo.
+
+### `process-tree` command example
+
+Prepare JSONL timeline with Hayabusa:
+
+```bash
+hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
+```
+
+Output results to screen:
+
+```bash
+takajo.exe process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00"
+```
+
+Save the results to a CSV file:
+
+```bash
+takajo.exe process-tree -t ../hayabusa/timeline.jsonl -o process-tree.txt
+```
+
+## `suspicious-processes` command
+
+This command will
+
+Required options:
+
+- `-l, --level`: Specify the minimum alert level.
+- `-t, --timeline ../hayabusa/timeline.jsonl`: JSONL timeline created by Hayabusa.
+- `-o, --output logon-timeline.csv`: The CSV file to save the results to.
+
+Options:
+
+- `-q, --quiet`: Do not display logo.
+
+### `suspicious-processes` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```bash
+hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
+```
+
+Search for processes that had an alert level of high or above and output results to screen:
+
+```bash
+takajo.exe suspicious-process -t ../hayabusa/timeline.jsonl
+```
+
+Search for processes that had an alert level of low or above and output results to screen:
+
+```bash
+takajo.exe suspicious-process -t ../hayabusa/timeline.jsonl -l low
+```
+
+Save the results to a CSV file:
+
+```bash
+takajo.exe suspicious-process -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
+```
+
+
+## `undetected-evtx` command
+
+List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
+This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
+You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -p verbose -o timeline.csv`.
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
@@ -91,14 +226,17 @@ Options:
 - `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
 - `-q, --quiet`: Do not display logo.
 
-Example:
+### `undetected-evtx` command example
 
 ```bash
+hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
 takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
 ```
 
-3. `unused-rules`: List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested.
-You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -P verbose -o timeline.csv`.
+## `unused-rules` command
+
+List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested and need sample `.evtx` files.
+You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -p verbose -o timeline.csv`.
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
@@ -112,9 +250,10 @@ Options:
 - `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
 - `-q, --quiet`: Do not display logo.
 
-Example:
+### `unused-rules` command example
 
 ```bash
+hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
 takajo.exe unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
 ```
 
