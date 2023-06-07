@@ -87,6 +87,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
 
     var
         seqOfResultsTables: seq[Table[string, string]]
+        seqOfLogoffEventTables: seq[Table[string, string]]
         EID_4624_count = 0 # Successful logon
         EID_4634_count = 0 # Logoff
         EID_4647_count = 0 # User initiated logoff
@@ -125,6 +126,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["TargetUserSID"] = extraFieldInfo.extractStr("TargetUserSid")
             singleResultTable["TargetDomainName"] = extraFieldInfo.extractStr("TargetDomainName")
             singleResultTable["TargetLinkedLID"] = extraFieldInfo.extractStr("TargetLinkedLogonId")
+            singleResultTable["LogoffTime"] = "n/a"
 
             seqOfResultsTables.add(singleResultTable)
 
@@ -141,7 +143,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             let details = jsonLine["Details"]
             singleResultTable["TargetUser"] = details.extractStr("User")
             singleResultTable["LID"] = details.extractStr("LID")
-            seqOfResultsTables.add(singleResultTable)
+            seqOfLogoffEventTables.add(singleResultTable)
 
         #EID 4647 User Initiated Logoff
         if ruleTitle == "Logoff (User Initiated)":
@@ -156,7 +158,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             let details = jsonLine["Details"]
             singleResultTable["TargetUser"] = details.extractStr("User")
             singleResultTable["LID"] = details.extractStr("LID")
-            seqOfResultsTables.add(singleResultTable)
+            seqOfLogoffEventTables.add(singleResultTable)
 
         #EID 4648 Explicit Logon
         if ruleTitle == "Explicit Logon" or ruleTitle == "Explicit Logon (Suspicious Process)":
@@ -179,6 +181,19 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["LGUID"] = extraFieldInfo.extractStr("LogonGuid")
             singleResultTable["SourceComputer"] = jsonLine.extractStr("Computer") # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
             seqOfResultsTables.add(singleResultTable)
+
+    for tableOfResults in seqOfResultsTables:
+        if tableOfResults["EventID"] == "4624":
+            let logonLid = tableOfResults["LID"]
+            echo "LID is " & logonLid
+            var logoffLid = ""
+            var logoffTime = ""
+            for tableOfLogoffEvents in seqOfLogoffEventTables:
+                if logonLid == tableOfLogoffEvents["LID"]:
+                    logoffTime = tableOfLogoffEvents["Timestamp"]
+            tableOfResults["LogoffTime"] = if logoffTime.len > 0: logoffTime
+
+
 
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count
