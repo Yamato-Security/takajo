@@ -1,9 +1,3 @@
-template writeEscaped(field: string) =
-    if table.hasKey(field):
-        outputFile.write(escapeCsvField(table[field]) & ",")
-    else:
-        outputFile.write(",")
-
 proc extractStr(jsonObj: JsonNode, key: string): string =
     let value = jsonObj.hasKey(key)
     if value and jsonObj[key].kind == JString:
@@ -94,6 +88,8 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     var
         seqOfResultsTables: seq[Table[string, string]]
         EID_4624_count = 0 # Successful logon
+        EID_4634_count = 0 # Logoff
+        EID_4647_count = 0 # User initiated logoff
         EID_4648_count = 0 # Explicit logon
 
     for line in lines(timeline):
@@ -103,7 +99,6 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
         #EID 4624 Logon Success
         if isEID_4624(ruleTitle) == true:
             inc EID_4624_count
-
             var singleResultTable = initTable[string, string]()
             singleResultTable["Event"] = "Successful Logon"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
@@ -133,6 +128,35 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
 
             seqOfResultsTables.add(singleResultTable)
 
+        #EID 4634 Logoff
+        if ruleTitle == "Logoff":
+            inc EID_4647_count
+            var singleResultTable = initTable[string, string]()
+            singleResultTable["Event"] = "User Initiated Logoff"
+            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
+            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            let eventId = jsonLine["EventID"].getInt()
+            let eventIdStr = $eventId
+            singleResultTable["EventID"] = eventIdStr
+            let details = jsonLine["Details"]
+            singleResultTable["TargetUser"] = details.extractStr("User")
+            singleResultTable["LID"] = details.extractStr("LID")
+            seqOfResultsTables.add(singleResultTable)
+
+        #EID 4647 User Initiated Logoff
+        if ruleTitle == "Logoff (User Initiated)":
+            inc EID_4647_count
+            var singleResultTable = initTable[string, string]()
+            singleResultTable["Event"] = "User Initiated Logoff"
+            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
+            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            let eventId = jsonLine["EventID"].getInt()
+            let eventIdStr = $eventId
+            singleResultTable["EventID"] = eventIdStr
+            let details = jsonLine["Details"]
+            singleResultTable["TargetUser"] = details.extractStr("User")
+            singleResultTable["LID"] = details.extractStr("LID")
+            seqOfResultsTables.add(singleResultTable)
 
         #EID 4648 Explicit Logon
         if ruleTitle == "Explicit Logon" or ruleTitle == "Explicit Logon (Suspicious Process)":
@@ -158,33 +182,25 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
 
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count
+    echo "EID 4634 (Logoff): " & $EID_4634_count
+    echo "EID 4647 (User Initiated Logoff)" & $EID_4647_count
     echo "EID 4648 (Explicit Logon): " & $EID_4648_count
     echo ""
     # Open file to save results
     var outputFile = open(output, fmWrite)
+    let header = ["Timestamp", "Channel", "EventID", "Event", "TargetComputer", "TargetUser", "LogoffTime", "ElapsedTime", "SourceComputer", "SourceUser", "SourceIP", "Type", "Impersonation", "ElevatedToken", "Auth", "Process", "LID", "LGUID", "TargetUserSID", "TargetDomainName", "TargetLinkedLID"]
     ## Write CSV header
-    outputFile.write("Timestamp,Channel,EventID,Event,TargetComputer,TargetUser,SourceComputer,SourceUser,SourceIP,Type,Impersonation,ElevatedToken,Auth,Process,LID,LGUID,TargetUserSID,TargetDomainName,TargetLinkedLID\p")
+    for h in header:
+        outputFile.write(h & ",")
+    outputFile.write("\p")
+
     ## Write contents
     for table in seqOfResultsTables:
-        writeEscaped("Timestamp")
-        writeEscaped("Channel")
-        writeEscaped("EventID")
-        writeEscaped("Event")
-        writeEscaped("TargetComputer")
-        writeEscaped("TargetUser")
-        writeEscaped("SourceComputer")
-        writeEscaped("SourceUser")
-        writeEscaped("SourceIP")
-        writeEscaped("Type")
-        writeEscaped("Impersonation")
-        writeEscaped("ElevatedToken")
-        writeEscaped("Auth")
-        writeEscaped("Process")
-        writeEscaped("LID")
-        writeEscaped("LGUID")
-        writeEscaped("TargetUserSID")
-        writeEscaped("TargetDomainName")
-        writeEscaped("TargetLinkedLID")
+        for key in header:
+            if table.hasKey(key):
+                outputFile.write(escapeCsvField(table[key]) & ",")
+            else:
+                outputFile.write(",")
         outputFile.write("\p")
     outputFile.close()
 
