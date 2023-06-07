@@ -1,3 +1,22 @@
+template writeEscaped(field: string) =
+    if table.hasKey(field):
+        outputFile.write(escapeCsvField(table[field]) & ",")
+    else:
+        outputFile.write(",")
+
+proc extractStr(jsonObj: JsonNode, key: string): string =
+    let value = jsonObj.hasKey(key)
+    if value and jsonObj[key].kind == JString:
+        return jsonObj[key].getStr()
+    else:
+        return ""
+
+proc extractInt(jsonObj: JsonNode, key: string): int =
+    if jsonObj.hasKey(key) and jsonObj[key].kind == JInt:
+        return jsonObj[key].getInt()
+    else:
+        return -1
+
 proc logonNumberToString*(msgLogonType: int): string =
     case msgLogonType:
         of 0: result = "0 - System"
@@ -72,10 +91,10 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     echo "Loading the Hayabusa JSONL timeline"
     echo ""
 
-    var seqOfResultsTables: seq[Table[string, string]]
-    var EID_4624_count = 0 # Successful logon
-    var EID_4648_count = 0 # Explicit logon
-
+    var
+        seqOfResultsTables: seq[Table[string, string]]
+        EID_4624_count = 0 # Successful logon
+        EID_4648_count = 0 # Explicit logon
 
     for line in lines(timeline):
         let jsonLine = parseJson(line)
@@ -84,6 +103,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
         #EID 4624 Logon Success
         if isEID_4624(ruleTitle) == true:
             inc EID_4624_count
+
             var singleResultTable = initTable[string, string]()
             singleResultTable["Event"] = "Successful Logon"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
@@ -91,68 +111,29 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             let eventId = jsonLine["EventID"].getInt()
             let eventIdStr = $eventId
             singleResultTable["EventID"] = eventIdStr
-            try:
-                let logonType = jsonLine["Details"]["Type"].getInt()
-                singleResultTable["Type"] = logonNumberToString(logonType)
-            except KeyError:
-                singleResultTable["Type"] = ""
-            try:
-                singleResultTable["Auth"] = jsonLine["ExtraFieldInfo"]["AuthenticationPackageName"].getStr()
-            except KeyError:
-                singleResultTable["Auth"] = ""
-            try:
-                singleResultTable["TargetComputer"] = jsonLine["Computer"].getStr()
-            except KeyError:
-                singleResultTable["TargetComputer"] = ""
-            try:
-                singleResultTable["TargetUser"] = jsonLine["Details"]["TgtUser"].getStr()
-            except KeyError:
-                singleResultTable["TargetUser"] = ""
-            try:
-                singleResultTable["Impersonation"] = impersonationLevelIdToName(jsonLine["ExtraFieldInfo"]["ImpersonationLevel"].getStr())
-            except KeyError:
-                singleResultTable["Impersonation"] = ""
-            try:
-                singleResultTable["SourceIP"] = jsonLine["Details"]["SrcIP"].getStr()
-            except KeyError:
-                singleResultTable["SourceIP"] = ""
-            try:
-                singleResultTable["Process"] = jsonLine["Details"]["LogonProcessName"].getStr()
-            except KeyError:
-                singleResultTable["Process"] = ""
-            try:
-                singleResultTable["LID"] = jsonLine["Details"]["LID"].getStr()
-            except KeyError:
-                singleResultTable["LID"] = ""
-            try:
-                singleResultTable["LGUID"] = jsonLine["ExtraFieldInfo"]["LogonGuid"].getStr()
-            except KeyError:
-                singleResultTable["LGUID"] = ""
-            try:
-                singleResultTable["SourceComputer"] = jsonLine["Details"]["SrcIP"].getStr()
-            except KeyError:
-                singleResultTable["SourceComputer"] = ""
-            try:
-                singleResultTable["ElevatedToken"] = elevatedTokenIdToName(jsonLine["ExtraFieldInfo"]["ElevatedToken"].getStr())
-            except KeyError:
-                singleResultTable["ElevatedToken"] = ""
-            try:
-                singleResultTable["TargetUserSID"] = jsonLine["ExtraFieldInfo"]["TargetUserSid"].getStr()
-            except KeyError:
-                singleResultTable["TargetUserSID"] = ""
-            try:
-                singleResultTable["TargetDomainName"] = jsonLine["ExtraFieldInfo"]["TargetDomainName"].getStr()
-            except KeyError:
-                singleResultTable["TargetDomainName"] = ""
-            try:
-                singleResultTable["TargetLinkedLID"] = jsonLine["ExtraFieldInfo"]["TargetLinkedLogonId"].getStr()
-            except KeyError:
-                singleResultTable["TargetLinkedLID"] = ""
-            # Add fields that do not exist in this EID
-            singleResultTable["SourceUser"] = ""
+            let details = jsonLine["Details"]
+            let extraFieldInfo = jsonLine["ExtraFieldInfo"]
+            let logonType = details.extractInt("Type")
+            singleResultTable["Type"] = logonNumberToString(logonType)
+            singleResultTable["Auth"] = extraFieldInfo.extractStr("AuthenticationPackageName")
+            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+            singleResultTable["TargetUser"] = details.extractStr("TgtUser")
+            let impersonationLevel = extraFieldInfo.extractStr("ImpersonationLevel")
+            singleResultTable["Impersonation"] = impersonationLevelIdToName(impersonationLevel)
+            singleResultTable["SourceIP"] = details.extractStr("SrcIP")
+            singleResultTable["Process"] = details.extractStr("LogonProcessName")
+            singleResultTable["LID"] = details.extractStr("LID")
+            singleResultTable["LGUID"] = extraFieldInfo.extractStr("LogonGuid")
+            singleResultTable["SourceComputer"] = details.extractStr("SrcIP")
+            let elevatedToken = extraFieldInfo.extractStr("ElevatedToken")
+            singleResultTable["ElevatedToken"] = elevatedTokenIdToName(elevatedToken)
+            singleResultTable["TargetUserSID"] = extraFieldInfo.extractStr("TargetUserSid")
+            singleResultTable["TargetDomainName"] = extraFieldInfo.extractStr("TargetDomainName")
+            singleResultTable["TargetLinkedLID"] = extraFieldInfo.extractStr("TargetLinkedLogonId")
+
             seqOfResultsTables.add(singleResultTable)
 
-        
+
         #EID 4648 Explicit Logon
         if ruleTitle == "Explicit Logon" or ruleTitle == "Explicit Logon (Suspicious Process)":
             inc EID_4648_count
@@ -163,45 +144,17 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             let eventId = jsonLine["EventID"].getInt()
             let eventIdStr = $eventId
             singleResultTable["EventID"] = eventIdStr
-            try:
-                singleResultTable["TargetComputer"] = jsonLine["Details"]["TgtSvr"].getStr()
-            except KeyError:
-                singleResultTable["TargetComputer"] = ""
-            try:
-                singleResultTable["TargetUser"] = jsonLine["Details"]["TgtUser"].getStr()
-            except KeyError:
-                singleResultTable["TargetUser"] = ""
-            try:
-                singleResultTable["SourceUser"] = jsonLine["Details"]["SrcUser"].getStr()
-            except KeyError:
-                singleResultTable["SourceUser"] = ""
-            try:
-                singleResultTable["SourceIP"] = jsonLine["Details"]["SrcIP"].getStr()
-            except KeyError:
-                singleResultTable["SourceIP"] = ""
-            try:
-                singleResultTable["Process"] = jsonLine["Details"]["Proc"].getStr()
-            except KeyError:
-                singleResultTable["Process"] = ""
-            try:
-                singleResultTable["LID"] = jsonLine["Details"]["LID"].getStr()
-            except KeyError:
-                singleResultTable["LID"] = ""
-            try:
-                singleResultTable["LGUID"] = jsonLine["ExtraFieldInfo"]["LogonGuid"].getStr()
-            except KeyError:
-                singleResultTable["LGUID"] = ""
-            try:
-                singleResultTable["SourceComputer"] = jsonLine["Computer"].getStr() # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
-            except KeyError:
-                singleResultTable["SourceComputer"] = ""
-            # Add fields that do not exist in this EID
-            singleResultTable["Type"] = ""
-            singleResultTable["Auth"] = ""
-            singleResultTable["Impersonation"] = ""
-            singleResultTable["ElevatedToken"] = ""
-            singleResultTable["ElevatedToken"] = ""
-            seqOfResultsTables.add(singleResultTable)    
+            let details = jsonLine["Details"]
+            let extraFieldInfo = jsonLine["ExtraFieldInfo"]
+            singleResultTable["TargetComputer"] = details.extractStr("TgtSvr")
+            singleResultTable["TargetUser"] = details.extractStr("TgtUser")
+            singleResultTable["SourceUser"] = details.extractStr("SrcUser")
+            singleResultTable["SourceIP"] = details.extractStr("SrcIP")
+            singleResultTable["Process"] = details.extractStr("Proc")
+            singleResultTable["LID"] = details.extractStr("LID")
+            singleResultTable["LGUID"] = extraFieldInfo.extractStr("LogonGuid")
+            singleResultTable["SourceComputer"] = jsonLine.extractStr("Computer") # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
+            seqOfResultsTables.add(singleResultTable)
 
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count
@@ -213,25 +166,25 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     outputFile.write("Timestamp,Channel,EventID,Event,TargetComputer,TargetUser,SourceComputer,SourceUser,SourceIP,Type,Impersonation,ElevatedToken,Auth,Process,LID,LGUID,TargetUserSID,TargetDomainName,TargetLinkedLID\p")
     ## Write contents
     for table in seqOfResultsTables:
-        outputFile.write(table["Timestamp"] & ",")
-        outputFile.write(table["Channel"] & ",")
-        outputFile.write(table["EventID"] & ",")
-        outputFile.write(table["Event"] & ",")
-        outputFile.write(escapeCsvField(table["TargetComputer"]) & ",")
-        outputFile.write(escapeCsvField(table["TargetUser"]) & ",")
-        outputFile.write(escapeCsvField(table["SourceComputer"]) & ",")
-        outputFile.write(escapeCsvField(table["SourceUser"]) & ",")
-        outputFile.write(table["SourceIP"] & ",")
-        outputFile.write(table["Type"] & ",")
-        outputFile.write(table["Impersonation"] & ",")
-        outputFile.write(table["ElevatedToken"] & ",")
-        outputFile.write(table["Auth"] & ",")
-        outputFile.write(escapeCsvField(table["Process"]) & ",")
-        outputFile.write(escapeCsvField(table["LID"]) & ",")
-        outputFile.write(escapeCsvField(table["LGUID"]) & ",")
-        outputFile.write(escapeCsvField(table["TargetUserSID"]) & ",")
-        outputFile.write(escapeCsvField(table["TargetDomainName"]) & ",")
-        outputFile.write(escapeCsvField(table["TargetLinkedLID"]) & ",")
+        writeEscaped("Timestamp")
+        writeEscaped("Channel")
+        writeEscaped("EventID")
+        writeEscaped("Event")
+        writeEscaped("TargetComputer")
+        writeEscaped("TargetUser")
+        writeEscaped("SourceComputer")
+        writeEscaped("SourceUser")
+        writeEscaped("SourceIP")
+        writeEscaped("Type")
+        writeEscaped("Impersonation")
+        writeEscaped("ElevatedToken")
+        writeEscaped("Auth")
+        writeEscaped("Process")
+        writeEscaped("LID")
+        writeEscaped("LGUID")
+        writeEscaped("TargetUserSID")
+        writeEscaped("TargetDomainName")
+        writeEscaped("TargetLinkedLID")
         outputFile.write("\p")
     outputFile.close()
 
