@@ -19,10 +19,10 @@ proc printProcessTree(timeline: string, quiet: bool = false, output: string, pro
     echo ""
 
 
-    
+
     var processObjectTable = newTable[string, processObject]()
 
-    var seqOfResultsTables: seq[Table[string, string]]
+    #var seqOfResultsTables: seq[Table[string, string]]
 
     var processesFoundCount = 0
     var foundProcessTable = initTable[string, string]()
@@ -48,7 +48,7 @@ proc printProcessTree(timeline: string, quiet: bool = false, output: string, pro
                 try:
                     foundProcessTable["ParentCmdline"] = jsonLine["Details"]["ParentCmdline"].getStr()
                 except Keyerror:
-                    foundProcessTable["ParentCmdLine"] = ""                
+                    foundProcessTable["ParentCmdLine"] = ""
                 try:
                     foundProcessTable["LogonID"] = jsonLine["Details"]["LID"].getStr()
                 except Keyerror:
@@ -56,35 +56,35 @@ proc printProcessTree(timeline: string, quiet: bool = false, output: string, pro
                 try:
                     foundProcessTable["LogonGUID"] = jsonLine["Details"]["LGUID"].getStr()
                 except Keyerror:
-                    foundProcessTable["LogonGUID"] = ""   
+                    foundProcessTable["LogonGUID"] = ""
                 try:
                     foundProcessTable["ParentPGUID"] = jsonLine["Details"]["ParentPGUID"].getStr()
                 except Keyerror:
-                    foundProcessTable["ParentPGUID"] = ""  
+                    foundProcessTable["ParentPGUID"] = ""
                 try:
                     foundProcessTable["Company"] = jsonLine["Details"]["Company"].getStr()
                 except Keyerror:
-                    foundProcessTable["Company"] = "" 
+                    foundProcessTable["Company"] = ""
                 try:
                     foundProcessTable["User"] = jsonLine["Details"]["User"].getStr()
                 except Keyerror:
-                    foundProcessTable["User"] = "" 
+                    foundProcessTable["User"] = ""
                 try:
                     foundProcessTable["Description"] = jsonLine["Details"]["Description"].getStr()
                 except Keyerror:
-                    foundProcessTable["Description"] = "" 
+                    foundProcessTable["Description"] = ""
                 try:
                     foundProcessTable["Product"] = jsonLine["Details"]["Product"].getStr()
                 except Keyerror:
-                    foundProcessTable["Product"] = "" 
+                    foundProcessTable["Product"] = ""
                 try:
                     foundProcessTable["IntegrityLevel"] = jsonLine["Details"]["IntegrityLevel"].getStr()
                 except Keyerror:
-                    foundProcessTable["IntegrityLevel"] = "" 
+                    foundProcessTable["IntegrityLevel"] = ""
                 try:
                     foundProcessTable["Hashes"] = jsonLine["Details"]["Hashes"].getStr()
                 except Keyerror:
-                    foundProcessTable["Hashes"] = "" 
+                    foundProcessTable["Hashes"] = ""
                 let process = processObject(processGUID: eventProcessGUID, parentProcessGUID: foundProcessTable["ParentPGUID"])
                 processObjectTable[process.processGUID] = process
 

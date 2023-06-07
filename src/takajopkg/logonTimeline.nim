@@ -86,8 +86,8 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     echo ""
 
     var
-        seqOfResultsTables: seq[Table[string, string]]
-        seqOfLogoffEventTables: seq[Table[string, string]]
+        seqOfResultsTables: seq[TableRef[string, string]] # Sequences are immutable so need to create a sequence of pointers to tables
+        seqOfLogoffEventTables: seq[Table[string, string]] # This sequence can be immutable
         EID_4624_count = 0 # Successful logon
         EID_4634_count = 0 # Logoff
         EID_4647_count = 0 # User initiated logoff
@@ -100,7 +100,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
         #EID 4624 Logon Success
         if isEID_4624(ruleTitle) == true:
             inc EID_4624_count
-            var singleResultTable = initTable[string, string]()
+            var singleResultTable = newTable[string, string]()
             singleResultTable["Event"] = "Successful Logon"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
             singleResultTable["Channel"] = jsonLine["Channel"].getStr()
@@ -137,6 +137,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["Event"] = "User Initiated Logoff"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
             singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
             let eventId = jsonLine["EventID"].getInt()
             let eventIdStr = $eventId
             singleResultTable["EventID"] = eventIdStr
@@ -152,6 +153,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["Event"] = "User Initiated Logoff"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
             singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
             let eventId = jsonLine["EventID"].getInt()
             let eventIdStr = $eventId
             singleResultTable["EventID"] = eventIdStr
@@ -163,7 +165,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
         #EID 4648 Explicit Logon
         if ruleTitle == "Explicit Logon" or ruleTitle == "Explicit Logon (Suspicious Process)":
             inc EID_4648_count
-            var singleResultTable = initTable[string, string]()
+            var singleResultTable = newTable[string, string]()
             singleResultTable["Event"] = "Explicit Logon"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
             singleResultTable["Channel"] = jsonLine["Channel"].getStr()
@@ -182,23 +184,20 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["SourceComputer"] = jsonLine.extractStr("Computer") # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
             seqOfResultsTables.add(singleResultTable)
 
+    # Loop through the results, add the logoff time and calculate the elasped time for 4624 events
     for tableOfResults in seqOfResultsTables:
         if tableOfResults["EventID"] == "4624":
-            let logonLid = tableOfResults["LID"]
-            echo "LID is " & logonLid
-            var logoffLid = ""
             var logoffTime = ""
             for tableOfLogoffEvents in seqOfLogoffEventTables:
-                if logonLid == tableOfLogoffEvents["LID"]:
+                # Check that the Computer name, LID and TargetUser field are equal
+                if tableOfResults["LID"] == tableOfLogoffEvents["LID"] and tableOfResults["TargetComputer"] == tableOfLogoffEvents["TargetComputer"] and tableOfResults["TargetUser"] == tableOfLogoffEvents["TargetUser"]:
                     logoffTime = tableOfLogoffEvents["Timestamp"]
-            tableOfResults["LogoffTime"] = if logoffTime.len > 0: logoffTime
-
-
+            tableOfResults[]["LogoffTime"] = if logoffTime.len > 0: logoffTime else: "n/a"
 
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count
     echo "EID 4634 (Logoff): " & $EID_4634_count
-    echo "EID 4647 (User Initiated Logoff)" & $EID_4647_count
+    echo "EID 4647 (User Initiated Logoff): " & $EID_4647_count
     echo "EID 4648 (Explicit Logon): " & $EID_4648_count
     echo ""
     # Open file to save results
