@@ -1,3 +1,11 @@
+proc formatDuration(d: Duration): string =
+    let days = d.inDays
+    let hours = d.inHours mod 24
+    let minutes = d.inMinutes mod 60
+    let seconds = d.inSeconds mod 60
+    let milliseconds = d.inMilliseconds mod 1000
+    return $days & "d " & $hours & "h " & $minutes & "m " & $seconds & "s " & $milliseconds & "ms"
+
 proc extractStr(jsonObj: JsonNode, key: string): string =
     let value = jsonObj.hasKey(key)
     if value and jsonObj[key].kind == JString:
@@ -126,7 +134,8 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["TargetUserSID"] = extraFieldInfo.extractStr("TargetUserSid")
             singleResultTable["TargetDomainName"] = extraFieldInfo.extractStr("TargetDomainName")
             singleResultTable["TargetLinkedLID"] = extraFieldInfo.extractStr("TargetLinkedLogonId")
-            singleResultTable["LogoffTime"] = "n/a"
+            singleResultTable["LogoffTime"] = ""
+            singleResultTable["ElapsedTime"] = ""
 
             seqOfResultsTables.add(singleResultTable)
 
@@ -184,15 +193,26 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["SourceComputer"] = jsonLine.extractStr("Computer") # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
             seqOfResultsTables.add(singleResultTable)
 
-    # Loop through the results, add the logoff time and calculate the elasped time for 4624 events
+    # Loop through the results, add the logoff time and calculate the elapsed time for 4624 events
     for tableOfResults in seqOfResultsTables:
         if tableOfResults["EventID"] == "4624":
             var logoffTime = ""
+            var logonTime = tableOfResults["Timestamp"]
+
             for tableOfLogoffEvents in seqOfLogoffEventTables:
                 # Check that the Computer name, LID and TargetUser field are equal
                 if tableOfResults["LID"] == tableOfLogoffEvents["LID"] and tableOfResults["TargetComputer"] == tableOfLogoffEvents["TargetComputer"] and tableOfResults["TargetUser"] == tableOfLogoffEvents["TargetUser"]:
                     logoffTime = tableOfLogoffEvents["Timestamp"]
-            tableOfResults[]["LogoffTime"] = if logoffTime.len > 0: logoffTime else: "n/a"
+            if logoffTime.len > 0:
+                tableOfResults[]["LogoffTime"] = logoffTime
+                logonTime = logonTime[0 ..< logontime.len - 7]
+                logoffTime = logoffTime[0 ..< logofftime.len - 7]
+                let parsedLogoffTime = parse(logoffTime, "yyyy-MM-dd HH:mm:ss'.'fff")
+                let parsedLogonTime = parse(logonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
+                let duration = parsedLogoffTime - parsedLogonTime
+                tableOfResults[]["ElapsedTime"] = formatDuration(duration)
+            else:
+                logoffTime = "n/a"
 
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count
