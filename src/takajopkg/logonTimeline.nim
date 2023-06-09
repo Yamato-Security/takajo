@@ -221,14 +221,13 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
 
         #EID 4634 Logoff
         if ruleTitle == "Logoff":
-            inc EID_4647_count
-            var singleResultTable = initTable[string, string]()
-            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-            let details = jsonLine["Details"]
-            singleResultTable["TargetUser"] = details.extractStr("User")
-            singleResultTable["LID"] = details.extractStr("LID")
-            seqOfLogoffEventTables.add(singleResultTable)
+            inc EID_4634_count
+            # If we want to calculate ElapsedTime
+            if calculateElapsedTime == true:
+                # Create the key in the format of LID:Computer:User with a value of the timestamp
+                let key = jsonLine["Details"]["LID"].getStr() & ":" & jsonLine["Computer"].getStr() & ":" & jsonLine["Details"]["User"].getStr()
+                let logoffTime = jsonLine["Timestamp"].getStr()
+                logoffEvents[key] = logoffTime
             if outputLogoffEvents == true:
                 var singleResultTable = newTable[string, string]()
                 singleResultTable["Event"] = "User Initiated Logoff"
@@ -246,14 +245,12 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
         #EID 4647 User Initiated Logoff
         if ruleTitle == "Logoff (User Initiated)":
             inc EID_4647_count
-            var singleResultTable = initTable[string, string]()
-            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-            #singleResultTable["Channel"] = jsonLine["Channel"].getStr()
-            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-            let details = jsonLine["Details"]
-            singleResultTable["TargetUser"] = details.extractStr("User")
-            singleResultTable["LID"] = details.extractStr("LID")
-            seqOfLogoffEventTables.add(singleResultTable)
+            # If we want to calculate ElapsedTime
+            if calculateElapsedTime == true:
+                # Create the key in the format of LID:Computer:User with a value of the timestamp
+                let key = jsonLine["Details"]["LID"].getStr() & ":" & jsonLine["Computer"].getStr() & ":" & jsonLine["Details"]["User"].getStr()
+                let logoffTime = jsonLine["Timestamp"].getStr()
+                logoffEvents[key] = logoffTime
             if outputLogoffEvents == true:
                 var singleResultTable = newTable[string, string]()
                 singleResultTable["Event"] = "User Initiated Logoff"
@@ -328,12 +325,6 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
 
     # If we want to calculate ElapsedTime
     if calculateElapsedTime == true:
-        for tableOfLogoffEvents in seqOfLogoffEventTables:
-            # Create the key in the format of LID:Computer:User with a value of the timestamp
-            let key = tableOfLogoffEvents["LID"] & ":" & tableOfLogoffEvents["TargetComputer"] & ":" & tableOfLogoffEvents["TargetUser"]
-            let logoffTime = tableOfLogoffEvents["Timestamp"]
-            logoffEvents[key] = logoffTime
-
         for tableOfResults in seqOfResultsTables:
             if tableOfResults["EventID"] == "4624":
                 var logoffTime = ""
