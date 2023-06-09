@@ -130,7 +130,7 @@ proc formatFileSize(fileSize: BiggestInt): string =
 
   return fileSizeStr
 
-proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
+proc logonTimeline(calculateElapsedTime: bool = true, output: string, quiet: bool = false, timeline: string): int =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -279,29 +279,30 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
 
 
     # If we want to calculate ElapsedTime
-    for tableOfLogoffEvents in seqOfLogoffEventTables:
-        # Create the key in the format of LID:Computer:User with a value of the timestamp
-        let key = tableOfLogoffEvents["LID"] & ":" & tableOfLogoffEvents["TargetComputer"] & ":" & tableOfLogoffEvents["TargetUser"]
-        let logoffTime = tableOfLogoffEvents["Timestamp"]
-        logoffEvents[key] = logoffTime
+    if calculateElapsedTime == true:
+        for tableOfLogoffEvents in seqOfLogoffEventTables:
+            # Create the key in the format of LID:Computer:User with a value of the timestamp
+            let key = tableOfLogoffEvents["LID"] & ":" & tableOfLogoffEvents["TargetComputer"] & ":" & tableOfLogoffEvents["TargetUser"]
+            let logoffTime = tableOfLogoffEvents["Timestamp"]
+            logoffEvents[key] = logoffTime
 
-    for tableOfResults in seqOfResultsTables:
-        if tableOfResults["EventID"] == "4624":
-            var logoffTime = ""
-            var logonTime = tableOfResults["Timestamp"]
+        for tableOfResults in seqOfResultsTables:
+            if tableOfResults["EventID"] == "4624":
+                var logoffTime = ""
+                var logonTime = tableOfResults["Timestamp"]
 
-            let key = tableOfResults["LID"] & ":" & tableOfResults["TargetComputer"] & ":" & tableOfResults["TargetUser"]
-            if logoffEvents.hasKey(key):
-                logoffTime = logoffEvents[key]
-                tableOfResults[]["LogoffTime"] = logoffTime
-                logonTime = logonTime[0 ..< logontime.len - 7]
-                logoffTime = logoffTime[0 ..< logofftime.len - 7]
-                let parsedLogoffTime = parse(logoffTime, "yyyy-MM-dd HH:mm:ss'.'fff")
-                let parsedLogonTime = parse(logonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
-                let duration = parsedLogoffTime - parsedLogonTime
-                tableOfResults[]["ElapsedTime"] = formatDuration(duration)
-            else:
-                logoffTime = "n/a"
+                let key = tableOfResults["LID"] & ":" & tableOfResults["TargetComputer"] & ":" & tableOfResults["TargetUser"]
+                if logoffEvents.hasKey(key):
+                    logoffTime = logoffEvents[key]
+                    tableOfResults[]["LogoffTime"] = logoffTime
+                    logonTime = logonTime[0 ..< logontime.len - 7]
+                    logoffTime = logoffTime[0 ..< logofftime.len - 7]
+                    let parsedLogoffTime = parse(logoffTime, "yyyy-MM-dd HH:mm:ss'.'fff")
+                    let parsedLogonTime = parse(logonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
+                    let duration = parsedLogoffTime - parsedLogonTime
+                    tableOfResults[]["ElapsedTime"] = formatDuration(duration)
+                else:
+                    logoffTime = "n/a"
 
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count

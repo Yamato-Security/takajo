@@ -1,6 +1,4 @@
-proc listUndetectedEvtxFiles(timeline: string, evtxDir: string,
-        columnName: system.string = "EvtxFile", quiet: bool = false,
-                output: string = ""): int =
+proc listUndetectedEvtxFiles(columnName: system.string = "EvtxFile", evtxDir: string, output: string = "", quiet: bool = false, timeline: string): int =
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())

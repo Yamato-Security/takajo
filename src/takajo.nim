@@ -30,6 +30,7 @@ when isMainModule:
             logonTimeline, cmdName = "logon-timeline",
             doc = "create a timeline of various logon events (input: JSONL, profile: standard)",
             help = {
+                "calculateElapsedTime": "calculate the elapsed time for successful logons",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",

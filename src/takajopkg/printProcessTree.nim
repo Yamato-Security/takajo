@@ -9,7 +9,7 @@ proc printIndentedProcessTree(p: processObject, indent: string = "") =
   for child in p.children:
     printIndentedProcessTree(child, indent & "  ")
 
-proc printProcessTree(timeline: string, quiet: bool = false, output: string, processGuid: string): int =
+proc printProcessTree(output: string, processGuid: string, quiet: bool = false, timeline: string): int =
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())
