@@ -104,12 +104,20 @@ proc elevatedTokenIdToName(elevatedTokenId: string): string =
         else: result = "Unknown - " & elevatedTokenId
     return result
 
+proc countLines(filePath: string): int =
+    var count = 0
+    for _ in filePath.lines():
+        inc count
+    return count
+
 proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    echo "Loading the Hayabusa JSONL timeline"
+    let totalLines = countLines(timeline)
+    echo "Total lines: ", totalLines
+    echo "Loading the Hayabusa JSONL timeline. Please wait."
     echo ""
 
     var
@@ -120,8 +128,11 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
         EID_4634_count = 0 # Logoff
         EID_4647_count = 0 # User initiated logoff
         EID_4648_count = 0 # Explicit logon
+        bar = newProgressBar(total = totalLines)
+    bar.start()
 
     for line in lines(timeline):
+        bar.increment()
         let jsonLine = parseJson(line)
         let ruleTitle = jsonLine["RuleTitle"].getStr()
 
@@ -239,6 +250,10 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["SourceComputer"] = jsonLine.extractStr("Computer") # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
             seqOfResultsTables.add(singleResultTable)
 
+    echo ""
+    echo "Calculating elapsed time. Please wait."
+    echo ""
+
     # Loop through the results, add the logoff time and calculate the elapsed time for 4624 events
     for tableOfResults in seqOfResultsTables:
         if tableOfResults["EventID"] == "4624":
@@ -259,7 +274,8 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
                 tableOfResults[]["ElapsedTime"] = formatDuration(duration)
             else:
                 logoffTime = "n/a"
-
+    echo "before bar finish"
+    bar.finish()
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count
     echo "EID 4625 (Failed Logon): " & $EID_4625_count
@@ -289,10 +305,10 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     echo ""
 
     let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
+    let elapsedTime2 = int(endTime - startTime)
+    let hours = elapsedTime2 div 3600
+    let minutes = (elapsedTime2 mod 3600) div 60
+    let seconds = elapsedTime2 mod 60
 
     echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
     echo ""

@@ -1,12 +1,13 @@
 import cligen
-import os
-import terminal
 import json
 import sequtils
 import strformat
 import strutils
 import tables
+import terminal
 import times
+import os
+import progress
 import takajopkg/general
 include takajopkg/listUnusedRules
 include takajopkg/listUndetectedEvtxFiles
