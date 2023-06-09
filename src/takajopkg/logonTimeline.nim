@@ -166,9 +166,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
             singleResultTable["Event"] = "Successful Logon"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
             singleResultTable["Channel"] = jsonLine["Channel"].getStr()
-            let eventId = jsonLine["EventID"].getInt()
-            let eventIdStr = $eventId
-            singleResultTable["EventID"] = eventIdStr
+            singleResultTable["EventID"] = "4624"
             let details = jsonLine["Details"]
             let extraFieldInfo = jsonLine["ExtraFieldInfo"]
             let logonType = details.extractInt("Type")
@@ -190,6 +188,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
             singleResultTable["TargetLinkedLID"] = extraFieldInfo.extractStr("TargetLinkedLogonId")
             singleResultTable["LogoffTime"] = ""
             singleResultTable["ElapsedTime"] = ""
+            singleResultTable["Admin"] = ""
 
             seqOfResultsTables.add(singleResultTable)
 
@@ -200,9 +199,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
             singleResultTable["Event"] = "Failed Logon"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
             singleResultTable["Channel"] = jsonLine["Channel"].getStr()
-            let eventId = jsonLine["EventID"].getInt()
-            let eventIdStr = $eventId
-            singleResultTable["EventID"] = eventIdStr
+            singleResultTable["EventID"] = "4625"
             let details = jsonLine["Details"]
             let extraFieldInfo = jsonLine["ExtraFieldInfo"]
             let logonType = details.extractInt("Type")
@@ -234,9 +231,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
                 singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
                 singleResultTable["Channel"] = jsonLine["Channel"].getStr()
                 singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-                let eventId = jsonLine["EventID"].getInt()
-                let eventIdStr = $eventId
-                singleResultTable["EventID"] = eventIdStr
+                singleResultTable["EventID"] = "4634"
                 let details = jsonLine["Details"]
                 singleResultTable["TargetUser"] = details.extractStr("User")
                 singleResultTable["LID"] = details.extractStr("LID")
@@ -257,9 +252,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
                 singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
                 singleResultTable["Channel"] = jsonLine["Channel"].getStr()
                 singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-                let eventId = jsonLine["EventID"].getInt()
-                let eventIdStr = $eventId
-                singleResultTable["EventID"] = eventIdStr
+                singleResultTable["EventID"] = "4647"
                 let details = jsonLine["Details"]
                 singleResultTable["TargetUser"] = details.extractStr("User")
                 singleResultTable["LID"] = details.extractStr("LID")
@@ -272,9 +265,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
             singleResultTable["Event"] = "Explicit Logon"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
             singleResultTable["Channel"] = jsonLine["Channel"].getStr()
-            let eventId = jsonLine["EventID"].getInt()
-            let eventIdStr = $eventId
-            singleResultTable["EventID"] = eventIdStr
+            singleResultTable["EventID"] = "4648"
             let details = jsonLine["Details"]
             let extraFieldInfo = jsonLine["ExtraFieldInfo"]
             singleResultTable["TargetComputer"] = details.extractStr("TgtSvr")
@@ -287,7 +278,10 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
             singleResultTable["SourceComputer"] = jsonLine.extractStr("Computer") # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
             seqOfResultsTables.add(singleResultTable)
 
-        #EID 4672 Admin Logon
+        # EID 4672 Admin Logon
+        # When someone logs in with administrator level privileges, there will be two logon sessions created. One for a lower privileged user and one with admin privileges.
+        # I am just going to add "Yes" to the "Admin" column in the 4624 (Successful logon) event to save space.
+        # The timing will be very close to the 4624 log so the timestamp is checked to the nearest hour, and the Computer, LID and TgtUser have to be the same.
         if ruleTitle == "Admin Logon":
             inc EID_4672_count
             var singleResultTable = initTable[string, string]()
@@ -307,10 +301,9 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
                 singleResultTable["Event"] = "Admin Logon"
                 singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
                 singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+                singleResultTable["EventID"] = "4672"
                 singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
                 let eventId = jsonLine["EventID"].getInt()
-                let eventIdStr = $eventId
-                singleResultTable["EventID"] = eventIdStr
                 let details = jsonLine["Details"]
                 singleResultTable["TargetUser"] = details.extractStr("User")
                 singleResultTable["LID"] = details.extractStr("LID")
@@ -321,7 +314,6 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
     echo ""
 
     bar.finish()
-
 
     # If we want to calculate ElapsedTime
     if calculateElapsedTime == true:
@@ -344,15 +336,18 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
                     logoffTime = "n/a"
 
     echo "Found logon events:"
-    echo "EID 4624 (Successful Logon): " & $EID_4624_count
-    echo "EID 4625 (Failed Logon): " & $EID_4625_count
-    echo "EID 4634 (Logoff): " & $EID_4634_count
-    echo "EID 4647 (User Initiated Logoff): " & $EID_4647_count
-    echo "EID 4648 (Explicit Logon): " & $EID_4648_count
+    echo "EID 4624 (Successful Logon): ", EID_4624_count
+    echo "EID 4625 (Failed Logon): ", EID_4625_count
+    echo "EID 4634 (Logoff): ", EID_4634_count
+    echo "EID 4647 (User Initiated Logoff): ", EID_4647_count
+    echo "EID 4648 (Explicit Logon): ", EID_4648_count
+    echo "EID 4672 (Admin Logon): ", EID_4672_count
     echo ""
-    # Open file to save results
+
+    # Save results
     var outputFile = open(output, fmWrite)
-    let header = ["Timestamp", "Channel", "EventID", "Event", "LogoffTime", "ElapsedTime", "FailureReason", "TargetComputer", "TargetUser", "SourceComputer", "SourceUser", "SourceIP", "Type", "Impersonation", "ElevatedToken", "Auth", "Process", "LID", "LGUID", "TargetUserSID", "TargetDomainName", "TargetLinkedLID"]
+    let header = ["Timestamp", "Channel", "EventID", "Event", "LogoffTime", "ElapsedTime", "FailureReason", "TargetComputer", "TargetUser", "Admin", "SourceComputer", "SourceUser", "SourceIP", "Type", "Impersonation", "ElevatedToken", "Auth", "Process", "LID", "LGUID", "TargetUserSID", "TargetDomainName", "TargetLinkedLID"]
+
     ## Write CSV header
     for h in header:
         outputFile.write(h & ",")
@@ -377,6 +372,5 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
     let hours = elapsedTime2 div 3600
     let minutes = (elapsedTime2 mod 3600) div 60
     let seconds = elapsedTime2 mod 60
-
     echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
     echo ""
