@@ -17,11 +17,14 @@ include takajopkg/printProcessTree
 
 when isMainModule:
     clCfg.version = "2.0.0-dev"
-    const examples_1 = "Examples:\n"
-    const examples_2 = "  logon-timeline -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\n"
-    const examples_3 = "  undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\n"
-    const examples_4 = "  unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\n"
-    clCfg.useMulti = "Version: 2.0.0-dev\nUsage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n\n" & examples_1 & examples_2 & examples_3 & examples_4
+    const examples = "Examples:\n"
+    const example_logon_timeline = "  logon-timeline -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\n"
+    const example_process_tree = "  process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\n"
+    const example_suspicious_processes = "  suspicious-processes -t ../hayabusa/timeline.jsonl [-l medium] [-o suspicious-processes.txt]\n"
+    const example_undetected_evtx = "  undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\n"
+    const examples_unused_rules = "  unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\n"
+    clCfg.useMulti = "Version: 2.0.0-dev\nUsage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n\n" &
+        examples & example_logon_timeline & example_process_tree & example_undetected_evtx & examples_unused_rules
 
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
