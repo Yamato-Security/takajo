@@ -145,6 +145,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
         seqOfResultsTables: seq[TableRef[string, string]] # Sequences are immutable so need to create a sequence of pointers to tables so we can update ["ElapsedTime"]
         seqOfLogoffEventTables: seq[Table[string, string]] # This sequence can be immutable
         logoffEvents: Table[string, string] = initTable[string, string]()
+        adminLogonEvents: Table[string, string] = initTable[string, string]()
         EID_4624_count = 0 # Successful logon
         EID_4625_count = 0 # Failed logon
         EID_4634_count = 0 # Logoff
@@ -188,7 +189,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
             singleResultTable["TargetLinkedLID"] = extraFieldInfo.extractStr("TargetLinkedLogonId")
             singleResultTable["LogoffTime"] = ""
             singleResultTable["ElapsedTime"] = ""
-            singleResultTable["Admin"] = ""
+            singleResultTable["AdminLogon"] = ""
 
             seqOfResultsTables.add(singleResultTable)
 
@@ -280,22 +281,13 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
 
         # EID 4672 Admin Logon
         # When someone logs in with administrator level privileges, there will be two logon sessions created. One for a lower privileged user and one with admin privileges.
-        # I am just going to add "Yes" to the "Admin" column in the 4624 (Successful logon) event to save space.
-        # The timing will be very close to the 4624 log so the timestamp is checked to the nearest hour, and the Computer, LID and TgtUser have to be the same.
+        # I am just going to add "Yes" to the "AdminLogon" column in the 4624 (Successful logon) event to save space.
+        # The timing will be very close to the 4624 log so I am checking if the Computer, LID and TgtUser are the same and then if the two events happened within 10 seconds.
         if ruleTitle == "Admin Logon":
             inc EID_4672_count
-            var singleResultTable = initTable[string, string]()
-            singleResultTable["Event"] = "Admin Logon"
-            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
-            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-            let eventId = jsonLine["EventID"].getInt()
-            let eventIdStr = $eventId
-            singleResultTable["EventID"] = eventIdStr
-            let details = jsonLine["Details"]
-            singleResultTable["TargetUser"] = details.extractStr("User")
-            singleResultTable["LID"] = details.extractStr("LID")
-            seqOfLogoffEventTables.add(singleResultTable)
+            let key = jsonLine["Details"]["LID"].getStr() & ":" & jsonLine["Computer"].getStr() & ":" & jsonLine["Details"]["TgtUser"].getStr()
+            let adminLogonTime = jsonLine["Timestamp"].getStr()
+            adminLogonEvents[key] = adminLogonTime
             if outputAdminLogonEvents == true:
                 var singleResultTable = newTable[string, string]()
                 singleResultTable["Event"] = "Admin Logon"
@@ -305,7 +297,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
                 singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
                 let eventId = jsonLine["EventID"].getInt()
                 let details = jsonLine["Details"]
-                singleResultTable["TargetUser"] = details.extractStr("User")
+                singleResultTable["TargetUser"] = details.extractStr("TgtUser")
                 singleResultTable["LID"] = details.extractStr("LID")
                 seqOfResultsTables.add(singleResultTable)
 
@@ -315,7 +307,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
 
     bar.finish()
 
-    # If we want to calculate ElapsedTime
+    # Calculating the logon elapsed time (default)
     if calculateElapsedTime == true:
         for tableOfResults in seqOfResultsTables:
             if tableOfResults["EventID"] == "4624":
@@ -326,7 +318,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
                 if logoffEvents.hasKey(key):
                     logoffTime = logoffEvents[key]
                     tableOfResults[]["LogoffTime"] = logoffTime
-                    logonTime = logonTime[0 ..< logontime.len - 7]
+                    logonTime = logonTime[0 ..< logonTime.len - 7]
                     logoffTime = logoffTime[0 ..< logofftime.len - 7]
                     let parsedLogoffTime = parse(logoffTime, "yyyy-MM-dd HH:mm:ss'.'fff")
                     let parsedLogonTime = parse(logonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
@@ -334,6 +326,23 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
                     tableOfResults[]["ElapsedTime"] = formatDuration(duration)
                 else:
                     logoffTime = "n/a"
+
+    # Find admin logons
+    for tableOfResults in seqOfResultsTables:
+        if tableOfResults["EventID"] == "4624":
+            var logonTime = tableOfResults["Timestamp"]
+            logonTime = logonTime[0 ..< logonTime.len - 7] # Remove the timezone
+            #echo "4624 logon time: " & logonTime
+            let key = tableOfResults["LID"] & ":" & tableOfResults["TargetComputer"] & ":" & tableOfResults["TargetUser"]
+            if adminLogonEvents.hasKey(key):
+                var adminLogonTime = adminLogonEvents[key]
+                adminLogonTime = adminLogonTime[0 ..< adminLogonTime.len - 7] # Remove the timezone
+                let parsed_4624_logonTime = parse(logonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
+                let parsed_4672_logonTime = parse(adminLogonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
+                let duration = parsed_4624_logonTime - parsed_4672_logonTime
+                # If the 4624 logon event and 4672 admin logon event are within 10 seconds then flag as an Admin Logon
+                if duration.inSeconds < 10:
+                    tableOfResults[]["AdminLogon"] = "Yes"
 
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): ", EID_4624_count
@@ -346,7 +355,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
 
     # Save results
     var outputFile = open(output, fmWrite)
-    let header = ["Timestamp", "Channel", "EventID", "Event", "LogoffTime", "ElapsedTime", "FailureReason", "TargetComputer", "TargetUser", "Admin", "SourceComputer", "SourceUser", "SourceIP", "Type", "Impersonation", "ElevatedToken", "Auth", "Process", "LID", "LGUID", "TargetUserSID", "TargetDomainName", "TargetLinkedLID"]
+    let header = ["Timestamp", "Channel", "EventID", "Event", "LogoffTime", "ElapsedTime", "FailureReason", "TargetComputer", "TargetUser", "AdminLogon", "SourceComputer", "SourceUser", "SourceIP", "Type", "Impersonation", "ElevatedToken", "Auth", "Process", "LID", "LGUID", "TargetUserSID", "TargetDomainName", "TargetLinkedLID"]
 
     ## Write CSV header
     for h in header:
