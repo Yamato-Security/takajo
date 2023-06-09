@@ -131,7 +131,7 @@ proc formatFileSize(fileSize: BiggestInt): string =
         fileSizeStr = $fileSize & " Bytes"
     return fileSizeStr
 
-proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, quiet: bool = false, timeline: string): int =
+proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, outputAdminLogonEvents: bool = false, quiet: bool = false, timeline: string): int =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -150,6 +150,7 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
         EID_4634_count = 0 # Logoff
         EID_4647_count = 0 # User initiated logoff
         EID_4648_count = 0 # Explicit logon
+        EID_4672_count = 0 # Admin logon
         bar = newProgressBar(total = totalLines)
     bar.start()
 
@@ -222,13 +223,8 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
         if ruleTitle == "Logoff":
             inc EID_4647_count
             var singleResultTable = initTable[string, string]()
-            singleResultTable["Event"] = "User Initiated Logoff"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
             singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-            let eventId = jsonLine["EventID"].getInt()
-            let eventIdStr = $eventId
-            singleResultTable["EventID"] = eventIdStr
             let details = jsonLine["Details"]
             singleResultTable["TargetUser"] = details.extractStr("User")
             singleResultTable["LID"] = details.extractStr("LID")
@@ -251,13 +247,9 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
         if ruleTitle == "Logoff (User Initiated)":
             inc EID_4647_count
             var singleResultTable = initTable[string, string]()
-            singleResultTable["Event"] = "User Initiated Logoff"
             singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            #singleResultTable["Channel"] = jsonLine["Channel"].getStr()
             singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-            let eventId = jsonLine["EventID"].getInt()
-            let eventIdStr = $eventId
-            singleResultTable["EventID"] = eventIdStr
             let details = jsonLine["Details"]
             singleResultTable["TargetUser"] = details.extractStr("User")
             singleResultTable["LID"] = details.extractStr("LID")
@@ -297,6 +289,35 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogo
             singleResultTable["LGUID"] = extraFieldInfo.extractStr("LogonGuid")
             singleResultTable["SourceComputer"] = jsonLine.extractStr("Computer") # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
             seqOfResultsTables.add(singleResultTable)
+
+        #EID 4672 Admin Logon
+        if ruleTitle == "Admin Logon":
+            inc EID_4672_count
+            var singleResultTable = initTable[string, string]()
+            singleResultTable["Event"] = "Admin Logon"
+            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
+            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+            let eventId = jsonLine["EventID"].getInt()
+            let eventIdStr = $eventId
+            singleResultTable["EventID"] = eventIdStr
+            let details = jsonLine["Details"]
+            singleResultTable["TargetUser"] = details.extractStr("User")
+            singleResultTable["LID"] = details.extractStr("LID")
+            seqOfLogoffEventTables.add(singleResultTable)
+            if outputAdminLogonEvents == true:
+                var singleResultTable = newTable[string, string]()
+                singleResultTable["Event"] = "Admin Logon"
+                singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
+                singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+                singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+                let eventId = jsonLine["EventID"].getInt()
+                let eventIdStr = $eventId
+                singleResultTable["EventID"] = eventIdStr
+                let details = jsonLine["Details"]
+                singleResultTable["TargetUser"] = details.extractStr("User")
+                singleResultTable["LID"] = details.extractStr("LID")
+                seqOfResultsTables.add(singleResultTable)
 
     echo ""
     echo "Calculating elapsed time. Please wait."
