@@ -110,6 +110,26 @@ proc countLines(filePath: string): int =
         inc count
     return count
 
+proc formatFileSize(fileSize: BiggestInt): string =
+  let kilo = 1024
+  let mega = kilo * kilo
+  let giga = kilo * mega
+  var fileSizeStr = ""
+
+  if fileSize >= giga:
+    let gb = fileSize.float / giga.float
+    fileSizeStr = $gb & " GB"
+  elif fileSize >= mega:
+    let mb = fileSize.float / mega.float
+    fileSizeStr = $mb & " MB"
+  elif fileSize >= kilo:
+    let kb = fileSize.float / kilo.float
+    fileSizeStr = $kb & " KB"
+  else:
+    fileSizeStr = $fileSize & " Bytes"
+
+  return fileSizeStr
+
 proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     let startTime = epochTime()
     if not quiet:
@@ -121,8 +141,9 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     echo ""
 
     var
-        seqOfResultsTables: seq[TableRef[string, string]] # Sequences are immutable so need to create a sequence of pointers to tables
+        seqOfResultsTables: seq[TableRef[string, string]] # Sequences are immutable so need to create a sequence of pointers to tables so we can update ["ElapsedTime"]
         seqOfLogoffEventTables: seq[Table[string, string]] # This sequence can be immutable
+        logoffEvents: Table[string, string] = initTable[string, string]()
         EID_4624_count = 0 # Successful logon
         EID_4625_count = 0 # Failed logon
         EID_4634_count = 0 # Logoff
@@ -254,17 +275,24 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     echo "Calculating elapsed time. Please wait."
     echo ""
 
-    # Loop through the results, add the logoff time and calculate the elapsed time for 4624 events
+    bar.finish()
+
+
+    # If we want to calculate ElapsedTime
+    for tableOfLogoffEvents in seqOfLogoffEventTables:
+        # Create the key in the format of LID:Computer:User with a value of the timestamp
+        let key = tableOfLogoffEvents["LID"] & ":" & tableOfLogoffEvents["TargetComputer"] & ":" & tableOfLogoffEvents["TargetUser"]
+        let logoffTime = tableOfLogoffEvents["Timestamp"]
+        logoffEvents[key] = logoffTime
+
     for tableOfResults in seqOfResultsTables:
         if tableOfResults["EventID"] == "4624":
             var logoffTime = ""
             var logonTime = tableOfResults["Timestamp"]
 
-            for tableOfLogoffEvents in seqOfLogoffEventTables:
-                # Check that the Computer name, LID and TargetUser field are equal
-                if tableOfResults["LID"] == tableOfLogoffEvents["LID"] and tableOfResults["TargetComputer"] == tableOfLogoffEvents["TargetComputer"] and tableOfResults["TargetUser"] == tableOfLogoffEvents["TargetUser"]:
-                    logoffTime = tableOfLogoffEvents["Timestamp"]
-            if logoffTime.len > 0:
+            let key = tableOfResults["LID"] & ":" & tableOfResults["TargetComputer"] & ":" & tableOfResults["TargetUser"]
+            if logoffEvents.hasKey(key):
+                logoffTime = logoffEvents[key]
                 tableOfResults[]["LogoffTime"] = logoffTime
                 logonTime = logonTime[0 ..< logontime.len - 7]
                 logoffTime = logoffTime[0 ..< logofftime.len - 7]
@@ -274,8 +302,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
                 tableOfResults[]["ElapsedTime"] = formatDuration(duration)
             else:
                 logoffTime = "n/a"
-    echo "before bar finish"
-    bar.finish()
+
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count
     echo "EID 4625 (Failed Logon): " & $EID_4625_count
@@ -299,9 +326,10 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             else:
                 outputFile.write(",")
         outputFile.write("\p")
+    let fileSize = getFileSize(output)
     outputFile.close()
 
-    echo "Saved results to " & output
+    echo "Saved results to " & output & " (" & formatFileSize(fileSize) & ")"
     echo ""
 
     let endTime = epochTime()
