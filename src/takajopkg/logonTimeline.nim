@@ -19,7 +19,7 @@ proc extractInt(jsonObj: JsonNode, key: string): int =
     else:
         return -1
 
-proc logonNumberToString*(msgLogonType: int): string =
+proc logonNumberToString(msgLogonType: int): string =
     case msgLogonType:
         of 0: result = "0 - System"
         of 2: result = "2 - Interactive"
@@ -36,24 +36,33 @@ proc logonNumberToString*(msgLogonType: int): string =
         else: result = "Unknown - " & $msgLogonType
     return result
 
-proc isEID_4624*(msgLogonRule: string): bool =
-    case msgLogonRule:
-        of "Logon (System) - Bootup": result = true  # 0
-        of "Logon (Interactive) *Creds in memory*": result = true # 2
-        of "Logon (Network)": result = true # 3
-        of "Logon (Batch)": result = true # 4
-        of "Logon (Service)": result = true # 5
-        of "Logon (Unlock)": result = true # 7
-        of "Logon (NetworkCleartext)": result = true # 8
-        of "Logon (NewCredentials) *Creds in memory*": result = true # 9
-        of "Logon (RemoteInteractive (RDP)) *Creds in memory*": result = true # 10
-        of "Logon (CachedInteractive) *Creds in memory*": result = true # 11
-        of "Logon (CachedRemoteInteractive) *Creds in memory*": result = true # 12
-        of "Logon (CachedUnlock) *Creds in memory*": result = true # 13
-        else: result = false
-    return result
+proc isEID_4624(msgLogonRule: string): bool =
+    case msgLogonRule
+    of
+        "Logon (System) - Bootup", "Logon (Interactive) *Creds in memory*",
+        "Logon (Network)", "Logon (Batch)", "Logon (Service)",
+        "Logon (Unlock)", "Logon (NetworkCleartext)",
+        "Logon (NewCredentials) *Creds in memory*",
+        "Logon (RemoteInteractive (RDP)) *Creds in memory*",
+        "Logon (CachedInteractive) *Creds in memory*",
+        "Logon (CachedRemoteInteractive) *Creds in memory*",
+        "Logon (CachedUnlock) *Creds in memory*":
+        result = true
+    else:
+        result = false
 
-proc escapeCsvField*(s: string): string =
+proc isEID_4625(msgLogonRule: string): bool =
+    case msgLogonRule
+    of
+        "Logon Failure (User Does Not Exist)",
+        "Logon Failure (Unknown Reason)",
+        "Logon Failure (Wrong Password)":
+        result = true
+    else:
+        result = false
+
+
+proc escapeCsvField(s: string): string =
     # If the field contains a quote, comma, or newline, enclose it in quotes
     # and replace any internal quotes with double quotes.
     if '"' in s or ',' in s or '\n' in s:
@@ -61,7 +70,7 @@ proc escapeCsvField*(s: string): string =
     else:
         result = s
 
-proc impersonationLevelIdToName*(impersonationLevelId: string): string =
+proc impersonationLevelIdToName(impersonationLevelId: string): string =
     case impersonationLevelId:
         of "%%1832": result = "Identification"
         of "%%1833": result = "Impersonation"
@@ -75,18 +84,28 @@ proc impersonationLevelIdToName*(impersonationLevelId: string): string =
         of "%%1847": result = "DisallowMmConfig"
         of "%%1848": result = "Off"
         of "%%1849": result = "Auto"
+        of "": result = ""
         else: result = "Unknown - " & impersonationLevelId
     return result
 
-proc elevatedTokenIdToName*(elevatedTokenId: string): string =
+proc logonFailureReason(subStatus: string): string =
+    case subStatus:
+        of "0xc0000064": result = "Non-existant User"
+        of "0xc000006a": result = "Wrong Password"
+        of "": result = ""
+        else: result = "Unknown - " & subStatus
+    return result
+
+proc elevatedTokenIdToName(elevatedTokenId: string): string =
     case elevatedTokenId:
         of "%%1842": result = "Yes"
         of "%%1843": result = "No"
+        of "": result = ""
         else: result = "Unknown - " & elevatedTokenId
     return result
 
 proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
-
+    let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
@@ -97,6 +116,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
         seqOfResultsTables: seq[TableRef[string, string]] # Sequences are immutable so need to create a sequence of pointers to tables
         seqOfLogoffEventTables: seq[Table[string, string]] # This sequence can be immutable
         EID_4624_count = 0 # Successful logon
+        EID_4625_count = 0 # Failed logon
         EID_4634_count = 0 # Logoff
         EID_4647_count = 0 # User initiated logoff
         EID_4648_count = 0 # Explicit logon
@@ -105,7 +125,7 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
         let jsonLine = parseJson(line)
         let ruleTitle = jsonLine["RuleTitle"].getStr()
 
-        #EID 4624 Logon Success
+        #EID 4624 Successful Logon
         if isEID_4624(ruleTitle) == true:
             inc EID_4624_count
             var singleResultTable = newTable[string, string]()
@@ -136,6 +156,32 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
             singleResultTable["TargetLinkedLID"] = extraFieldInfo.extractStr("TargetLinkedLogonId")
             singleResultTable["LogoffTime"] = ""
             singleResultTable["ElapsedTime"] = ""
+
+            seqOfResultsTables.add(singleResultTable)
+
+        #EID 4625 Failed Logon
+        if isEID_4625(ruleTitle) == true:
+            inc EID_4625_count
+            var singleResultTable = newTable[string, string]()
+            singleResultTable["Event"] = "Failed Logon"
+            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
+            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            let eventId = jsonLine["EventID"].getInt()
+            let eventIdStr = $eventId
+            singleResultTable["EventID"] = eventIdStr
+            let details = jsonLine["Details"]
+            let extraFieldInfo = jsonLine["ExtraFieldInfo"]
+            let logonType = details.extractInt("Type")
+            singleResultTable["Type"] = logonNumberToString(logonType)
+            singleResultTable["Auth"] = details.extractStr("AuthPkg")
+            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+            singleResultTable["TargetUser"] = details.extractStr("TgtUser")
+            singleResultTable["SourceIP"] = details.extractStr("SrcIP")
+            singleResultTable["Process"] = details.extractStr("Proc")
+            singleResultTable["SourceComputer"] = details.extractStr("SrcComp")
+            singleResultTable["TargetUserSID"] = extraFieldInfo.extractStr("TargetUserSid") # Don't output as it is always S-1-0-0
+            singleResultTable["TargetDomainName"] = extraFieldInfo.extractStr("TargetDomainName")
+            singleResultTable["FailureReason"] = logonFailureReason(extraFieldInfo.extractStr("SubStatus"))
 
             seqOfResultsTables.add(singleResultTable)
 
@@ -216,13 +262,14 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
 
     echo "Found logon events:"
     echo "EID 4624 (Successful Logon): " & $EID_4624_count
+    echo "EID 4625 (Failed Logon): " & $EID_4625_count
     echo "EID 4634 (Logoff): " & $EID_4634_count
     echo "EID 4647 (User Initiated Logoff): " & $EID_4647_count
     echo "EID 4648 (Explicit Logon): " & $EID_4648_count
     echo ""
     # Open file to save results
     var outputFile = open(output, fmWrite)
-    let header = ["Timestamp", "Channel", "EventID", "Event", "TargetComputer", "TargetUser", "LogoffTime", "ElapsedTime", "SourceComputer", "SourceUser", "SourceIP", "Type", "Impersonation", "ElevatedToken", "Auth", "Process", "LID", "LGUID", "TargetUserSID", "TargetDomainName", "TargetLinkedLID"]
+    let header = ["Timestamp", "Channel", "EventID", "Event", "LogoffTime", "ElapsedTime", "FailureReason", "TargetComputer", "TargetUser", "SourceComputer", "SourceUser", "SourceIP", "Type", "Impersonation", "ElevatedToken", "Auth", "Process", "LID", "LGUID", "TargetUserSID", "TargetDomainName", "TargetLinkedLID"]
     ## Write CSV header
     for h in header:
         outputFile.write(h & ",")
@@ -239,4 +286,13 @@ proc logonTimeline(timeline: string, quiet: bool = false, output: string): int =
     outputFile.close()
 
     echo "Saved results to " & output
+    echo ""
+
+    let endTime = epochTime()
+    let elapsedTime = int(endTime - startTime)
+    let hours = elapsedTime div 3600
+    let minutes = (elapsedTime mod 3600) div 60
+    let seconds = elapsedTime mod 60
+
+    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
     echo ""
