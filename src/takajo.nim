@@ -32,6 +32,7 @@ when isMainModule:
             help = {
                 "calculateElapsedTime": "calculate the elapsed time for successful logons",
                 "output": "save results to a CSV file",
+                "outputLogoffEvents": "output logoff events as separate entries",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",
             }

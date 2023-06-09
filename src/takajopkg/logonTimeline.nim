@@ -1,9 +1,10 @@
 proc formatDuration(d: Duration): string =
-    let days = d.inDays
-    let hours = d.inHours mod 24
-    let minutes = d.inMinutes mod 60
-    let seconds = d.inSeconds mod 60
-    let milliseconds = d.inMilliseconds mod 1000
+    let
+        days = d.inDays
+        hours = d.inHours mod 24
+        minutes = d.inMinutes mod 60
+        seconds = d.inSeconds mod 60
+        milliseconds = d.inMilliseconds mod 1000
     return $days & "d " & $hours & "h " & $minutes & "m " & $seconds & "s " & $milliseconds & "ms"
 
 proc extractStr(jsonObj: JsonNode, key: string): string =
@@ -111,26 +112,26 @@ proc countLines(filePath: string): int =
     return count
 
 proc formatFileSize(fileSize: BiggestInt): string =
-  let kilo = 1024
-  let mega = kilo * kilo
-  let giga = kilo * mega
-  var fileSizeStr = ""
+    let
+        kilo = 1024
+        mega = kilo * kilo
+        giga = kilo * mega
+    var fileSizeStr = ""
 
-  if fileSize >= giga:
-    let gb = fileSize.float / giga.float
-    fileSizeStr = $gb & " GB"
-  elif fileSize >= mega:
-    let mb = fileSize.float / mega.float
-    fileSizeStr = $mb & " MB"
-  elif fileSize >= kilo:
-    let kb = fileSize.float / kilo.float
-    fileSizeStr = $kb & " KB"
-  else:
-    fileSizeStr = $fileSize & " Bytes"
+    if fileSize >= giga:
+        let gb = fileSize.float / giga.float
+        fileSizeStr = $gb & " GB"
+    elif fileSize >= mega:
+        let mb = fileSize.float / mega.float
+        fileSizeStr = $mb & " MB"
+    elif fileSize >= kilo:
+        let kb = fileSize.float / kilo.float
+        fileSizeStr = $kb & " KB"
+    else:
+        fileSizeStr = $fileSize & " Bytes"
+    return fileSizeStr
 
-  return fileSizeStr
-
-proc logonTimeline(calculateElapsedTime: bool = true, output: string, quiet: bool = false, timeline: string): int =
+proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, quiet: bool = false, timeline: string): int =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -232,6 +233,19 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, quiet: boo
             singleResultTable["TargetUser"] = details.extractStr("User")
             singleResultTable["LID"] = details.extractStr("LID")
             seqOfLogoffEventTables.add(singleResultTable)
+            if outputLogoffEvents == true:
+                var singleResultTable = newTable[string, string]()
+                singleResultTable["Event"] = "User Initiated Logoff"
+                singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
+                singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+                singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+                let eventId = jsonLine["EventID"].getInt()
+                let eventIdStr = $eventId
+                singleResultTable["EventID"] = eventIdStr
+                let details = jsonLine["Details"]
+                singleResultTable["TargetUser"] = details.extractStr("User")
+                singleResultTable["LID"] = details.extractStr("LID")
+                seqOfResultsTables.add(singleResultTable)
 
         #EID 4647 User Initiated Logoff
         if ruleTitle == "Logoff (User Initiated)":
@@ -248,6 +262,19 @@ proc logonTimeline(calculateElapsedTime: bool = true, output: string, quiet: boo
             singleResultTable["TargetUser"] = details.extractStr("User")
             singleResultTable["LID"] = details.extractStr("LID")
             seqOfLogoffEventTables.add(singleResultTable)
+            if outputLogoffEvents == true:
+                var singleResultTable = newTable[string, string]()
+                singleResultTable["Event"] = "User Initiated Logoff"
+                singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
+                singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+                singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+                let eventId = jsonLine["EventID"].getInt()
+                let eventIdStr = $eventId
+                singleResultTable["EventID"] = eventIdStr
+                let details = jsonLine["Details"]
+                singleResultTable["TargetUser"] = details.extractStr("User")
+                singleResultTable["LID"] = details.extractStr("LID")
+                seqOfResultsTables.add(singleResultTable)
 
         #EID 4648 Explicit Logon
         if ruleTitle == "Explicit Logon" or ruleTitle == "Explicit Logon (Suspicious Process)":
