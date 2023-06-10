@@ -40,17 +40,31 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Git cloning](#git-cloning)
   - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
 - [Command List](#command-list)
+  - [List Commands](#list-commands)
+  - [Sysmon Commands](#sysmon-commands)
+  - [Timeline Commands](#timeline-commands)
+  - [VirusTotal Commands](#virustotal-commands)
 - [Command Usage](#command-usage)
-  - [`logon-timeline` command](#logon-timeline-command)
-    - [`logon-timeline` command example](#logon-timeline-command-example)
-  - [`process-tree` command](#process-tree-command)
-    - [`process-tree` command example](#process-tree-command-example)
-  - [`suspicious-processes` command](#suspicious-processes-command)
-    - [`suspicious-processes` command examples](#suspicious-processes-command-examples)
-  - [`undetected-evtx` command](#undetected-evtx-command)
-    - [`undetected-evtx` command example](#undetected-evtx-command-example)
-  - [`unused-rules` command](#unused-rules-command)
-    - [`unused-rules` command example](#unused-rules-command-example)
+  - [List Commands](#list-commands-1)
+    - [`list-logon-summary` command](#list-logon-summary-command)
+    - [`list-network-connections` command](#list-network-connections-command)
+    - [`list-undetected-evtx` command](#list-undetected-evtx-command)
+      - [`list-undetected-evtx` command examples](#list-undetected-evtx-command-examples)
+    - [`list-unused-rules` command](#list-unused-rules-command)
+      - [`list-unused-rules` command examples](#list-unused-rules-command-examples)
+  - [Sysmon Commands](#sysmon-commands-1)
+    - [`sysmon-process-hashes` command](#sysmon-process-hashes-command)
+    - [`sysmon-process-tree` command](#sysmon-process-tree-command)
+      - [`sysmon-process-tree` command examples](#sysmon-process-tree-command-examples)
+  - [Timeline Commands](#timeline-commands-1)
+    - [`timeline-logon` command](#timeline-logon-command)
+      - [`timeline-logon` command examples](#timeline-logon-command-examples)
+    - [`timeline-suspicious-processes` command](#timeline-suspicious-processes-command)
+      - [`timeline-suspicious-processes` command examples](#timeline-suspicious-processes-command-examples)
+  - [VirusTotal Commands](#virustotal-commands-1)
+    - [`vt-domain-lookup` command](#vt-domain-lookup-command)
+    - [`vt-hash-lookup` command](#vt-hash-lookup-command)
+    - [`vt-ip-lookup` command](#vt-ip-lookup-command)
   - [Contribution](#contribution)
   - [Bug Submission](#bug-submission)
   - [License](#license)
@@ -87,18 +101,134 @@ If you have Nim installed, you can compile from source with the following comman
 
 # Command List
 
-```
-help                  print comprehensive or per-cmd help
-logon-timeline        create a timeline of various logon events (input: JSONL, profile: standard)
-process-tree          prints the process tree of a process (input: JSONL, profile: standard)
-suspicious-processes  list up suspicious processes. (input: JSONL, profile: standard)
-undetected-evtx       list up undetected evtx files (input: CSV, profile: verbose)
-unused-rules          list up unused rules (input: CSV, profile: verbose)
-```
+## List Commands
+* `list-logon-summary`: create a list of top accounts that logged into computers (input: JSONL, profile: standard)
+* `list-network-connections`: create a list of unique target and/or source IP addresses (input: JSONL, profile: standard)
+* `list-undetected-evtx`: create a list of undetected evtx files (input: CSV, profile: verbose)
+* `list-unused-rules`: create a list of unused sigma rules (input: CSV, profile: verbose)
+
+## Sysmon Commands
+* `sysmon-process-hashes`: create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)
+* `sysmon-process-tree`: output the process tree of a certain process (input: JSONL, profile: standard)
+
+## Timeline Commands
+* `timeline-logon`: create a CSV timeline of logon events (input: JSONL, profile: standard)
+* `timeline-suspicious-processes`: create a CSV timeline of suspicious processes (input: JSONL, profile: standard)
+
+## VirusTotal Commands
+* `vt-domain-lookup`: look up a list of domains on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
+* `vt-hash-lookup`: look up a list of hashes on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
+* `vt-ip-lookup`: look up a list of IP addresses on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
 
 # Command Usage
 
-## `logon-timeline` command
+## List Commands
+
+### `list-logon-summary` command
+
+Creates a list of top accounts that logged into computers (input: JSONL, profile: standard)
+Not implemented yet.
+
+### `list-network-connections` command
+
+Creates a list of unique target and/or source IP addresses (input: JSONL, profile: standard)
+Not implemented yet.
+
+### `list-undetected-evtx` command
+
+List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
+This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
+You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -p verbose -o timeline.csv`.
+You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
+
+Required options:
+
+- `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
+- `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
+
+Options:
+
+- `-c, --column-name CustomEvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
+- `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
+- `-q, --quiet`: Do not display logo.
+
+#### `list-undetected-evtx` command examples
+
+```bash
+hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
+takajo.exe list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
+```
+
+### `list-unused-rules` command
+
+List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested and need sample `.evtx` files.
+You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -p verbose -o timeline.csv`.
+You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
+
+Required options:
+
+- `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
+- `-r, --rules-dir ../hayabusa/rules`: The directory of `.yml` rules files you used with Hayabusa.
+
+Options:
+
+- `-c, --column-name CustomRuleFileColumn`: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
+- `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
+- `-q, --quiet`: Do not display logo.
+
+#### `list-unused-rules` command examples
+
+```bash
+hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
+takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
+```
+
+## Sysmon Commands
+
+### `sysmon-process-hashes` command
+
+Create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)
+Not yet implemented.
+
+### `sysmon-process-tree` command
+
+Output the process tree of a certain process (input: JSONL, profile: standard)
+Not yet implemented.
+This command will print out the process tree of a suspicious or malicious process.
+
+Required options:
+
+- `-t, --timeline ../hayabusa/timeline.jsonl`: JSONL timeline created by Hayabusa.
+- `-o, --output process-tree.txt`: A text file to save the results to.
+- `-p, --processGuid`: Sysmon process GUID
+
+Options:
+
+- `-q, --quiet`: Do not display logo.
+
+#### `sysmon-process-tree` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```bash
+hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
+```
+
+Output results to screen:
+
+```bash
+takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00"
+```
+
+Save the results to a CSV file:
+
+```bash
+takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -o process-tree.txt
+```
+
+## Timeline Commands
+
+### `timeline-logon` command
 
 This command extracts information from the following logon events, normalizes the fields and saves the results to a CSV file.
 This makes it easier to detect lateral movement, password guessing/spraying, privilege escalation, etc...
@@ -119,7 +249,7 @@ Options:
 
 - `-q, --quiet`: Do not display logo.
 
-### `logon-timeline` command example
+#### `timeline-logon` command examples
 
 Prepare JSONL timeline with Hayabusa:
 
@@ -130,46 +260,12 @@ hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
 Save logon timeline to a CSV file:
 
 ```bash
-takajo.exe logon-timeline -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
+takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
 ```
 
-## `process-tree` command
+### `timeline-suspicious-processes` command
 
-This command will print out the process tree of a suspicious or malicious process.
-
-Required options:
-
-- `-t, --timeline ../hayabusa/timeline.jsonl`: JSONL timeline created by Hayabusa.
-- `-o, --output process-tree.txt`: A text file to save the results to.
-- `-p, --processGuid`: Sysmon process GUID
-
-Options:
-
-- `-q, --quiet`: Do not display logo.
-
-### `process-tree` command example
-
-Prepare JSONL timeline with Hayabusa:
-
-```bash
-hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
-```
-
-Output results to screen:
-
-```bash
-takajo.exe process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00"
-```
-
-Save the results to a CSV file:
-
-```bash
-takajo.exe process-tree -t ../hayabusa/timeline.jsonl -o process-tree.txt
-```
-
-## `suspicious-processes` command
-
-This command will
+Create a CSV timeline of suspicious processes (input: JSONL, profile: standard)
 
 Required options:
 
@@ -181,7 +277,7 @@ Options:
 
 - `-q, --quiet`: Do not display logo.
 
-### `suspicious-processes` command examples
+#### `timeline-suspicious-processes` command examples
 
 Prepare JSONL timeline with Hayabusa:
 
@@ -192,70 +288,34 @@ hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
 Search for processes that had an alert level of high or above and output results to screen:
 
 ```bash
-takajo.exe suspicious-process -t ../hayabusa/timeline.jsonl
+takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl
 ```
 
 Search for processes that had an alert level of low or above and output results to screen:
 
 ```bash
-takajo.exe suspicious-process -t ../hayabusa/timeline.jsonl -l low
+takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -l low
 ```
 
 Save the results to a CSV file:
 
 ```bash
-takajo.exe suspicious-process -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
+takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
 ```
 
+## VirusTotal Commands
 
-## `undetected-evtx` command
+### `vt-domain-lookup` command
+Look up a list of domains on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
+Not yet implemented.
 
-List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
-This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
-You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -p verbose -o timeline.csv`.
-You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
+### `vt-hash-lookup` command
+Look up a list of hashes on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
+Not yet implemented.
 
-Required options:
-
-- `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
-- `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
-
-Options:
-
-- `-c, --column-name CustomEvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
-- `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
-- `-q, --quiet`: Do not display logo.
-
-### `undetected-evtx` command example
-
-```bash
-hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
-takajo.exe undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
-```
-
-## `unused-rules` command
-
-List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested and need sample `.evtx` files.
-You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -p verbose -o timeline.csv`.
-You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
-
-Required options:
-
-- `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
-- `-r, --rules-dir ../hayabusa/rules`: The directory of `.yml` rules files you used with Hayabusa.
-
-Options:
-
-- `-c, --column-name CustomRuleFileColumn`: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
-- `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
-- `-q, --quiet`: Do not display logo.
-
-### `unused-rules` command example
-
-```bash
-hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
-takajo.exe unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
-```
+### `vt-ip-lookup` command
+Look up a list of IP addresses on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
+Not yet implemented.
 
 ## Contribution
 
