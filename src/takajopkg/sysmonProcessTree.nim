@@ -39,50 +39,21 @@ proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
                 echo "Could not find the PGUID field. Make sure you ran Hayabusa with the standard profile."
             if eventProcessGUID == processGuid:
                 inc processesFoundCount
-                try:
-                    foundProcessTable["CmdLine"] = jsonLine["Details"]["Cmdline"].getStr()
-                except Keyerror:
-                    foundProcessTable["CmdLine"] = ""
-                try:
-                    foundProcessTable["ParentCmdline"] = jsonLine["Details"]["ParentCmdline"].getStr()
-                except Keyerror:
-                    foundProcessTable["ParentCmdLine"] = ""
-                try:
-                    foundProcessTable["LogonID"] = jsonLine["Details"]["LID"].getStr()
-                except Keyerror:
-                    foundProcessTable["LogonID"] = ""
-                try:
-                    foundProcessTable["LogonGUID"] = jsonLine["Details"]["LGUID"].getStr()
-                except Keyerror:
-                    foundProcessTable["LogonGUID"] = ""
-                try:
-                    foundProcessTable["ParentPGUID"] = jsonLine["Details"]["ParentPGUID"].getStr()
-                except Keyerror:
-                    foundProcessTable["ParentPGUID"] = ""
-                try:
-                    foundProcessTable["Company"] = jsonLine["Details"]["Company"].getStr()
-                except Keyerror:
-                    foundProcessTable["Company"] = ""
-                try:
-                    foundProcessTable["User"] = jsonLine["Details"]["User"].getStr()
-                except Keyerror:
-                    foundProcessTable["User"] = ""
-                try:
-                    foundProcessTable["Description"] = jsonLine["Details"]["Description"].getStr()
-                except Keyerror:
-                    foundProcessTable["Description"] = ""
-                try:
-                    foundProcessTable["Product"] = jsonLine["Details"]["Product"].getStr()
-                except Keyerror:
-                    foundProcessTable["Product"] = ""
-                try:
-                    foundProcessTable["IntegrityLevel"] = jsonLine["Details"]["IntegrityLevel"].getStr()
-                except Keyerror:
-                    foundProcessTable["IntegrityLevel"] = ""
-                try:
-                    foundProcessTable["Hashes"] = jsonLine["Details"]["Hashes"].getStr()
-                except Keyerror:
-                    foundProcessTable["Hashes"] = ""
+                let keysToExtract = {
+                    "CmdLine": "Cmdline",
+                    "ParentCmdline": "ParentCmdline",
+                    "LogonID": "LID",
+                    "LogonGUID": "LGUID",
+                    "ParentPGUID": "ParentPGUID",
+                    "Hashes": "Hashes"
+                }
+
+                for (foundKey, jsonKey) in keysToExtract:
+                    try:
+                        foundProcessTable[foundKey] = jsonLine["Details"][jsonKey].getStr()
+                    except KeyError:
+                        foundProcessTable[foundKey] = ""
+
                 let process = processObject(processGUID: eventProcessGUID, parentProcessGUID: foundProcessTable["ParentPGUID"])
                 processObjectTable[process.processGUID] = process
 
