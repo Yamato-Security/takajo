@@ -91,19 +91,6 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
                 singleResultTable["PID"] = pidStr
                 singleResultTable["User"] = user
                 singleResultTable["LID"] = lid
-                # The following fields do not exist in Security 4688
-                singleResultTable["LGUID"] = ""
-                singleResultTable["ProcessGUID"] = ""
-                singleResultTable["ParentCmdline"] = ""
-                singleResultTable["ParentPID"] = ""
-                singleResultTable["ParentGUID"] = ""
-                singleResultTable["Description"] = ""
-                singleResultTable["Product"] = ""
-                singleResultTable["Company"] = ""
-                singleResultTable["MD5 Hash"] = ""
-                singleResultTable["SHA1 Hash"] = ""
-                singleResultTable["SHA256 Hash"] = ""
-                singleResultTable["Import Hash"] = ""
                 seqOfResultsTables.add(singleResultTable)
 
         # Found a Sysmon 1 process creation event
@@ -207,37 +194,23 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
     if output != "" and suspicousProcessCount_Sec_4688 != 0 and suspicousProcessCount_Sysmon_1 != 0: # Save results to CSV
         # Open file to save results
         var outputFile = open(output, fmWrite)
+        let header = ["Timestamp", "Computer", "Type", "Level", "Rule", "RuleAuthor", "Cmdline", "Process", "PID", "User", "LID", "LGUID", "ProcessGUID", "ParentCmdline", "ParentPID", "ParentPGUID", "Description", "Product", "Company", "MD5 Hash", "SHA1 Hash", "SHA256 Hash", "Import Hash"]
+
         ## Write CSV header
-        outputFile.write("Timestamp,Computer,Type,Level,Rule,RuleAuthor,Cmdline,Process,PID,User,LID,LGUID,ProcessGUID,ParentCmdline,ParentPID,ParentPGUID,Description,Product,Company,MD5 Hash, SHA1 Hash, SHA256 Hash, Import Hash\p")
+        outputFile.write(header.join(",") & "\p")
+
         ## Write contents
         for table in seqOfResultsTables:
-            outputFile.write(table["Timestamp"] & ",")
-            outputFile.write(escapeCsvField(table["Computer"]) & ",")
-            outputFile.write(table["Type"] & ",")
-            outputFile.write(table["Level"] & ",")
-            outputFile.write(escapeCsvField(table["Rule"]) & ",")
-            outputFile.write(escapeCsvField(table["RuleAuthor"]) & ",")
-            outputFile.write(escapeCsvField(table["Cmdline"]) & ",")
-            outputFile.write(escapeCsvField(table["Process"]) & ",")
-            outputFile.write(table["PID"] & ",")
-            outputFile.write(escapeCsvField(table["User"]) & ",")
-            outputFile.write(table["LID"] & ",")
-            outputFile.write(table["LGUID"] & ",")
-            outputFile.write(table["ProcessGUID"] & ",")
-            outputFile.write(escapeCsvField(table["ParentCmdline"]) & ",")
-            outputFile.write(table["ParentPID"] & ",")
-            outputFile.write(table["ParentGUID"] & ",")
-            outputFile.write(escapeCsvField(table["Description"]) & ",")
-            outputFile.write(escapeCsvField(table["Product"]) & ",")
-            outputFile.write(escapeCsvField(table["Company"]) & ",")
-            outputFile.write(table["MD5 Hash"] & ",")
-            outputFile.write(table["SHA1 Hash"] & ",")
-            outputFile.write(table["SHA256 Hash"] & ",")
-            outputFile.write(table["Import Hash"] & ",")
+            for key in header:
+                if table.hasKey(key):
+                    outputFile.write(escapeCsvField(table[key]) & ",")
+                else:
+                    outputFile.write(",")
             outputFile.write("\p")
+        let fileSize = getFileSize(output)
         outputFile.close()
 
-        echo "Saved results to " & output
+        echo "Saved results to " & output & " (" & formatFileSize(fileSize) & ")"
         echo ""
 
     if suspicousProcessCount_Sec_4688 == 0 and suspicousProcessCount_Sysmon_1 == 0:
