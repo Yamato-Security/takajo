@@ -9,7 +9,7 @@ proc printIndentedProcessTree(p: processObject, indent: string = "") =
   for child in p.children:
     printIndentedProcessTree(child, indent & "  ")
 
-proc printProcessTree(output: string, processGuid: string, quiet: bool = false, timeline: string): int =
+proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false, timeline: string): int =
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -17,8 +17,6 @@ proc printProcessTree(output: string, processGuid: string, quiet: bool = false, 
     echo ""
     echo "Running the Process Tree module"
     echo ""
-
-
 
     var processObjectTable = newTable[string, processObject]()
 
@@ -33,7 +31,7 @@ proc printProcessTree(output: string, processGuid: string, quiet: bool = false, 
         let eventId = jsonLine["EventID"].getInt()
         let eventLevel = jsonLine["Level"].getStr()
         var eventProcessGUID = ""
-        # Found a Sysmon 1 process creation event
+        # Found a Sysmon 1 process creation event. This assumes info level events are enabled and there won't be more than one Sysmon 1 event for a process.
         if channel == "Sysmon" and eventId == 1 and eventLevel == "info":
             try:
                 eventProcessGUID = jsonLine["Details"]["PGUID"].getStr()
@@ -93,6 +91,10 @@ proc printProcessTree(output: string, processGuid: string, quiet: bool = false, 
                     if process.parentProcessGUID in processObjectTable:
                         processObjectTable[process.parentProcessGUID].children.add(process)
 
+    for id, process in pairs(processObjectTable):
+        if not processObjectTable.contains(process.parentProcessGUID):  # Root process
+            printIndentedProcessTree(process)
+
     if processesFoundCount == 0:
         echo "The process was not found."
         echo ""
@@ -103,7 +105,3 @@ proc printProcessTree(output: string, processGuid: string, quiet: bool = false, 
         echo "Exiting..."
         echo ""
         return
-
-   # for id, process in pairs(processObjectTable):
-   #     if not processObjectTable.contains(process.parentProcessGUID):  # Root process
-   #         printIndentedProcessTree(process)

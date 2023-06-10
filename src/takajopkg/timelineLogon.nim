@@ -131,7 +131,7 @@ proc formatFileSize(fileSize: BiggestInt): string =
         fileSizeStr = $fileSize & " Bytes"
     return fileSizeStr
 
-proc logonTimeline(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, outputAdminLogonEvents: bool = false, quiet: bool = false, timeline: string): int =
+proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, outputAdminLogonEvents: bool = false, quiet: bool = false, timeline: string): int =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())

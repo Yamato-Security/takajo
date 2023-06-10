@@ -9,60 +9,62 @@ import times
 import os
 import progress
 import takajopkg/general
-include takajopkg/listUnusedRules
+include takajopkg/listLogonSummary
+include takajopkg/listNetworkConnections
 include takajopkg/listUndetectedEvtxFiles
-include takajopkg/logonTimeline
-include takajopkg/listSuspiciousProcesses
-include takajopkg/printProcessTree
+include takajopkg/listUnusedRules
+include takajopkg/sysmonProcessHashes
+include takajopkg/sysmonProcessTree
+include takajopkg/timelineLogon
+include takajopkg/timelineSuspiciousProcesses
+include takajopkg/vtDomainLookup
+include takajopkg/vtIpLookup
+include takajopkg/vtHashLookup
 
 when isMainModule:
     clCfg.version = "2.0.0-dev"
-    const examples = "Examples:\n"
-    const example_logon_timeline = "  logon-timeline -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\n"
-    const example_process_tree = "  process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\n"
-    const example_suspicious_processes = "  suspicious-processes -t ../hayabusa/timeline.jsonl [-l medium] [-o suspicious-processes.txt]\n"
-    const example_undetected_evtx = "  undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\n"
-    const examples_unused_rules = "  unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\n"
-    clCfg.useMulti = "Version: 2.0.0-dev\nUsage: takajo.exe <COMMAND>\n\nCommands:\n$subcmds\nCommand help: $command help <COMMAND>\n\n" &
-        examples & example_logon_timeline & example_process_tree & example_undetected_evtx & examples_unused_rules
+    const examples = "Examples:\p"
+    const example_list_logon_summary = "  list-logon-summary...\p"
+    const example_list_network_connections = "  list-network-connections...\p"
+    const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
+    const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
+    const example_sysmon_process_hashes = "  sysmon-process-hashes...\p"
+    const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
+    const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
+    const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [-l medium] [-o suspicious-processes.txt]\p"
+    const example_vt_domain_lookup = "  vt-domain-lookup...\p"
+    const example_vt_hash_lookup = "  vt-hash-lookup...\p"
+    const example_vt_ip_lookup = "  vt-ip-lookup...\p"
+
+    clCfg.useMulti = "Version: 2.0.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
+        examples & example_list_logon_summary & example_list_network_connections & example_list_undetected_evtx & example_list_unused_rules & example_sysmon_process_hashes &
+        example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
+        example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
     dispatchMulti(
         [
-            logonTimeline, cmdName = "logon-timeline",
-            doc = "create a timeline of various logon events (input: JSONL, profile: standard)",
-            help = {
-                "calculateElapsedTime": "calculate the elapsed time for successful logons",
-                "output": "save results to a CSV file",
-                "outputLogoffEvents": "output logoff events as separate entries",
-                "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
-            }
-        ],
-        [
-            printProcessTree, cmdName = "process-tree",
-            doc = "prints the process tree of a process (input: JSONL, profile: standard)",
+            listLogonSummary, cmdName = "list-logon-summary",
+            doc = "create a list of top accounts that logged into computers (input: JSONL, profile: standard)",
             help = {
                 "output": "save results to a text file",
-                "processGuid": "sysmon process GUID",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",
             }
         ],
         [
-            listSuspiciousProcesses, cmdName = "suspicious-processes",
-            doc = "list up suspicious processes. (input: JSONL, profile: standard)",
+            listNetworkConnections, cmdName = "list-network-connections",
+            doc = "create a list of unique target and/or source IP addresses (input: JSONL, profile: standard)",
             help = {
-                "level": "specify the alert level",
-                "output": "save results to a CSV file",
+                "output": "save results to a text file",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",
             }
         ],
         [
-            listUndetectedEvtxFiles, cmdName = "undetected-evtx",
-            doc = "list up undetected evtx files (input: CSV, profile: verbose)",
+            listUndetectedEvtxFiles, cmdName = "list-undetected-evtx",
+            doc = "create a list of undetected evtx files (input: CSV, profile: verbose)",
             help = {
                 "columnName": "specify a custom column header name",
                 "evtxDir": "directory of .evtx files you scanned with Hayabusa",
@@ -72,14 +74,82 @@ when isMainModule:
             }
         ],
         [
-            listUnusedRules, cmdName = "unused-rules",
-            doc = "list up unused rules (input: CSV, profile: verbose)",
+            listUnusedRules, cmdName = "list-unused-rules",
+            doc = "create a list of unused sigma rules (input: CSV, profile: verbose)",
             help = {
                 "columnName": "specify a custom column header name",
                 "output": "save the results to a text file (default: stdout)",
                 "quiet": "do not display the launch banner",
                 "rulesDir": "Hayabusa rules directory",
                 "timeline": "CSV timeline created by Hayabusa with verbose profile",
+            }
+        ],
+        [
+            sysmonProcessHashes, cmdName = "sysmon-process-hashes",
+            doc = "create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)",
+            help = {
+                "level": "specify the minimum alert level",
+                "output": "save results to a text file",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
+            sysmonProcessTree, cmdName = "sysmon-process-tree",
+            doc = "output the process tree of a certain process (input: JSONL, profile: standard)",
+            help = {
+                "output": "save results to a text file",
+                "processGuid": "sysmon process GUID",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
+            timelineLogon, cmdName = "timeline-logon",
+            doc = "create a CSV timeline of logon events (input: JSONL, profile: standard)",
+            help = {
+                "calculateElapsedTime": "calculate the elapsed time for successful logons",
+                "output": "save results to a CSV file",
+                "outputLogoffEvents": "output logoff events as separate entries",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
+            timelineSuspiciousProcesses, cmdName = "timeline-suspicious-processes",
+            doc = "create a CSV timeline of suspicious processes (input: JSONL, profile: standard)",
+            help = {
+                "level": "specify the minimum alert level",
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
+            vtDomainLookup, cmdName = "vt-domain-lookup",
+            doc = "look up a list of domains on VirusTotal and report on malicious ones (input: JSONL, profile: standard)",
+            help = {
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
+            vtHashLookup, cmdName = "vt-hash-lookup",
+            doc = "look up a list of hashes on VirusTotal and report on malicious ones (input: JSONL, profile: standard)",
+            help = {
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
+            vtIpLookup, cmdName = "vt-ip-lookup",
+            doc = "look up a list of IP addresses on VirusTotal and report on malicious ones (input: JSONL, profile: standard)",
+            help = {
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
             }
         ]
     )

@@ -13,7 +13,7 @@ proc isMinLevel(levelInLog: string, userSetLevel: string): bool =
         else:
             return false
 
-proc listSuspiciousProcesses(level: string = "high", output: string = "", quiet: bool = false, timeline: string): int =
+proc timelineSuspiciousProcesses(level: string = "high", output: string = "", quiet: bool = false, timeline: string): int =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
