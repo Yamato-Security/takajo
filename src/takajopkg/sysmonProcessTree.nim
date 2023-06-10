@@ -44,6 +44,8 @@ proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
                     "ParentCmdline": "ParentCmdline",
                     "LogonID": "LID",
                     "LogonGUID": "LGUID",
+                    "PID": "PID",
+                    "ParentPID": "ParentPID",
                     "ParentPGUID": "ParentPGUID",
                     "Hashes": "Hashes"
                 }
