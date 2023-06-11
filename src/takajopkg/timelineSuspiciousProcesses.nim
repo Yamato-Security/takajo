@@ -1,18 +1,3 @@
-proc isMinLevel(levelInLog: string, userSetLevel: string): bool =
-    case userSetLevel
-        of "critical":
-            return levelInLog == "crit"
-        of "high":
-            return levelInLog == "crit" or levelInLog == "high"
-        of "medium":
-            return levelInLog == "crit" or levelInLog == "high" or levelInLog == "med"
-        of "low":
-            return levelInLog == "crit" or levelInLog == "high" or levelInLog == "med" or levelInLog == "low"
-        of "informational":
-            return levelInLog == "crit" or levelInLog == "high" or levelInLog == "med" or levelInLog == "low" or levelInLog == "info"
-        else:
-            return false
-
 proc timelineSuspiciousProcesses(level: string = "high", output: string = "", quiet: bool = false, timeline: string): int =
     let startTime = epochTime()
     if not quiet:
