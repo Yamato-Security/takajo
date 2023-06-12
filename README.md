@@ -41,6 +41,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
 - [Command List](#command-list)
   - [List Commands](#list-commands)
+  - [Other Commands](#other-commands)
   - [Sysmon Commands](#sysmon-commands)
   - [Timeline Commands](#timeline-commands)
   - [VirusTotal Commands](#virustotal-commands)
@@ -52,6 +53,9 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
       - [`list-undetected-evtx` command examples](#list-undetected-evtx-command-examples)
     - [`list-unused-rules` command](#list-unused-rules-command)
       - [`list-unused-rules` command examples](#list-unused-rules-command-examples)
+  - [Other Commands](#other-commands-1)
+    - [`split-csv-files` command](#split-csv-files-command)
+      - [`split-csv-files` command examples](#split-csv-files-command-examples)
   - [Sysmon Commands](#sysmon-commands-1)
     - [`sysmon-process-hashes` command](#sysmon-process-hashes-command)
     - [`sysmon-process-tree` command](#sysmon-process-tree-command)
@@ -106,6 +110,9 @@ If you have Nim installed, you can compile from source with the following comman
 * `list-network-connections`: create a list of unique target and/or source IP addresses (input: JSONL, profile: standard)
 * `list-undetected-evtx`: create a list of undetected evtx files (input: CSV, profile: verbose)
 * `list-unused-rules`: create a list of unused sigma rules (input: CSV, profile: verbose)
+
+## Other Commands
+* `split-csv-files`: split up a large CSV file into smaller ones based on the computer name (input: non-multiline CSV, profile: any)
 
 ## Sysmon Commands
 * `sysmon-process-hashes`: create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)
@@ -181,6 +188,18 @@ Options:
 ```bash
 hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
 takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
+```
+
+## Other Commands
+
+### `split-csv-files` command
+Split up a large CSV file into smaller ones based on the computer name. (input: non-multiline CSV, profile: any)
+
+
+#### `split-csv-files` command examples
+
+```bash
+takajo.exe split-csv-files -t ../hayabusa/timeline.csv
 ```
 
 ## Sysmon Commands

@@ -29,6 +29,7 @@ when isMainModule:
     const example_list_network_connections = "  list-network-connections...\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
+    const example_split_csv_files = "  split-csv-files -t ../hayabusa/timeline.csv [--makeMultiline] [-o Case-1]\p"
     const example_sysmon_process_hashes = "  sysmon-process-hashes...\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
@@ -38,8 +39,8 @@ when isMainModule:
     const example_vt_ip_lookup = "  vt-ip-lookup...\p"
 
     clCfg.useMulti = "Version: 2.0.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
-        examples & example_list_logon_summary & example_list_network_connections & example_list_undetected_evtx & example_list_unused_rules & example_sysmon_process_hashes &
-        example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
+        examples & example_list_logon_summary & example_list_network_connections & example_list_undetected_evtx & example_list_unused_rules &
+        example_sysmon_process_hashes & example_split_csv_files & example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
@@ -87,8 +88,9 @@ when isMainModule:
         ],
         [
             splitCsvFiles, cmdName = "split-csv-files",
-            doc = "splits up a large CSV file into smaller ones based on the computer name (input: CSV, profile: any)",
+            doc = "split up a large CSV file into smaller ones based on the computer name (input: non-multiline CSV, profile: any)",
             help = {
+                "makeMultiline": "output fields in multiple lines",
                 "outputDir": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
                 "timeline": "CSV timeline created by Hayabusa",

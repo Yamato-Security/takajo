@@ -1,4 +1,5 @@
 import json
+import math
 import std/os
 import std/parsecsv
 import std/sequtils
@@ -195,13 +196,16 @@ proc formatFileSize*(fileSize: BiggestInt): string =
     var fileSizeStr = ""
 
     if fileSize >= giga:
-        let gb = fileSize.float / giga.float
+        var gb = fileSize.float / giga.float
+        gb = round(gb, 1)
         fileSizeStr = $gb & " GB"
     elif fileSize >= mega:
-        let mb = fileSize.float / mega.float
+        var mb = fileSize.float / mega.float
+        mb = round(mb, 1)
         fileSizeStr = $mb & " MB"
     elif fileSize >= kilo:
-        let kb = fileSize.float / kilo.float
+        var kb = fileSize.float / kilo.float
+        kb = round(kb, 1)
         fileSizeStr = $kb & " KB"
     else:
         fileSizeStr = $fileSize & " Bytes"
