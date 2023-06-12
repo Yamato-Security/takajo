@@ -1,6 +1,4 @@
 proc listLogonSummary(output: string, quiet: bool = false, timeline: string): int =
-    echo "hi"
-#[
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -11,8 +9,8 @@ proc listLogonSummary(output: string, quiet: bool = false, timeline: string): in
     echo ""
 
     var
-        seqOfResultsTables: seq[TableRef[string, string]] # Sequences are immutable so need to create a sequence of pointers to tables so we can update ["ElapsedTime"]
-        EID_4624_count = 0 # Successful logon
+        seqOfResultsTables: seq[TableRef[string, string]]
+        EID_4624_count = 0
         bar = newProgressBar(total = totalLines)
         seqOfStrings: seq[string]
         uniqueCountTable = initTable[string, int]()
@@ -30,34 +28,38 @@ proc listLogonSummary(output: string, quiet: bool = false, timeline: string): in
             let details = jsonLine["Details"]
             let extraFieldInfo = jsonLine["ExtraFieldInfo"]
             let logonType = details.extractInt("Type")
-            #[
-            singleResultTable["Type"] = logonNumberToString(logonType)
-            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-            singleResultTable["TargetUser"] = details.extractStr("TgtUser")
-            singleResultTable["SourceIP"] = details.extractStr("SrcIP")
-            singleResultTable["SourceComputer"] = details.extractStr("SrcComp")
-            ]#
+
+            # Commented out due to undefined functions
+            #singleResultTable["Type"] = logonNumberToString(logonType)
+            #singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+            #singleResultTable["TargetUser"] = details.extractStr("TgtUser")
+            #singleResultTable["SourceIP"] = details.extractStr("SrcIP")
+            #singleResultTable["SourceComputer"] = details.extractStr("SrcComp")
+
             seqOfStrings.add(details.extractStr("TgtUser") & " : " & jsonLine.extractStr("Computer") &
                 logonNumberToString(logonType) & " : " & details.extractStr("SrcIP") & " : " & details.extractStr("SrcComp"))
 
-            #seqOfResultsTables.add(singleResultTable)
-
     bar.finish()
     echo ""
-    sort(seqOfStrings)
+    seqOfStrings.sort()
 
-    # Create a table to store the counts of unique strings
     var countsTable: Table[string, int] = initTable[string, int]()
 
-    # Count the occurrences of each string
     for string in seqOfStrings:
+        if not countsTable.hasKey(string):
+            countsTable[string] = 0
         countsTable[string] += 1
 
-    # Sort the countsTable in descending order based on the counts
-    var sortedCounts = sortBy(countsTable.pairs, proc(a, b: (string, int)): int = b[1] - a[1])
+    # Create a sequence of pairs from the Table
+    var seqOfPairs: seq[(string, int)] = @[]
+    for key, val in countsTable:
+        seqOfPairs.add((key, val))
+
+    # Sort the sequence in descending order based on the counts
+    seqOfPairs.sort(proc (x, y: (string, int)): int = y[1] - x[1])
 
     # Print the sorted counts with unique strings
-    for (string, count) in sortedCounts:
+    for (string, count) in seqOfPairs:
         echo count, string
 
 
@@ -67,4 +69,4 @@ proc listLogonSummary(output: string, quiet: bool = false, timeline: string): in
     let minutes = (elapsedTime2 mod 3600) div 60
     let seconds = elapsedTime2 mod 60
     echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo "" ]#
+    echo ""
