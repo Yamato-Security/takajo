@@ -47,8 +47,7 @@ proc getTargetExtFileLists*(targetDirPath: string, targetExt: string): seq[strin
     else:
         r
 
-proc getHayabusaCsvData*(csvPath: string, columnName: string): Tableref[string,
-        seq[string]] =
+proc getHayabusaCsvData*(csvPath: string, columnName: string): Tableref[string, seq[string]] =
     ## procedure for Hayabusa output csv read data.
 
     var s = newFileStream(csvPath, fmRead)

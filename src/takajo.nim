@@ -13,6 +13,7 @@ include takajopkg/listLogonSummary
 include takajopkg/listNetworkConnections
 include takajopkg/listUndetectedEvtxFiles
 include takajopkg/listUnusedRules
+include takajopkg/splitCsvFiles
 include takajopkg/sysmonProcessHashes
 include takajopkg/sysmonProcessTree
 include takajopkg/timelineLogon
@@ -82,6 +83,15 @@ when isMainModule:
                 "quiet": "do not display the launch banner",
                 "rulesDir": "Hayabusa rules directory",
                 "timeline": "CSV timeline created by Hayabusa with verbose profile",
+            }
+        ],
+        [
+            splitCsvFiles, cmdName = "split-csv-files",
+            doc = "splits up a large CSV file into smaller ones based on the computer name (input: CSV, profile: any)",
+            help = {
+                "outputDir": "output directory (default: output)",
+                "quiet": "do not display the launch banner",
+                "timeline": "CSV timeline created by Hayabusa",
             }
         ],
         [
