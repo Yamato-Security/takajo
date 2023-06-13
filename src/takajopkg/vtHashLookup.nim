@@ -1,3 +1,3 @@
-proc vtHashLookup(output: string, quiet: bool = false, timeline: string): int =
+proc vtHashLookup(apiKey: string, hashList: string, output: string, quiet: bool = false) =
 
     echo "Not implemented yet."

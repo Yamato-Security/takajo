@@ -1,4 +1,4 @@
-proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, outputAdminLogonEvents: bool = false, quiet: bool = false, timeline: string): int =
+proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, outputAdminLogonEvents: bool = false, quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())

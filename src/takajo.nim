@@ -10,11 +10,12 @@ import times
 import os
 import progress
 import takajopkg/general
-include takajopkg/listLogonSummary
 include takajopkg/listNetworkConnections
 include takajopkg/listUndetectedEvtxFiles
 include takajopkg/listUnusedRules
-include takajopkg/splitCsvFiles
+include takajopkg/splitCsvTimeline
+include takajopkg/splitJsonTimeline
+include takajopkg/stackRemoteLogons
 include takajopkg/sysmonProcessHashes
 include takajopkg/sysmonProcessTree
 include takajopkg/timelineLogon
@@ -30,7 +31,7 @@ when isMainModule:
     const example_list_network_connections = "  list-network-connections...\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
-    const example_split_csv_files = "  split-csv-files -t ../hayabusa/timeline.csv [--makeMultiline] [-o Case-1]\p"
+    const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] [-o Case-1]\p"
     const example_sysmon_process_hashes = "  sysmon-process-hashes...\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
@@ -41,21 +42,12 @@ when isMainModule:
 
     clCfg.useMulti = "Version: 2.0.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples & example_list_logon_summary & example_list_network_connections & example_list_undetected_evtx & example_list_unused_rules &
-        example_sysmon_process_hashes & example_split_csv_files & example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
+        example_sysmon_process_hashes & example_split_csv_timeline & example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
     dispatchMulti(
-        [
-            listLogonSummary, cmdName = "list-logon-summary",
-            doc = "create a list of top accounts that logged into computers (input: JSONL, profile: standard)",
-            help = {
-                "output": "save results to a text file",
-                "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
-            }
-        ],
         [
             listNetworkConnections, cmdName = "list-network-connections",
             doc = "create a list of unique target and/or source IP addresses (input: JSONL, profile: standard)",
@@ -88,10 +80,28 @@ when isMainModule:
             }
         ],
         [
-            splitCsvFiles, cmdName = "split-csv-files",
+            stackRemoteLogons, cmdName = "stack-remote-logons",
+            doc = "stack remote logons by target user, target computer, source IP address and source computer (input: JSONL, profile: standard)",
+            help = {
+                "output": "save results to a text file",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
+            splitCsvTimeline, cmdName = "split-csv-timeline",
             doc = "split up a large CSV file into smaller ones based on the computer name (input: non-multiline CSV, profile: any)",
             help = {
                 "makeMultiline": "output fields in multiple lines",
+                "outputDir": "output directory (default: output)",
+                "quiet": "do not display the launch banner",
+                "timeline": "CSV timeline created by Hayabusa",
+            }
+        ],
+        [
+            splitJsonTimeline, cmdName = "split-json-timeline",
+            doc = "split up a large JSON timeline into smaller ones based on the computer name (input: JSON/L, profile: any)",
+            help = {
                 "outputDir": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
                 "timeline": "CSV timeline created by Hayabusa",
@@ -140,29 +150,32 @@ when isMainModule:
         ],
         [
             vtDomainLookup, cmdName = "vt-domain-lookup",
-            doc = "look up a list of domains on VirusTotal and report on malicious ones (input: JSONL, profile: standard)",
+            doc = "look up a list of domains on VirusTotal and report on malicious ones (input: text file)",
             help = {
+                "apiKey": "your VirusTotal API key",
+                "domainList": "a list of domains",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
             }
         ],
         [
             vtHashLookup, cmdName = "vt-hash-lookup",
-            doc = "look up a list of hashes on VirusTotal and report on malicious ones (input: JSONL, profile: standard)",
+            doc = "look up a list of hashes on VirusTotal and report on malicious ones (input: text file)",
             help = {
-                "output": "save results to a CSV file",
+                "apiKey": "your VirusTotal API key",
+                "hashList": "a list of hashes",
+                "output": "save results to a text file",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
             }
         ],
         [
             vtIpLookup, cmdName = "vt-ip-lookup",
-            doc = "look up a list of IP addresses on VirusTotal and report on malicious ones (input: JSONL, profile: standard)",
+            doc = "look up a list of IP addresses on VirusTotal and report on malicious ones (input: text file)",
             help = {
+                "apiKey": "your VirusTotal API key",
+                "ipList": "a list of IP addresses",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
             }
         ]
     )

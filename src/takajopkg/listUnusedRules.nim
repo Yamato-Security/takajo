@@ -1,4 +1,4 @@
-proc listUnusedRules(columnName: string = "RuleFile", output: string = "", quiet: bool = false, rulesDir: string, timeline: string): int =
+proc listUnusedRules(columnName: string = "RuleFile", output: string = "", quiet: bool = false, rulesDir: string, timeline: string) =
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 

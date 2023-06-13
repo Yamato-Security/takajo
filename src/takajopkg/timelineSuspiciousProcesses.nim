@@ -1,4 +1,4 @@
-proc timelineSuspiciousProcesses(level: string = "high", output: string = "", quiet: bool = false, timeline: string): int =
+proc timelineSuspiciousProcesses(level: string = "high", output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())

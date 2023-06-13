@@ -1,4 +1,4 @@
-proc splitCsvFiles(makeMultiline: bool = false, outputDir: string = "output", quiet: bool = false, timeline: string): int =
+proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())

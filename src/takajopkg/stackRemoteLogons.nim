@@ -1,4 +1,9 @@
-proc listLogonSummary(output: string, quiet: bool = false, timeline: string): int =
+# TODO
+# Output to stdout in tables (Target User, Target Computer, Logon Type, Source Computer)
+# Save to CSV
+# Remove local logins
+
+proc stackRemoteLogons(output: string, quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -68,5 +73,6 @@ proc listLogonSummary(output: string, quiet: bool = false, timeline: string): in
     let hours = elapsedTime2 div 3600
     let minutes = (elapsedTime2 mod 3600) div 60
     let seconds = elapsedTime2 mod 60
+    echo ""
     echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
     echo ""
