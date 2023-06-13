@@ -83,10 +83,17 @@ proc sysmonProcessHashes(level: string = "high", output: string, quiet: bool = f
     impHashOutputFile.close()
     let impHashFileSize = getFileSize(impHashOutputFilename)
 
-    echo "MD5 Hashes: " & $md5hashCount & " (" & formatFileSize(md5FileSize) & ")"
-    echo "SHA1 Hashes: ", $sha1hashCount & " (" & formatFileSize(sha1FileSize) & ")"
-    echo "SHA256 Hashes: ", $sha256hashCount & " (" & formatFileSize(sha256FileSize) & ")"
-    echo "Import Hashes: ", $impHashCount & " (" & formatFileSize(impHashFileSize) & ")"
+    echo "Saved files:"
+    echo md5outputFilename & " (" & formatFileSize(md5FileSize) & ")"
+    echo sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")"
+    echo sha256outputFilename & " (" & formatFileSize(sha256FileSize) & ")"
+    echo impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ")"
+    echo ""
+    echo "Hashes:"
+    echo "MD5: " & $md5hashCount
+    echo "SHA1: ", $sha1hashCount
+    echo "SHA256: ", $sha256hashCount
+    echo "Import: ", $impHashCount
     echo ""
     let endTime = epochTime()
     let elapsedTime = int(endTime - startTime)
