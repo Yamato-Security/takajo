@@ -1,3 +1,5 @@
+# TODO
+# Get hashes from sysmon ID 7 (Image Loaded)
 proc sysmonProcessHashes(level: string = "high", output: string, quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
