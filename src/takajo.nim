@@ -1,6 +1,7 @@
 import algorithm
 import cligen
 import json
+import sets
 import sequtils
 import strformat
 import strutils
@@ -112,7 +113,7 @@ when isMainModule:
             doc = "create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)",
             help = {
                 "level": "specify the minimum alert level",
-                "output": "save results to a text file",
+                "output": "specify the base name to save results to text files (ex: -o case-1)",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",
             }

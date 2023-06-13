@@ -192,8 +192,8 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
                 else:
                     outputFile.write(",")
             outputFile.write("\p")
-        let fileSize = getFileSize(output)
         outputFile.close()
+        let fileSize = getFileSize(output)
 
         echo "Saved results to " & output & " (" & formatFileSize(fileSize) & ")"
         echo ""
