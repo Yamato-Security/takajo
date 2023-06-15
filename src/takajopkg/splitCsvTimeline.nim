@@ -37,6 +37,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
             filesTable[computerName] = outputFile
             outputFile.write(csvHeader)
             outputFile.write("\p")
+            flushFile(outputFile)  # Flush buffer after writing to file
 
         # Use the file from the table and write the line.
         var outputFile = filesTable[computerName]
