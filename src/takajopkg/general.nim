@@ -209,7 +209,7 @@ proc countLinesInTimeline*(filePath: string): int =
 
 proc customRound(number: float, decimals: int): float =
   let factor = pow(10.0, decimals.float)
-  result = round(number * factor + 0.5) / factor
+  result = round(round(number * factor + 0.5) / factor, decimals)
 
 proc formatFileSize*(fileSize: BiggestInt): string =
     let
