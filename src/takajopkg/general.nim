@@ -205,12 +205,6 @@ proc countLinesInTimeline*(filePath: string): int =
     file.close()
     return count
 
-
-
-proc customRound(number: float, decimals: int): float =
-  let factor = pow(10.0, decimals.float)
-  result = round(round(number * factor + 0.5) / factor, decimals)
-
 proc formatFileSize*(fileSize: BiggestInt): string =
     let
         kilo = 1024
@@ -220,16 +214,13 @@ proc formatFileSize*(fileSize: BiggestInt): string =
 
     if fileSize >= giga:
         var gb = fileSize.float / giga.float
-        gb = customRound(gb, 2)
-        fileSizeStr = $gb & " GB"
+        fileSizeStr = $gb.formatFloat(ffDecimal, 2) & " GB"
     elif fileSize >= mega:
         var mb = fileSize.float / mega.float
-        mb = customRound(mb, 2)
-        fileSizeStr = $mb & " MB"
+        fileSizeStr = $mb.formatFloat(ffDecimal, 2) & " MB"
     elif fileSize >= kilo:
         var kb = fileSize.float / kilo.float
-        kb = customRound(kb, 2)
-        fileSizeStr = $kb & " KB"
+        fileSizeStr = $kb.formatFloat(ffDecimal, 2) & " KB"
     else:
         fileSizeStr = $fileSize & " Bytes"
     return fileSizeStr
