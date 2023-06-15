@@ -22,16 +22,16 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
         filesTable = initTable[string, File]()
         bar = newProgressBar(total = totalLines)
         lineCount = 0
-        updateInterval = max(totalLines div 100, 1)  # Update about every 1% of lines, but at least once per line
+        updateInterval = max(totalLines div 500, 1)  # Update about every .2% of lines, but at least once per line
     bar.start()
 
     # Read in the CSV header
     let csvHeader = inputFile.readLine()
     while inputFile.endOfFile == false:
         inc(lineCount)
-        if lineCount mod updateInterval == 0:  # Update about every 1% of lines
+        if lineCount mod updateInterval == 0:  # Update about every .2% of lines
             bar.set(lineCount)
-        updateInterval = max(totalLines div 100, 1)  # Update about every 1% of lines, but at least once per line
+        updateInterval = max(totalLines div 100, 1)  # Update about every .2% of lines, but at least once per line
         var currentLine = inputFile.readLine()
         let splitFields = currentLine.split(',')
         var computerName = splitFields[1]
