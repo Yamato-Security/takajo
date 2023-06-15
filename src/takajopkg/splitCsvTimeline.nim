@@ -3,7 +3,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    echo "Loading the CSV file. Please wait."
+    echo "Calculating total lines in the CSV file. Please wait."
     let totalLines = countLinesInTimeline(timeline)
     echo "Total lines: ", totalLines
     echo ""
@@ -31,7 +31,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
         inc(lineCount)
         if lineCount mod updateInterval == 0:  # Update about every .2% of lines
             bar.set(lineCount)
-        updateInterval = max(totalLines div 100, 1)  # Update about every .2% of lines, but at least once per line
+        updateInterval = max(totalLines div 500, 1)  # Update about every .2% of lines, but at least once per line
         var currentLine = inputFile.readLine()
         let splitFields = currentLine.split(',')
         var computerName = splitFields[1]
