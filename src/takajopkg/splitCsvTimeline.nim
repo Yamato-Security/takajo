@@ -3,17 +3,17 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    let totalLines = countLinesInTimeline(timeline)
-
     echo "Loading the CSV file. Please wait."
+    let totalLines = countLinesInTimeline(timeline)
     echo "Total lines: ", totalLines
-    echo "Splitting the Hayabusa CSV timeline into separate timelines according to the computer name. Please wait."
     echo ""
+    echo "Splitting the Hayabusa CSV timeline into separate timelines according to the computer name. Please wait."
 
     if not dirExists(outputDir):
         echo ""
         echo "The directory '" & outputDir & "' does not exist so will be created."
         createDir(outputDir)
+    echo ""
 
     var
         inputFile = open(timeline, FileMode.fmRead)
