@@ -19,13 +19,13 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
         line = ""
         filenameSequence: seq[string] = @[]
         filesTable = initTable[string, File]()
-        bar = newProgressBar(total = totalLines)
-    bar.start()
+        #bar = newProgressBar(total = totalLines)
+    #bar.start()
 
     # Read in the CSV header
     let csvHeader = inputFile.readLine()
     while inputFile.endOfFile == false:
-        bar.increment()
+        #bar.increment()
         var currentLine = inputFile.readLine()
         let splitFields = currentLine.split(',')
         var computerName = splitFields[1]
@@ -51,7 +51,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
             outputFile.write(currentLine)
         outputFile.write("\p")
         flushFile(outputFile)
-    bar.finish()
+    #bar.finish()
 
     # Close all opened files
     for file in filesTable.values:
