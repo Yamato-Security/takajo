@@ -46,6 +46,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
         else:
             outputFile.write(currentLine)
         outputFile.write("\p")
+        flushFile(outputFile)
 
     # Close all opened files
     for file in filesTable.values:
