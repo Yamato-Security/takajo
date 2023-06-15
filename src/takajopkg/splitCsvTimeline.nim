@@ -5,9 +5,10 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
 
     let totalLines = countLinesInTimeline(timeline)
 
-    echo ""
+    echo "Loading the CSV file. Please wait."
     echo "Total lines: ", totalLines
-    echo "Splitting the Hayabusa CSV timeline into separate timelines according to the computer name."
+    echo "Splitting the Hayabusa CSV timeline into separate timelines according to the computer name. Please wait."
+    echo ""
 
     if not dirExists(outputDir):
         echo ""
@@ -19,13 +20,18 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
         line = ""
         filenameSequence: seq[string] = @[]
         filesTable = initTable[string, File]()
-        #bar = newProgressBar(total = totalLines)
-    #bar.start()
+        bar = newProgressBar(total = totalLines)
+        lineCount = 0
+        updateInterval = max(totalLines div 100, 1)  # Update about every 1% of lines, but at least once per line
+    bar.start()
 
     # Read in the CSV header
     let csvHeader = inputFile.readLine()
     while inputFile.endOfFile == false:
-        #bar.increment()
+        inc(lineCount)
+        if lineCount mod updateInterval == 0:  # Update about every 1% of lines
+            bar.set(lineCount)
+        updateInterval = max(totalLines div 100, 1)  # Update about every 1% of lines, but at least once per line
         var currentLine = inputFile.readLine()
         let splitFields = currentLine.split(',')
         var computerName = splitFields[1]
@@ -51,7 +57,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
             outputFile.write(currentLine)
         outputFile.write("\p")
         flushFile(outputFile)
-    #bar.finish()
+    bar.finish()
 
     # Close all opened files
     for file in filesTable.values:
