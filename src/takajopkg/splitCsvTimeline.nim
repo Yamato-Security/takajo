@@ -1,12 +1,12 @@
-# TODO
-# Add progress bar
-
 proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    let totalLines = countLinesInTimeline(timeline)
+
     echo ""
+    echo "Total lines: ", totalLines
     echo "Splitting the Hayabusa CSV timeline into separate timelines according to the computer name."
 
     if not dirExists(outputDir):
@@ -19,10 +19,13 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
         line = ""
         filenameSequence: seq[string] = @[]
         filesTable = initTable[string, File]()
+        bar = newProgressBar(total = totalLines)
+    bar.start()
 
     # Read in the CSV header
     let csvHeader = inputFile.readLine()
     while inputFile.endOfFile == false:
+        bar.increment()
         var currentLine = inputFile.readLine()
         let splitFields = currentLine.split(',')
         var computerName = splitFields[1]
@@ -48,6 +51,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
             outputFile.write(currentLine)
         outputFile.write("\p")
         flushFile(outputFile)
+    bar.finish()
 
     # Close all opened files
     for file in filesTable.values:
