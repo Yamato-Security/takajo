@@ -10,6 +10,7 @@ import terminal
 import times
 import os
 import progress
+import std/enumerate
 import takajopkg/general
 include takajopkg/listNetworkConnections
 include takajopkg/listUndetectedEvtxFiles

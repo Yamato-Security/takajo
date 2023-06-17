@@ -1,16 +1,38 @@
 type
-    processObject = ref object
+    processObject = object
+        timeStamp: string
+        procName: string
         processGUID: string
         parentProcessGUID: string
         children: seq[processObject]
 
-proc printIndentedProcessTree(p: processObject, indent: string = "") =
-  echo(indent & "Process ", p.processGUID)
-  for child in p.children:
-    printIndentedProcessTree(child, indent & "  ")
+proc printIndentedProcessTree(p: processObject, indent: string = "",
+        stairNum: int = 0) =
+    ## プロセスオブジェクトからプロセスツリーを画面上に表示するためのプロシージャ
+    echo(indent & p.procName & " (", p.timeStamp, "/", p.processGUID, "/",
+            p.parentProcessGUID, ")")
 
-proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false, timeline: string) =
+    var childStairNum = stairNum + 1
+    var childPreStairStr = ""
+    var cnt = 0
+    # プロセスの階層数に応じて、親階層がつながっていることを表現するための`  |`を付与する
+    while childStairNum > cnt:
+        childPreStairStr &= "  │"
+        inc cnt
+    for childNum, children in enumerate(p.children):
+        # 子プロセスの表示を行う
+        var childIndentStr = childPreStairStr
+        if len(p.children) == childNum + 1:
+            childIndentStr &= "  └"
+        else:
+            childIndentStr &= "  ├"
+        printIndentedProcessTree(children, childIndentStr, childStairNum)
 
+proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
+        timeline: string) =
+    ## Sysmonのプロセスツリーを表示するためのプロシージャ
+
+    # ロゴの表示
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
@@ -27,6 +49,7 @@ proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
 
     for line in lines(timeline):
         let jsonLine = parseJson(line)
+        let timeStamp = jsonLine["Timestamp"].getStr()
         let channel = jsonLine["Channel"].getStr()
         let eventId = jsonLine["EventID"].getInt()
         let eventLevel = jsonLine["Level"].getStr()
@@ -41,6 +64,7 @@ proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
                 inc processesFoundCount
                 let keysToExtract = {
                     "CmdLine": "Cmdline",
+                    "Proc": "Proc",
                     "ParentCmdline": "ParentCmdline",
                     "LogonID": "LID",
                     "LogonGUID": "LGUID",
@@ -52,20 +76,25 @@ proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
 
                 for (foundKey, jsonKey) in keysToExtract:
                     try:
-                        foundProcessTable[foundKey] = jsonLine["Details"][jsonKey].getStr()
+                        foundProcessTable[foundKey] = jsonLine["Details"][
+                                jsonKey].getStr()
                     except KeyError:
                         foundProcessTable[foundKey] = ""
 
-                let process = processObject(processGUID: eventProcessGUID, parentProcessGUID: foundProcessTable["ParentPGUID"])
+                let process = processObject(timeStamp: timeStamp,
+                        procName: foundProcessTable["Proc"],
+                        processGUID: eventProcessGUID,
+                        parentProcessGUID: foundProcessTable["ParentPGUID"])
                 processObjectTable[process.processGUID] = process
 
                 # Link child processes to their parents
                 for id, process in pairs(processObjectTable):
                     if process.parentProcessGUID in processObjectTable:
-                        processObjectTable[process.parentProcessGUID].children.add(process)
+                        processObjectTable[
+                                process.parentProcessGUID].children.add(process)
 
     for id, process in pairs(processObjectTable):
-        if not processObjectTable.contains(process.parentProcessGUID):  # Root process
+        if not processObjectTable.contains(process.parentProcessGUID): # Root process
             printIndentedProcessTree(process)
 
     if processesFoundCount == 0:
