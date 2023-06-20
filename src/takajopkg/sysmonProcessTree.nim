@@ -7,14 +7,18 @@ type
         children: seq[processObject]
 
 proc printIndentedProcessTree(p: processObject, indent: string = "",
-        stairNum: int = 0) =
+        stairNum: int = 0): seq[string] =
     ## プロセスオブジェクトからプロセスツリーを画面上に表示するためのプロシージャ
-    echo(indent & p.procName & " (", p.timeStamp, "/", p.processGUID, "/",
-            p.parentProcessGUID, ")")
+
+    var ret: seq[string] = @[]
+    ret = @[indent & p.procName & " (" & p.timeStamp & "/" &
+            p.processGUID &
+            "/" & p.parentProcessGUID, ")"]
 
     var childStairNum = stairNum + 1
     var childPreStairStr = ""
-    var cnt = 0
+    var cnt = 1
+
     # プロセスの階層数に応じて、親階層がつながっていることを表現するための`  |`を付与する
     while childStairNum > cnt:
         childPreStairStr &= "  │"
@@ -26,7 +30,9 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
             childIndentStr &= "  └"
         else:
             childIndentStr &= "  ├"
-        printIndentedProcessTree(children, childIndentStr, childStairNum)
+        ret = concat(ret, printIndentedProcessTree(children, childIndentStr,
+                childStairNum))
+    return ret
 
 proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
         timeline: string) =
@@ -46,6 +52,8 @@ proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
 
     var processesFoundCount = 0
     var foundProcessTable = initTable[string, string]()
+    var passGuid = initHashSet[string]()
+    passGuid.incl(processGuid)
 
     for line in lines(timeline):
         let jsonLine = parseJson(line)
@@ -60,7 +68,8 @@ proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
                 eventProcessGUID = jsonLine["Details"]["PGUID"].getStr()
             except KeyError:
                 echo "Could not find the PGUID field. Make sure you ran Hayabusa with the standard profile."
-            if eventProcessGUID == processGuid:
+            if eventProcessGUID in passGuid or jsonLine["Details"][
+                                "ParentPGUID"].getStr() in passGuid:
                 inc processesFoundCount
                 let keysToExtract = {
                     "CmdLine": "Cmdline",
@@ -81,29 +90,37 @@ proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
                     except KeyError:
                         foundProcessTable[foundKey] = ""
 
-                let process = processObject(timeStamp: timeStamp,
+                let process = processObject(
+                        timeStamp: timeStamp,
                         procName: foundProcessTable["Proc"],
                         processGUID: eventProcessGUID,
                         parentProcessGUID: foundProcessTable["ParentPGUID"])
+                if not passGuid.contains(eventProcessGUID):
+                    passGuid.incl(eventProcessGUID)
+                    passGuid.incl(process.parentProcessGUID)
                 processObjectTable[process.processGUID] = process
-
                 # Link child processes to their parents
                 for id, process in pairs(processObjectTable):
                     if process.parentProcessGUID in processObjectTable:
                         processObjectTable[
                                 process.parentProcessGUID].children.add(process)
-
+    var outputStrSeq: seq[string] = @[]
     for id, process in pairs(processObjectTable):
         if not processObjectTable.contains(process.parentProcessGUID): # Root process
-            printIndentedProcessTree(process)
+            outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(process))
+
+    if output != "":
+        let f = open(output, fmWrite)
+        defer: f.close()
+        for line in outputStrSeq:
+            f.writeLine(line)
+        echo fmt"Saved File {output}"
+        echo ""
+    else:
+        echo outputStrSeq.join("\n")
+    discard
 
     if processesFoundCount == 0:
         echo "The process was not found."
-        echo ""
-        return
-
-    if processesFoundCount > 1:
-        echo "There are more than 1 instance of this process which should not happen because it should be unique."
-        echo "Exiting..."
         echo ""
         return
