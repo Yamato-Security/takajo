@@ -54,6 +54,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     var foundProcessTable = initTable[string, string]()
     var passGuid = initHashSet[string]()
     passGuid.incl(processGuid)
+    var addedProcess = initHashSet[string]()
 
     for line in lines(timeline):
         let jsonLine = parseJson(line)
@@ -95,15 +96,20 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                         procName: foundProcessTable["Proc"],
                         processGUID: eventProcessGUID,
                         parentProcessGUID: foundProcessTable["ParentPGUID"])
+                let key = timeStamp & "-" & process.procName & "-" &
+                        process.processGUID & "-" & process.parentProcessGUID
                 if not passGuid.contains(eventProcessGUID):
                     passGuid.incl(eventProcessGUID)
                     passGuid.incl(process.parentProcessGUID)
-                processObjectTable[process.processGUID] = process
-                # Link child processes to their parents
-                for id, process in pairs(processObjectTable):
-                    if process.parentProcessGUID in processObjectTable:
-                        processObjectTable[
-                                process.parentProcessGUID].children.add(process)
+                if not addedProcess.contains(key):
+                    processObjectTable[process.processGUID] = process
+                    addedProcess.incl(key)
+
+                    # Link child processes to their parents
+                    for id, process in pairs(processObjectTable):
+                        if process.parentProcessGUID in processObjectTable:
+                            processObjectTable[
+                                    process.parentProcessGUID].children.add(process)
     var outputStrSeq: seq[string] = @[]
     for id, process in pairs(processObjectTable):
         if not processObjectTable.contains(process.parentProcessGUID): # Root process
