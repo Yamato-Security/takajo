@@ -2,6 +2,7 @@ type
     processObject = object
         timeStamp: string
         procName: string
+        processID: string
         processGUID: string
         parentProcessGUID: string
         children: seq[processObject]
@@ -11,9 +12,9 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
     ## プロセスオブジェクトからプロセスツリーを画面上に表示するためのプロシージャ
 
     var ret: seq[string] = @[]
-    ret = @[indent & p.procName & " (" & p.timeStamp & "/" &
+    ret = @[indent & p.procName & " (" & p.timeStamp & " / " &
             p.processGUID &
-            "/" & p.parentProcessGUID, ")"]
+            " / " & p.parentProcessGUID & ")"]
 
     var childStairNum = stairNum + 1
     var childPreStairStr = ""
