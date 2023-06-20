@@ -81,15 +81,6 @@ when isMainModule:
             }
         ],
         [
-            stackRemoteLogons, cmdName = "stack-remote-logons",
-            doc = "stack remote logons by target user, target computer, source IP address and source computer (input: JSONL, profile: standard)",
-            help = {
-                "output": "save results to a text file",
-                "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
-            }
-        ],
-        [
             splitCsvTimeline, cmdName = "split-csv-timeline",
             doc = "split up a large CSV file into smaller ones based on the computer name (input: non-multiline CSV, profile: any)",
             help = {
@@ -106,6 +97,15 @@ when isMainModule:
                 "outputDir": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
                 "timeline": "CSV timeline created by Hayabusa",
+            }
+        ],
+        [
+            stackRemoteLogons, cmdName = "stack-remote-logons",
+            doc = "stack remote logons by target user, target computer, source IP address and source computer (input: JSONL, profile: standard)",
+            help = {
+                "output": "save results to a text file",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
             }
         ],
         [
