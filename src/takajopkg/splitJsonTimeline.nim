@@ -1,10 +1,10 @@
-proc splitJsonTimeline(makeMultiline: bool = false, outputDir: string = "output", quiet: bool = false, timeline: string) =
+proc splitJsonTimeline( outputDir: string = "output", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
     echo ""
-    echo "Splitting the Hayabusa CSV timeline into separate timelines according to the computer name."
+    echo "Splitting the Hayabusa JSONL timeline into separate timelines according to the computer name."
 
     if not dirExists(outputDir):
         echo ""

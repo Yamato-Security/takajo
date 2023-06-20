@@ -1,5 +1,4 @@
 import json
-import math
 import std/os
 import std/parsecsv
 import std/sequtils

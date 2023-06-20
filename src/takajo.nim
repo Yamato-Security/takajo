@@ -101,7 +101,7 @@ when isMainModule:
         ],
         [
             splitJsonTimeline, cmdName = "split-json-timeline",
-            doc = "split up a large JSON timeline into smaller ones based on the computer name (input: JSON/L, profile: any)",
+            doc = "split up a large JSONL timeline into smaller ones based on the computer name (input: JSONL, profile: any)",
             help = {
                 "outputDir": "output directory (default: output)",
                 "quiet": "do not display the launch banner",

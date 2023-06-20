@@ -41,21 +41,26 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
 - [Command List](#command-list)
   - [List Commands](#list-commands)
-  - [Other Commands](#other-commands)
+  - [Split Commands](#split-commands)
+  - [Stack Commands](#stack-commands)
   - [Sysmon Commands](#sysmon-commands)
   - [Timeline Commands](#timeline-commands)
   - [VirusTotal Commands](#virustotal-commands)
 - [Command Usage](#command-usage)
   - [List Commands](#list-commands-1)
-    - [`list-logon-summary` command](#list-logon-summary-command)
     - [`list-network-connections` command](#list-network-connections-command)
     - [`list-undetected-evtx` command](#list-undetected-evtx-command)
       - [`list-undetected-evtx` command examples](#list-undetected-evtx-command-examples)
     - [`list-unused-rules` command](#list-unused-rules-command)
       - [`list-unused-rules` command examples](#list-unused-rules-command-examples)
-  - [Other Commands](#other-commands-1)
-    - [`split-csv-files` command](#split-csv-files-command)
-      - [`split-csv-files` command examples](#split-csv-files-command-examples)
+  - [Split Commands](#split-commands-1)
+    - [`split-csv-timeline` command](#split-csv-timeline-command)
+      - [`split-csv-timeline` command examples](#split-csv-timeline-command-examples)
+    - [`split-json-timeline` command](#split-json-timeline-command)
+      - [`split-json-timeline` command examples](#split-json-timeline-command-examples)
+  - [Stack Commands](#stack-commands-1)
+    - [`stack-remote-logons` command](#stack-remote-logons-command)
+      - [`stack-remote-logons` command examples](#stack-remote-logons-command-examples)
   - [Sysmon Commands](#sysmon-commands-1)
     - [`sysmon-process-hashes` command](#sysmon-process-hashes-command)
     - [`sysmon-process-tree` command](#sysmon-process-tree-command)
@@ -106,13 +111,16 @@ If you have Nim installed, you can compile from source with the following comman
 # Command List
 
 ## List Commands
-* `list-logon-summary`: create a list of top accounts that logged into computers (input: JSONL, profile: standard)
 * `list-network-connections`: create a list of unique target and/or source IP addresses (input: JSONL, profile: standard)
 * `list-undetected-evtx`: create a list of undetected evtx files (input: CSV, profile: verbose)
 * `list-unused-rules`: create a list of unused sigma rules (input: CSV, profile: verbose)
 
-## Other Commands
-* `split-csv-files`: split up a large CSV file into smaller ones based on the computer name (input: non-multiline CSV, profile: any)
+## Split Commands
+* `split-csv-timeline`: split up a large CSV timeline into smaller ones based on the computer name (input: non-multiline CSV, profile: any)
+* `split-json-timeline`: split up a large JSONL timeline into smaller ones based on the computer name (input: JSONL, profile: any)
+
+## Stack Commands
+* `stackRemoteLogons`: create a list of top accounts that logged into computers (input: JSONL, profile: standard)
 
 ## Sysmon Commands
 * `sysmon-process-hashes`: create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)
@@ -130,11 +138,6 @@ If you have Nim installed, you can compile from source with the following comman
 # Command Usage
 
 ## List Commands
-
-### `list-logon-summary` command
-
-Creates a list of top accounts that logged into computers (input: JSONL, profile: standard)
-Not implemented yet.
 
 ### `list-network-connections` command
 
@@ -190,16 +193,39 @@ hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
 takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
 ```
 
-## Other Commands
+## Split Commands
 
-### `split-csv-files` command
-Split up a large CSV file into smaller ones based on the computer name. (input: non-multiline CSV, profile: any)
+### `split-csv-timeline` command
+Split up a large CSV timeline into smaller ones based on the computer name. (input: non-multiline CSV, profile: any)
 
 
-#### `split-csv-files` command examples
+#### `split-csv-timeline` command examples
 
 ```bash
-takajo.exe split-csv-files -t ../hayabusa/timeline.csv
+takajo.exe split-csv-timeline -t ../hayabusa/timeline.csv
+```
+
+### `split-json-timeline` command
+Split up a large JSONL timeline into smaller ones based on the computer name.
+
+
+#### `split-json-timeline` command examples
+
+```bash
+takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl
+```
+
+## Stack Commands
+
+### `stack-remote-logons` command
+
+Creates a list of top accounts that logged into computers (input: JSONL, profile: standard)
+Not implemented yet.
+
+#### `stack-remote-logons` command examples
+
+```bash
+takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
 ```
 
 ## Sysmon Commands
