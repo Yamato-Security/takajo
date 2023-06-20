@@ -34,8 +34,8 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
                 childStairNum))
     return ret
 
-proc sysmonProcessTree(output: string, processGuid: string, quiet: bool = false,
-        timeline: string) =
+proc sysmonProcessTree(output: string = "", processGuid: string,
+        quiet: bool = false, timeline: string) =
     ## Sysmonのプロセスツリーを表示するためのプロシージャ
 
     # ロゴの表示
