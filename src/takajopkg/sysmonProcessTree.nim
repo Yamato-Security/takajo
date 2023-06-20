@@ -27,9 +27,9 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
         # 子プロセスの表示を行う
         var childIndentStr = childPreStairStr
         if len(p.children) == childNum + 1:
-            childIndentStr &= "  └"
+            childIndentStr &= "  └ "
         else:
-            childIndentStr &= "  ├"
+            childIndentStr &= "  ├ "
         ret = concat(ret, printIndentedProcessTree(children, childIndentStr,
                 childStairNum))
     return ret
