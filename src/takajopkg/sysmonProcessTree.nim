@@ -13,8 +13,8 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
 
     var ret: seq[string] = @[]
     ret = @[indent & p.procName & " (" & p.timeStamp & " / " &
-            p.processGUID &
-            " / " & p.parentProcessGUID & ")"]
+            p.processID &
+            " / " & p.processGUID & ")"]
 
     var childStairNum = stairNum + 1
     var childPreStairStr = ""
@@ -95,13 +95,13 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                 let process = processObject(
                         timeStamp: timeStamp,
                         procName: foundProcessTable["Proc"],
+                        processID: foundProcessTable["PID"],
                         processGUID: eventProcessGUID,
                         parentProcessGUID: foundProcessTable["ParentPGUID"])
                 let key = timeStamp & "-" & process.procName & "-" &
                         process.processGUID & "-" & process.parentProcessGUID
                 if not passGuid.contains(eventProcessGUID):
                     passGuid.incl(eventProcessGUID)
-                    passGuid.incl(process.parentProcessGUID)
                 if not addedProcess.contains(key):
                     processObjectTable[process.processGUID] = process
                     addedProcess.incl(key)
