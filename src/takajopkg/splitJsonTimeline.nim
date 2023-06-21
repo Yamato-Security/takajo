@@ -40,12 +40,12 @@ proc splitJsonTimeline( outputDir: string = "output", quiet: bool = false, timel
             filenameSequence.add(filename)
             var outputFile = open(filename, fmWrite)
             filesTable[computerName] = outputFile
-            outputFile.write(jsonLine)
+            outputFile.write(line)
             outputFile.write("\p")
             flushFile(outputFile)
         else:
             var outputFile = filesTable[computerName]
-            outputFile.write(jsonLine)
+            outputFile.write(line)
             outputFile.write("\p")
             flushFile(outputFile)
     bar.finish()
