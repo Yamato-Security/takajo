@@ -93,6 +93,12 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                                 jsonKey].getStr()
                     except KeyError:
                         foundProcessTable[foundKey] = ""
+                # PID is an integer so getStr will fail
+                try:
+                    let eventProcessID = jsonLine["Details"]["PID"].getInt()
+                    foundProcessTable["PID"] = $eventProcessID
+                except KeyError:
+                    foundProcessTable["PID"] = "No PID Found"
 
                 let process = processObject(
                         timeStamp: timeStamp,
