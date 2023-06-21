@@ -58,14 +58,16 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     var addedProcess = initHashSet[string]()
 
     for line in lines(timeline):
-        let jsonLine = parseJson(line)
-        let timeStamp = jsonLine["Timestamp"].getStr()
-        let channel = jsonLine["Channel"].getStr()
-        let eventId = jsonLine["EventID"].getInt()
-        let eventLevel = jsonLine["Level"].getStr()
+        let
+            jsonLine = parseJson(line)
+            timeStamp = jsonLine["Timestamp"].getStr()
+            channel = jsonLine["Channel"].getStr()
+            eventId = jsonLine["EventID"].getInt()
+            eventLevel = jsonLine["Level"].getStr()
+            ruleTitle = jsonLine["RuleTitle"].getStr()
         var eventProcessGUID = ""
         # Found a Sysmon 1 process creation event. This assumes info level events are enabled and there won't be more than one Sysmon 1 event for a process.
-        if channel == "Sysmon" and eventId == 1 and eventLevel == "info":
+        if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or ruleTitle == "Proc Exec (Sysmon Alert)"):
             try:
                 eventProcessGUID = jsonLine["Details"]["PGUID"].getStr()
             except KeyError:
