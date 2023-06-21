@@ -76,15 +76,14 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                                 "ParentPGUID"].getStr() in passGuid:
                 inc processesFoundCount
                 let keysToExtract = {
-                    "CmdLine": "Cmdline",
+                    #"CmdLine": "Cmdline",
                     "Proc": "Proc",
-                    "ParentCmdline": "ParentCmdline",
-                    "LogonID": "LID",
-                    "LogonGUID": "LGUID",
-                    "PID": "PID",
-                    "ParentPID": "ParentPID",
+                    #"ParentCmdline": "ParentCmdline",
+                    #"LogonID": "LID",
+                    #"LogonGUID": "LGUID",
+                    #"ParentPID": "ParentPID",
                     "ParentPGUID": "ParentPGUID",
-                    "Hashes": "Hashes"
+                    #"Hashes": "Hashes"
                 }
 
                 for (foundKey, jsonKey) in keysToExtract:
