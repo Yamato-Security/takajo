@@ -96,7 +96,7 @@ when isMainModule:
             help = {
                 "outputDir": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
-                "timeline": "CSV timeline created by Hayabusa",
+                "timeline": "JSONL timeline created by Hayabusa",
             }
         ],
         [
