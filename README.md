@@ -63,6 +63,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
       - [`stack-remote-logons` command examples](#stack-remote-logons-command-examples)
   - [Sysmon Commands](#sysmon-commands-1)
     - [`sysmon-process-hashes` command](#sysmon-process-hashes-command)
+      - [`sysmon-process-hashes` command examples](#sysmon-process-hashes-command-examples)
     - [`sysmon-process-tree` command](#sysmon-process-tree-command)
       - [`sysmon-process-tree` command examples](#sysmon-process-tree-command-examples)
   - [Timeline Commands](#timeline-commands-1)
@@ -73,6 +74,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [VirusTotal Commands](#virustotal-commands-1)
     - [`vt-domain-lookup` command](#vt-domain-lookup-command)
     - [`vt-hash-lookup` command](#vt-hash-lookup-command)
+      - [`vt-hash-lookup` command examples](#vt-hash-lookup-command-examples)
     - [`vt-ip-lookup` command](#vt-ip-lookup-command)
   - [Contribution](#contribution)
   - [Bug Submission](#bug-submission)
@@ -105,7 +107,7 @@ If you have Nim installed, you can compile from source with the following comman
 
 ```bash
 > nimble update
-> nimble build -d:release
+> nimble build -d:release -d:ssl
 ```
 
 # Command List
@@ -148,56 +150,70 @@ Not implemented yet.
 
 List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
 This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
-You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -p verbose -o timeline.csv`.
+You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <EVTX-DIR> -p verbose -o timeline.csv`.
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
 
-- `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
-- `-e, --evtx-dir ../hayabusa-sample-evtx`: The directory of `.evtx` files you scanned with Hayabusa.
+- `-t, --timeline <CSV-FILE>`: CSV timeline created by Hayabusa.
+- `-e, --evtx-dir <DIR>`: The directory of `.evtx` files you scanned with Hayabusa.
 
 Options:
 
-- `-c, --column-name CustomEvtxColumn`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
-- `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
+- `-c, --column-name <CUSTOM-EVTX-COLUMN>`: Optional: Specify a custom column name for the evtx column. Default is Hayabusa's default of `EvtxFile`.
+- `-o, --output <TXT-FILE>`: Save the results to a text file. The default is to print to screen.
 - `-q, --quiet`: Do not display logo.
 
 #### `list-undetected-evtx` command examples
 
 ```bash
-hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
+hayabusa.exe csv-timeline -d <EVTX-DIR> -p verbose -o timeline.csv
 takajo.exe list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx
 ```
 
 ### `list-unused-rules` command
 
 List up all of the `.yml` detection rules that did not detect anything. This is useful to help determine the reliablity of rules. That is, which rules are known to find malicious activity and which are still untested and need sample `.evtx` files.
-You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <dir> -p verbose -o timeline.csv`.
+You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a csv timeline. Example: `hayabusa.exe -d <EVTX-DIR> -p verbose -o timeline.csv`.
 You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
 
 Required options:
 
-- `-t, --timeline ../hayabusa/timeline.csv`: CSV timeline created by Hayabusa.
-- `-r, --rules-dir ../hayabusa/rules`: The directory of `.yml` rules files you used with Hayabusa.
+- `-t, --timeline <CSV-FILE>`: CSV timeline created by Hayabusa.
+- `-r, --rules-dir <DIR>`: The directory of `.yml` rules files you used with Hayabusa.
 
 Options:
 
-- `-c, --column-name CustomRuleFileColumn`: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
-- `-o, --output result.txt`: Save the results to a text file. The default is to print to screen.
+- `-c, --column-name <CUSTOM-RULE-FILE-COLUMN>`: Specify a custom column name for the rule file column. Default is Hayabusa's default of `RuleFile`.
+- `-o, --output <TXT-FILE>`: Save the results to a text file. The default is to print to screen.
 - `-q, --quiet`: Do not display logo.
 
 #### `list-unused-rules` command examples
 
 ```bash
-hayabusa.exe csv-timeline -d <dir> -p verbose -o timeline.csv
+hayabusa.exe csv-timeline -d <EVTX-DIR> -p verbose -o timeline.csv
 takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules
+```
+
+```bash
+takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules -o unused-rules.txt
 ```
 
 ## Split Commands
 
 ### `split-csv-timeline` command
+
 Split up a large CSV timeline into smaller ones based on the computer name. (input: non-multiline CSV, profile: any)
 
+Required options:
+
+- `-t, --timeline <CSV-FILE>`: CSV timeline created by Hayabusa.
+- `-o, --output <DIR>`: Directory to save the CSV results to.
+
+Options:
+
+- `-m, --makeMultiline`: Output fields in multiple lines.
+- `-q, --quiet`: Do not display logo.
 
 #### `split-csv-timeline` command examples
 
@@ -206,8 +222,17 @@ takajo.exe split-csv-timeline -t ../hayabusa/timeline.csv
 ```
 
 ### `split-json-timeline` command
+
 Split up a large JSONL timeline into smaller ones based on the computer name.
 
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-o, --output <DIR>`: Directory to save the JSONL results to.
+
+Options:
+
+- `-q, --quiet`: Do not display logo.
 
 #### `split-json-timeline` command examples
 
@@ -233,18 +258,40 @@ takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
 ### `sysmon-process-hashes` command
 
 Create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)
-Not yet implemented.
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-o, --output <BASE-NAME>`: Specify the base name to save the text results to.
+
+Options:
+
+- `-l, --level`: Specify the minimum level. Default: `high`
+- `-q, --quiet`: Do not display logo.
+
+#### `sysmon-process-hashes` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```bash
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+```
+
+Save the results to a CSV file:
+
+```bash
+takajo.exe sysmon-process-hashes -t ../hayabusa/timeline.jsonl -o hashes
+```
 
 ### `sysmon-process-tree` command
 
 Output the process tree of a certain process (input: JSONL, profile: standard)
-Not yet implemented.
 This command will print out the process tree of a suspicious or malicious process.
 
 Required options:
 
-- `-t, --timeline ../hayabusa/timeline.jsonl`: JSONL timeline created by Hayabusa.
-- `-o, --output process-tree.txt`: A text file to save the results to.
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-o, --output <TXT-FILE>`: A text file to save the results to.
 - `-p, --processGuid`: Sysmon process GUID
 
 Options:
@@ -256,7 +303,7 @@ Options:
 Prepare JSONL timeline with Hayabusa:
 
 ```bash
-hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
 ```
 
 Output results to screen:
@@ -287,8 +334,8 @@ This makes it easier to detect lateral movement, password guessing/spraying, pri
 
 Required options:
 
-- `-t, --timeline ../hayabusa/timeline.jsonl`: JSONL timeline created by Hayabusa.
-- `-o, --output logon-timeline.csv`: The CSV file to save the results to.
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-o, --output <CSV-FILE>`: The CSV file to save the results to.
 
 Options:
 
@@ -299,7 +346,7 @@ Options:
 Prepare JSONL timeline with Hayabusa:
 
 ```bash
-hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
 ```
 
 Save logon timeline to a CSV file:
@@ -314,9 +361,9 @@ Create a CSV timeline of suspicious processes (input: JSONL, profile: standard)
 
 Required options:
 
-- `-l, --level`: Specify the minimum alert level.
-- `-t, --timeline ../hayabusa/timeline.jsonl`: JSONL timeline created by Hayabusa.
-- `-o, --output logon-timeline.csv`: The CSV file to save the results to.
+- `-l, --level <LEVEL>`: Specify the minimum alert level.
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-o, --output <CSV-FILE>`: The CSV file to save the results to.
 
 Options:
 
@@ -327,7 +374,7 @@ Options:
 Prepare JSONL timeline with Hayabusa:
 
 ```bash
-hayabusa.exe json-timeline -d <dir> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
 ```
 
 Search for processes that had an alert level of high or above and output results to screen:
@@ -351,15 +398,33 @@ takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicou
 ## VirusTotal Commands
 
 ### `vt-domain-lookup` command
-Look up a list of domains on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
+Look up a list of domains on VirusTotal (input: JSONL, profile: standard)
 Not yet implemented.
 
 ### `vt-hash-lookup` command
-Look up a list of hashes on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
-Not yet implemented.
+
+Look up a list of hashes on VirusTotal (input: JSONL, profile: standard)
+
+Required options:
+
+- `-a, --apiKey <API-KEY>`: Your API key.
+- `--hashList <HASH-LIST>`: A text file of hashes.
+
+Options:
+
+- `-j, --jsonOutput <JSON-FILE>`: Output all of the JSON responses from VirusTotal to a JSON file.
+- `-o, --output <CSV-FILE`: Save the results to a CSV file.
+- `-r, --rateLimit <NUMBER>`: The rate per minute to send requests. Default: `4`
+- `-q, --quiet`: Do not display logo.
+
+#### `vt-hash-lookup` command examples
+
+```bash
+takajo.exe vt-hash-lookup -a xxx --hashlist MD5-hashes.txt -o vt-hash-lookup.csv -r 1000 --jsonOutput vt-hash-lookup.json
+```
 
 ### `vt-ip-lookup` command
-Look up a list of IP addresses on VirusTotal and report on malicious ones (input: JSONL, profile: standard)
+Look up a list of IP addresses on VirusTotal (input: JSONL, profile: standard)
 Not yet implemented.
 
 ## Contribution

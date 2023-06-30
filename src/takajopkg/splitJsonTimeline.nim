@@ -1,4 +1,4 @@
-proc splitJsonTimeline( outputDir: string = "output", quiet: bool = false, timeline: string) =
+proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -12,10 +12,10 @@ proc splitJsonTimeline( outputDir: string = "output", quiet: bool = false, timel
     echo ""
     echo "Splitting the Hayabusa JSONL timeline into separate timelines according to the computer name."
 
-    if not dirExists(outputDir):
+    if not dirExists(output):
         echo ""
-        echo "The directory '" & outputDir & "' does not exist so will be created."
-        createDir(outputDir)
+        echo "The directory '" & output & "' does not exist so will be created."
+        createDir(output)
     echo ""
 
     var
@@ -36,7 +36,7 @@ proc splitJsonTimeline( outputDir: string = "output", quiet: bool = false, timel
         let computerName = jsonLine["Computer"].getStr()
 
         if not filesTable.hasKey(computerName):
-            let filename = outputDir & "/" & computerName & "-HayabusaResults.jsonl"
+            let filename = output & "/" & computerName & "-HayabusaResults.jsonl"
             filenameSequence.add(filename)
             var outputFile = open(filename, fmWrite)
             filesTable[computerName] = outputFile

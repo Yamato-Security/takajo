@@ -1,4 +1,4 @@
-proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output", quiet: bool = false, timeline: string) =
+proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -9,10 +9,10 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
     echo ""
     echo "Splitting the Hayabusa CSV timeline into separate timelines according to the computer name. Please wait."
 
-    if not dirExists(outputDir):
+    if not dirExists(output):
         echo ""
-        echo "The directory '" & outputDir & "' does not exist so will be created."
-        createDir(outputDir)
+        echo "The directory '" & output & "' does not exist so will be created."
+        createDir(output)
     echo ""
 
     var
@@ -40,7 +40,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, outputDir: string = "output",
         # If it is the first time we see this computer name, then record it in a str sequence, create a file,
         # write the CSV headers and current row.
         if not filesTable.hasKey(computerName):
-            let filename = outputDir & "/" & computerName & "-HayabusaResults.csv"
+            let filename = output & "/" & computerName & "-HayabusaResults.csv"
             filenameSequence.add(filename)
             var outputFile = open(filename, fmWrite)
             filesTable[computerName] = outputFile

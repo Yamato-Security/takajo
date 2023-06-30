@@ -1,6 +1,7 @@
 import algorithm
 import cligen
 import json
+import httpclient
 import sets
 import sequtils
 import strformat
@@ -32,18 +33,19 @@ when isMainModule:
     const example_list_network_connections = "  list-network-connections...\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
-    const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] [-o Case-1]\p"
-    const example_sysmon_process_hashes = "  sysmon-process-hashes...\p"
+    const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] [-o case-1]\p"
+    const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl [-o case-1-json]]\p"
+    const example_sysmon_process_hashes = "  sysmon-process-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [-l medium] [-o suspicious-processes.txt]\p"
     const example_vt_domain_lookup = "  vt-domain-lookup...\p"
-    const example_vt_hash_lookup = "  vt-hash-lookup...\p"
+    const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o output.txt --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup...\p"
 
     clCfg.useMulti = "Version: 2.0.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples & example_list_logon_summary & example_list_network_connections & example_list_undetected_evtx & example_list_unused_rules &
-        example_sysmon_process_hashes & example_split_csv_timeline & example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
+        example_sysmon_process_hashes & example_split_csv_timeline & example_split_json_timeline & example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
@@ -85,7 +87,7 @@ when isMainModule:
             doc = "split up a large CSV file into smaller ones based on the computer name (input: non-multiline CSV, profile: any)",
             help = {
                 "makeMultiline": "output fields in multiple lines",
-                "outputDir": "output directory (default: output)",
+                "output": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
                 "timeline": "CSV timeline created by Hayabusa",
             }
@@ -94,7 +96,7 @@ when isMainModule:
             splitJsonTimeline, cmdName = "split-json-timeline",
             doc = "split up a large JSONL timeline into smaller ones based on the computer name (input: JSONL, profile: any)",
             help = {
-                "outputDir": "output directory (default: output)",
+                "output": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",
             }
@@ -165,7 +167,9 @@ when isMainModule:
             help = {
                 "apiKey": "your VirusTotal API key",
                 "hashList": "a list of hashes",
+                "jsonOutput": "save all responses to a JSON file",
                 "output": "save results to a text file",
+                "rateLimit": "set the rate per minute for requests",
                 "quiet": "do not display the launch banner",
             }
         ],
