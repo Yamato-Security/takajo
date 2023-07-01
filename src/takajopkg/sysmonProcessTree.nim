@@ -35,11 +35,27 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
                 childStairNum))
     return ret
 
+proc moveProcessObjectToChild(mvSourceProcess: processObject,
+        searchProcess: var processObject,
+                outputProcess: var processObject) =
+    ## Procedure for moving a process object to a child process
+
+    var searchChildrenProcess = searchProcess.children
+    for idx, childProcess in searchChildrenProcess:
+        if childProcess.processGUID == mvSourceProcess.parentProcessGUID:
+            # Added to a separate table because assertion errors occur when the number of elements changes during iteration
+            outputProcess.children[idx].children.add(mvSourceProcess)
+            return
+        else:
+            var child = childProcess
+            moveProcessObjectToChild(mvSourceProcess, child,
+                    outputProcess.children[idx])
+
 proc sysmonProcessTree(output: string = "", processGuid: string,
         quiet: bool = false, timeline: string) =
-    ## Sysmonのプロセスツリーを表示するためのプロシージャ
+    ## Procedure for displaying Sysmon's process tree
 
-    # ロゴの表示
+    # Display the logo
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
@@ -47,9 +63,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     echo "Running the Process Tree module"
     echo ""
 
-    var processObjectTable = newTable[string, processObject]()
-
-    #var seqOfResultsTables: seq[Table[string, string]]
+    var stockedProcessObjectTable = newTable[string, processObject]()
 
     var processesFoundCount = 0
     var foundProcessTable = initTable[string, string]()
@@ -58,6 +72,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     var addedProcess = initHashSet[string]()
 
     for line in lines(timeline):
+        var processObjectTable = newTable[string, processObject]()
         let
             jsonLine = parseJson(line)
             timeStamp = jsonLine["Timestamp"].getStr()
@@ -67,7 +82,8 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             ruleTitle = jsonLine["RuleTitle"].getStr()
         var eventProcessGUID = ""
         # Found a Sysmon 1 process creation event. This assumes info level events are enabled and there won't be more than one Sysmon 1 event for a process.
-        if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or ruleTitle == "Proc Exec (Sysmon Alert)"):
+        if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or
+                ruleTitle == "Proc Exec (Sysmon Alert)"):
             try:
                 eventProcessGUID = jsonLine["Details"]["PGUID"].getStr()
             except KeyError:
@@ -105,23 +121,44 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                         processID: foundProcessTable["PID"],
                         processGUID: eventProcessGUID,
                         parentProcessGUID: foundProcessTable["ParentPGUID"])
-                let key = timeStamp & "-" & process.procName & "-" &
-                        process.processGUID & "-" & process.parentProcessGUID
+                let key = timeStamp & "-" & process.processID
+                if addedProcess.contains(key):
+                    continue
+
                 if not passGuid.contains(eventProcessGUID):
                     passGuid.incl(eventProcessGUID)
                 if not addedProcess.contains(key):
                     processObjectTable[process.processGUID] = process
                     addedProcess.incl(key)
+                # Link child processes to their parents
+                if len(stockedProcessObjectTable) != 0 and
+                            process.parentProcessGUID in stockedProcessObjectTable:
+                    if process.parentProcessGUID == processGUID:
+                        stockedProcessObjectTable[processGUID].children.add(process)
+                    elif process.processGUID == processGUID:
+                        stockedProcessObjectTable[processGUID] = process
+                    else:
+                        stockedProcessObjectTable[
+                                process.parentProcessGUID].children.add(process)
+                else:
+                    stockedProcessObjectTable[process.processGUID] = process
 
-                    # Link child processes to their parents
-                    for id, process in pairs(processObjectTable):
-                        if process.parentProcessGUID in processObjectTable:
-                            processObjectTable[
-                                    process.parentProcessGUID].children.add(process)
     var outputStrSeq: seq[string] = @[]
-    for id, process in pairs(processObjectTable):
-        if not processObjectTable.contains(process.parentProcessGUID): # Root process
-            outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(process))
+    var outputProcessObjectTable = stockedProcessObjectTable
+
+    # Sort process tree
+    for process in stockedProcessObjectTable.keys:
+        if process == processGuid:
+            continue
+        else:
+            moveProcessObjectToChild(stockedProcessObjectTable[process],
+                    stockedProcessObjectTable[processGuid],
+                    outputProcessObjectTable[processGuid])
+
+    # Display process tree for the specified process root
+    if outputProcessObjectTable.hasKey(processGuid):
+        outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(
+                outputProcessObjectTable[processGuid]))
 
     if output != "":
         let f = open(output, fmWrite)
