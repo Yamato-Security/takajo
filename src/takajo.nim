@@ -2,6 +2,7 @@ import algorithm
 import cligen
 import json
 import httpclient
+import re
 import sets
 import sequtils
 import strformat
@@ -12,12 +13,13 @@ import times
 import os
 import progress
 import takajopkg/general
-include takajopkg/listNetworkConnections
+include takajopkg/listDomains
+include takajopkg/listIpAddresses
 include takajopkg/listUndetectedEvtxFiles
 include takajopkg/listUnusedRules
 include takajopkg/splitCsvTimeline
 include takajopkg/splitJsonTimeline
-include takajopkg/stackRemoteLogons
+include takajopkg/stackLogons
 include takajopkg/sysmonProcessHashes
 include takajopkg/sysmonProcessTree
 include takajopkg/timelineLogon
@@ -29,12 +31,13 @@ include takajopkg/vtHashLookup
 when isMainModule:
     clCfg.version = "2.0.0-dev"
     const examples = "Examples:\p"
-    const example_list_logon_summary = "  list-logon-summary...\p"
-    const example_list_network_connections = "  list-network-connections...\p"
+    const example_list_domains = "  list-domains...\p"
+    const example_list_ip_addresses = "  list-ip-addresses...\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] [-o case-1]\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl [-o case-1-json]]\p"
+    const example_stack_logons = "  stack-logons...\p"
     const example_sysmon_process_hashes = "  sysmon-process-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
@@ -44,18 +47,30 @@ when isMainModule:
     const example_vt_ip_lookup = "  vt-ip-lookup...\p"
 
     clCfg.useMulti = "Version: 2.0.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
-        examples & example_list_logon_summary & example_list_network_connections & example_list_undetected_evtx & example_list_unused_rules &
-        example_sysmon_process_hashes & example_split_csv_timeline & example_split_json_timeline & example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
+        examples & example_list_domains & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
+        example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_hashes & example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
     dispatchMulti(
         [
-            listNetworkConnections, cmdName = "list-network-connections",
-            doc = "create a list of unique target and/or source IP addresses (input: JSONL, profile: standard)",
+            listDomains, cmdName = "list-domains",
+            doc = "create a list of unique domains (input: JSONL, profile: standard)",
             help = {
                 "output": "save results to a text file",
+                "quiet": "do not display the launch banner",
+                "timeline": "JSONL timeline created by Hayabusa",
+            }
+        ],
+        [
+            listIpAddresses, cmdName = "list-ip-addresses",
+            doc = "create a list of unique target and/or source IP addresses (input: JSONL, profile: standard)",
+            help = {
+                "inbound": "include inbound traffic",
+                "outbound": "include outbound traffic",
+                "output": "save results to a text file",
+                "privateIp": "include private IP addresses",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",
             }
@@ -102,8 +117,8 @@ when isMainModule:
             }
         ],
         [
-            stackRemoteLogons, cmdName = "stack-remote-logons",
-            doc = "stack remote logons by target user, target computer, source IP address and source computer (input: JSONL, profile: standard)",
+            stackLogons, cmdName = "stack-logons",
+            doc = "stack logons by target user, target computer, source IP address and source computer (input: JSONL, profile: standard)",
             help = {
                 "output": "save results to a text file",
                 "quiet": "do not display the launch banner",

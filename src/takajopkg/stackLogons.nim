@@ -3,7 +3,7 @@
 # Save to CSV
 # Remove local logins
 
-proc stackRemoteLogons(output: string, quiet: bool = false, timeline: string) =
+proc stackLogons(output: string, quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
