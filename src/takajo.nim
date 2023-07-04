@@ -31,7 +31,7 @@ include takajopkg/vtHashLookup
 when isMainModule:
     clCfg.version = "2.0.0-dev"
     const examples = "Examples:\p"
-    const example_list_domains = "  list-domains...\p"
+    const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl -o domains.txt\p"
     const example_list_ip_addresses = "  list-ip-addresses...\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
@@ -42,7 +42,7 @@ when isMainModule:
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [-l medium] [-o suspicious-processes.txt]\p"
-    const example_vt_domain_lookup = "  vt-domain-lookup...\p"
+    const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o output.txt --jsonOutput responses.json\p"
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o output.txt --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup...\p"
 
@@ -168,7 +168,7 @@ when isMainModule:
         ],
         [
             vtDomainLookup, cmdName = "vt-domain-lookup",
-            doc = "look up a list of domains on VirusTotal and report on malicious ones (input: text file)",
+            doc = "look up a list of domains on VirusTotal (input: text file)",
             help = {
                 "apiKey": "your VirusTotal API key",
                 "domainList": "a list of domains",
@@ -178,7 +178,7 @@ when isMainModule:
         ],
         [
             vtHashLookup, cmdName = "vt-hash-lookup",
-            doc = "look up a list of hashes on VirusTotal and report on malicious ones (input: text file)",
+            doc = "look up a list of hashes on VirusTotal (input: text file)",
             help = {
                 "apiKey": "your VirusTotal API key",
                 "hashList": "a list of hashes",
@@ -190,7 +190,7 @@ when isMainModule:
         ],
         [
             vtIpLookup, cmdName = "vt-ip-lookup",
-            doc = "look up a list of IP addresses on VirusTotal and report on malicious ones (input: text file)",
+            doc = "look up a list of IP addresses on VirusTotal (input: text file)",
             help = {
                 "apiKey": "your VirusTotal API key",
                 "ipList": "a list of IP addresses",

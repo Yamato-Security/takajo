@@ -1,5 +1,7 @@
 # Todo: add more info useful for triage, trusted_verdict, signature info, sandbox results etc...
 # https://blog.virustotal.com/2021/08/introducing-known-distributors.html
+# TODO: make asynchronous
+# Add output not found to txt file
 proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", output: string = "", rateLimit: int = 4, quiet: bool = false) =
     let startTime = epochTime()
     if not quiet:
@@ -22,8 +24,8 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
     echo ""
 
     let
-        timePerHash = 60.0 / float(rateLimit) # time taken to process one hash
-        estimatedTimeInSeconds = float(len(lines)) * timePerHash
+        timePerRequest = 60.0 / float(rateLimit) # time taken for one request
+        estimatedTimeInSeconds = float(len(lines)) * timePerRequest
         estimatedHours = int(estimatedTimeInSeconds) div 3600
         estimatedMinutes = (int(estimatedTimeInSeconds) mod 3600) div 60
         estimatedSeconds = int(estimatedTimeInSeconds) mod 60
@@ -95,7 +97,7 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
 
         seqOfResultsTables.add(singleResultTable)
         # Sleep to respect the rate limit.
-        sleep(int(timePerHash * 1000)) # Convert to milliseconds.
+        sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
 
     bar.finish()
     echo ""

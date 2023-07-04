@@ -1,4 +1,33 @@
-# TODO: Gather domain info from xxx events as well.
+proc getJsonValue(jsonResponse: JsonNode, keys: seq[string], default: string = "Unknown"): string =
+    var value = jsonResponse
+    for key in keys:
+        try:
+            value = value[key]
+        except KeyError:
+            return default
+    # Check if the value is an integer or a string
+    if value.kind == JInt:
+        return $value.getInt()  # Convert to string
+    elif value.kind == JString:
+        return value.getStr()
+    else:
+        return default  # If it's neither a string nor an integer, return default
+
+proc getJsonDate(jsonResponse: JsonNode, keys: seq[string]): string =
+    try:
+        var node = jsonResponse
+        for key in keys:
+            node = node[key]
+        let epochDate = fromUnix(node.getInt()).utc
+        return epochDate.format("yyyy-MM-dd HH:mm:ss")
+    except KeyError:
+        return "Unknown"
+
+# TODO:
+# Make asynchronous
+# Handle OSError exception when the network gets disconnected while running
+# Add categories and SAN info
+# Add output not found to txt file
 proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "", output: string, rateLimit: int = 4, quiet: bool = false) =
     let startTime = epochTime()
     if not quiet:
@@ -21,8 +50,8 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
     echo ""
 
     let
-        timePerHash = 60.0 / float(rateLimit) # time taken to process one hash
-        estimatedTimeInSeconds = float(len(lines)) * timePerHash
+        timePerRequest = 60.0 / float(rateLimit) # time taken for one request
+        estimatedTimeInSeconds = float(len(lines)) * timePerRequest
         estimatedHours = int(estimatedTimeInSeconds) div 3600
         estimatedMinutes = (int(estimatedTimeInSeconds) mod 3600) div 60
         estimatedSeconds = int(estimatedTimeInSeconds) mod 60
@@ -33,79 +62,76 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
     client.headers = newHttpHeaders({ "x-apikey": apiKey })
 
     var
-        totalMaliciousHashCount = 0
+        totalMaliciousDomainCount = 0
         bar = newProgressBar(total = len(lines))
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
 
     bar.start()
 
-    for hash in lines:
+    for domain in lines:
         bar.increment()
-        let response = client.request("https://www.virustotal.com/api/v3/files/" & hash, httpMethod = HttpGet)
+        let response = client.request("https://www.virustotal.com/api/v3/domains/" & domain, httpMethod = HttpGet)
         var singleResultTable = newTable[string, string]()
-        singleResultTable["Hash"] = hash
-        singleResultTable["Link"] = "https://www.virustotal.com/gui/file/" & hash
+        singleResultTable["Domain"] = domain
+        singleResultTable["Link"] = "https://www.virustotal.com/gui/domain/" & domain
         if response.status == $Http200:
             singleResultTable["Response"] = "200"
             let jsonResponse = parseJson(response.body)
             jsonResponses.add(jsonResponse)
-            # Creation Date
-            try:
-                let creationDateInt = jsonResponse["data"]["attributes"]["creation_date"].getInt()
-                let epochCreationDate = fromUnix(creationDateInt).utc
-                singleResultTable["CreationDate"] = epochCreationDate.format("yyyy-MM-dd HH:mm:ss")
-            except KeyError:
-                singleResultTable["CreationDate"] = "Unknown"
-            # First In The Wild Date
-            try:
-                let firstITWDateInt = jsonResponse["data"]["attributes"]["first_seen_itw_date"].getInt()
-                let epochFirstITWDate = fromUnix(firstITWDateInt).utc
-                singleResultTable["FirstInTheWildDate"] = epochFirstITWDate.format("yyyy-MM-dd HH:mm:ss")
-            except KeyError:
-                singleResultTable["FirstInTheWildDate"] = "Unknown"
-            # First Submission
-            try:
-                let firstSubmissionDateInt = jsonResponse["data"]["attributes"]["first_submission_date"].getInt()
-                let epochFirstSubmissionDate = fromUnix(firstSubmissionDateInt).utc
-                singleResultTable["FirstSubmissionDate"] = epochFirstSubmissionDate.format("yyyy-MM-dd HH:mm:ss")
-            except KeyError:
-                singleResultTable["FirstSubmissionDate"] = "Unknown"
-            # Last Submission
-            try:
-                let lastSubmissionDateInt = jsonResponse["data"]["attributes"]["last_submission_date"].getInt()
-                let epochLastSubmissionDate = fromUnix(lastSubmissionDateInt).utc
-                singleResultTable["LastSubmissionDate"] = epochLastSubmissionDate.format("yyyy-MM-dd HH:mm:ss")
-            except KeyError:
-                singleResultTable["LastSubmissionDate"] = "Unknown"
-            singleResultTable["MaliciousCount"] = $jsonResponse["data"]["attributes"]["last_analysis_stats"]["malicious"].getInt()
-            singleResultTable["HarmlessCount"] = $jsonResponse["data"]["attributes"]["last_analysis_stats"]["harmless"].getInt()
-            singleResultTable["SuspiciousCount"] = $jsonResponse["data"]["attributes"]["last_analysis_stats"]["suspicious"].getInt()
+
+            # Parse values that need epoch time to human readable time
+            singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
+            singleResultTable["LastAnalysisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_analysis_date"])
+            singleResultTable["LastModifiedDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_modification_date"])
+            singleResultTable["LastWhoisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_submission_date"])
+
+            # Parse simple data
+            singleResultTable["MaliciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "malicious"])
+            singleResultTable["HarmlessCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "harmless"])
+            singleResultTable["SuspiciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "suspicious"])
+            singleResultTable["UndetectedCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "undetected"])
+            singleResultTable["Reputation"] = getJsonValue(jsonResponse, @["data", "attributes", "reputation"])
+            singleResultTable["Registrar"] = getJsonValue(jsonResponse, @["data", "attributes", "registrar"])
+            singleResultTable["WhoisInfo"] = getJsonValue(jsonResponse, @["data", "attributes", "whois"])
+            singleResultTable["CommunityVotesHarmless"] = getJsonValue(jsonResponse, @["data", "attributes", "total_votes", "harmless"])
+            singleResultTable["CommunityVotesMalicious"] = getJsonValue(jsonResponse, @["data", "attributes", "total_votes", "malicious"])
+            singleResultTable["SSL-ValidAfter"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "not_before"])
+            singleResultTable["SSL-ValidUntil"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "not_after"])
+            singleResultTable["SSL-Issuer"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "O"])
+            singleResultTable["SSL-IssuerCountry"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "C"])
+
             # If it was found to be malicious
             if parseInt(singleResultTable["MaliciousCount"]) > 0:
-                inc totalMaliciousHashCount
-                echo "\pFound malicious hash: " & hash & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
+                inc totalMaliciousDomainCount
+                echo "\pFound malicious domain: " & domain & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
+
+        # If we get a 404 not found
         elif response.status == $Http404:
-            echo "\pHash not found: ", hash
+            echo "\pDomain not found: ", domain
             singleResultTable["Response"] = "404"
         else:
-            echo "\pUnknown error: ", response.status, " - " & hash
+            echo "\pUnknown error: ", response.status, " - " & domain
             singleResultTable["Response"] = response.status
 
         seqOfResultsTables.add(singleResultTable)
+
         # Sleep to respect the rate limit.
-        sleep(int(timePerHash * 1000)) # Convert to milliseconds.
+        sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
 
     bar.finish()
+
     echo ""
-    echo "Finished querying hashes"
-    echo "Malicious hashes found: ", totalMaliciousHashCount
+    echo "Finished querying domains"
+    echo "Malicious domains found: ", totalMaliciousDomainCount
     # Print elapsed time
 
     # If saving to a file
     if output != "":
         var outputFile = open(output, fmWrite)
-        let header = ["Hash", "Response", "FirstInTheWildDate", "FirstSubmissionDate", "LastSubmissionDate", "MaliciousCount", "HarmlessCount", "SuspiciousCount", "Link"]
+        let header = ["Domain", "Response", "LastAnalysisDate", "LastModifiedDate", "LastWhoisDate", "MaliciousCount", "HarmlessCount",
+            "SuspiciousCount", "UndetectedCount", "CommunityVotesHarmless", "CommunityVotesMalicious", "Reputation", "Registrar",
+            "SSL-ValidAfter", "SSL-ValidUntil", "SSL-Issuer", "SSL-IssuerCountry", "Link"]
 
         ## Write CSV header
         for h in header:
