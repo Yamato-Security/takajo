@@ -1,28 +1,3 @@
-proc getJsonValue(jsonResponse: JsonNode, keys: seq[string], default: string = "Unknown"): string =
-    var value = jsonResponse
-    for key in keys:
-        try:
-            value = value[key]
-        except KeyError:
-            return default
-    # Check if the value is an integer or a string
-    if value.kind == JInt:
-        return $value.getInt()  # Convert to string
-    elif value.kind == JString:
-        return value.getStr()
-    else:
-        return default  # If it's neither a string nor an integer, return default
-
-proc getJsonDate(jsonResponse: JsonNode, keys: seq[string]): string =
-    try:
-        var node = jsonResponse
-        for key in keys:
-            node = node[key]
-        let epochDate = fromUnix(node.getInt()).utc
-        return epochDate.format("yyyy-MM-dd HH:mm:ss")
-    except KeyError:
-        return "Unknown"
-
 # TODO:
 # Make asynchronous
 # Handle OSError exception when the network gets disconnected while running

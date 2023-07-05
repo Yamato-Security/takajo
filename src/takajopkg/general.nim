@@ -1,4 +1,5 @@
 import json
+import re
 import std/os
 import std/parsecsv
 import std/sequtils
@@ -19,6 +20,37 @@ proc outputLogo*(): string =
   by Yamato Security
 """
     return logo
+
+proc getJsonValue*(jsonResponse: JsonNode, keys: seq[string], default: string = "Unknown"): string =
+    var value = jsonResponse
+    for key in keys:
+        if value.kind == JObject and value.hasKey(key):
+            value = value[key]
+        else:
+            return default
+        #[
+        try:
+            value = value[key]
+        except KeyError:
+            return default]#
+    # Check if the value is an integer or a string
+    if value.kind == JInt:
+        return $value.getInt()  # Convert to string
+    elif value.kind == JString:
+        return value.getStr()
+    else:
+        return default  # If it's neither a string nor an integer, return default
+
+
+proc getJsonDate*(jsonResponse: JsonNode, keys: seq[string]): string =
+    try:
+        var node = jsonResponse
+        for key in keys:
+            node = node[key]
+        let epochDate = fromUnix(node.getInt()).utc
+        return epochDate.format("yyyy-MM-dd HH:mm:ss")
+    except KeyError:
+        return "Unknown"
 
 proc getUnlistedSeq*(targetSeq: seq[string], compareSeq: seq[string]): seq[string] =
     ## get element not in compareSeq
@@ -238,3 +270,53 @@ proc isMinLevel*(levelInLog: string, userSetLevel: string): bool =
             return levelInLog == "crit" or levelInLog == "high" or levelInLog == "med" or levelInLog == "low" or levelInLog == "info"
         else:
             return false
+
+proc isPrivateIP*(ip: string): bool =
+  let
+    ipv4Private = re"^(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(192\.168\.\d{1,3}\.\d{1,3})$|^(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
+    ipv4MappedIPv6Private = re"^::ffff:(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^::ffff:(192\.168\.\d{1,3}\.\d{1,3})$|^::ffff:(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^::ffff:(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
+    ipv6Private = re"^fd[0-9a-f]{2}:|^fe80:"
+
+  if ip =~ ipv4Private or ip =~ ipv4MappedIPv6Private or ip =~ ipv6Private:
+    return true
+  else:
+    return false
+
+proc isMulticast*(address: string): bool =
+    # Define regex for IPv4 multicast addresses
+    let ipv4MulticastPattern = re"^(224\.0\.0\.0|22[5-9]\.|23[0-9]\.)"
+
+    # Define regex for IPv6 multicast addresses
+    let ipv6MulticastPattern = re"(?i)^ff[0-9a-f]{2}:"
+    # check if the address matches either of the multicast patterns
+    if address.find(ipv4MulticastPattern) >= 0 or address.find(ipv6MulticastPattern) >= 0:
+        return true
+    return false
+
+proc isLoopback*(address: string): bool =
+    # Define regex for IPv4 loopback addresses
+    let ipv4LoopbackPattern = re"^127\.0\.0\.1$"
+
+    # Define regex for IPv6 loopback addresses
+    let ipv6LoopbackPattern = re"^(?:0*:)*?:?0*1$"
+
+    # Check if the address matches either of the loopback patterns
+    if address.find(ipv4LoopbackPattern) >= 0 or address.find(ipv6LoopbackPattern) >= 0:
+        return true
+    return false
+
+proc isIpAddress*(s: string): bool =
+    let ipRegex = re(r"\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}")
+    return s.find(ipRegex) != -1
+
+proc extractDomain*(domain: string): string =
+    let doubleTLDs = ["co.jp", "co.uk", "com.au", "org.au", "net.au", "com.br", "net.br", "com.cn", "net.cn",
+        "com.mx", "net.mx", "ac.nz", "co.nz", "net.nz", "co.za", "net.za", "co.in", "net.in", "ac.uk", "gov.uk"]
+    let parts = domain.split('.')
+    if parts.len >= 3:
+        let lastTwo = parts[^2] & '.' & parts[^1]
+        if doubleTLDs.contains(lastTwo):
+            return parts[^3] & '.' & lastTwo
+    if parts.len >= 2:
+        return parts[^2] & '.' & parts[^1]
+    return domain

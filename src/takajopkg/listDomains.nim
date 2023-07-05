@@ -1,21 +1,6 @@
-let doubleTLDs = ["co.jp", "co.uk", "com.au", "org.au", "net.au", "com.br", "net.br", "com.cn", "net.cn", "com.mx", "net.mx", "ac.nz", "co.nz", "net.nz", "co.za", "net.za", "co.in", "net.in", "ac.uk", "gov.uk"]
-
-proc isIpAddress(s: string): bool =
-    let ipRegex = re(r"\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}")
-    return s.find(ipRegex) != -1
-
-proc extractDomain(domain: string): string =
-    let parts = domain.split('.')
-    if parts.len >= 3:
-        let lastTwo = parts[^2] & '.' & parts[^1]
-        if doubleTLDs.contains(lastTwo):
-            return parts[^3] & '.' & lastTwo
-    if parts.len >= 2:
-        return parts[^2] & '.' & parts[^1]
-    return domain
-
 # TODO: List up domain info from DNS Server and Client events
 proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, output: string, quiet: bool = false, timeline: string) =
+
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
