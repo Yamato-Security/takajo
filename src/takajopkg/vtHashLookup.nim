@@ -108,7 +108,7 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
     # If saving to a file
     if output != "":
         var outputFile = open(output, fmWrite)
-        let header = ["Hash", "Response", "FirstInTheWildDate", "FirstSubmissionDate", "LastSubmissionDate", "MaliciousCount", "HarmlessCount", "SuspiciousCount", "Link"]
+        let header = ["Response", "Hash", "FirstInTheWildDate", "FirstSubmissionDate", "LastSubmissionDate", "MaliciousCount", "HarmlessCount", "SuspiciousCount", "Link"]
 
         ## Write CSV header
         for h in header:

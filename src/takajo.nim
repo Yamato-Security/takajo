@@ -9,6 +9,7 @@ import strutils
 import tables
 import terminal
 import times
+import uri
 import os
 import progress
 import takajopkg/general

@@ -46,7 +46,7 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
 
     for domain in lines:
         bar.increment()
-        let response = client.request("https://www.virustotal.com/api/v3/domains/" & domain, httpMethod = HttpGet)
+        let response = client.request("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain), httpMethod = HttpGet)
         var singleResultTable = newTable[string, string]()
         singleResultTable["Domain"] = domain
         singleResultTable["Link"] = "https://www.virustotal.com/gui/domain/" & domain
@@ -59,24 +59,24 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
             singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
             singleResultTable["LastAnalysisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_analysis_date"])
             singleResultTable["LastModifiedDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_modification_date"])
-            singleResultTable["LastWhoisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_submission_date"])
+            singleResultTable["LastWhoisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "whois_date"])
 
             # Parse simple data
             singleResultTable["MaliciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "malicious"])
             singleResultTable["HarmlessCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "harmless"])
             singleResultTable["SuspiciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "suspicious"])
             singleResultTable["UndetectedCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "undetected"])
+            singleResultTable["CommunityVotesHarmless"] = getJsonValue(jsonResponse, @["data", "attributes", "total_votes", "harmless"])
+            singleResultTable["CommunityVotesMalicious"] = getJsonValue(jsonResponse, @["data", "attributes", "total_votes", "malicious"])
             singleResultTable["Reputation"] = getJsonValue(jsonResponse, @["data", "attributes", "reputation"])
             singleResultTable["Registrar"] = getJsonValue(jsonResponse, @["data", "attributes", "registrar"])
             singleResultTable["WhoisInfo"] = getJsonValue(jsonResponse, @["data", "attributes", "whois"])
-            singleResultTable["CommunityVotesHarmless"] = getJsonValue(jsonResponse, @["data", "attributes", "total_votes", "harmless"])
-            singleResultTable["CommunityVotesMalicious"] = getJsonValue(jsonResponse, @["data", "attributes", "total_votes", "malicious"])
             singleResultTable["SSL-ValidAfter"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "not_before"])
             singleResultTable["SSL-ValidUntil"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "not_after"])
             singleResultTable["SSL-Issuer"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "O"])
             singleResultTable["SSL-IssuerCountry"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "C"])
 
-            # If it was found to be malicious
+            # If it was found to be malicious, print to screen an alert
             if parseInt(singleResultTable["MaliciousCount"]) > 0:
                 inc totalMaliciousDomainCount
                 echo "\pFound malicious domain: " & domain & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
@@ -104,8 +104,8 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
     # If saving to a file
     if output != "":
         var outputFile = open(output, fmWrite)
-        let header = ["Domain", "Response", "LastAnalysisDate", "LastModifiedDate", "LastWhoisDate", "MaliciousCount", "HarmlessCount",
-            "SuspiciousCount", "UndetectedCount", "CommunityVotesHarmless", "CommunityVotesMalicious", "Reputation", "Registrar",
+        let header = ["Response", "Domain", "CreationDate", "LastAnalysisDate", "LastModifiedDate", "LastWhoisDate", "MaliciousCount", "HarmlessCount",
+            "SuspiciousCount", "UndetectedCount", "CommunityVotesHarmless", "CommunityVotesMalicious", "Reputation", "Registrar", "WhoisInfo",
             "SSL-ValidAfter", "SSL-ValidUntil", "SSL-Issuer", "SSL-IssuerCountry", "Link"]
 
         ## Write CSV header

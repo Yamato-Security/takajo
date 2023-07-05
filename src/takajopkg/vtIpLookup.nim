@@ -1,3 +1,148 @@
-proc vtIpLookup(apiKey: string, ipList: string, output: string, quiet: bool = false) =
+# TODO: add SAN array info
+proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output: string, rateLimit: int = 4, quiet: bool = false) =
+    let startTime = epochTime()
+    if not quiet:
+        styledEcho(fgGreen, outputLogo())
 
-    echo "Not implemented yet."
+    if not fileExists(ipList):
+        echo "The file " & ipList & " does not exist."
+        return
+
+    let file = open(ipList)
+
+    # Read each line into a sequence.
+    var lines = newSeq[string]()
+    for line in file.lines:
+        lines.add(line)
+    file.close()
+
+    echo "Loaded IP addresses: ", len(lines)
+    echo "Rate limit per minute: ", rateLimit
+    echo ""
+
+    let
+        timePerRequest = 60.0 / float(rateLimit) # time taken for one request
+        estimatedTimeInSeconds = float(len(lines)) * timePerRequest
+        estimatedHours = int(estimatedTimeInSeconds) div 3600
+        estimatedMinutes = (int(estimatedTimeInSeconds) mod 3600) div 60
+        estimatedSeconds = int(estimatedTimeInSeconds) mod 60
+    echo "Estimated time: ", $estimatedHours & " hours, " & $estimatedMinutes & " minutes, " & $estimatedSeconds & " seconds"
+    echo ""
+
+    let client = newHttpClient()
+    client.headers = newHttpHeaders({ "x-apikey": apiKey })
+
+    var
+        totalMaliciousIpAddressCount = 0
+        bar = newProgressBar(total = len(lines))
+        seqOfResultsTables: seq[TableRef[string, string]]
+        jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
+
+    bar.start()
+
+    for ipAddress in lines:
+        bar.increment()
+        let response = client.request("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, httpMethod = HttpGet)
+        var singleResultTable = newTable[string, string]()
+        singleResultTable["IP-Address"] = ipAddress
+        singleResultTable["Link"] = "https://www.virustotal.com/gui/ip_addresses/" & ipAddress
+        if response.status == $Http200:
+            singleResultTable["Response"] = "200"
+            let jsonResponse = parseJson(response.body)
+            jsonResponses.add(jsonResponse)
+
+            # Parse values that need epoch time to human readable time
+            singleResultTable["LastAnalysisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_analysis_date"])
+            singleResultTable["LastModifiedDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_modification_date"])
+            singleResultTable["LastHTTPSCertDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_https_certificate_date"])
+            singleResultTable["LastWhoisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "whois_date"])
+
+            # Parse simple data
+            singleResultTable["MaliciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "malicious"])
+            singleResultTable["HarmlessCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "harmless"])
+            singleResultTable["SuspiciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "suspicious"])
+            singleResultTable["UndetectedCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "undetected"])
+            singleResultTable["CommunityVotesHarmless"] = getJsonValue(jsonResponse, @["data", "attributes", "total_votes", "harmless"])
+            singleResultTable["CommunityVotesMalicious"] = getJsonValue(jsonResponse, @["data", "attributes", "total_votes", "malicious"])
+            singleResultTable["Reputation"] = getJsonValue(jsonResponse, @["data", "attributes", "reputation"])
+            singleResultTable["RegionalInternetRegistry"] = getJsonValue(jsonResponse, @["data", "attributes", "regional_internet_registry"])
+            singleResultTable["WhoisInfo"] = getJsonValue(jsonResponse, @["data", "attributes", "whois"])
+            singleResultTable["Network"] = getJsonValue(jsonResponse, @["data", "attributes", "network"])
+            singleResultTable["Country"] = getJsonValue(jsonResponse, @["data", "attributes", "country"])
+            singleResultTable["AS-Owner"] = getJsonValue(jsonResponse, @["data", "attributes", "as_owner"])
+            singleResultTable["SSL-ValidAfter"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "validity", "not_before"])
+            singleResultTable["SSL-ValidUntil"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "validity", "not_after"])
+            singleResultTable["SSL-Issuer"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "O"])
+            singleResultTable["SSL-IssuerCountry"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "C"])
+            singleResultTable["SSL-CommonName"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "subject", "CN"])
+
+            # If it was found to be malicious
+            if parseInt(singleResultTable["MaliciousCount"]) > 0:
+                inc totalMaliciousIpAddressCount
+                echo "\pFound malicious IP address: " & ipAddress & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
+
+        # If we get a 404 not found
+        elif response.status == $Http404:
+            echo "\pIP address not found: ", ipAddress
+            singleResultTable["Response"] = "404"
+        else:
+            echo "\pUnknown error: ", response.status, " - " & ipAddress
+            singleResultTable["Response"] = response.status
+
+        seqOfResultsTables.add(singleResultTable)
+
+        # Sleep to respect the rate limit.
+        sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
+
+    bar.finish()
+
+    echo ""
+    echo "Finished querying IP addresses"
+    echo "Malicious IP addresses found: ", totalMaliciousIpAddressCount
+    # Print elapsed time
+
+    # If saving to a file
+    if output != "":
+        var outputFile = open(output, fmWrite)
+        let header = ["Response", "IP-Address", "SSL-CommonName", "SSL-IssuerCountry", "LastAnalysisDate", "LastModifiedDate", "LastHTTPSCertDate", "LastWhoisDate", "MaliciousCount", "HarmlessCount",
+            "SuspiciousCount", "UndetectedCount", "CommunityVotesHarmless", "CommunityVotesMalicious", "Reputation", "RegionalInternetRegistry",
+            "Network", "Country", "AS-Owner", "SSL-ValidAfter", "SSL-ValidUntil", "SSL-Issuer", "WhoisInfo", "Link"]
+
+        ## Write CSV header
+        for h in header:
+            outputFile.write(h & ",")
+        outputFile.write("\p")
+
+        ## Write contents
+        for table in seqOfResultsTables:
+            for key in header:
+                if table.hasKey(key):
+                    outputFile.write(escapeCsvField(table[key]) & ",")
+                else:
+                    outputFile.write(",")
+            outputFile.write("\p")
+        let fileSize = getFileSize(output)
+        outputFile.close()
+
+        echo "Saved CSV results to " & output & " (" & formatFileSize(fileSize) & ")"
+
+    # After the for loop, check if jsonOutput is not blank and then write the JSON responses to a file
+    if jsonOutput != "":
+        var jsonOutputFile = open(jsonOutput, fmWrite)
+        let jsonArray = newJArray() # create empty JSON array
+        for jsonResponse in jsonResponses: # iterate over jsonResponse sequence
+            jsonArray.add(jsonResponse) # add each jsonResponse to jsonArray
+        jsonOutputFile.write(jsonArray.pretty)
+        jsonOutputFile.close()
+        let fileSize = getFileSize(jsonOutput)
+        echo "Saved JSON responses to " & jsonOutput & " (" & formatFileSize(fileSize) & ")"
+
+    # Print elapsed time
+    echo ""
+    let endTime = epochTime()
+    let elapsedTime = int(endTime - startTime)
+    let hours = elapsedTime div 3600
+    let minutes = (elapsedTime mod 3600) div 60
+    let seconds = elapsedTime mod 60
+    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
+    echo ""
