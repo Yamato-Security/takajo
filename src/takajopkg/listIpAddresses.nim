@@ -21,7 +21,6 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
         eventId = jsonLine["EventID"].getInt()
 
         # Search for events with a SrcIP field if inbound == true
-        # Found a Sysmon 3 Network Connection event
         if inbound == true:
             ipAddress = getJsonValue(jsonLine, @["Details", "SrcIP"])
             if (not isPrivateIP(ipAddress) or privateIp) and
@@ -29,7 +28,6 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
                 ipHashSet.incl(ipAddress)
 
         # Search for events with a TgtIP field if outbound == true
-        # Sysmon 3 (Network Conn), Security 5156 (Win FW permitted conn), 5157 (Win FW blocked conn)
         if outbound == true:
                 ipAddress = getJsonValue(jsonLine, @["Details", "TgtIP"])
                 if (not isPrivateIP(ipAddress) or privateIp) and
@@ -46,11 +44,12 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
     echo "IP Addresss: ", len(ipHashSet)
     echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
+
+    # Print elapsed time
     let endTime = epochTime()
     let elapsedTime = int(endTime - startTime)
     let hours = elapsedTime div 3600
     let minutes = (elapsedTime mod 3600) div 60
     let seconds = elapsedTime mod 60
-
     echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
     echo ""

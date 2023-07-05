@@ -31,7 +31,7 @@ when isMainModule:
     clCfg.version = "2.0.0-dev"
     const examples = "Examples:\p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl -o domains.txt\p"
-    const example_list_ip_addresses = "  list-ip-addresses...\p"
+    const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] [-o case-1]\p"
@@ -47,7 +47,8 @@ when isMainModule:
 
     clCfg.useMulti = "Version: 2.0.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples & example_list_domains & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
-        example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_hashes & example_sysmon_process_tree & example_timeline_logon & example_timeline_suspicious_processes &
+        example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_hashes & example_sysmon_process_tree &
+        example_timeline_logon & example_timeline_suspicious_processes &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
