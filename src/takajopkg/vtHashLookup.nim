@@ -53,37 +53,18 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
             singleResultTable["Response"] = "200"
             let jsonResponse = parseJson(response.body)
             jsonResponses.add(jsonResponse)
-            # Creation Date
-            try:
-                let creationDateInt = jsonResponse["data"]["attributes"]["creation_date"].getInt()
-                let epochCreationDate = fromUnix(creationDateInt).utc
-                singleResultTable["CreationDate"] = epochCreationDate.format("yyyy-MM-dd HH:mm:ss")
-            except KeyError:
-                singleResultTable["CreationDate"] = "Unknown"
-            # First In The Wild Date
-            try:
-                let firstITWDateInt = jsonResponse["data"]["attributes"]["first_seen_itw_date"].getInt()
-                let epochFirstITWDate = fromUnix(firstITWDateInt).utc
-                singleResultTable["FirstInTheWildDate"] = epochFirstITWDate.format("yyyy-MM-dd HH:mm:ss")
-            except KeyError:
-                singleResultTable["FirstInTheWildDate"] = "Unknown"
-            # First Submission
-            try:
-                let firstSubmissionDateInt = jsonResponse["data"]["attributes"]["first_submission_date"].getInt()
-                let epochFirstSubmissionDate = fromUnix(firstSubmissionDateInt).utc
-                singleResultTable["FirstSubmissionDate"] = epochFirstSubmissionDate.format("yyyy-MM-dd HH:mm:ss")
-            except KeyError:
-                singleResultTable["FirstSubmissionDate"] = "Unknown"
-            # Last Submission
-            try:
-                let lastSubmissionDateInt = jsonResponse["data"]["attributes"]["last_submission_date"].getInt()
-                let epochLastSubmissionDate = fromUnix(lastSubmissionDateInt).utc
-                singleResultTable["LastSubmissionDate"] = epochLastSubmissionDate.format("yyyy-MM-dd HH:mm:ss")
-            except KeyError:
-                singleResultTable["LastSubmissionDate"] = "Unknown"
-            singleResultTable["MaliciousCount"] = $jsonResponse["data"]["attributes"]["last_analysis_stats"]["malicious"].getInt()
-            singleResultTable["HarmlessCount"] = $jsonResponse["data"]["attributes"]["last_analysis_stats"]["harmless"].getInt()
-            singleResultTable["SuspiciousCount"] = $jsonResponse["data"]["attributes"]["last_analysis_stats"]["suspicious"].getInt()
+
+            # Parse values that need epoch time to human readable time
+            singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
+            singleResultTable["FirstInTheWildDate"] = getJsonDate(jsonResponse, @["data", "attributes", "first_seen_itw_date"])
+            singleResultTable["FirstSubmissionDate"] = getJsonDate(jsonResponse, @["data", "attributes", "first_submission_date"])
+            singleResultTable["LastSubmissionDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_submission_date"])
+
+            # Parse simple data
+            singleResultTable["MaliciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "malicious"])
+            singleResultTable["HarmlessCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "harmless"])
+            singleResultTable["SuspiciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "suspicious"])
+
             # If it was found to be malicious
             if parseInt(singleResultTable["MaliciousCount"]) > 0:
                 inc totalMaliciousHashCount
