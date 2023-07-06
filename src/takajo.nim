@@ -41,10 +41,10 @@ when isMainModule:
     const example_sysmon_process_hashes = "  sysmon-process-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
-    const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [-l medium] [-o suspicious-processes.txt]\p"
-    const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o output.txt --jsonOutput responses.json\p"
-    const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o output.txt --jsonOutput responses.json\p"
-    const example_vt_ip_lookup = "  vt-ip-lookup...\p"
+    const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [-l medium] [-o suspicious-processes.csv]\p"
+    const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
+    const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
+    const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
     clCfg.useMulti = "Version: 2.0.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples & example_list_domains & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
@@ -74,6 +74,10 @@ when isMainModule:
                 "privateIp": "include private IP addresses",
                 "quiet": "do not display the launch banner",
                 "timeline": "JSONL timeline created by Hayabusa",
+            },
+            short = {
+                "output": 'o',
+                "outbound": 'O'
             }
         ],
         [
