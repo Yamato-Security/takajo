@@ -35,13 +35,13 @@ when isMainModule:
     const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
-    const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] [-o case-1]\p"
-    const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl [-o case-1-json]]\p"
+    const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
+    const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
     const example_stack_logons = "  stack-logons...\p"
     const example_sysmon_process_hashes = "  sysmon-process-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
-    const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [-l medium] [-o suspicious-processes.csv]\p"
+    const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [-o suspicious-processes.csv]\p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
@@ -57,23 +57,29 @@ when isMainModule:
     dispatchMulti(
         [
             listDomains, cmdName = "list-domains",
-            doc = "create a list of unique domains (input: JSONL, profile: standard)",
+            doc = "create a list of unique domains to be used with vt-domain-lookup",
             help = {
+                "includeSubdomains": "include subdomains",
+                "includeWorkstations": "include local workstation names",
                 "output": "save results to a text file",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            },
+            short = {
+                "includeSubdomains": 's',
+                "includeWorkstations": 'w'
             }
         ],
         [
             listIpAddresses, cmdName = "list-ip-addresses",
-            doc = "create a list of unique target and/or source IP addresses (input: JSONL, profile: standard)",
+            doc = "create a list of unique target and/or source IP addresses to be used with vt-ip-lookup",
             help = {
                 "inbound": "include inbound traffic",
                 "outbound": "include outbound traffic",
                 "output": "save results to a text file",
                 "privateIp": "include private IP addresses",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             },
             short = {
                 "output": 'o',
@@ -82,124 +88,136 @@ when isMainModule:
         ],
         [
             listUndetectedEvtxFiles, cmdName = "list-undetected-evtx",
-            doc = "create a list of undetected evtx files (input: CSV, profile: verbose)",
+            doc = "create a list of undetected evtx files",
             help = {
                 "columnName": "specify a custom column header name",
                 "evtxDir": "directory of .evtx files you scanned with Hayabusa",
                 "output": "save the results to a text file (default: stdout)",
                 "quiet": "do not display the launch banner",
-                "timeline": "CSV timeline created by Hayabusa with verbose profile",
+                "timeline": "Hayabusa CSV timeline (profile: any verbose profile)",
             }
         ],
         [
             listUnusedRules, cmdName = "list-unused-rules",
-            doc = "create a list of unused sigma rules (input: CSV, profile: verbose)",
+            doc = "create a list of unused sigma rules",
             help = {
                 "columnName": "specify a custom column header name",
                 "output": "save the results to a text file (default: stdout)",
                 "quiet": "do not display the launch banner",
                 "rulesDir": "Hayabusa rules directory",
-                "timeline": "CSV timeline created by Hayabusa with verbose profile",
+                "timeline": "Hayabusa CSV timeline (profile: any verbose profile)",
             }
         ],
         [
             splitCsvTimeline, cmdName = "split-csv-timeline",
-            doc = "split up a large CSV file into smaller ones based on the computer name (input: non-multiline CSV, profile: any)",
+            doc = "split up a large CSV file into smaller ones based on the computer name",
             help = {
                 "makeMultiline": "output fields in multiple lines",
                 "output": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
-                "timeline": "CSV timeline created by Hayabusa",
+                "timeline": "Hayabusa non-multiline CSV timeline (profile: any)",
             }
         ],
         [
             splitJsonTimeline, cmdName = "split-json-timeline",
-            doc = "split up a large JSONL timeline into smaller ones based on the computer name (input: JSONL, profile: any)",
+            doc = "split up a large JSONL timeline into smaller ones based on the computer name",
             help = {
                 "output": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
+                "timeline": "Hayabusa JSONL timeline (profile: any)",
             }
         ],
         [
             stackLogons, cmdName = "stack-logons",
-            doc = "stack logons by target user, target computer, source IP address and source computer (input: JSONL, profile: standard)",
+            doc = "stack logons by target user, target computer, source IP address and source computer",
             help = {
                 "output": "save results to a text file",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
         ],
         [
             sysmonProcessHashes, cmdName = "sysmon-process-hashes",
-            doc = "create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)",
+            doc = "create a list of process hashes to be used with vt-hash-lookup",
             help = {
                 "level": "specify the minimum alert level",
                 "output": "specify the base name to save results to text files (ex: -o case-1)",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
         ],
         [
             sysmonProcessTree, cmdName = "sysmon-process-tree",
-            doc = "output the process tree of a certain process (input: JSONL, profile: standard)",
+            doc = "output the process tree of a certain process",
             help = {
                 "output": "save results to a text file",
                 "processGuid": "sysmon process GUID",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
         ],
         [
             timelineLogon, cmdName = "timeline-logon",
-            doc = "create a CSV timeline of logon events (input: JSONL, profile: standard)",
+            doc = "create a CSV timeline of logon events",
             help = {
                 "calculateElapsedTime": "calculate the elapsed time for successful logons",
                 "output": "save results to a CSV file",
+                "outputAdminLogonEvents": "output admin logon events as separate entries",
                 "outputLogoffEvents": "output logoff events as separate entries",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            },
+            short = {
+                "outputLogoffEvents": 'l',
+                "outputAdminLogonEvents": 'a'
             }
         ],
         [
             timelineSuspiciousProcesses, cmdName = "timeline-suspicious-processes",
-            doc = "create a CSV timeline of suspicious processes (input: JSONL, profile: standard)",
+            doc = "create a CSV timeline of suspicious processes",
             help = {
                 "level": "specify the minimum alert level",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "JSONL timeline created by Hayabusa",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
         ],
         [
             vtDomainLookup, cmdName = "vt-domain-lookup",
-            doc = "look up a list of domains on VirusTotal (input: text file)",
+            doc = "look up a list of domains on VirusTotal",
             help = {
                 "apiKey": "your VirusTotal API key",
-                "domainList": "a list of domains",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
-            }
-        ],
-        [
-            vtHashLookup, cmdName = "vt-hash-lookup",
-            doc = "look up a list of hashes on VirusTotal (input: text file)",
-            help = {
-                "apiKey": "your VirusTotal API key",
-                "hashList": "a list of hashes",
+                "domainList": "a text file list of domains",
                 "jsonOutput": "save all responses to a JSON file",
-                "output": "save results to a text file",
+                "output": "save results to a CSV file",
                 "rateLimit": "set the rate per minute for requests",
                 "quiet": "do not display the launch banner",
             }
         ],
         [
-            vtIpLookup, cmdName = "vt-ip-lookup",
-            doc = "look up a list of IP addresses on VirusTotal (input: text file)",
+            vtHashLookup, cmdName = "vt-hash-lookup",
+            doc = "look up a list of hashes on VirusTotal",
             help = {
                 "apiKey": "your VirusTotal API key",
-                "ipList": "a list of IP addresses",
+                "hashList": "a text file list of hashes",
+                "jsonOutput": "save all responses to a JSON file",
+                "output": "save results to a text file",
+                "rateLimit": "set the rate per minute for requests",
+                "quiet": "do not display the launch banner",
+            },
+            short = {
+                "hashList": 'H'
+            }
+        ],
+        [
+            vtIpLookup, cmdName = "vt-ip-lookup",
+            doc = "look up a list of IP addresses on VirusTotal",
+            help = {
+                "apiKey": "your VirusTotal API key",
+                "ipList": "a text file list of IP addresses",
+                "jsonOutput": "save all responses to a JSON file",
                 "output": "save results to a CSV file",
+                "rateLimit": "set the rate per minute for requests",
                 "quiet": "do not display the launch banner",
             }
         ]

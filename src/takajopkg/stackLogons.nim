@@ -3,7 +3,7 @@
 # Save to CSV
 # Remove local logins
 
-proc stackLogons(output: string, quiet: bool = false, timeline: string) =
+proc stackLogons(output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -19,6 +19,7 @@ proc stackLogons(output: string, quiet: bool = false, timeline: string) =
         bar = newProgressBar(total = totalLines)
         seqOfStrings: seq[string]
         uniqueCountTable = initTable[string, int]()
+        uniqueResults = initTable[string, tuple[count: int, tgtUser: string, tgtComp: string, logonType: string, srcIP: string, srcComp: string]]()  # tuple for unique counts
     bar.start()
 
     for line in lines(timeline):
@@ -30,24 +31,34 @@ proc stackLogons(output: string, quiet: bool = false, timeline: string) =
         if isEID_4624(ruleTitle) == true:
             inc EID_4624_count
             var singleResultTable = newTable[string, string]()
-            let details = jsonLine["Details"]
-            let extraFieldInfo = jsonLine["ExtraFieldInfo"]
-            let logonType = details.extractInt("Type")
+            #let details = jsonLine["Details"]
+            #let extraFieldInfo = jsonLine["ExtraFieldInfo"]
+            #let logonType = details.extractInt("Type")
 
-            # Commented out due to undefined functions
-            #singleResultTable["Type"] = logonNumberToString(logonType)
-            #singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-            #singleResultTable["TargetUser"] = details.extractStr("TgtUser")
-            #singleResultTable["SourceIP"] = details.extractStr("SrcIP")
-            #singleResultTable["SourceComputer"] = details.extractStr("SrcComp")
+            singleResultTable["TgtUser"] = getJsonValue(jsonLine, @["Details", "TgtUser"])
+            singleResultTable["TgtComp"] = getJsonValue(jsonLine, @["Computer"])
+            singleResultTable["LogonType"] = logonNumberToString(parseInt(getJsonValue(jsonLine, @["Details", "TgtUser"])))
+            singleResultTable["SrcIP"] = getJsonValue(jsonLine, @["Details", "SrcIP"])
+            singleResultTable["SrcComp"] = getJsonValue(jsonLine, @["Details", "SrcComp"])
 
-            seqOfStrings.add(details.extractStr("TgtUser") & " : " & jsonLine.extractStr("Computer") &
-                logonNumberToString(logonType) & " : " & details.extractStr("SrcIP") & " : " & details.extractStr("SrcComp"))
+            # Combine all fields into a unique string and update counts
+            let combinedKey = $singleResultTable
+            if combinedKey in uniqueResults:
+                uniqueResults[combinedKey].count.inc()
+            else:
+                uniqueResults[combinedKey] = (count: 1, tgtUser: singleResultTable["TgtUser"], tgtComp: singleResultTable["TgtComp"], logonType: singleResultTable["LogonType"], srcIP: singleResultTable["SrcIP"], srcComp: singleResultTable["SrcComp"])
+
+            ##seqOfStrings.add(details.extractStr("TgtUser") & " : " & jsonLine.extractStr("Computer") &
+            #    logonNumberToString(logonType) & " : " & details.extractStr("SrcIP") & " : " & details.extractStr("SrcComp"))
+            seqOfResultsTables.add(singleResultTable)
 
     bar.finish()
     echo ""
-    seqOfStrings.sort()
+    #seqOfStrings.sort()
+    # Convert table to a sequence of tuples and sort by count
+    #let sortedResults = toSeq(uniqueResults.pairs).sortedBy(it[1].count)
 
+#[
     var countsTable: Table[string, int] = initTable[string, int]()
 
     for string in seqOfStrings:
@@ -61,12 +72,26 @@ proc stackLogons(output: string, quiet: bool = false, timeline: string) =
         seqOfPairs.add((key, val))
 
     # Sort the sequence in descending order based on the counts
-    seqOfPairs.sort(proc (x, y: (string, int)): int = y[1] - x[1])
+    #seqOfPairs.sort(proc (x, y: (string, int)): int = y[1] - x[1])
 
     # Print the sorted counts with unique strings
-    for (string, count) in seqOfPairs:
-        echo count, string
+    #for (string, count) in seqOfPairs:
+    #    echo count, string
 
+]#
+    # Write results to CSV
+    let file = open(output, fmWrite)
+    defer: close(file)
+
+    # Write headers
+    writeLine(file, "Count,TgtUser,TgtComp,LogonType,SrcIP,SrcComp")
+
+    # Write results
+    #[
+    for result in sortedResults:
+        let entry = result[1]
+        writeLine(file, fmt"{entry.count},{entry.tgtUser},{entry.tgtComp},{entry.logonType},{entry.srcIP},{entry.srcComp}")
+]#
 
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)
