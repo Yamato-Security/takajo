@@ -91,8 +91,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 - 不審なプロセスのプロセスツリーを出力します。
 - さまざまなスタッキング分析ができます。
 - CSVとJSONLのタイムラインを分割します。
-- VirusTotaルックアップで使用するIPアドレス、ドメイン、ハッシュなどをリストアップします。
-- ドメイン、ハッシュ、IPアドレスをVirusTotalルックアップします。
+- VirusTotalの検索で使用するIPアドレス、ドメイン、ハッシュなどをリストアップします。
+- ドメイン、ハッシュ、IPアドレスをVirusTotalで検索します。
 - 検知されていない`.evtx` ファイルをリストアップします。
 
 # ダウンロード
@@ -132,7 +132,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 * `stack-logons`: ユーザー名、コンピューター名、送信元IPアドレス、送信元コンピューター名など、項目ごとの上位ログオンを出力する
 
 ## Sysmonコマンド
-* `sysmon-process-hashes`: `vt-hash-lookup` で使用するプロセス、ハッシュ値のリストを作成する
+* `sysmon-process-hashes`: `vt-hash-lookup` で使用するプロセスのハッシュ値のリストを作成する
 * `sysmon-process-tree`: プロセスツリーを出力する
 
 ## Timelineコマンド
@@ -152,7 +152,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 
 `vt-domain-lookup` で使用する重複のないドメインのリストを作成します。
-現在は、Sysmon EID 22ログでクエリが記録されたドメインのみをチェックしますが、ビルトインのWindows DNSクライアント・サーバーログを今後サポート予定です。
+現在は、Sysmon EID 22ログでクエリが記録されたドメインのみをチェックしますが、ビルトインのWindows DNSクライアント・サーバーログも今後サポート予定です。
 
 * 入力: `JSONL`
 * プロファイル: `all-field-info` と`all-field-info-verbose` 以外すべて
@@ -294,7 +294,7 @@ takajo.exe list-undetected-evtx -t ../hayabusa/timeline.csv -e <EVTX-DIR> -o und
 任意オプション:
 
 - `-c, --column-name <CUSTOM-RULE-FILE-COLUMN>`: ルールファイルのカラム名を指定 (デフォルト: Hayabusaの規定値の`RuleFile`)
-- `-o, --output <TXT-FILE>`: 結果を保存するテキストファイル (デフォルト: output to screen)
+- `-o, --output <TXT-FILE>`: 結果を保存するテキストファイル (デフォルト: 標準出力)
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
 #### `list-unused-rules`コマンドの使用例
@@ -414,7 +414,7 @@ takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
 `vt-hash-lookup`で使用するプロセスハッシュ値のリストを作成します (入力: JSONL, プロファイル: standard)
 
 * 入力: `JSONL`
-* プロファイル: Any besides `all-field-info` と `all-field-info-verbose`
+* プロファイル: `all-field-info` と `all-field-info-verbose`以外すべて
 * 出力: `テキストファイル`
 
 必須オプション:
@@ -440,7 +440,8 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
 ```
 takajo.exe sysmon-process-hashes -t ../hayabusa/timeline.jsonl -o case-1
 ```
-たとえば、`MD5`、`SHA1` 、`IMPHASH` がSysmonログに保存されている場合、 次のファルが作成されます: `case-1-MD5-hashes.txt`, `case-1-SHA1-hashes.txt`, `case-1-ImportHashes.txt`
+たとえば、`MD5`、`SHA1` 、`IMPHASH` がSysmonログに保存されている場合、 次のファルが作成されます:   
+`case-1-MD5-hashes.txt`, `case-1-SHA1-hashes.txt`, `case-1-ImportHashes.txt`
 
 
 ### `sysmon-process-tree`コマンド
