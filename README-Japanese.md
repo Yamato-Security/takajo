@@ -555,7 +555,7 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
 アラートレベルが`high`以上のプロセスを検索し、結果を標準出力に表示:
 
 ```
-takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -l high
+takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl
 ```
 
 アラートレベルが`low`以上のプロセスを検索し、結果を標準出力に表示:
