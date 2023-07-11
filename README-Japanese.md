@@ -196,7 +196,7 @@ takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o domains.txt -s
 
 * 入力: `JSONL`
 * プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
-* 出力: `Text file`
+* 出力: `テキストファイル`
 
 必須オプション:
 
@@ -363,7 +363,7 @@ takajo.exe split-csv-timeline -t ../hayabusa/timeline.csv -m -o case-1-csv
 
 * 入力: `JSONL`
 * プロファイル: `すべて`
-* 出力: `複数のJSONLファイル`
+* 出力: `複数のJSONL`
 
 必須オプション:
 
@@ -415,7 +415,7 @@ takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
 
 * 入力: `JSONL`
 * プロファイル: Any besides `all-field-info` と `all-field-info-verbose`
-* 出力: `Text file`
+* 出力: `テキストファイル`
 
 必須オプション:
 
