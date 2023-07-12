@@ -222,19 +222,19 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
 Save the results to a text file:
 
 ```
-takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o ipAddresses.txt
+takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt
 ```
 
 Exclude inbound traffic:
 
 ```
-takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -i=false
+takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -i=false
 ```
 
 Include private IP addresses:
 
 ```
-takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -p
+takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -p
 ```
 
 ### `list-undetected-evtx` command

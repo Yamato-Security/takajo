@@ -221,19 +221,19 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
 結果をテキストファイルに保存する:
 
 ```
-takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o ipAddresses.txt
+takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt
 ```
 
 インバウンドトラフィックを除外する:
 
 ```
-takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -i=false
+takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -i=false
 ```
 
 プライベートIPアドレスを含める:
 
 ```
-takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -p
+takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -p
 ```
 
 ### `list-undetected-evtx`コマンド
