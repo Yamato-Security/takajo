@@ -454,12 +454,12 @@ takajo.exe sysmon-process-hashes -t ../hayabusa/timeline.jsonl -o case-1
 
 必須オプション:
 
+- `-o, --output <TXT-FILE>`: 結果を保存するテキストファイル
 - `-p, --processGuid <Process GUID>`: SysmonのプロセスGUID
 - `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
 
 任意オプション:
 
-- `-o, --output <TXT-FILE>`: 結果を保存するテキストファイル
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
 #### `sysmon-process-tree`コマンドの使用例

@@ -458,12 +458,12 @@ Output the process tree of a certain process, such as a suspicious or malicious 
 
 Required options:
 
+- `-o, --output <TXT-FILE>`: a text file to save the results to.
 - `-p, --processGuid <Process GUID>`: sysmon process GUID
 - `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
 
 Options:
 
-- `-o, --output <TXT-FILE>`: a text file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `sysmon-process-tree` command examples
