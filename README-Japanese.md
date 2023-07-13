@@ -470,12 +470,6 @@ HayabusaでJSONLタイムラインを作成する:
 hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
 ```
 
-標準出力に結果を表示する:
-
-```
-takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00"
-```
-
 結果をテキストファイルに保存する:
 
 ```
