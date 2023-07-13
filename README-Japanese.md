@@ -584,7 +584,7 @@ VirusTotalでドメインのリストを検索します。
 
 - `-a, --apiKey <API-KEY>`: VirusTotalのAPIキー
 - `-d, --domainList <TXT-FILE>`: ドメイン一覧のテキストファイル
-- `-o, --output <CSV-FILE`: 結果を保存するCSV
+- `-o, --output <CSV-FILE>`: 結果を保存するCSV
 
 任意オプション:
 
@@ -612,7 +612,7 @@ VirusTotalでハッシュのリストを検索します。
 
 - `-a, --apiKey <API-KEY>`: VirusTotalのAPIキー
 - `-H, --hashList <HASH-LIST>`: ハッシュ値一覧のテキスト
-- `-o, --output <CSV-FILE`: 結果を保存するCSV
+- `-o, --output <CSV-FILE>`: 結果を保存するCSV
 
 任意オプション:
 
@@ -637,7 +637,7 @@ VirusTotalでIPアドレスのリストを検索します。
 
 - `-a, --apiKey <API-KEY>`: VirusTotalのAPIキー
 - `-i, --ipList <IP-ADDRESS-LIST>`: IPアドレスのテキストファイル
-- `-o, --output <CSV-FILE`: 結果を保存するCSV
+- `-o, --output <CSV-FILE>`: 結果を保存するCSV
 
 任意オプション:
 

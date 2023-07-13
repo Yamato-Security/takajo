@@ -588,7 +588,7 @@ Required options:
 
 - `-a, --apiKey <API-KEY>`: your VirusTotal API key.
 - `-d, --domainList <TXT-FILE>`: a text file list of domains.
-- `-o, --output <CSV-FILE`: save the results to a CSV file.
+- `-o, --output <CSV-FILE>`: save the results to a CSV file.
 
 Options:
 
@@ -616,7 +616,7 @@ Required options:
 
 - `-a, --apiKey <API-KEY>`: your VirusTotal API key.
 - `-H, --hashList <HASH-LIST>`: a text file of hashes.
-- `-o, --output <CSV-FILE`: save the results to a CSV file.
+- `-o, --output <CSV-FILE>`: save the results to a CSV file.
 
 Options:
 
@@ -641,7 +641,7 @@ Required options:
 
 - `-a, --apiKey <API-KEY>`: your VirusTotal API key.
 - `-i, --ipList <IP-ADDRESS-LIST>`: a text file of IP addresses.
-- `-o, --output <CSV-FILE`: save the results to a CSV file.
+- `-o, --output <CSV-FILE>`: save the results to a CSV file.
 
 Options:
 
