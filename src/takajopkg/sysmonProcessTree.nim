@@ -8,13 +8,15 @@ type
         children: seq[processObject]
 
 proc printIndentedProcessTree(p: processObject, indent: string = "",
-        stairNum: int = 0): seq[string] =
+        stairNum: int = 0, need_sameStair: seq[bool], parentsStair: bool): seq[string] =
     ## プロセスオブジェクトからプロセスツリーを画面上に表示するためのプロシージャ
 
     var ret: seq[string] = @[]
     ret = @[indent & p.procName & " (" & p.timeStamp & " / " &
             p.processID &
-            " / " & p.processGUID & ")"]
+            " / " & p.processGUID &
+            " / " & p.parentProcessGUID &
+            ")"]
 
     var childStairNum = stairNum + 1
     var childPreStairStr = ""
@@ -22,18 +24,30 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
 
     # プロセスの階層数に応じて、親階層がつながっていることを表現するための`  |`を付与する
     while childStairNum > cnt:
-        childPreStairStr &= "  │"
+        if need_sameStair[cnt-1] and not parentsStair:
+            childPreStairStr &= "  │"
+        else:
+            childPreStairStr &= "    "
         inc cnt
     for childNum, children in enumerate(p.children):
-        # 子プロセスの表示を行う
+        # Display chile process
         var childIndentStr = childPreStairStr
         if len(p.children) == childNum + 1:
             childIndentStr &= "  └ "
         else:
             childIndentStr &= "  ├ "
+        var next_need_sameStair = need_sameStair
+        next_need_sameStair.add(len(children.children) > 1)
         ret = concat(ret, printIndentedProcessTree(children, childIndentStr,
-                childStairNum))
+                childStairNum, next_need_sameStair, childNum + 1 == len(p.children)))
     return ret
+
+proc containsTargetGUIDInChild(p: processObject, targetGUID: string): bool =
+    for child in p.children:
+        if child.processGUID == targetGUID:
+            return true
+    return false
+
 
 proc moveProcessObjectToChild(mvSourceProcess: processObject,
         searchProcess: var processObject,
@@ -71,6 +85,9 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     passGuid.incl(processGuid)
     var addedProcess = initHashSet[string]()
 
+    var parentsProcessStocks = newSeq[string]()
+    var parentsProcesStockDisableFlag = false
+    var parentProcessGUIDTable = newTable[string, string]()
     for line in lines(timeline):
         var processObjectTable = newTable[string, processObject]()
         let
@@ -89,7 +106,8 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             except KeyError:
                 echo "Could not find the PGUID field. Make sure you ran Hayabusa with the standard profile."
             if eventProcessGUID in passGuid or jsonLine["Details"][
-                                "ParentPGUID"].getStr() in passGuid:
+                    "ParentPGUID"].getStr() in passGuid:
+                parentsProcesStockDisableFlag = true
                 inc processesFoundCount
                 let keysToExtract = {
                     #"CmdLine": "Cmdline",
@@ -127,6 +145,8 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
 
                 if not passGuid.contains(eventProcessGUID):
                     passGuid.incl(eventProcessGUID)
+                if not passGuid.contains(process.parentProcessGUID):
+                    passGuid.incl(process.parentProcessGUID)
                 if not addedProcess.contains(key):
                     processObjectTable[process.processGUID] = process
                     addedProcess.incl(key)
@@ -142,23 +162,109 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                                 process.parentProcessGUID].children.add(process)
                 else:
                     stockedProcessObjectTable[process.processGUID] = process
+                parentProcessGUIDTable[process.parentProcessGUID] = process.processGUID
+            else:
+                if not parentsProcesStockDisableFlag:
+                    parentsProcessStocks.add(line)
+    # search ancestor process
+    var parents_exist = false
+    var parents_key = ""
 
+    # echo parentsProcessStocks.len
+    parentsProcessStocks.reverse()
+    for line in parentsProcessStocks:
+        let
+            jsonLine = parseJson(line)
+            timeStamp = jsonLine["Timestamp"].getStr()
+            channel = jsonLine["Channel"].getStr()
+            eventId = jsonLine["EventID"].getInt()
+            eventLevel = jsonLine["Level"].getStr()
+            ruleTitle = jsonLine["RuleTitle"].getStr()
+        var eventProcessGUID = ""
+        try:
+            eventProcessGUID = jsonLine["Details"]["PGUID"].getStr()
+        except KeyError:
+            echo "Could not find the PGUID field. Make sure you ran Hayabusa with the standard profile."
+        if eventProcessGUID in passGuid:
+            var processObjectTable = newTable[string, processObject]()
+            let keysToExtract = {
+                #"CmdLine": "Cmdline",
+                "Proc": "Proc",
+                #"ParentCmdline": "ParentCmdline",
+                #"LogonID": "LID",
+                #"LogonGUID": "LGUID",
+                #"ParentPID": "ParentPID",
+                "ParentPGUID": "ParentPGUID",
+                #"Hashes": "Hashes"
+            }
+
+            for (foundKey, jsonKey) in keysToExtract:
+                try:
+                    foundProcessTable[foundKey] = jsonLine["Details"][
+                            jsonKey].getStr()
+                except KeyError:
+                    foundProcessTable[foundKey] = ""
+            # PID is an integer so getStr will fail
+            try:
+                let eventProcessID = jsonLine["Details"]["PID"].getInt()
+                foundProcessTable["PID"] = $eventProcessID
+            except KeyError:
+                foundProcessTable["PID"] = "No PID Found"
+
+            let process = processObject(
+                    timeStamp: timeStamp,
+                    procName: foundProcessTable["Proc"],
+                    processID: foundProcessTable["PID"],
+                    processGUID: eventProcessGUID,
+                    parentProcessGUID: foundProcessTable["ParentPGUID"])
+            let key = timeStamp & "-" & process.processID
+            # if addedProcess.contains(key):
+            #     continue
+
+            if not passGuid.contains(eventProcessGUID):
+                passGuid.incl(eventProcessGUID)
+            if not passGuid.contains(process.parentProcessGUID):
+                passGuid.incl(process.parentProcessGUID)
+            if not addedProcess.contains(key):
+                processObjectTable[process.processGUID] = process
+                addedProcess.incl(key)
+            stockedProcessObjectTable[process.processGUID] = process
+            stockedProcessObjectTable[process.processGUID].children.add(
+                    stockedProcessObjectTable[parentProcessGUIDTable[
+                            process.processGUID]])
+            parentProcessGUIDTable[process.parentProcessGUID] = process.processGUID
+            parents_exist = true
+            parents_key = process.processGUID
     var outputStrSeq: seq[string] = @[]
     var outputProcessObjectTable = stockedProcessObjectTable
 
     # Sort process tree
     for process in stockedProcessObjectTable.keys:
-        if process == processGuid:
+        if ((not parents_exist) and process == processGuid) or ((
+                parents_exist) and process == parents_key):
             continue
+
+        if parents_exist:
+            moveProcessObjectToChild(stockedProcessObjectTable[process],
+                    stockedProcessObjectTable[parents_key],
+                    outputProcessObjectTable[parents_key])
         else:
             moveProcessObjectToChild(stockedProcessObjectTable[process],
-                    stockedProcessObjectTable[processGuid],
-                    outputProcessObjectTable[processGuid])
+                stockedProcessObjectTable[processGuid],
+                outputProcessObjectTable[processGuid])
+
 
     # Display process tree for the specified process root
-    if outputProcessObjectTable.hasKey(processGuid):
+    let root_multi_child = outputProcessObjectTable[parents_key].children.len() > 1
+    if parents_key != "":
         outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(
-                outputProcessObjectTable[processGuid]))
+                outputProcessObjectTable[parents_key], need_sameStair = @[
+                        root_multi_child], parentsStair = false
+            ))
+    elif outputProcessObjectTable.hasKey(processGuid):
+        outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(
+                outputProcessObjectTable[processGuid], need_sameStair = @[
+                        root_multi_child], parentsStair = false))
 
     if output != "":
         let f = open(output, fmWrite)
