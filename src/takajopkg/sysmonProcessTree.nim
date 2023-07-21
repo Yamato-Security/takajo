@@ -274,7 +274,11 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
         echo fmt"Saved File {output}"
         echo ""
     else:
-        echo outputStrSeq.join("\n")
+        for line in outputStrSeq:
+            if line.contains(fmt" / {processGuid} / "):
+                styledEcho(fgGreen, line)
+            else:
+                echo line
     discard
 
     if processesFoundCount == 0:
