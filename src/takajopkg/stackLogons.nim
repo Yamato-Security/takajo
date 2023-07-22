@@ -37,19 +37,19 @@ proc stackLogons(output: string = "", quiet: bool = false, timeline: string) =
 
             singleResultTable["TgtUser"] = getJsonValue(jsonLine, @["Details", "TgtUser"])
             singleResultTable["TgtComp"] = getJsonValue(jsonLine, @["Computer"])
-            singleResultTable["LogonType"] = logonNumberToString(parseInt(getJsonValue(jsonLine, @["Details", "TgtUser"])))
+            singleResultTable["LogonType"] = logonNumberToString(parseInt(getJsonValue(jsonLine, @["Details", "Type"])))
             singleResultTable["SrcIP"] = getJsonValue(jsonLine, @["Details", "SrcIP"])
             singleResultTable["SrcComp"] = getJsonValue(jsonLine, @["Details", "SrcComp"])
 
             # Combine all fields into a unique string and update counts
+            #[
             let combinedKey = $singleResultTable
             if combinedKey in uniqueResults:
                 uniqueResults[combinedKey].count.inc()
             else:
                 uniqueResults[combinedKey] = (count: 1, tgtUser: singleResultTable["TgtUser"], tgtComp: singleResultTable["TgtComp"], logonType: singleResultTable["LogonType"], srcIP: singleResultTable["SrcIP"], srcComp: singleResultTable["SrcComp"])
-
-            ##seqOfStrings.add(details.extractStr("TgtUser") & " : " & jsonLine.extractStr("Computer") &
-            #    logonNumberToString(logonType) & " : " & details.extractStr("SrcIP") & " : " & details.extractStr("SrcComp"))
+]#
+            seqOfStrings.add(singleResultTable["TgtUser"] & "🦅" & singleResultTable["TgtComp"] & singleResultTable["LogonType"] & "🦅" & singleResultTable["SrcIP"] & "🦅" & singleResultTable["SrcComp"])
             seqOfResultsTables.add(singleResultTable)
 
     bar.finish()
@@ -58,7 +58,7 @@ proc stackLogons(output: string = "", quiet: bool = false, timeline: string) =
     # Convert table to a sequence of tuples and sort by count
     #let sortedResults = toSeq(uniqueResults.pairs).sortedBy(it[1].count)
 
-#[
+
     var countsTable: Table[string, int] = initTable[string, int]()
 
     for string in seqOfStrings:
@@ -71,20 +71,20 @@ proc stackLogons(output: string = "", quiet: bool = false, timeline: string) =
     for key, val in countsTable:
         seqOfPairs.add((key, val))
 
-    # Sort the sequence in descending order based on the counts
-    #seqOfPairs.sort(proc (x, y: (string, int)): int = y[1] - x[1])
+    # Sort the sequence in descending order based on the count
+    seqOfPairs.sort(proc (x, y: (string, int)): int = y[1] - x[1])
 
     # Print the sorted counts with unique strings
-    #for (string, count) in seqOfPairs:
-    #    echo count, string
+    for (string, count) in seqOfPairs:
+        echo count, string
 
-]#
+
     # Write results to CSV
-    let file = open(output, fmWrite)
-    defer: close(file)
+   # let file = open(output, fmWrite)
+   # defer: close(file)
 
     # Write headers
-    writeLine(file, "Count,TgtUser,TgtComp,LogonType,SrcIP,SrcComp")
+   #writeLine(file, "Count,TgtUser,TgtComp,LogonType,SrcIP,SrcComp")
 
     # Write results
     #[
