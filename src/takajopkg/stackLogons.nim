@@ -32,7 +32,7 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
 
             tgtUser = getJsonValue(jsonLine, @["Details", "TgtUser"])
             tgtComp = getJsonValue(jsonLine, @["Computer"])
-            logonType = logonNumberToString(parseInt(getJsonValue(jsonLine, @["Details", "Type"])))
+            logonType = getJsonValue(jsonLine, @["Details", "Type"])
             srcIP = getJsonValue(jsonLine, @["Details", "SrcIP"])
             srcComp = getJsonValue(jsonLine, @["Details", "SrcComp"])
 
