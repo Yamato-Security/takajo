@@ -320,3 +320,6 @@ proc extractDomain*(domain: string): string =
     if parts.len >= 2:
         return parts[^2] & '.' & parts[^1]
     return domain
+
+proc isLocalIP*(ip: string): bool =
+  return ip == "127.0.0.1" or ip == "-" or ip == "::1"

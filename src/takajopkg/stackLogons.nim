@@ -1,10 +1,8 @@
 # TODO
 # Output to stdout in tables (Target User, Target Computer, Logon Type, Source Computer)
-# Save to CSV
 # Remove local logins
-# Output to screen in tables
 
-proc stackLogons(output: string = "", quiet: bool = false, timeline: string) =
+proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -15,12 +13,11 @@ proc stackLogons(output: string = "", quiet: bool = false, timeline: string) =
     echo ""
 
     var
-        seqOfResultsTables: seq[TableRef[string, string]]
         EID_4624_count = 0
+        tgtUser, tgtComp, logonType, srcIP, srcComp = ""
         bar = newProgressBar(total = totalLines)
         seqOfStrings: seq[string]
-        uniqueCountTable = initTable[string, int]()
-        uniqueResults = initTable[string, tuple[count: int, tgtUser: string, tgtComp: string, logonType: string, srcIP: string, srcComp: string]]()  # tuple for unique counts
+
     bar.start()
 
     # Loop through JSON lines
@@ -32,17 +29,17 @@ proc stackLogons(output: string = "", quiet: bool = false, timeline: string) =
         # EID 4624 Successful Logon
         if isEID_4624(ruleTitle) == true:
             inc EID_4624_count
-            var singleResultTable = newTable[string, string]()
 
-            #change to just strings?
-            singleResultTable["TgtUser"] = getJsonValue(jsonLine, @["Details", "TgtUser"])
-            singleResultTable["TgtComp"] = getJsonValue(jsonLine, @["Computer"])
-            singleResultTable["LogonType"] = logonNumberToString(parseInt(getJsonValue(jsonLine, @["Details", "Type"])))
-            singleResultTable["SrcIP"] = getJsonValue(jsonLine, @["Details", "SrcIP"])
-            singleResultTable["SrcComp"] = getJsonValue(jsonLine, @["Details", "SrcComp"])
+            tgtUser = getJsonValue(jsonLine, @["Details", "TgtUser"])
+            tgtComp = getJsonValue(jsonLine, @["Computer"])
+            logonType = logonNumberToString(parseInt(getJsonValue(jsonLine, @["Details", "Type"])))
+            srcIP = getJsonValue(jsonLine, @["Details", "SrcIP"])
+            srcComp = getJsonValue(jsonLine, @["Details", "SrcComp"])
 
-            # Create a combination of TgtUser,TgtComp,LogonType,SrcIP,SrcComp
-            seqOfStrings.add(singleResultTable["TgtUser"] & "," & singleResultTable["TgtComp"] & "," & singleResultTable["LogonType"] & "," & singleResultTable["SrcIP"] & "," & singleResultTable["SrcComp"])
+            if not localSrcIpAddresses and isLocalIP(srcIP):
+                discard
+            else:
+                seqOfStrings.add(tgtUser & "," & tgtComp & "," & logonType & "," & srcIP & "," & srcComp)
     bar.finish()
     echo ""
 

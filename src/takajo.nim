@@ -37,7 +37,7 @@ when isMainModule:
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
-    const example_stack_logons = "  stack-logons...\p"
+    const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
     const example_sysmon_process_hashes = "  sysmon-process-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
@@ -131,6 +131,7 @@ when isMainModule:
             stackLogons, cmdName = "stack-logons",
             doc = "stack logons by target user, target computer, source IP address and source computer",
             help = {
+                "localSrcIpAddresses": "include results when the source IP address is local",
                 "output": "save results to a text file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",

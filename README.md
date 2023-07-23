@@ -403,13 +403,35 @@ takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-jsonl
 
 ### `stack-logons` command
 
-Creates a list of top accounts that logged into computers (input: JSONL, profile: standard)
-Not implemented yet.
+Creates a list logons according to `Target User`, `Target Computer`, `Logon Type`, `Source IP Address`, `Source Computer`.
+Results are filtered out when the source IP address is a local IP address by default.
+
+* Input: `JSONL`
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: `CSV`
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-l, --localSrcIpAddresses`: include results when the source IP address is local.
+- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `stack-logons` command examples
 
+Run with default settings:
+
 ```
-takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
+takajo.exe stack-logons -t ../hayabusa/timeline.jsonl
+```
+
+Include local logons:
+
+```
+takajo.exe stack-logons -t ../hayabusa/timeline.jsonl -l
 ```
 
 ## Sysmon Commands
