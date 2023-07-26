@@ -12,6 +12,7 @@ import times
 import uri
 import os
 import progress
+import std/enumerate
 import takajopkg/general
 include takajopkg/listDomains
 include takajopkg/listIpAddresses
