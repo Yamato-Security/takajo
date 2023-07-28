@@ -13,6 +13,7 @@ import uri
 import os
 import progress
 import std/enumerate
+import suru
 import takajopkg/general
 include takajopkg/listDomains
 include takajopkg/listIpAddresses
