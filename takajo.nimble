@@ -13,6 +13,5 @@ bin           = @["takajo"]
 
 requires "nim >= 1.6.12"
 requires "cligen >= 1.5"
-requires "progress >= 1.1.3"
 #requires "terminaltables"
 requires "suru"

@@ -63,9 +63,11 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
     let outputFileSize = getFileSize(outputFile)
     outputFile.close()
 
+    echo ""
     echo "Domains: ", len(domainHashSet)
     echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
+
     let endTime = epochTime()
     let elapsedTime = int(endTime - startTime)
     let hours = elapsedTime div 3600

@@ -10,10 +10,24 @@ proc sysmonProcessHashes(level: string = "high", output: string, quiet: bool = f
         echo ""
         return
 
+    echo "Started the Sysmon Process Hashes command"
+    echo ""
+    echo "This command will extract out unique MD5, SHA1, SHA256 and Import hashes from Sysmon 1 process creation events."
+    echo "By default, a minimum level of high will be used to extract only hashes of processes with a high likelihood of being malicious."
+    echo "You can change the minimum level of alerts with -l, --level=."
+    echo "For example, -l=informational for a minimum level of informational, which will extract out all hashes."
+    echo ""
+
+    echo "Counting total lines. Please wait."
+    echo ""
+    let totalLines = countLinesInTimeline(timeline)
+    echo "Total lines: ", totalLines
+    echo ""
+
     if level == "critical":
-        echo "Scanning for Sysmon 1 process hashes with an alert level of critical"
+        echo "Scanning for process hashes with an alert level of critical"
     else:
-        echo "Scanning for Sysmon 1 process hashes with a minimal alert level of " & level
+        echo "Scanning for process hashes with a minimal alert level of " & level
     echo ""
 
     var
@@ -21,8 +35,14 @@ proc sysmonProcessHashes(level: string = "high", output: string, quiet: bool = f
         channel, eventLevel, hashes = ""
         eventId, md5hashCount, sha1hashCount, sha256hashCount, impHashCount = 0
         jsonLine: JsonNode
+        bar: SuruBar = initSuruBar()
+
+    bar[0].total = totalLines
+    bar.setup()
 
     for line in lines(timeline):
+        inc bar
+        bar.update(1000000000) # refresh every second
         jsonLine = parseJson(line)
         channel = jsonLine["Channel"].getStr()
         eventId = jsonLine["EventID"].getInt()
@@ -50,6 +70,7 @@ proc sysmonProcessHashes(level: string = "high", output: string, quiet: bool = f
                             inc impHashCount
             except KeyError:
                 discard
+    bar.finish()
 
     # Save MD5 results
     let md5outputFilename = output & "-MD5-hashes.txt"
@@ -83,6 +104,7 @@ proc sysmonProcessHashes(level: string = "high", output: string, quiet: bool = f
     impHashOutputFile.close()
     let impHashFileSize = getFileSize(impHashOutputFilename)
 
+    echo ""
     echo "Saved files:"
     echo md5outputFilename & " (" & formatFileSize(md5FileSize) & ")"
     echo sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")"

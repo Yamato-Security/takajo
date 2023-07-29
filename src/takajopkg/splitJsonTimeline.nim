@@ -6,11 +6,17 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
-    echo "Calculating total lines in the JSONL file. Please wait."
+    echo "Started the Split JSONL Timeline command"
+    echo ""
+    echo "This command will split a large JSONL timeline into many multiple ones based on computer name."
+    echo ""
+
+    echo "Counting total lines. Please wait."
+    echo ""
     let totalLines = countLinesInTimeline(timeline)
     echo "Total lines: ", totalLines
     echo ""
-    echo "Splitting the Hayabusa JSONL timeline into separate timelines according to the computer name."
+    echo "Splitting the Hayabusa JSONL timeline. Please wait."
 
     if not dirExists(output):
         echo ""
@@ -22,16 +28,15 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
         inputFile = open(timeline, FileMode.fmRead)
         filenameSequence: seq[string] = @[]
         filesTable = initTable[string, File]()
-        bar = newProgressBar(total = totalLines)
-        lineCount = 0
-        updateInterval = max(totalLines div 500, 1)
-    bar.start()
+        bar: SuruBar = initSuruBar()
+
+    bar[0].total = totalLines
+    bar.setup()
 
     for line in lines(timeline):
-        inc(lineCount)
-        if lineCount mod updateInterval == 0:  # Update about every .2% of lines
-            bar.set(lineCount)
-        updateInterval = max(totalLines div 500, 1)  # Update about every .2% of lines, but at least once per line
+        inc bar
+        bar.update(1000000000) # refresh every second
+
         let jsonLine = parseJson(line)
         let computerName = jsonLine["Computer"].getStr()
 
@@ -57,7 +62,7 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
     echo ""
     for fn in filenameSequence:
         let fileSize = getFileSize(fn)
-        echo "Created the file: " & fn & " (" & formatFileSize(fileSize) & ")"
+        echo "Saved file: " & fn & " (" & formatFileSize(fileSize) & ")"
 
     echo ""
 

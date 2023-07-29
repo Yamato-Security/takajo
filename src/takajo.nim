@@ -11,7 +11,6 @@ import terminal
 import times
 import uri
 import os
-import progress
 import std/enumerate
 import suru
 import takajopkg/general
@@ -134,7 +133,7 @@ when isMainModule:
             doc = "stack logons by target user, target computer, source IP address and source computer",
             help = {
                 "localSrcIpAddresses": "include results when the source IP address is local",
-                "output": "save results to a text file",
+                "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }

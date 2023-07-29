@@ -8,6 +8,16 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
         echo "The file " & ipList & " does not exist."
         return
 
+    echo "Started the VirusTotal IP Lookup command"
+    echo ""
+    echo "This command will lookup a list of IP addresses on VirusTotal."
+    echo "Specify -j results.json to save the original JSON responses."
+    echo "The default rate is 4 requests per minute so increase this if you have a premium membership."
+    echo ""
+
+    echo "Loading IP addresses. Please wait."
+    echo ""
+
     let file = open(ipList)
 
     # Read each line into a sequence.
@@ -34,14 +44,16 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
 
     var
         totalMaliciousIpAddressCount = 0
-        bar = newProgressBar(total = len(lines))
+        bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
 
-    bar.start()
+    bar[0].total = len(lines)
+    bar.setup()
 
     for ipAddress in lines:
-        bar.increment()
+        inc bar
+        bar.update(1000000000) # refresh every second
         let response = client.request("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, httpMethod = HttpGet)
         var singleResultTable = newTable[string, string]()
         singleResultTable["IP-Address"] = ipAddress

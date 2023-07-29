@@ -3,9 +3,22 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    echo "Started the Timeline Logon command"
+    echo ""
+    echo "This command creates a CSV timeline of logon events."
+    echo "Elapsed time for successful logons are calculated by default but can be disabled with -c=false."
+    echo "Logoff events can be outputted on separate lines with -l, --outputLogoffEvents."
+    echo "Admin logon events can be outputted on separate lines with -a, --outputAdminLogonEvents."
+    echo ""
+    echo ""
+
+    echo "Counting total lines. Please wait."
+    echo ""
     let totalLines = countLinesInTimeline(timeline)
     echo "Total lines: ", totalLines
-    echo "Loading the Hayabusa JSONL timeline. Please wait."
+    echo ""
+
+    echo "Creating a logon timeline. Please wait."
     echo ""
 
     var
@@ -19,11 +32,14 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
         EID_4647_count = 0 # User initiated logoff
         EID_4648_count = 0 # Explicit logon
         EID_4672_count = 0 # Admin logon
-        bar = newProgressBar(total = totalLines)
-    bar.start()
+        bar: SuruBar = initSuruBar()
+
+    bar[0].total = totalLines
+    bar.setup()
 
     for line in lines(timeline):
-        bar.increment()
+        inc bar
+        bar.update(1000000000)
         let jsonLine = parseJson(line)
         let ruleTitle = jsonLine["RuleTitle"].getStr()
 
@@ -168,11 +184,11 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
                 singleResultTable["LID"] = details.extractStr("LID")
                 seqOfResultsTables.add(singleResultTable)
 
-    echo ""
-    echo "Calculating elapsed time. Please wait."
-    echo ""
-
     bar.finish()
+
+    echo ""
+    echo "Calculating logon elapsed time. Please wait."
+    echo ""
 
     # Calculating the logon elapsed time (default)
     if calculateElapsedTime == true:

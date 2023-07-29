@@ -3,11 +3,18 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    echo "Calculating total lines in the CSV file. Please wait."
+    echo "Started the Split CSV Timeline command"
+    echo ""
+    echo "This command will split a large CSV timeline into many multiple ones based on computer name."
+    echo "If you want to separate the field data by newlines, add the -m option."
+    echo ""
+
+    echo "Counting total lines. Please wait."
+    echo ""
     let totalLines = countLinesInTimeline(timeline)
     echo "Total lines: ", totalLines
     echo ""
-    echo "Splitting the Hayabusa CSV timeline into separate timelines according to the computer name. Please wait."
+    echo "Splitting the Hayabusa CSV timeline. Please wait."
 
     if not dirExists(output):
         echo ""
@@ -20,18 +27,17 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
         line = ""
         filenameSequence: seq[string] = @[]
         filesTable = initTable[string, File]()
-        bar = newProgressBar(total = totalLines)
-        lineCount = 0
-        updateInterval = max(totalLines div 500, 1)  # Update about every .2% of lines, but at least once per line
-    bar.start()
+        bar: SuruBar = initSuruBar()
+
+    bar[0].total = totalLines
+    bar.setup()
 
     # Read in the CSV header
     let csvHeader = inputFile.readLine()
     while inputFile.endOfFile == false:
-        inc(lineCount)
-        if lineCount mod updateInterval == 0:  # Update about every .2% of lines
-            bar.set(lineCount)
-        updateInterval = max(totalLines div 500, 1)  # Update about every .2% of lines, but at least once per line
+        inc bar
+        bar.update(1000000000) # refresh every second
+
         var currentLine = inputFile.readLine()
         let splitFields = currentLine.split(',')
         var computerName = splitFields[1]
@@ -68,7 +74,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
     echo ""
     for fn in filenameSequence:
         let fileSize = getFileSize(fn)
-        echo "Created the file: " & fn & " (" & formatFileSize(fileSize) & ")"
+        echo "Saved file: " & fn & " (" & formatFileSize(fileSize) & ")"
 
     echo ""
 

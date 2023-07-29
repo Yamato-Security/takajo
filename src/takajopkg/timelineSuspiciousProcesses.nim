@@ -8,6 +8,19 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
         echo ""
         return
 
+    echo "Started the Timeline Suspicious Processes command"
+    echo ""
+    echo "This command will a CSV timeline of suspicious processes."
+    echo "The default minimum level of alerts is high."
+    echo "You can change the minimum level with -l, --level=."
+    echo ""
+
+    echo "Counting total lines. Please wait."
+    echo ""
+    let totalLines = countLinesInTimeline(timeline)
+    echo "Total lines: ", totalLines
+    echo ""
+
     if level == "critical":
         echo "Scanning for processes with an alert level of critical"
     else:
@@ -21,9 +34,14 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
             lid, lguid, ruleAuthor,ruleTitle, parentCmdline,
             parentGuid, parentPid, pidStr, process, processGuid, product, timestamp, user = ""
         jsonLine: JsonNode
+        bar: SuruBar = initSuruBar()
+
+    bar[0].total = totalLines
+    bar.setup()
 
     for line in lines(timeline):
-
+        inc bar
+        bar.update(1000000000) # refresh every second
         jsonLine = parseJson(line)
         channel = jsonLine["Channel"].getStr()
         eventId = jsonLine["EventID"].getInt()
@@ -174,7 +192,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
                 singleResultTable["SHA256 Hash"] = hash_SHA256
                 singleResultTable["Import Hash"] = hash_IMPHASH
                 seqOfResultsTables.add(singleResultTable)
-
+    bar.finish()
 
     if output != "" and suspicousProcessCount_Sec_4688 != 0 and suspicousProcessCount_Sysmon_1 != 0: # Save results to CSV
         # Open file to save results

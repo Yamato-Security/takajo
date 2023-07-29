@@ -12,8 +12,17 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
         echo "The file " & domainList & " does not exist."
         return
 
-    let file = open(domainList)
+    echo "Started the VirusTotal Domain Lookup command"
+    echo ""
+    echo "This command will lookup a list of domains on VirusTotal."
+    echo "Specify -j results.json to save the original JSON responses."
+    echo "The default rate is 4 requests per minute so increase this if you have a premium membership."
+    echo ""
 
+    echo "Loading domains. Please wait."
+    echo ""
+
+    let file = open(domainList)
     # Read each line into a sequence.
     var lines = newSeq[string]()
     for line in file.lines:
@@ -38,14 +47,16 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
 
     var
         totalMaliciousDomainCount = 0
-        bar = newProgressBar(total = len(lines))
+        bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
 
-    bar.start()
+    bar[0].total = len(lines)
+    bar.setup()
 
     for domain in lines:
-        bar.increment()
+        inc bar
+        bar.update(1000000000) # refresh every second
         let response = client.request("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain), httpMethod = HttpGet)
         var singleResultTable = newTable[string, string]()
         singleResultTable["Domain"] = domain

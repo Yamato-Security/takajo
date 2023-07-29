@@ -11,6 +11,16 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
         echo "The file " & hashList & " does not exist."
         return
 
+    echo "Started the VirusTotal Hash Lookup command"
+    echo ""
+    echo "This command will lookup a list of file hashes on VirusTotal."
+    echo "Specify -j results.json to save the original JSON responses."
+    echo "The default rate is 4 requests per minute so increase this if you have a premium membership."
+    echo ""
+
+    echo "Loading hashes. Please wait."
+    echo ""
+
     let file = open(hashList)
 
     # Read each line into a sequence.
@@ -37,14 +47,16 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
 
     var
         totalMaliciousHashCount = 0
-        bar = newProgressBar(total = len(lines))
+        bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
 
-    bar.start()
+    bar[0].total = len(lines)
+    bar.setup()
 
     for hash in lines:
-        bar.increment()
+        inc bar
+        bar.update(1000000000) # refresh every second
         let response = client.request("https://www.virustotal.com/api/v3/files/" & hash, httpMethod = HttpGet)
         var singleResultTable = newTable[string, string]()
         singleResultTable["Hash"] = hash
