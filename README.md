@@ -50,6 +50,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [List Commands](#list-commands-1)
     - [`list-domains` command](#list-domains-command)
       - [`list-domains` command examples](#list-domains-command-examples)
+    - [`list-hashes` command](#list-hashes-command)
+      - [`list-hashes` command examples](#list-hashes-command-examples)
     - [`list-ip-addresses` command](#list-ip-addresses-command)
       - [`list-ip-addresses` command examples](#list-ip-addresses-command-examples)
     - [`list-undetected-evtx` command](#list-undetected-evtx-command)
@@ -65,8 +67,6 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
     - [`stack-logons` command](#stack-logons-command)
       - [`stack-logons` command examples](#stack-logons-command-examples)
   - [Sysmon Commands](#sysmon-commands-1)
-    - [`sysmon-process-hashes` command](#sysmon-process-hashes-command)
-      - [`sysmon-process-hashes` command examples](#sysmon-process-hashes-command-examples)
     - [`sysmon-process-tree` command](#sysmon-process-tree-command)
       - [`sysmon-process-tree` command examples](#sysmon-process-tree-command-examples)
   - [Timeline Commands](#timeline-commands-1)
@@ -134,7 +134,7 @@ If you have Nim installed, you can compile from source with the following comman
 * `stack-logons`: stack logons by target user, target computer, source IP address and source computer
 
 ## Sysmon Commands
-* `sysmon-process-hashes`: create a list of process hashes to be used with `vt-hash-lookup`
+* `list-hashes`: create a list of process hashes to be used with `vt-hash-lookup`
 * `sysmon-process-tree`: output the process tree of a certain process
 
 ## Timeline Commands
@@ -189,6 +189,40 @@ Include subdomains:
 ```
 takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o domains.txt -s
 ```
+
+### `list-hashes` command
+
+Create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)
+
+* Input: `JSONL`
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: `Text file`
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-o, --output <BASE-NAME>`: specify the base name to save the text results to.
+
+Options:
+
+- `-l, --level`: specify the minimum level. (default: `high`)
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `list-hashes` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+```
+
+Save the results to a different text file for each hash type:
+
+```
+takajo.exe list-hashes -t ../hayabusa/timeline.jsonl -o case-1
+```
+
+For example, if `MD5`, `SHA1` and `IMPHASH` hashes are stored in the sysmon logs, then the following files will be created: `case-1-MD5-hashes.txt`, `case-1-SHA1-hashes.txt`, `case-1-ImportHashes.txt`
 
 ### `list-ip-addresses` command
 
@@ -435,40 +469,6 @@ takajo.exe stack-logons -t ../hayabusa/timeline.jsonl -l
 ```
 
 ## Sysmon Commands
-
-### `sysmon-process-hashes` command
-
-Create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)
-
-* Input: `JSONL`
-* Profile: Any besides `all-field-info` and `all-field-info-verbose`
-* Output: `Text file`
-
-Required options:
-
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
-- `-o, --output <BASE-NAME>`: specify the base name to save the text results to.
-
-Options:
-
-- `-l, --level`: specify the minimum level. (default: `high`)
-- `-q, --quiet`: do not display logo. (default: `false`)
-
-#### `sysmon-process-hashes` command examples
-
-Prepare JSONL timeline with Hayabusa:
-
-```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
-```
-
-Save the results to a different text file for each hash type:
-
-```
-takajo.exe sysmon-process-hashes -t ../hayabusa/timeline.jsonl -o case-1
-```
-
-For example, if `MD5`, `SHA1` and `IMPHASH` hashes are stored in the sysmon logs, then the following files will be created: `case-1-MD5-hashes.txt`, `case-1-SHA1-hashes.txt`, `case-1-ImportHashes.txt`
 
 ### `sysmon-process-tree` command
 

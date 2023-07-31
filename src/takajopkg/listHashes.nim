@@ -1,6 +1,6 @@
 # TODO
 # Get hashes from sysmon ID 7 (Image Loaded)
-proc sysmonProcessHashes(level: string = "high", output: string, quiet: bool = false, timeline: string) =
+proc listHashes(level: string = "high", output: string, quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -10,7 +10,7 @@ proc sysmonProcessHashes(level: string = "high", output: string, quiet: bool = f
         echo ""
         return
 
-    echo "Started the Sysmon Process Hashes command"
+    echo "Started the List Hashes command"
     echo ""
     echo "This command will extract out unique MD5, SHA1, SHA256 and Import hashes from Sysmon 1 process creation events."
     echo "By default, a minimum level of high will be used to extract only hashes of processes with a high likelihood of being malicious."

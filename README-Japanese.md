@@ -49,6 +49,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Listコマンド](#listコマンド-1)
     - [`list-domains`コマンド](#list-domainsコマンド)
       - [`list-domains`コマンドの使用例](#list-domainsコマンドの使用例)
+    - [`list-hashes`コマンド](#list-hashesコマンド)
+      - [`list-hashes`コマンドの使用例](#list-hashesコマンドの使用例)
     - [`list-ip-addresses`コマンド](#list-ip-addressesコマンド)
       - [`list-ip-addresses`コマンドの使用例](#list-ip-addressesコマンドの使用例)
     - [`list-undetected-evtx`コマンド](#list-undetected-evtxコマンド)
@@ -64,8 +66,6 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
     - [`stack-logons`コマンド](#stack-logonsコマンド)
       - [`stack-logons`コマンドの使用例](#stack-logonsコマンドの使用例)
   - [Sysmonコマンド](#sysmonコマンド-1)
-    - [`sysmon-process-hashes`コマンド](#sysmon-process-hashesコマンド)
-      - [`sysmon-process-hashes`コマンドの使用例](#sysmon-process-hashesコマンドの使用例)
     - [`sysmon-process-tree`コマンド](#sysmon-process-treeコマンド)
       - [`sysmon-process-tree`コマンドの使用例](#sysmon-process-treeコマンドの使用例)
   - [Timelineコマンド](#timelineコマンド-1)
@@ -132,7 +132,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 * `stack-logons`: ユーザー名、コンピューター名、送信元IPアドレス、送信元コンピューター名など、項目ごとの上位ログオンを出力する
 
 ## Sysmonコマンド
-* `sysmon-process-hashes`: `vt-hash-lookup` で使用するプロセスのハッシュ値のリストを作成する
+* `list-hashes`: `vt-hash-lookup` で使用するプロセスのハッシュ値のリストを作成する
 * `sysmon-process-tree`: プロセスツリーを出力する
 
 ## Timelineコマンド
@@ -188,6 +188,40 @@ takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o domains.txt
 ```
 takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o domains.txt -s
 ```
+
+### `list-hashes`コマンド
+
+`vt-hash-lookup`で使用するプロセスハッシュ値のリストを作成します (入力: JSONL, プロファイル: standard)
+
+* 入力: `JSONL`
+* プロファイル: `all-field-info` と `all-field-info-verbose`以外すべて
+* 出力: `テキストファイル`
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-o, --output <BASE-NAME>`: 結果を保存するベースファイル名
+
+任意オプション:
+
+- `-l, --level`: 最小のアラートレベルを指定 (デフォルト: `high`)
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `list-hashes`コマンドの使用例
+
+HayabusaでJSONLタイムラインを作成する:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+```
+
+ハッシュタイプ毎に異なるファイルに結果を保存する:
+
+```
+takajo.exe list-hashes -t ../hayabusa/timeline.jsonl -o case-1
+```
+たとえば、`MD5`、`SHA1` 、`IMPHASH` がSysmonログに保存されている場合、 次のファルが作成されます:
+`case-1-MD5-hashes.txt`, `case-1-SHA1-hashes.txt`, `case-1-ImportHashes.txt`
 
 ### `list-ip-addresses`コマンド
 
@@ -398,7 +432,7 @@ takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-jsonl
 
 ### `stack-logons`コマンド
 
-ログインしている上位アカウントのリストを作成します (入力: JSONL, プロファイル: standard)  
+ログインしている上位アカウントのリストを作成します (入力: JSONL, プロファイル: standard)
 まだ実装されていません。
 
 #### `stack-logons`コマンドの使用例
@@ -408,41 +442,6 @@ takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
 ```
 
 ## Sysmonコマンド
-
-### `sysmon-process-hashes`コマンド
-
-`vt-hash-lookup`で使用するプロセスハッシュ値のリストを作成します (入力: JSONL, プロファイル: standard)
-
-* 入力: `JSONL`
-* プロファイル: `all-field-info` と `all-field-info-verbose`以外すべて
-* 出力: `テキストファイル`
-
-必須オプション:
-
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
-- `-o, --output <BASE-NAME>`: 結果を保存するベースファイル名
-
-任意オプション:
-
-- `-l, --level`: 最小のアラートレベルを指定 (デフォルト: `high`)
-- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
-
-#### `sysmon-process-hashes`コマンドの使用例
-
-HayabusaでJSONLタイムラインを作成する:
-
-```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
-```
-
-ハッシュタイプ毎に異なるファイルに結果を保存する:
-
-```
-takajo.exe sysmon-process-hashes -t ../hayabusa/timeline.jsonl -o case-1
-```
-たとえば、`MD5`、`SHA1` 、`IMPHASH` がSysmonログに保存されている場合、 次のファルが作成されます:   
-`case-1-MD5-hashes.txt`, `case-1-SHA1-hashes.txt`, `case-1-ImportHashes.txt`
-
 
 ### `sysmon-process-tree`コマンド
 

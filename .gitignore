@@ -150,3 +150,4 @@ takajo-*
 #Results files
 *.txt
 output/*
+*.xlsx

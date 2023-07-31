@@ -21,7 +21,7 @@ include takajopkg/listUnusedRules
 include takajopkg/splitCsvTimeline
 include takajopkg/splitJsonTimeline
 include takajopkg/stackLogons
-include takajopkg/sysmonProcessHashes
+include takajopkg/listHashes
 include takajopkg/sysmonProcessTree
 include takajopkg/timelineLogon
 include takajopkg/timelineSuspiciousProcesses
@@ -39,7 +39,7 @@ when isMainModule:
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
-    const example_sysmon_process_hashes = "  sysmon-process-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
+    const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [-o suspicious-processes.csv]\p"
@@ -48,8 +48,8 @@ when isMainModule:
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
     clCfg.useMulti = "Version: 2.0.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
-        examples & example_list_domains & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
-        example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_hashes & example_sysmon_process_tree &
+        examples & example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
+        example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_tree &
         example_timeline_logon & example_timeline_suspicious_processes &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
@@ -69,6 +69,16 @@ when isMainModule:
             short = {
                 "includeSubdomains": 's',
                 "includeWorkstations": 'w'
+            }
+        ],
+        [
+            listHashes, cmdName = "list-hashes",
+            doc = "create a list of process hashes to be used with vt-hash-lookup",
+            help = {
+                "level": "specify the minimum alert level",
+                "output": "specify the base name to save results to text files (ex: -o case-1)",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
         ],
         [
@@ -134,16 +144,6 @@ when isMainModule:
             help = {
                 "localSrcIpAddresses": "include results when the source IP address is local",
                 "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
-            }
-        ],
-        [
-            sysmonProcessHashes, cmdName = "sysmon-process-hashes",
-            doc = "create a list of process hashes to be used with vt-hash-lookup",
-            help = {
-                "level": "specify the minimum alert level",
-                "output": "specify the base name to save results to text files (ex: -o case-1)",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
