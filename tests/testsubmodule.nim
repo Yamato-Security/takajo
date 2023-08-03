@@ -8,7 +8,7 @@
 import unittest
 import std/tables
 
-import takajopkg/submodule
+import takajopkg/general
 test "csv file path import":
   let expect_content = """rule_path
   test1.yml
