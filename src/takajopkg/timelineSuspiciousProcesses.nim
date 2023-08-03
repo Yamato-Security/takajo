@@ -115,7 +115,10 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
             parentGuid = jsonLine["Details"]["ParentPGUID"].getStr()
             description = jsonLine["Details"]["Description"].getStr()
             product = jsonLine["Details"]["Product"].getStr()
-            company = jsonLine["Details"]["Company"].getStr()
+            try:
+                company = jsonLine["Details"]["Company"].getStr()
+            except KeyError:
+                company = ""
             try:
                 ruleAuthor = jsonLine["RuleAuthor"].getStr()
             except KeyError:

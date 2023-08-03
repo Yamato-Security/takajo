@@ -122,6 +122,7 @@ If you have Nim installed, you can compile from source with the following comman
 
 ## List Commands
 * `list-domains`: create a list of unique domains to be used with `vt-domain-lookup`
+* `list-hashes`: create a list of process hashes to be used with `vt-hash-lookup`
 * `list-ip-addresses`: create a list of unique target and/or source IP addresses to be used with `vt-ip-lookup`
 * `list-undetected-evtx`: create a list of undetected evtx files
 * `list-unused-rules`: create a list of unused detection rules
@@ -134,7 +135,6 @@ If you have Nim installed, you can compile from source with the following comman
 * `stack-logons`: stack logons by target user, target computer, source IP address and source computer
 
 ## Sysmon Commands
-* `list-hashes`: create a list of process hashes to be used with `vt-hash-lookup`
 * `sysmon-process-tree`: output the process tree of a certain process
 
 ## Timeline Commands

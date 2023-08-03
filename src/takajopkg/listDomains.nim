@@ -11,7 +11,7 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
     echo ""
     echo "Local queries to workstations are filtered out by default, but can be included with -w, --includeWorkstations."
     echo "Sub-domains are also filtered out by default, but can be included with -s, --includeSubdomains."
-    echo "Domains ending with .lan or .LAN are filtered out."
+    echo "Domains ending with .lan, .LAN or .local are filtered out."
     echo ""
 
     echo "Counting total lines. Please wait."
@@ -47,7 +47,7 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
             # If includeWorkstations is false, only add domain if it contains a period
             # Filter out ".", "*.lan" and "*.LAN"
             if includeWorkstations or (domain.contains('.') and domain != "." and not domain.endsWith(".lan") and not
-                domain.endsWith(".LAN") and not isIpAddress(domain) and not domain.endsWith('.')):
+                domain.endsWith(".LAN") and not domain.endsWith(".local") and not isIpAddress(domain) and not domain.endsWith('.')):
 
                 # Do not include subdomains by default so strip the subdomains
                 if not includeSubdomains:

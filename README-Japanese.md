@@ -120,6 +120,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 ## Listコマンド
 * `list-domains`: `vt-domain-lookup`コマンドで使用する、重複のないドメインのリストを作成する
+* `list-hashes`: `vt-hash-lookup` で使用するプロセスのハッシュ値のリストを作成する
 * `list-ip-addresses`: `vt-ip-lookup`コマンドで使用する、重複のない送信元/送信先のIPリストを作成する
 * `list-undetected-evtx`: 検知されなかったevtxファイルのリストを作成する
 * `list-unused-rules`: 検知されなかったルールのリストを作成する
@@ -132,7 +133,6 @@ Nimがインストールされている場合、以下のコマンドでソー�
 * `stack-logons`: ユーザー名、コンピューター名、送信元IPアドレス、送信元コンピューター名など、項目ごとの上位ログオンを出力する
 
 ## Sysmonコマンド
-* `list-hashes`: `vt-hash-lookup` で使用するプロセスのハッシュ値のリストを作成する
 * `sysmon-process-tree`: プロセスツリーを出力する
 
 ## Timelineコマンド
