@@ -4,7 +4,7 @@
 
 **Enhancements:**
 
-- Takajo now compiles with nim 2.0.0. (#31) (@fukusuket)
+- Takajo now compiles with Nim 2.0.0. (#31) (@fukusuket)
 
 - `list-domains`: create a
 
