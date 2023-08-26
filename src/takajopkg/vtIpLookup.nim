@@ -39,26 +39,25 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
     echo "Estimated time: ", $estimatedHours & " hours, " & $estimatedMinutes & " minutes, " & $estimatedSeconds & " seconds"
     echo ""
 
-    let client = newHttpClient()
-    client.headers = newHttpHeaders({ "x-apikey": apiKey })
-
     var
         totalMaliciousIpAddressCount = 0
         bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
+        headers: httpheaders.HttpHeaders
 
+    headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
 
     for ipAddress in lines:
         inc bar
         bar.update(1000000000) # refresh every second
-        let response = client.request("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, httpMethod = HttpGet)
+        let response = get("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, headers)
         var singleResultTable = newTable[string, string]()
         singleResultTable["IP-Address"] = ipAddress
         singleResultTable["Link"] = "https://www.virustotal.com/gui/ip_addresses/" & ipAddress
-        if response.status == $Http200:
+        if response.code == 200:
             singleResultTable["Response"] = "200"
             let jsonResponse = parseJson(response.body)
             jsonResponses.add(jsonResponse)
@@ -94,12 +93,12 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
                 echo "\pFound malicious IP address: " & ipAddress & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
 
         # If we get a 404 not found
-        elif response.status == $Http404:
+        elif response.code == 404:
             echo "\pIP address not found: ", ipAddress
             singleResultTable["Response"] = "404"
         else:
-            echo "\pUnknown error: ", response.status, " - " & ipAddress
-            singleResultTable["Response"] = response.status
+            echo "\pUnknown error: ", intToStr(response.code), " - " & ipAddress
+            singleResultTable["Response"] = intToStr(response.code)
 
         seqOfResultsTables.add(singleResultTable)
 

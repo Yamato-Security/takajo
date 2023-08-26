@@ -1,7 +1,7 @@
 import algorithm
 import cligen
 import json
-import httpclient
+import puppy
 import sets
 import sequtils
 import strformat
