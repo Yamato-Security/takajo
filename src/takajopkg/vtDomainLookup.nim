@@ -42,26 +42,25 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
     echo "Estimated time: ", $estimatedHours & " hours, " & $estimatedMinutes & " minutes, " & $estimatedSeconds & " seconds"
     echo ""
 
-    let client = newHttpClient()
-    client.headers = newHttpHeaders({ "x-apikey": apiKey })
-
     var
         totalMaliciousDomainCount = 0
         bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
+        headers: httpheaders.HttpHeaders
 
+    headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
 
     for domain in lines:
         inc bar
         bar.update(1000000000) # refresh every second
-        let response = client.request("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain), httpMethod = HttpGet)
+        let response = get("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain), headers)
         var singleResultTable = newTable[string, string]()
         singleResultTable["Domain"] = domain
         singleResultTable["Link"] = "https://www.virustotal.com/gui/domain/" & domain
-        if response.status == $Http200:
+        if response.code == 200:
             singleResultTable["Response"] = "200"
             let jsonResponse = parseJson(response.body)
             jsonResponses.add(jsonResponse)
@@ -93,12 +92,12 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
                 echo "\pFound malicious domain: " & domain & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
 
         # If we get a 404 not found
-        elif response.status == $Http404:
+        elif response.code == 404:
             echo "\pDomain not found: ", domain
             singleResultTable["Response"] = "404"
         else:
-            echo "\pUnknown error: ", response.status, " - " & domain
-            singleResultTable["Response"] = response.status
+            echo "\pUnknown error: ", intToStr(response.code), " - " & domain
+            singleResultTable["Response"] = intToStr(response.code)
 
         seqOfResultsTables.add(singleResultTable)
 

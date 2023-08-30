@@ -5,6 +5,7 @@
 **Enhancements:**
 
 - Takajo now compiles with Nim 2.0.0. (#31) (@fukusuket)
+- Replaced HTTP with Puppy to reduce external dependencies. (#33) (@fukusuket)
 
 - `list-domains`: create a
 

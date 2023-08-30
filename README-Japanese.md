@@ -113,7 +113,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 ```
 > nimble update
-> nimble build -d:release -d:ssl
+> nimble build -d:release
 ```
 
 # コマンド一覧

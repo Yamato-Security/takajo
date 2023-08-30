@@ -13,5 +13,5 @@ bin           = @["takajo"]
 
 requires "nim >= 1.6.12"
 requires "cligen >= 1.5"
-#requires "terminaltables"
 requires "suru#f6f1e607c585b2bc2f71309996643f0555ff6349"
+requires "puppy >= 2.1.0"
