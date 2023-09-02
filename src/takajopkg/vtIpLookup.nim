@@ -103,6 +103,7 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
     headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
+    vtIpAddressChannel.open()
 
     for ipAddress in lines:
         inc bar
