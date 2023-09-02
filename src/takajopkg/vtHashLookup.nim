@@ -1,7 +1,45 @@
 # Todo: add more info useful for triage, trusted_verdict, signature info, sandbox results etc...
 # https://blog.virustotal.com/2021/08/introducing-known-distributors.html
-# TODO: make asynchronous
+# TODO:
 # Add output not found to txt file
+
+var vtAPIHashChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
+
+proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders) {.thread.} =
+    let response = get("https://www.virustotal.com/api/v3/files/" & hash, headers)
+    let jsonResponse = parseJson(response.body)
+    var singleResultTable = newTable[string, string]()
+    var malicious = false
+    singleResultTable["Hash"] = hash
+    singleResultTable["Link"] = "https://www.virustotal.com/gui/file/" & hash
+    if response.code == 200:
+        singleResultTable["Response"] = "200"
+
+        # Parse values that need epoch time to human readable time
+        singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
+        singleResultTable["FirstInTheWildDate"] = getJsonDate(jsonResponse, @["data", "attributes", "first_seen_itw_date"])
+        singleResultTable["FirstSubmissionDate"] = getJsonDate(jsonResponse, @["data", "attributes", "first_submission_date"])
+        singleResultTable["LastSubmissionDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_submission_date"])
+
+        # Parse simple data
+        singleResultTable["MaliciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "malicious"])
+        singleResultTable["HarmlessCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "harmless"])
+        singleResultTable["SuspiciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "suspicious"])
+
+        # If it was found to be malicious
+        if parseInt(singleResultTable["MaliciousCount"]) > 0:
+            malicious = true
+            echo "\pFound malicious hash: " & hash & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
+    elif response.code == 404:
+        echo "\pHash not found: ", hash
+        singleResultTable["Response"] = "404"
+    else:
+        echo "\pUnknown error: ", intToStr(response.code), " - " & hash
+        singleResultTable["Response"] = intToStr(response.code)
+
+    vtAPIHashChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse, isMalicious:malicious))
+
+
 proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", output: string = "", rateLimit: int = 4, quiet: bool = false) =
     let startTime = epochTime()
     if not quiet:
@@ -52,44 +90,22 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
     headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
+    vtAPIHashChannel.open()
 
     for hash in lines:
         inc bar
         bar.update(1000000000) # refresh every second
-        let response = get("https://www.virustotal.com/api/v3/files/" & hash, headers)
-        var singleResultTable = newTable[string, string]()
-        singleResultTable["Hash"] = hash
-        singleResultTable["Link"] = "https://www.virustotal.com/gui/file/" & hash
-        if response.code == 200:
-            singleResultTable["Response"] = "200"
-            let jsonResponse = parseJson(response.body)
-            jsonResponses.add(jsonResponse)
+        spawn queryHashAPI(hash, headers) # run queries in parallel
 
-            # Parse values that need epoch time to human readable time
-            singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
-            singleResultTable["FirstInTheWildDate"] = getJsonDate(jsonResponse, @["data", "attributes", "first_seen_itw_date"])
-            singleResultTable["FirstSubmissionDate"] = getJsonDate(jsonResponse, @["data", "attributes", "first_submission_date"])
-            singleResultTable["LastSubmissionDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_submission_date"])
-
-            # Parse simple data
-            singleResultTable["MaliciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "malicious"])
-            singleResultTable["HarmlessCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "harmless"])
-            singleResultTable["SuspiciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "suspicious"])
-
-            # If it was found to be malicious
-            if parseInt(singleResultTable["MaliciousCount"]) > 0:
-                inc totalMaliciousHashCount
-                echo "\pFound malicious hash: " & hash & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
-        elif response.code == 404:
-            echo "\pHash not found: ", hash
-            singleResultTable["Response"] = "404"
-        else:
-            echo "\pUnknown error: ", intToStr(response.code), " - " & hash
-            singleResultTable["Response"] = intToStr(response.code)
-
-        seqOfResultsTables.add(singleResultTable)
         # Sleep to respect the rate limit.
         sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
+
+    for hash in lines:
+        let vtResult: VirusTotalResult = vtAPIHashChannel.recv() # get results of queries executed in parallel
+        seqOfResultsTables.add(vtResult.resTable)
+        jsonResponses.add(vtResult.resJson)
+        if vtResult.isMalicious:
+          totalMaliciousHashCount += 1
 
     bar.finish()
     echo ""
