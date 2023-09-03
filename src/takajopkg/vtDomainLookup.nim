@@ -117,6 +117,9 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
         if vtResult.isMalicious:
           totalMaliciousDomainCount += 1
 
+    sync()
+    vtAPIDomainChannel.close()
+
     bar.finish()
 
     echo ""

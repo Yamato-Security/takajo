@@ -107,6 +107,10 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
         if vtResult.isMalicious:
           totalMaliciousHashCount += 1
 
+    sync()
+    vtAPIHashChannel.close()
+
+
     bar.finish()
     echo ""
     echo "Finished querying hashes"

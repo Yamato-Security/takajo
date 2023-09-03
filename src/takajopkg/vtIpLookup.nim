@@ -120,6 +120,9 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
         if vtResult.isMalicious:
           totalMaliciousIpAddressCount += 1
 
+    sync()
+    vtIpAddressChannel.close()
+
     bar.finish()
 
     echo ""
