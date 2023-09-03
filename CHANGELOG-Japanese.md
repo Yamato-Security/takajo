@@ -6,6 +6,7 @@
 
 - TakajoがNim 2.0.0でコンパイルできるようになった。(#31) (@fukusuket)
 - 依存関係を減らすため、HTTPクライアントをPuppyに置き換えた。 (#33) (@fukusuket)
+- パフォーマンス向上のため、VirusTotalクエリをマルチスレッドにした。 (#33) (@fukusuket)
 
 ## 2.0.0 [2022/08/03] - [SANS DFIR Summit 2023 Release](https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/)
 

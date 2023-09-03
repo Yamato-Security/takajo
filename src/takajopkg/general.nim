@@ -323,3 +323,9 @@ proc extractDomain*(domain: string): string =
 
 proc isLocalIP*(ip: string): bool =
   return ip == "127.0.0.1" or ip == "-" or ip == "::1"
+
+
+type VirusTotalResult* = object
+  resTable*: TableRef[string, string]
+  resJson*: JsonNode
+  isMalicious* : bool

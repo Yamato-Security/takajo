@@ -9,6 +9,7 @@ import strutils
 import tables
 import terminal
 import times
+import threadpool
 import uri
 import os
 import std/enumerate

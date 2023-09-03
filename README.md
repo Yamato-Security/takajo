@@ -115,7 +115,7 @@ If you have Nim installed, you can compile from source with the following comman
 
 ```
 > nimble update
-> nimble build -d:release
+> nimble build -d:release --threads:on 
 ```
 
 # Command List
