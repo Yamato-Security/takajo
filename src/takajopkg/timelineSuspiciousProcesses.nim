@@ -60,7 +60,10 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
             computer = jsonLine["Computer"].getStr()
             process = jsonLine["Details"]["Proc"].getStr()
             pidStr = jsonLine["Details"]["PID"].getStr()
-            pidStr = intToStr(fromHex[int](pidStr))
+            try:
+              pidStr = intToStr(fromHex[int](pidStr))
+            except ValueError:
+              discard # conversion errors in fromHex are assumed to have originally been decimal.
             user = jsonLine["Details"]["User"].getStr()
             lid = jsonLine["Details"]["LID"].getStr()
             try:
