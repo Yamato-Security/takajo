@@ -7,6 +7,10 @@
 - TakajoがNim 2.0.0でコンパイルできるようになった。(#31) (@fukusuket)
 - 依存関係を減らすため、HTTPクライアントをPuppyに置き換えた。 (#33) (@fukusuket)
 
+**バグ修正*:**
+
+- Hayabusa 2.8.0以上の結果で`timeline-suspicious-processes`を実行した際のクラッシュを修正した。 (#35) (@fukusuket)
+
 ## 2.0.0 [2022/08/03] - [SANS DFIR Summit 2023 Release](https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/)
 
 **新機能:**
