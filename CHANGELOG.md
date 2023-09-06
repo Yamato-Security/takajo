@@ -8,7 +8,9 @@
 - Replaced HTTP with Puppy to reduce external dependencies. (#33) (@fukusuket)
 - Made VirusTotal lookups multi-threaded to increase performance. (#33) (@fukusuket)
 
-- `list-domains`: create a
+**Bug Fixes*:**
+
+- `timeline-suspicious-processes` would crash when Hayabusa results from version 2.8.0+ was used. (#35) (@fukusuket)
 
 ## 2.0.0 [2022/08/03] - [SANS DFIR Summit 2023 Release](https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/)
 
