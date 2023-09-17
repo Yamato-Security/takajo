@@ -7,12 +7,13 @@ var vtAPIDomainChannel: Channel[VirusTotalResult] # channel for receiving parall
 
 proc queryDomainAPI(domain:string, headers: httpheaders.HttpHeaders) {.thread.} =
     let response = get("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain), headers)
-    let jsonResponse = parseJson(response.body)
+    var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
     var malicious = false
     singleResultTable["Domain"] = domain
     singleResultTable["Link"] = "https://www.virustotal.com/gui/domain/" & domain
     if response.code == 200:
+        jsonResponse = parseJson(response.body)
         singleResultTable["Response"] = "200"
         # Parse values that need epoch time to human readable time
         singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])

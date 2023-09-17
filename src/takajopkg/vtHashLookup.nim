@@ -1,18 +1,18 @@
-# Todo: add more info useful for triage, trusted_verdict, signature info, sandbox results etc...
+# TODO: add more info useful for triage, trusted_verdict, signature info, sandbox results etc...
 # https://blog.virustotal.com/2021/08/introducing-known-distributors.html
-# TODO:
 # Add output not found to txt file
 
 var vtAPIHashChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
 
 proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders) {.thread.} =
     let response = get("https://www.virustotal.com/api/v3/files/" & hash, headers)
-    let jsonResponse = parseJson(response.body)
+    var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
     var malicious = false
     singleResultTable["Hash"] = hash
     singleResultTable["Link"] = "https://www.virustotal.com/gui/file/" & hash
     if response.code == 200:
+        jsonResponse = parseJson(response.body)
         singleResultTable["Response"] = "200"
 
         # Parse values that need epoch time to human readable time
