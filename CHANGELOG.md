@@ -11,6 +11,7 @@
 **Bug Fixes*:**
 
 - `timeline-suspicious-processes` would crash when Hayabusa results from version 2.8.0+ was used. (#35) (@fukusuket)
+- Fixed a JSON parsing error in VirusTotal lookups when an invalid API key was specified. (@fukusuket)
 
 ## 2.0.0 [2022/08/03] - [SANS DFIR Summit 2023 Release](https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/)
 
