@@ -4,12 +4,13 @@ var vtIpAddressChannel: Channel[VirusTotalResult] # channel for receiving parall
 
 proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders) {.thread.} =
     let response = get("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, headers)
-    let jsonResponse = parseJson(response.body)
+    var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
     var malicious = false
     singleResultTable["IP-Address"] = ipAddress
     singleResultTable["Link"] = "https://www.virustotal.com/gui/ip_addresses/" & ipAddress
     if response.code == 200:
+        jsonResponse = parseJson(response.body)
         singleResultTable["Response"] = "200"
 
         # Parse values that need epoch time to human readable time
