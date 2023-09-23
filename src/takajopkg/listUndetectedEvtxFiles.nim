@@ -3,6 +3,10 @@ proc listUndetectedEvtxFiles(columnName: system.string = "EvtxFile", evtxDir: st
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
+
     let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
     var fileLists: seq[string] = getTargetExtFileLists(evtxDir, ".evtx")
 

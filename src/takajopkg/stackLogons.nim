@@ -7,6 +7,10 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
+
     echo "Started the Stack Logons command"
     echo ""
     echo "This command will stack logons based on target user, target computer, source IP address and source computer."
