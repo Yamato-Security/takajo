@@ -1,11 +1,13 @@
 # TODO: List up domain info from DNS Server and Client events
 # Graceful error when no domains loaded
 proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, output: string, quiet: bool = false, timeline: string) =
-
-
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
+
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
 
     echo "Started the List Domains command"
     echo ""

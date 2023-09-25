@@ -2,6 +2,10 @@ proc listUnusedRules(columnName: string = "RuleFile", output: string = "", quiet
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
+
     let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
     var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml")
     var detectedPaths: seq[string] = csvData[columnName].map(getFileNameWithExt)

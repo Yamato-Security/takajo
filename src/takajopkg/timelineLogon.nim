@@ -3,6 +3,10 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
+
     echo "Started the Timeline Logon command"
     echo ""
     echo "This command creates a CSV timeline of logon events."

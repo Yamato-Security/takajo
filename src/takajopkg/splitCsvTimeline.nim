@@ -3,6 +3,10 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
+
     echo "Started the Split CSV Timeline command"
     echo ""
     echo "This command will split a large CSV timeline into many multiple ones based on computer name."

@@ -73,6 +73,10 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
+
     echo ""
     echo "Running the Process Tree module"
     echo ""

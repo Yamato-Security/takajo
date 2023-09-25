@@ -7,6 +7,7 @@
 - Takajo now compiles with Nim 2.0.0. (#31) (@fukusuket)
 - Replaced HTTP with Puppy to reduce external dependencies. (#33) (@fukusuket)
 - Made VirusTotal lookups multi-threaded to increase performance. (#33) (@fukusuket)
+- Added file existence checks when specifying the timeline. (@fukusuket)
 
 **Bug Fixes*:**
 
