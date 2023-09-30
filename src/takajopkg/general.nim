@@ -336,12 +336,13 @@ proc isJsonConvertible*(timeline: string) : bool =
       jsonLine = parseJson(firstLine)
       return true
     except:
-      echo "Failed to convert '" & timeline & "'.This file is not in JSONL format."
-      echo "Please specify a file that has been executed with the Hayabusa json-timeline command --JSONL-output(-L) option."
+      echo "Failed to open '" & timeline & "' because it is not in JSONL format."
+      echo "Please specify a JSONL-formatted file that has been created with the Hayabusa json-timeline command and -L or --JSONL-output option."
+      echo ""
       return false
     finally:
       close(file)
-  echo "Failed to open '" & timeline & "'.Please specify a valid file path."
+  echo "Failed to open '" & timeline & "'. Please specify a valid file path.\p"
   return false
 
 type VirusTotalResult* = object
