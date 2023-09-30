@@ -8,6 +8,7 @@
 - Replaced HTTP with Puppy to reduce external dependencies. (#33) (@fukusuket)
 - Made VirusTotal lookups multi-threaded to increase performance. (#33) (@fukusuket)
 - Added file existence checks when specifying the timeline. (@fukusuket)
+- Added a warning when the timeline is not in JSONL format. (#43) (@fukusuket)
 
 **Bug Fixes*:**
 
