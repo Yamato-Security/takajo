@@ -7,6 +7,9 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
+    if not isJsonConvertible(timeline):
+        quit(1)
+
     # Error if both inbound and outbound are set to false as there is nothing to search for.
     if inbound == false and outbound == false:
         echo "You must enable inbound and/or outbound searching."

@@ -7,6 +7,9 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
+    if not isJsonConvertible(timeline):
+        quit(1)
+
     if level != "critical" and level != "high" and level != "medium" and level != "low" and level != "informational":
         echo "You must specify a minimum level of critical, high, medium, low or informational. (default: high)"
         echo ""

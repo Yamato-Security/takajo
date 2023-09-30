@@ -11,6 +11,9 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
+    if not isJsonConvertible(timeline):
+        quit(1)
+
     echo "Started the Stack Logons command"
     echo ""
     echo "This command will stack logons based on target user, target computer, source IP address and source computer."
