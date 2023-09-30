@@ -325,6 +325,25 @@ proc isLocalIP*(ip: string): bool =
   return ip == "127.0.0.1" or ip == "-" or ip == "::1"
 
 
+proc isJsonConvertible*(timeline: string) : bool =
+  var
+    file: File
+    firstLine: string
+    jsonLine: JsonNode
+  if file.open(timeline):
+    try:
+      firstLine = file.readLine()
+      jsonLine = parseJson(firstLine)
+      return true
+    except:
+      echo "Failed to convert '" & timeline & "'.This file is not in JSONL format."
+      echo "Please specify a file that has been executed with the Hayabusa json-timeline command --JSONL-output(-L) option."
+      return false
+    finally:
+      close(file)
+  echo "Failed to open '" & timeline & "'.Please specify a valid file path."
+  return false
+
 type VirusTotalResult* = object
   resTable*: TableRef[string, string]
   resJson*: JsonNode

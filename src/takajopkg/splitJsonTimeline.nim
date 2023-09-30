@@ -6,6 +6,9 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
+    if not isJsonConvertible(timeline):
+        quit(1)
+
     echo "Started the Split JSONL Timeline command"
     echo ""
     echo "This command will split a large JSONL timeline into many multiple ones based on computer name."

@@ -9,6 +9,9 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
+    if not isJsonConvertible(timeline):
+        quit(1)
+
     echo "Started the List Domains command"
     echo ""
     echo "Local queries to workstations are filtered out by default, but can be included with -w, --includeWorkstations."

@@ -7,6 +7,9 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
+    if not isJsonConvertible(timeline):
+            quit(1)
+
     echo "Started the Timeline Logon command"
     echo ""
     echo "This command creates a CSV timeline of logon events."
