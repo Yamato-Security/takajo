@@ -335,7 +335,7 @@ proc isJsonConvertible*(timeline: string) : bool =
       firstLine = file.readLine()
       jsonLine = parseJson(firstLine)
       return true
-    except:
+    except CatchableError:
       echo "Failed to open '" & timeline & "' because it is not in JSONL format."
       echo "Please specify a JSONL-formatted file that has been created with the Hayabusa json-timeline command and -L or --JSONL-output option."
       echo ""
