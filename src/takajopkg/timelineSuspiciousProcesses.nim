@@ -70,6 +70,12 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
             user = jsonLine["Details"]["User"].getStr()
             lid = jsonLine["Details"]["LID"].getStr()
             try:
+              if pidStr == "0":
+                # -F, --no-field-data-mapping JSONL requires hex conversion
+                pidStr = intToStr(fromHex[int](jsonLine["Details"]["PID"].getStr()))
+            except ValueError:
+              discard
+            try:
                 ruleAuthor = jsonLine["RuleAuthor"].getStr()
             except KeyError:
                 ruleAuthor = ""
