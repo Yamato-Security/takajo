@@ -42,13 +42,6 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
                 childStairNum, next_need_sameStair, childNum + 1 == len(p.children)))
     return ret
 
-proc containsTargetGUIDInChild(p: processObject, targetGUID: string): bool =
-    for child in p.children:
-        if child.processGUID == targetGUID:
-            return true
-    return false
-
-
 proc moveProcessObjectToChild(mvSourceProcess: processObject,
         searchProcess: var processObject,
                 outputProcess: var processObject) =
@@ -117,14 +110,8 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                 parentsProcesStockDisableFlag = true
                 inc processesFoundCount
                 let keysToExtract = {
-                    #"CmdLine": "Cmdline",
                     "Proc": "Proc",
-                    #"ParentCmdline": "ParentCmdline",
-                    #"LogonID": "LID",
-                    #"LogonGUID": "LGUID",
-                    #"ParentPID": "ParentPID",
                     "ParentPGUID": "ParentPGUID",
-                    #"Hashes": "Hashes"
                 }
 
                 for (foundKey, jsonKey) in keysToExtract:
@@ -195,14 +182,8 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
         if eventProcessGUID in passGuid:
             var processObjectTable = newTable[string, processObject]()
             let keysToExtract = {
-                #"CmdLine": "Cmdline",
                 "Proc": "Proc",
-                #"ParentCmdline": "ParentCmdline",
-                #"LogonID": "LID",
-                #"LogonGUID": "LGUID",
-                #"ParentPID": "ParentPID",
                 "ParentPGUID": "ParentPGUID",
-                #"Hashes": "Hashes"
             }
 
             for (foundKey, jsonKey) in keysToExtract:
