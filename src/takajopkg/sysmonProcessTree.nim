@@ -7,6 +7,9 @@ type
         parentProcessGUID: string
         children: seq[processObject]
 
+proc `==`*(a, b: processObject): bool =
+  return a.processGUID == b.processGUID
+
 proc printIndentedProcessTree(p: processObject, indent: string = "",
         stairNum: int = 0, need_sameStair: seq[bool], parentsStair: bool): seq[string] =
     ## プロセスオブジェクトからプロセスツリーを画面上に表示するためのプロシージャ
@@ -52,6 +55,7 @@ proc moveProcessObjectToChild(mvSourceProcess: processObject,
         if childProcess.processGUID == mvSourceProcess.parentProcessGUID:
             # Added to a separate table because assertion errors occur when the number of elements changes during iteration
             outputProcess.children[idx].children.add(mvSourceProcess)
+            outputProcess.children[idx].children = deduplicate(outputProcess.children[idx].children)
             return
         else:
             var child = childProcess
