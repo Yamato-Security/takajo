@@ -66,13 +66,15 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
             ruleTitle = jsonLine["RuleTitle"].getStr()
             computer = jsonLine["Computer"].getStr()
             process = jsonLine["Details"]["Proc"].getStr()
-            pidStr = jsonLine["Details"]["PID"].getStr()
-            try:
-              pidStr = intToStr(fromHex[int](pidStr))
-            except ValueError:
-              discard # conversion errors in fromHex are assumed to have originally been decimal.
+            pidStr = $jsonLine["Details"]["PID"].getInt()
             user = jsonLine["Details"]["User"].getStr()
             lid = jsonLine["Details"]["LID"].getStr()
+            try:
+              if pidStr == "0":
+                # -F, --no-field-data-mapping JSONL requires hex conversion
+                pidStr = intToStr(fromHex[int](jsonLine["Details"]["PID"].getStr()))
+            except ValueError:
+              discard
             try:
                 ruleAuthor = jsonLine["RuleAuthor"].getStr()
             except KeyError:
@@ -115,7 +117,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
             ruleTitle = jsonLine["RuleTitle"].getStr()
             computer = jsonLine["Computer"].getStr()
             process = jsonLine["Details"]["Proc"].getStr()
-            pidInt = jsonLine["Details"]["PID"].getInt()
+            pidStr = $jsonLine["Details"]["PID"].getInt()
             user = jsonLine["Details"]["User"].getStr()
             lid = jsonLine["Details"]["LID"].getStr()
             lguid = jsonLine["Details"]["LGUID"].getStr()
@@ -163,7 +165,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
                 echo "RuleAuthor: " & ruleAuthor
                 echo "Cmdline: " & cmdLine
                 echo "Process: " & process
-                echo "PID: " & $pidInt
+                echo "PID: " & pidStr
                 echo "User: " & user
                 echo "LID: " & lid
                 echo "LGUID: " & lguid
@@ -196,7 +198,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
                 singleResultTable["ProcessGUID"] = processGuid
                 singleResultTable["ParentCmdline"] = parentCmdline
                 singleResultTable["ParentPID"] = parentPid
-                singleResultTable["ParentGUID"] = parentGuid
+                singleResultTable["ParentPGUID"] = parentGuid
                 singleResultTable["Description"] = description
                 singleResultTable["Product"] = product
                 singleResultTable["Company"] = company
