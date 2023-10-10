@@ -62,6 +62,10 @@ proc moveProcessObjectToChild(mvSourceProcess: processObject,
             moveProcessObjectToChild(mvSourceProcess, child,
                     outputProcess.children[idx])
 
+proc isGUID(processGuid: string): bool =
+    let guidRegex = re(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$")
+    return processGuid.find(guidRegex) != -1
+
 proc sysmonProcessTree(output: string = "", processGuid: string,
         quiet: bool = false, timeline: string) =
     ## Procedure for displaying Sysmon's process tree
@@ -75,6 +79,10 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
         quit(1)
 
     if not isJsonConvertible(timeline):
+        quit(1)
+
+    if not isGUID(processGuid):
+        echo "The format of the Process GUID specified with the -p option is invalid. Please specify a valid Process GUID."
         quit(1)
 
     echo ""
@@ -210,9 +218,6 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                     processGUID: eventProcessGUID,
                     parentProcessGUID: foundProcessTable["ParentPGUID"])
             let key = timeStamp & "-" & process.processID
-            # if addedProcess.contains(key):
-            #     continue
-
             if not passGuid.contains(eventProcessGUID):
                 passGuid.incl(eventProcessGUID)
             if not passGuid.contains(process.parentProcessGUID):
@@ -227,6 +232,12 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             parentProcessGUIDTable[process.parentProcessGUID] = process.processGUID
             parents_exist = true
             parents_key = process.processGUID
+
+    if processGuid notin stockedProcessObjectTable:
+      echo "The process was not found."
+      echo ""
+      return
+
     var outputStrSeq: seq[string] = @[]
     var outputProcessObjectTable = stockedProcessObjectTable
 
@@ -247,8 +258,8 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
 
 
     # Display process tree for the specified process root
-    let root_multi_child = outputProcessObjectTable[parents_key].children.len() > 1
     if parents_key != "":
+        let root_multi_child = outputProcessObjectTable[parents_key].children.len() > 1
         outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(
                 outputProcessObjectTable[parents_key], need_sameStair = @[
                         root_multi_child], parentsStair = false
@@ -256,7 +267,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     elif outputProcessObjectTable.hasKey(processGuid):
         outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(
                 outputProcessObjectTable[processGuid], need_sameStair = @[
-                        root_multi_child], parentsStair = false))
+                        false], parentsStair = false))
 
     if output != "":
         let f = open(output, fmWrite)
