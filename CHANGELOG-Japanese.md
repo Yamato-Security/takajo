@@ -16,6 +16,7 @@
 - 無効なAPIキーが指定された場合に、VirusTotalの検索でJSONパースエラーが発生する問題を修正した。(@fukusuket)
 - `sysmon-process-tree`コマンドでプロセス情報が2回出力されることがあるバグを修正した。(#52) (@fukusuket)
 - `timeline-suspicious-processes`が`ParentPGUID`フィールドを正しく出力していなかったので修正した。また、PIDの10進数変換を改善した。(#50) (@fukusuket)
+- 指定された`PGUID`が無効であるか、JSONL タイムラインに存在しない場合にエラーが発生する問題を修正した。 (#53) (@fukusuket)
 
 ## 2.0.0 [2022/08/03] - [SANS DFIR Summit 2023 Release](https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/)
 
