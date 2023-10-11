@@ -66,12 +66,32 @@ proc isGUID(processGuid: string): bool =
     let guidRegex = re(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$")
     return processGuid.find(guidRegex) != -1
 
+proc createProcessObj(jsonLine:JsonNode): processObject =
+    var foundProcTbl = initTable[string, string]()
+    for key in ["Proc", "ParentPGUID"]:
+        try:
+            foundProcTbl[key] = jsonLine["Details"][key].getStr()
+        except KeyError:
+            foundProcTbl[key] = ""
+    try:
+        let eventProcessID = jsonLine["Details"]["PID"].getInt()
+        foundProcTbl["PID"] = $eventProcessID
+    except KeyError:
+        foundProcTbl["PID"] = "No PID Found"
+
+    return processObject(
+            timeStamp: jsonLine["Timestamp"].getStr(),
+            procName: foundProcTbl["Proc"],
+            processID: foundProcTbl["PID"],
+            processGUID: jsonLine["Details"]["PGUID"].getStr(),
+            parentProcessGUID: foundProcTbl["ParentPGUID"])
+
 proc sysmonProcessTree(output: string = "", processGuid: string,
         quiet: bool = false, timeline: string) =
     ## Procedure for displaying Sysmon's process tree
 
-    # Display the logo
     if not quiet:
+        # Display the logo
         styledEcho(fgGreen, outputLogo())
 
     if not os.fileExists(timeline):
@@ -89,202 +109,99 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     echo "Running the Process Tree module"
     echo ""
 
-    var stockedProcessObjectTable = newTable[string, processObject]()
-
-    var processesFoundCount = 0
-    var foundProcessTable = initTable[string, string]()
+    var stockedProcObjTbl = newTable[string, processObject]()
+    var parentsProcStocks = newSeq[string]()
+    var parentPGUIDTbl = newTable[string, string]()
+    var procFoundCount = 0
     var passGuid = initHashSet[string]()
     passGuid.incl(processGuid)
-    var addedProcess = initHashSet[string]()
 
-    var parentsProcessStocks = newSeq[string]()
-    var parentsProcesStockDisableFlag = false
-    var parentProcessGUIDTable = newTable[string, string]()
     for line in lines(timeline):
-        var processObjectTable = newTable[string, processObject]()
         let
             jsonLine = parseJson(line)
             timeStamp = jsonLine["Timestamp"].getStr()
             channel = jsonLine["Channel"].getStr()
             eventId = jsonLine["EventID"].getInt()
-            eventLevel = jsonLine["Level"].getStr()
             ruleTitle = jsonLine["RuleTitle"].getStr()
-        var eventProcessGUID = ""
-        # Found a Sysmon 1 process creation event. This assumes info level events are enabled and there won't be more than one Sysmon 1 event for a process.
-        if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or
-                ruleTitle == "Proc Exec (Sysmon Alert)"):
-            try:
-                eventProcessGUID = jsonLine["Details"]["PGUID"].getStr()
-            except KeyError:
-                echo "Could not find the PGUID field. Make sure you ran Hayabusa with the standard profile."
-            if eventProcessGUID in passGuid or jsonLine["Details"][
-                    "ParentPGUID"].getStr() in passGuid:
-                parentsProcesStockDisableFlag = true
-                inc processesFoundCount
-                let keysToExtract = {
-                    "Proc": "Proc",
-                    "ParentPGUID": "ParentPGUID",
-                }
 
-                for (foundKey, jsonKey) in keysToExtract:
-                    try:
-                        foundProcessTable[foundKey] = jsonLine["Details"][
-                                jsonKey].getStr()
-                    except KeyError:
-                        foundProcessTable[foundKey] = ""
-                # PID is an integer so getStr will fail
-                try:
-                    let eventProcessID = jsonLine["Details"]["PID"].getInt()
-                    foundProcessTable["PID"] = $eventProcessID
-                except KeyError:
-                    foundProcessTable["PID"] = "No PID Found"
-
-                let process = processObject(
-                        timeStamp: timeStamp,
-                        procName: foundProcessTable["Proc"],
-                        processID: foundProcessTable["PID"],
-                        processGUID: eventProcessGUID,
-                        parentProcessGUID: foundProcessTable["ParentPGUID"])
-                let key = timeStamp & "-" & process.processID
-                if addedProcess.contains(key):
-                    continue
-
-                if not passGuid.contains(eventProcessGUID):
-                    passGuid.incl(eventProcessGUID)
-                if not passGuid.contains(process.parentProcessGUID):
-                    passGuid.incl(process.parentProcessGUID)
-                if not addedProcess.contains(key):
-                    processObjectTable[process.processGUID] = process
-                    addedProcess.incl(key)
+        # Found a Sysmon 1 process creation event.
+        # This assumes info level events are enabled and there won't be more than one Sysmon 1 event for a process.
+        if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or ruleTitle == "Proc Exec (Sysmon Alert)"):
+            if jsonLine["Details"]["PGUID"].getStr() in passGuid or jsonLine["Details"]["ParentPGUID"].getStr() in passGuid:
+                inc procFoundCount
+                let obj = createProcessObj(jsonLine)
+                let key = timeStamp & "-" & obj.processID
+                passGuid.incl(obj.processID)
+                passGuid.incl(obj.parentProcessGUID)
                 # Link child processes to their parents
-                if len(stockedProcessObjectTable) != 0 and
-                            process.parentProcessGUID in stockedProcessObjectTable:
-                    if process.parentProcessGUID == processGUID:
-                        stockedProcessObjectTable[processGUID].children.add(process)
-                    elif process.processGUID == processGUID:
-                        stockedProcessObjectTable[processGUID] = process
+                if len(stockedProcObjTbl) != 0 and obj.parentProcessGUID in stockedProcObjTbl:
+                    if obj.processGUID == processGUID:
+                        stockedProcObjTbl[processGUID] = obj
+                    elif obj.parentProcessGUID == processGUID:
+                        stockedProcObjTbl[processGUID].children.add(obj)
                     else:
-                        stockedProcessObjectTable[
-                                process.parentProcessGUID].children.add(process)
+                        stockedProcObjTbl[obj.parentProcessGUID].children.add(obj)
                 else:
-                    stockedProcessObjectTable[process.processGUID] = process
-                parentProcessGUIDTable[process.parentProcessGUID] = process.processGUID
-            else:
-                if not parentsProcesStockDisableFlag:
-                    parentsProcessStocks.add(line)
+                    stockedProcObjTbl[obj.processGUID] = obj
+                parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
+            elif procFoundCount == 0:
+                parentsProcStocks.add(line)
+
+    if procFoundCount == 0:
+        echo "The process was not found."
+        echo ""
+        return
+
     # search ancestor process
-    var parents_exist = false
-    var parents_key = ""
+    var parentsExist = false
+    var parentsKey = ""
 
-    # echo parentsProcessStocks.len
-    parentsProcessStocks.reverse()
-    for line in parentsProcessStocks:
-        let
-            jsonLine = parseJson(line)
-            timeStamp = jsonLine["Timestamp"].getStr()
-            channel = jsonLine["Channel"].getStr()
-            eventId = jsonLine["EventID"].getInt()
-            eventLevel = jsonLine["Level"].getStr()
-            ruleTitle = jsonLine["RuleTitle"].getStr()
-        var eventProcessGUID = ""
-        try:
-            eventProcessGUID = jsonLine["Details"]["PGUID"].getStr()
-        except KeyError:
-            echo "Could not find the PGUID field. Make sure you ran Hayabusa with the standard profile."
-        if eventProcessGUID in passGuid:
-            var processObjectTable = newTable[string, processObject]()
-            let keysToExtract = {
-                "Proc": "Proc",
-                "ParentPGUID": "ParentPGUID",
-            }
+    for i in countdown(len(parentsProcStocks) - 1, 0):
+        let jsonLine = parseJson(parentsProcStocks[i])
+        if jsonLine["Details"]["PGUID"].getStr() in passGuid:
+            let obj = createProcessObj(jsonLine)
+            passGuid.incl(obj.processGUID)
+            passGuid.incl(obj.parentProcessGUID)
+            stockedProcObjTbl[obj.processGUID] = obj
+            stockedProcObjTbl[obj.processGUID].children.add(stockedProcObjTbl[parentPGUIDTbl[obj.processGUID]])
+            parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
+            parentsExist = true
+            parentsKey = obj.processGUID
 
-            for (foundKey, jsonKey) in keysToExtract:
-                try:
-                    foundProcessTable[foundKey] = jsonLine["Details"][
-                            jsonKey].getStr()
-                except KeyError:
-                    foundProcessTable[foundKey] = ""
-            # PID is an integer so getStr will fail
-            try:
-                let eventProcessID = jsonLine["Details"]["PID"].getInt()
-                foundProcessTable["PID"] = $eventProcessID
-            except KeyError:
-                foundProcessTable["PID"] = "No PID Found"
-
-            let process = processObject(
-                    timeStamp: timeStamp,
-                    procName: foundProcessTable["Proc"],
-                    processID: foundProcessTable["PID"],
-                    processGUID: eventProcessGUID,
-                    parentProcessGUID: foundProcessTable["ParentPGUID"])
-            let key = timeStamp & "-" & process.processID
-            if not passGuid.contains(eventProcessGUID):
-                passGuid.incl(eventProcessGUID)
-            if not passGuid.contains(process.parentProcessGUID):
-                passGuid.incl(process.parentProcessGUID)
-            if not addedProcess.contains(key):
-                processObjectTable[process.processGUID] = process
-                addedProcess.incl(key)
-            stockedProcessObjectTable[process.processGUID] = process
-            stockedProcessObjectTable[process.processGUID].children.add(
-                    stockedProcessObjectTable[parentProcessGUIDTable[
-                            process.processGUID]])
-            parentProcessGUIDTable[process.parentProcessGUID] = process.processGUID
-            parents_exist = true
-            parents_key = process.processGUID
-
-    if processGuid notin stockedProcessObjectTable:
+    if processGuid notin stockedProcObjTbl:
       echo "The process was not found."
       echo ""
       return
 
-    var outputStrSeq: seq[string] = @[]
-    var outputProcessObjectTable = stockedProcessObjectTable
-
     # Sort process tree
-    for process in stockedProcessObjectTable.keys:
-        if ((not parents_exist) and process == processGuid) or ((
-                parents_exist) and process == parents_key):
+    var outProcObjTbl = stockedProcObjTbl
+    for pguid in stockedProcObjTbl.keys:
+        if ((not parentsExist) and pguid == processGuid) or (parentsExist and pguid == parentsKey):
             continue
-
-        if parents_exist:
-            moveProcessObjectToChild(stockedProcessObjectTable[process],
-                    stockedProcessObjectTable[parents_key],
-                    outputProcessObjectTable[parents_key])
+        if parentsExist:
+            moveProcessObjectToChild(stockedProcObjTbl[pguid], stockedProcObjTbl[parentsKey], outProcObjTbl[parentsKey])
         else:
-            moveProcessObjectToChild(stockedProcessObjectTable[process],
-                stockedProcessObjectTable[processGuid],
-                outputProcessObjectTable[processGuid])
+            moveProcessObjectToChild(stockedProcObjTbl[pguid], stockedProcObjTbl[processGuid], outProcObjTbl[processGuid])
 
 
     # Display process tree for the specified process root
-    if parents_key != "":
-        let root_multi_child = outputProcessObjectTable[parents_key].children.len() > 1
-        outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(
-                outputProcessObjectTable[parents_key], need_sameStair = @[
-                        root_multi_child], parentsStair = false
-            ))
-    elif outputProcessObjectTable.hasKey(processGuid):
-        outputStrSeq = concat(outputStrSeq, printIndentedProcessTree(
-                outputProcessObjectTable[processGuid], need_sameStair = @[
-                        false], parentsStair = false))
+    var outStrSeq: seq[string] = @[]
+    if parentsKey != "":
+        let root_multi_child = outProcObjTbl[parentsKey].children.len() > 1
+        outStrSeq = concat(outStrSeq, printIndentedProcessTree(outProcObjTbl[parentsKey], need_sameStair = @[root_multi_child], parentsStair = false))
+    elif outProcObjTbl.hasKey(processGuid):
+        outStrSeq = concat(outStrSeq, printIndentedProcessTree(outProcObjTbl[processGuid], need_sameStair = @[false], parentsStair = false))
 
     if output != "":
         let f = open(output, fmWrite)
         defer: f.close()
-        for line in outputStrSeq:
+        for line in outStrSeq:
             f.writeLine(line)
         echo fmt"Saved File {output}"
         echo ""
     else:
-        for line in outputStrSeq:
+        for line in outStrSeq:
             if line.contains(fmt" / {processGuid} / "):
                 styledEcho(fgGreen, line)
             else:
                 echo line
-    discard
-
-    if processesFoundCount == 0:
-        echo "The process was not found."
-        echo ""
-        return
