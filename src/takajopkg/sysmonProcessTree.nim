@@ -177,13 +177,12 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             parentsExist = true
             parentsKey = obj.processGUID
             if jsonLine["Details"]["ParentPGUID"].getStr() in passGuid:
-                if jsonLine["Details"]["ParentPGUID"].getStr() notin stockedProcObjTbl:
-                  let obj = createProcessObj(jsonLine, false)
-                  let parentObj = createProcessObj(jsonLine, true)
-                  stockedProcObjTbl[parentObj.processGUID] = parentObj
-                  stockedProcObjTbl[parentObj.processGUID].children.add(obj)
-                  parentsExist = true
-                  parentsKey = parentObj.processGUID
+                let obj = createProcessObj(jsonLine, false)
+                let parentObj = createProcessObj(jsonLine, true)
+                stockedProcObjTbl[parentObj.processGUID] = parentObj
+                stockedProcObjTbl[parentObj.processGUID].children.add(obj)
+                parentsExist = true
+                parentsKey = parentObj.processGUID
 
     if processGuid notin stockedProcObjTbl:
         echo "The process was not found."
