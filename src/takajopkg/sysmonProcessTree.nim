@@ -66,7 +66,7 @@ proc isGUID(processGuid: string): bool =
     let guidRegex = re(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$")
     return processGuid.find(guidRegex) != -1
 
-proc createProcessObj(jsonLine:JsonNode): processObject =
+proc createProcessObj(jsonLine:JsonNode, isParent:bool): processObject =
     var foundProcTbl = initTable[string, string]()
     for key in ["Proc", "ParentPGUID"]:
         try:
@@ -78,7 +78,17 @@ proc createProcessObj(jsonLine:JsonNode): processObject =
         foundProcTbl["PID"] = $eventProcessID
     except KeyError:
         foundProcTbl["PID"] = "No PID Found"
-
+    if isParent:
+        try:
+            foundProcTbl["ParentImage"] = jsonLine["ExtraFieldInfo"]["ParentImage"].getStr()
+        except KeyError:
+            foundProcTbl["ParentImage"] = "N/A"
+        return processObject(
+                           timeStamp: "N/A",
+                           procName: foundProcTbl["ParentImage"],
+                           processID: $jsonLine["Details"]["ParentPID"].getInt(),
+                           processGUID: foundProcTbl["ParentPGUID"],
+                           parentProcessGUID: "N/A")
     return processObject(
             timeStamp: jsonLine["Timestamp"].getStr(),
             procName: foundProcTbl["Proc"],
@@ -129,7 +139,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
         if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or ruleTitle == "Proc Exec (Sysmon Alert)"):
             if jsonLine["Details"]["PGUID"].getStr() in passGuid or jsonLine["Details"]["ParentPGUID"].getStr() in passGuid:
                 inc procFoundCount
-                let obj = createProcessObj(jsonLine)
+                let obj = createProcessObj(jsonLine, false)
                 let key = timeStamp & "-" & obj.processID
                 passGuid.incl(obj.processID)
                 passGuid.incl(obj.parentProcessGUID)
@@ -155,11 +165,10 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     # search ancestor process
     var parentsExist = false
     var parentsKey = ""
-
     for i in countdown(len(parentsProcStocks) - 1, 0):
         let jsonLine = parseJson(parentsProcStocks[i])
         if jsonLine["Details"]["PGUID"].getStr() in passGuid:
-            let obj = createProcessObj(jsonLine)
+            let obj = createProcessObj(jsonLine, false)
             passGuid.incl(obj.processGUID)
             passGuid.incl(obj.parentProcessGUID)
             stockedProcObjTbl[obj.processGUID] = obj
@@ -167,11 +176,19 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
             parentsExist = true
             parentsKey = obj.processGUID
+            if jsonLine["Details"]["ParentPGUID"].getStr() in passGuid:
+                if jsonLine["Details"]["ParentPGUID"].getStr() notin stockedProcObjTbl:
+                  let obj = createProcessObj(jsonLine, false)
+                  let parentObj = createProcessObj(jsonLine, true)
+                  stockedProcObjTbl[parentObj.processGUID] = parentObj
+                  stockedProcObjTbl[parentObj.processGUID].children.add(obj)
+                  parentsExist = true
+                  parentsKey = parentObj.processGUID
 
     if processGuid notin stockedProcObjTbl:
-      echo "The process was not found."
-      echo ""
-      return
+        echo "The process was not found."
+        echo ""
+        return
 
     # Sort process tree
     var outProcObjTbl = stockedProcObjTbl
