@@ -136,8 +136,8 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                     jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
                 inc procFoundCount
                 let obj = createProcessObj(jsonLine, false)
-                let key = timeStamp & "-" & obj.processID
-                passGuid.incl(obj.processID)
+                let key = timeStamp & "-" & obj.processGUID
+                passGuid.incl(obj.processGUID)
                 passGuid.incl(obj.parentProcessGUID)
                 # Link child processes to their parents
                 if len(stockedProcObjTbl) != 0 and obj.parentProcessGUID in stockedProcObjTbl:
@@ -159,25 +159,25 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
         return
 
     # search ancestor process
-    var parentsExist = false
     var parentsKey = ""
+    var oldestProc: processObject
     for i in countdown(len(parentsProcStocks) - 1, 0):
         let jsonLine = parseJson(parentsProcStocks[i])
         if jsonLine["Details"]["PGUID"].getStr("N/A") in passGuid:
             let obj = createProcessObj(jsonLine, false)
+            let child = stockedProcObjTbl[parentPGUIDTbl[obj.processGUID]]
             passGuid.incl(obj.processGUID)
             passGuid.incl(obj.parentProcessGUID)
             stockedProcObjTbl[obj.processGUID] = obj
-            stockedProcObjTbl[obj.processGUID].children.add(stockedProcObjTbl[
-                    parentPGUIDTbl[obj.processGUID]])
+            stockedProcObjTbl[obj.processGUID].children.add(child)
             parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
-            parentsExist = true
             parentsKey = obj.processGUID
+            oldestProc = obj
             if jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
                 let parentObj = createProcessObj(jsonLine, true)
                 stockedProcObjTbl[parentObj.processGUID] = parentObj
                 stockedProcObjTbl[parentObj.processGUID].children.add(obj)
-                parentsKey = parentObj.processGUID
+                oldestProc = parentObj
 
     if processGuid notin stockedProcObjTbl:
         echo "The process was not found."
@@ -185,21 +185,20 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
         return
 
     # Sort process tree
-    let outProcObjTbl = stockedProcObjTbl
     var target = processGuid
-    if parentsExist:
+    if parentsKey != "":
         target = parentsKey
+    oldestProc.children = @[stockedProcObjTbl[target]]
+    var outProc = oldestProc
 
     for mvSrcProc in stockedProcObjTbl.values:
-        moveProcessObjectToChild(mvSrcProc, stockedProcObjTbl[target],
-                outProcObjTbl[target])
+        moveProcessObjectToChild(mvSrcProc, oldestProc, outProc)
 
     # Display process tree for the specified process root
     var outStrSeq: seq[string] = @[]
-    let root_multi_child = outProcObjTbl[target].children.len() > 1
-    outStrSeq = concat(outStrSeq, printIndentedProcessTree(outProcObjTbl[
-            target], need_sameStair = @[root_multi_child],
-            parentsStair = false))
+    let root_multi_child = outProc.children.len() > 1
+    outStrSeq = concat(outStrSeq, printIndentedProcessTree(outProc,
+            need_sameStair = @[root_multi_child], parentsStair = false))
 
     if output != "":
         let f = open(output, fmWrite)
