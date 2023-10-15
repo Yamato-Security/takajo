@@ -8,7 +8,7 @@ type
         children: seq[processObject]
 
 proc `==`*(a, b: processObject): bool =
-  return a.processGUID == b.processGUID
+    return a.processGUID == b.processGUID
 
 proc printIndentedProcessTree(p: processObject, indent: string = "",
         stairNum: int = 0, need_sameStair: seq[bool], parentsStair: bool): seq[string] =
@@ -45,38 +45,37 @@ proc printIndentedProcessTree(p: processObject, indent: string = "",
                 childStairNum, next_need_sameStair, childNum + 1 == len(p.children)))
     return ret
 
-proc moveProcessObjectToChild(mvSourceProcess: processObject,
-        searchProcess: var processObject,
-        outputProcess: var processObject) =
+proc moveProcessObjectToChild(mvSource: processObject,
+        target: var processObject, output: var processObject) =
     ## Procedure for moving a process object to a child process
-
-    var searchChildrenProcess = searchProcess.children
-    for idx, childProcess in searchChildrenProcess:
-        if childProcess.processGUID == mvSourceProcess.parentProcessGUID:
+    for i, childProc in target.children:
+        if childProc.processGUID == mvSource.parentProcessGUID:
             # Added to a separate table because assertion errors occur when the number of elements changes during iteration
-            outputProcess.children[idx].children.add(mvSourceProcess)
-            outputProcess.children[idx].children = deduplicate(outputProcess.children[idx].children)
+            output.children[i].children.add(mvSource)
+            output.children[i].children = deduplicate(output.children[i].children)
             return
         else:
-            var child = childProcess
-            moveProcessObjectToChild(mvSourceProcess, child, outputProcess.children[idx])
+            var c = childProc
+            moveProcessObjectToChild(mvSource, c, output.children[i])
 
 proc isGUID(processGuid: string): bool =
     let guidRegex = re(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$")
     return processGuid.find(guidRegex) != -1
 
-proc createProcessObj(jsonLine:JsonNode, isParent:bool): processObject =
+proc createProcessObj(jsonLine: JsonNode, isParent: bool): processObject =
     var foundProcTbl = initTable[string, string]()
     if isParent:
         try:
-            foundProcTbl["ParentImage"] = jsonLine["ExtraFieldInfo"]["ParentImage"].getStr("N/A")
+            foundProcTbl["ParentImage"] = jsonLine["ExtraFieldInfo"][
+                    "ParentImage"].getStr("N/A")
         except KeyError:
             foundProcTbl["ParentImage"] = "N/A"
         return processObject(
                            timeStamp: "N/A",
                            procName: foundProcTbl["ParentImage"],
                            processID: $jsonLine["Details"]["ParentPID"].getInt(),
-                           processGUID: jsonLine["Details"]["ParentPGUID"].getStr("N/A"),
+                           processGUID: jsonLine["Details"][
+                                   "ParentPGUID"].getStr("N/A"),
                            parentProcessGUID: "N/A")
     try:
         let eventProcessID = jsonLine["Details"]["PID"].getInt()
@@ -120,6 +119,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     var passGuid = initHashSet[string]()
     passGuid.incl(processGuid)
 
+
     for line in lines(timeline):
         let
             jsonLine = parseJson(line)
@@ -130,8 +130,10 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
 
         # Found a Sysmon 1 process creation event.
         # This assumes info level events are enabled and there won't be more than one Sysmon 1 event for a process.
-        if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or ruleTitle == "Proc Exec (Sysmon Alert)"):
-            if jsonLine["Details"]["PGUID"].getStr("N/A") in passGuid or jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
+        if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or
+                ruleTitle == "Proc Exec (Sysmon Alert)"):
+            if jsonLine["Details"]["PGUID"].getStr("N/A") in passGuid or
+                    jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
                 inc procFoundCount
                 let obj = createProcessObj(jsonLine, false)
                 let key = timeStamp & "-" & obj.processID
@@ -166,12 +168,12 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             passGuid.incl(obj.processGUID)
             passGuid.incl(obj.parentProcessGUID)
             stockedProcObjTbl[obj.processGUID] = obj
-            stockedProcObjTbl[obj.processGUID].children.add(stockedProcObjTbl[parentPGUIDTbl[obj.processGUID]])
+            stockedProcObjTbl[obj.processGUID].children.add(stockedProcObjTbl[
+                    parentPGUIDTbl[obj.processGUID]])
             parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
             parentsExist = true
             parentsKey = obj.processGUID
             if jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
-                let obj = createProcessObj(jsonLine, false)
                 let parentObj = createProcessObj(jsonLine, true)
                 stockedProcObjTbl[parentObj.processGUID] = parentObj
                 stockedProcObjTbl[parentObj.processGUID].children.add(obj)
@@ -183,22 +185,21 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
         return
 
     # Sort process tree
-    var outProcObjTbl = stockedProcObjTbl
-    for pguid, obj in stockedProcObjTbl.pairs:
-        if ((not parentsExist) and pguid == processGuid) or (parentsExist and pguid == parentsKey):
-            continue
-        if parentsExist:
-            moveProcessObjectToChild(stockedProcObjTbl[pguid], stockedProcObjTbl[parentsKey], outProcObjTbl[parentsKey])
-        else:
-            moveProcessObjectToChild(stockedProcObjTbl[pguid], stockedProcObjTbl[processGuid], outProcObjTbl[processGuid])
+    let outProcObjTbl = stockedProcObjTbl
+    var target = processGuid
+    if parentsExist:
+        target = parentsKey
+
+    for mvSrcProc in stockedProcObjTbl.values:
+        moveProcessObjectToChild(mvSrcProc, stockedProcObjTbl[target],
+                outProcObjTbl[target])
 
     # Display process tree for the specified process root
     var outStrSeq: seq[string] = @[]
-    if parentsKey != "":
-        let root_multi_child = outProcObjTbl[parentsKey].children.len() > 1
-        outStrSeq = concat(outStrSeq, printIndentedProcessTree(outProcObjTbl[parentsKey], need_sameStair = @[root_multi_child], parentsStair = false))
-    elif outProcObjTbl.hasKey(processGuid):
-        outStrSeq = concat(outStrSeq, printIndentedProcessTree(outProcObjTbl[processGuid], need_sameStair = @[false], parentsStair = false))
+    let root_multi_child = outProcObjTbl[target].children.len() > 1
+    outStrSeq = concat(outStrSeq, printIndentedProcessTree(outProcObjTbl[
+            target], need_sameStair = @[root_multi_child],
+            parentsStair = false))
 
     if output != "":
         let f = open(output, fmWrite)
@@ -221,5 +222,6 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     let minutes = (elapsedTime mod 3600) div 60
     let seconds = elapsedTime mod 60
 
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
+    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " &
+            $seconds & " seconds"
     echo ""
