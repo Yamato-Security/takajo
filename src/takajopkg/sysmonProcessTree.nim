@@ -119,7 +119,6 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     var passGuid = initHashSet[string]()
     passGuid.incl(processGuid)
 
-
     for line in lines(timeline):
         let
             jsonLine = parseJson(line)
@@ -136,19 +135,14 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                     jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
                 inc procFoundCount
                 let obj = createProcessObj(jsonLine, false)
-                let key = timeStamp & "-" & obj.processGUID
                 passGuid.incl(obj.processGUID)
                 passGuid.incl(obj.parentProcessGUID)
                 # Link child processes to their parents
-                if len(stockedProcObjTbl) != 0 and obj.parentProcessGUID in stockedProcObjTbl:
-                    if obj.processGUID == processGUID:
-                        stockedProcObjTbl[processGUID] = obj
-                    elif obj.parentProcessGUID == processGUID:
-                        stockedProcObjTbl[processGUID].children.add(obj)
-                    else:
-                        stockedProcObjTbl[obj.parentProcessGUID].children.add(obj)
-                else:
-                    stockedProcObjTbl[obj.processGUID] = obj
+                stockedProcObjTbl[obj.processGUID] = obj
+                if obj.parentProcessGUID == processGUID:
+                    stockedProcObjTbl[processGUID].children.add(obj)
+                elif obj.parentProcessGUID in stockedProcObjTbl:
+                    stockedProcObjTbl[obj.parentProcessGUID].children.add(obj)
                 parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
             elif procFoundCount == 0:
                 parentsProcStocks.add(line)
