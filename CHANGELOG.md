@@ -9,6 +9,7 @@
 - Made VirusTotal lookups multi-threaded to increase performance. (#33) (@fukusuket)
 - Added file existence checks when specifying the timeline. (@fukusuket)
 - Added a warning when the timeline is not in JSONL format. (#43) (@fukusuket)
+- Output root process information in the `sysmon-process-tree` command. (#54) (@fukusuket)
 
 **Bug Fixes*:**
 
