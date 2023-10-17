@@ -11,7 +11,7 @@ proc `==`*(a, b: processObject): bool =
     return a.processGUID == b.processGUID
 
 proc cmpTimeStamp(a, b: processObject): int =
-  cmp(a.timeStamp, b.timeStamp)
+    cmp(a.timeStamp, b.timeStamp)
 
 proc printIndentedProcessTree(p: processObject, indent: string = "",
         stairNum: int = 0, need_sameStair: seq[bool], parentsStair: bool): seq[string] =
