@@ -10,6 +10,9 @@ type
 proc `==`*(a, b: processObject): bool =
     return a.processGUID == b.processGUID
 
+proc cmpTimeStamp(a, b: processObject): int =
+  cmp(a.timeStamp, b.timeStamp)
+
 proc printIndentedProcessTree(p: processObject, indent: string = "",
         stairNum: int = 0, need_sameStair: seq[bool], parentsStair: bool): seq[string] =
     ## プロセスオブジェクトからプロセスツリーを画面上に表示するためのプロシージャ
@@ -49,12 +52,15 @@ proc moveProcessObjectToChild(mvSource: processObject,
         target: var processObject, output: var processObject) =
     ## Procedure for moving a process object to a child process
     for i, childProc in target.children:
-        if childProc.processGUID == mvSource.parentProcessGUID:
+        let s = output.children.len
+        if childProc.processGUID == mvSource.parentProcessGUID and output.children.len - 1 >= i:
             # Added to a separate table because assertion errors occur when the number of elements changes during iteration
             output.children[i].children.add(mvSource)
-            output.children[i].children = deduplicate(output.children[i].children)
+            output.children[i].children = sorted(deduplicate(output.children[i].children), cmpTimeStamp)
             return
         else:
+            if output.children.len - 1 < i:
+                continue
             var c = childProc
             moveProcessObjectToChild(mvSource, c, output.children[i])
 
@@ -116,6 +122,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     var parentsProcStocks = newSeq[string]()
     var parentPGUIDTbl = newTable[string, string]()
     var procFoundCount = 0
+    var oldestProc: processObject
     var passGuid = initHashSet[string]()
     passGuid.incl(processGuid)
 
@@ -133,8 +140,13 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                 ruleTitle == "Proc Exec (Sysmon Alert)"):
             if jsonLine["Details"]["PGUID"].getStr("N/A") in passGuid or
                     jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
-                inc procFoundCount
                 let obj = createProcessObj(jsonLine, false)
+                if procFoundCount == 0:
+                    let parentObj = createProcessObj(jsonLine, true)
+                    stockedProcObjTbl[parentObj.processGUID] = parentObj
+                    stockedProcObjTbl[parentObj.processGUID].children.add(obj)
+                    parentPGUIDTbl[parentObj.processGUID] = obj.processGUID
+                    oldestProc = parentObj
                 passGuid.incl(obj.processGUID)
                 passGuid.incl(obj.parentProcessGUID)
                 # Link child processes to their parents
@@ -144,6 +156,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                 elif obj.parentProcessGUID in stockedProcObjTbl:
                     stockedProcObjTbl[obj.parentProcessGUID].children.add(obj)
                 parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
+                inc procFoundCount
             elif procFoundCount == 0:
                 parentsProcStocks.add(line)
 
@@ -154,7 +167,6 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
 
     # search ancestor process
     var parentsKey = ""
-    var oldestProc: processObject
     for i in countdown(len(parentsProcStocks) - 1, 0):
         let jsonLine = parseJson(parentsProcStocks[i])
         if jsonLine["Details"]["PGUID"].getStr("N/A") in passGuid:
@@ -172,7 +184,6 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
                 stockedProcObjTbl[parentObj.processGUID] = parentObj
                 stockedProcObjTbl[parentObj.processGUID].children.add(obj)
                 oldestProc = parentObj
-
     if processGuid notin stockedProcObjTbl:
         echo "The process was not found."
         echo ""
@@ -182,9 +193,13 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     var target = processGuid
     if parentsKey != "":
         target = parentsKey
-    oldestProc.children = @[stockedProcObjTbl[target]]
-    var outProc = oldestProc
+    if oldestProc == stockedProcObjTbl[target]:
+        oldestProc = stockedProcObjTbl[target]
+    else:
+        oldestProc.children.add(stockedProcObjTbl[target])
+        oldestProc.children = sorted(deduplicate(oldestProc.children), cmpTimeStamp)
 
+    var outProc = oldestProc
     for mvSrcProc in stockedProcObjTbl.values:
         moveProcessObjectToChild(mvSrcProc, oldestProc, outProc)
 
