@@ -133,7 +133,8 @@ proc extractScriptblocks(output: string = "scriptblock-logs",
     let outputFileSize = getFileSize(outputFile)
     outputFile.close()
     echo ""
-    echo "Saved summary file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+    echo "The extracted PowerShell ScriptBlock is saved in the directory: " & output
+    echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"
 
     let endTime = epochTime()
     let elapsedTime = int(endTime - startTime)
