@@ -214,12 +214,6 @@ proc elevatedTokenIdToName*(elevatedTokenId: string): string =
     return result
 
 proc countLinesInTimeline*(filePath: string): int =
-    #[
-    var count = 0
-    for _ in filePath.lines():
-        inc count
-    return count
-    ]#
     const BufferSize = 4 * 1024 * 1024  # 4 MiB
     var buffer = newString(BufferSize)
     var file = open(filePath)
@@ -232,7 +226,7 @@ proc countLinesInTimeline*(filePath: string): int =
         for i in 0 ..< bytesRead:
             if buffer[i] == '\n':
                 inc(count)
-
+    inc(count)
     file.close()
     return count
 

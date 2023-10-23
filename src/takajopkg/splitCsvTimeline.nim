@@ -38,6 +38,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
 
     # Read in the CSV header
     let csvHeader = inputFile.readLine()
+    inc bar
     while inputFile.endOfFile == false:
         inc bar
         bar.update(1000000000) # refresh every second
@@ -67,6 +68,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
             outputFile.write(currentLine)
         outputFile.write("\p")
         flushFile(outputFile)
+    inc bar
     bar.finish()
 
     # Close all opened files
