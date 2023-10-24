@@ -17,7 +17,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
 
     echo "Started the Timeline Suspicious Processes command"
     echo ""
-    echo "This command will a CSV timeline of suspicious processes."
+    echo "This command will create a CSV timeline of suspicious processes."
     echo "The default minimum level of alerts is high."
     echo "You can change the minimum level with -l, --level=."
     echo ""
