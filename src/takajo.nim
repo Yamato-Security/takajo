@@ -37,7 +37,7 @@ include takajopkg/vtHashLookup
 when isMainModule:
     clCfg.version = "2.1.0-dev"
     const examples = "Examples:\p"
-    const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl -o scriptblock-logs\p"
+    const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl -o domains.txt\p"
     const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
@@ -66,6 +66,7 @@ when isMainModule:
             extractScriptblocks, cmdName = "extract-scriptblocks",
             doc = "extract and reassemble PowerShell EID 4104 script block logs",
             help = {
+                "level": "specify the minimum alert level",
                 "output": "output directory (default: scriptblock-logs)",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
