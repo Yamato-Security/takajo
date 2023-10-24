@@ -3,6 +3,8 @@ type
         scriptBlockId: string
         firstTimestamp: string
         scriptBlocks: OrderedSet[string]
+        levels: HashSet[string]
+        ruleTitles: HashSet[string]
 
 proc outputScriptText(output: string, timestamp: string, computerName: string,
         scriptObj: Script) =
@@ -16,8 +18,22 @@ proc outputScriptText(output: string, timestamp: string, computerName: string,
     flushFile(outputFile)
     close(outputFile)
 
+
+proc calcMaxAlert(levels:HashSet):string =
+    if "crit" in levels:
+        return "crit"
+    if "high" in levels:
+        return "high"
+    if "med" in levels:
+        return "med"
+    if "low" in levels:
+        return "low"
+    if "info" in levels:
+        return "info"
+    return "N/A"
+
 proc buildSummaryRecord(path: string, messageTotal: int,
-        scriptObj: Script): array[5, string] =
+        scriptObj: Script): array[7, string] =
     let ts = scriptObj.firstTimestamp
     let id = scriptObj.scriptBlockId
     let count = scriptObj.scriptBlocks.len
@@ -25,7 +41,9 @@ proc buildSummaryRecord(path: string, messageTotal: int,
     if count != messageTotal:
         status = "Incomplete"
     let records = $count & "/" & $messageTotal
-    return [ts, id, path, status, records]
+    let ruleTitles = fmt"{scriptObj.ruleTitles}".replace("{", "").replace("}", "")
+    let maxLevel = calcMaxAlert(scriptObj.levels)
+    return [ts, id, path, status, records, maxLevel, ruleTitles]
 
 proc extractScriptblocks(output: string = "scriptblock-logs",
         quiet: bool = false, timeline: string) =
@@ -59,7 +77,7 @@ proc extractScriptblocks(output: string = "scriptblock-logs",
     var
         bar: SuruBar = initSuruBar()
         stackedRecords = newTable[string, Script]()
-        summaryRecords = newOrderedTable[string, array[5, string]]()
+        summaryRecords = newOrderedTable[string, array[7, string]]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -74,6 +92,8 @@ proc extractScriptblocks(output: string = "scriptblock-logs",
         let
             timestamp = jsonLine["Timestamp"].getStr()
             computerName = jsonLine["Computer"].getStr()
+            level = jsonLine["Level"].getStr()
+            ruleTitle = jsonLine["RuleTitle"].getStr()
             scriptBlock = jsonLine["Details"]["ScriptBlock"].getStr()
             scriptBlockId = jsonLine["ExtraFieldInfo"]["ScriptBlockId"].getStr()
             messageNumber = jsonLine["ExtraFieldInfo"]["MessageNumber"].getInt()
@@ -83,55 +103,55 @@ proc extractScriptblocks(output: string = "scriptblock-logs",
             path = "no-path"
 
         if scriptBlockId in stackedRecords:
+            stackedRecords[scriptBlockId].levels.incl(level)
+            stackedRecords[scriptBlockId].ruleTitles.incl(ruleTitle)
             stackedRecords[scriptBlockId].scriptBlocks.incl(scriptBlock)
         else:
             stackedRecords[scriptBlockId] = Script(scriptBlockId: scriptBlockId,
-                    firstTimestamp: timestamp, scriptBlocks: toOrderedSet([scriptBlock]))
+                    firstTimestamp: timestamp, scriptBlocks: toOrderedSet([scriptBlock]),
+                    levels:toHashSet([level]), ruleTitles:toHashSet([ruleTitle]))
 
         if messageNumber == messageTotal:
+            let scriptObj = stackedRecords[scriptBlockId]
             if scriptBlockId in summaryRecords:
+                summaryRecords[scriptBlockId] = buildSummaryRecord(path, messageTotal, scriptObj)
                 # Already outputted
                 continue
-            let scriptObj = stackedRecords[scriptBlockId]
             outputScriptText(output, timestamp, computerName, scriptObj)
             summaryRecords[scriptBlockId] = buildSummaryRecord(path, messageTotal, scriptObj)
     bar.finish()
 
     let summaryFile = output & "/" & "summary.csv"
-    let header = ["Creation Time", "Script ID", "Script Name", "Results", "Extracted Records"]
+    let header = ["Creation Time", "Script ID", "Script Name", "Results", "Extracted Records", "Max alert", "Alerts"]
     var outputFile = open(summaryFile, fmWrite)
-    echo ""
-    stdout.styledWrite(fgGreen, header[0])
-    stdout.styledWrite(fgWhite, " | ")
-    stdout.styledWrite(fgYellow, header[1])
-    stdout.styledWrite(fgWhite, " | ")
-    stdout.styledWrite(fgBlue, header[2])
-    stdout.styledWrite(fgWhite, " | ")
-    stdout.styledWrite(fgMagenta, header[3])
-    stdout.styledWrite(fgWhite, " | ")
-    stdout.styledWrite(fgCyan, header[4] & "\p")
+    var table: TerminalTable
+    table.add header[0], header[1], header[2], header[3], header[4], header[5], header[6]
     for i, val in header:
-        if i < 4:
+        if i < 6:
             outputFile.write(escapeCsvField(val) & ",")
         else:
             outputFile.write(escapeCsvField(val) & "\p")
     for rec in summaryRecords.values:
-        stdout.styledWrite(fgGreen, rec[0])
-        stdout.styledWrite(fgWhite, " | ")
-        stdout.styledWrite(fgYellow, rec[1])
-        stdout.styledWrite(fgWhite, " | ")
-        stdout.styledWrite(fgBlue, rec[2])
-        stdout.styledWrite(fgWhite, " | ")
-        stdout.styledWrite(fgMagenta, rec[3])
-        stdout.styledWrite(fgWhite, " | ")
-        stdout.styledWrite(fgCyan, rec[4] & "\p")
+        if rec[5] == "crit":
+            table.add red rec[0], red rec[1], red rec[2], red rec[3], red rec[4], red rec[5], red rec[6]
+        elif rec[5] == "high":
+            table.add yellow rec[0], yellow rec[1], yellow rec[2], yellow rec[3], yellow rec[4], yellow rec[5], yellow rec[6]
+        elif rec[5] == "med":
+            table.add cyan rec[0], cyan rec[1], cyan rec[2], cyan rec[3], cyan rec[4], cyan rec[5], cyan rec[6]
+        elif rec[5] == "low":
+            table.add green rec[0], green rec[1], green rec[2], green rec[3], green rec[4], green rec[5], green rec[6]
+        elif rec[5] == "info":
+            table.add rec[0], rec[1], rec[2], rec[3], rec[4], rec[5], rec[6]
+        else:
+            table.add rec[0], rec[1], rec[2], rec[3], rec[4], rec[5], rec[6]
         for i, val in rec:
-            if i < 4:
+            if i < 6:
                 outputFile.write(escapeCsvField(val) & ",")
             else:
                 outputFile.write(escapeCsvField(val) & "\p")
     let outputFileSize = getFileSize(outputFile)
     outputFile.close()
+    table.echoTableSeps(seps = boxSeps)
     echo ""
     echo "The extracted PowerShell ScriptBlock is saved in the directory: " & output
     echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"

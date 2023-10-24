@@ -1,6 +1,7 @@
 import algorithm
 import cligen
 import json
+import nancy
 import puppy
 import re
 import sets
@@ -9,6 +10,7 @@ import strformat
 import strutils
 import tables
 import terminal
+import termstyle
 import times
 import threadpool
 import uri
