@@ -2,6 +2,10 @@
 
 ## x.x.x [xxxx/xx/xx]
 
+**新機能:**
+
+- PowerShell EID 4104のScriptBlockログを元に戻す`extract-scriptblocks`コマンドを追加した。 (#47) (@fukusuket)
+
 **改善:**
 
 - TakajoがNim 2.0.0でコンパイルできるようになった。(#31) (@fukusuket)

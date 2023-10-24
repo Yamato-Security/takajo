@@ -2,6 +2,10 @@
 
 ## x.x.x [xxxx/xx/xx]
 
+**New Features:**
+
+- New `extract-scriptblocks` command to reassemble PowerShell EID 4104 ScriptBlock logs. (#47) (@fukusuket)
+
 **Enhancements:**
 
 - Takajo now compiles with Nim 2.0.0. (#31) (@fukusuket)
