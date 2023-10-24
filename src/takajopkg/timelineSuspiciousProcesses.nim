@@ -232,6 +232,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
         echo ""
 
     if suspicousProcessCount_Sec_4688 == 0 and suspicousProcessCount_Sysmon_1 == 0:
+        echo ""
         echo "No suspicous processes were found. There are either no malicious processes or you need to change the level."
         echo ""
         return
