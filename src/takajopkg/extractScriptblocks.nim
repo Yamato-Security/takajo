@@ -1,7 +1,8 @@
 type
     Script = object
-        scriptBlockId: string
         firstTimestamp: string
+        computerName: string
+        scriptBlockId: string
         scriptBlocks: OrderedSet[string]
         levels: HashSet[string]
         ruleTitles: HashSet[string]
@@ -35,15 +36,13 @@ proc calcMaxAlert(levels:HashSet):string =
 proc buildSummaryRecord(path: string, messageTotal: int,
         scriptObj: Script): array[7, string] =
     let ts = scriptObj.firstTimestamp
+    let cs = scriptObj.computerName
     let id = scriptObj.scriptBlockId
     let count = scriptObj.scriptBlocks.len
-    var status = "Complete"
-    if count != messageTotal:
-        status = "Incomplete"
     let records = $count & "/" & $messageTotal
     let ruleTitles = fmt"{scriptObj.ruleTitles}".replace("{", "").replace("}", "")
     let maxLevel = calcMaxAlert(scriptObj.levels)
-    return [ts, id, path, status, records, maxLevel, ruleTitles]
+    return [ts, cs, id, path, records, maxLevel, ruleTitles]
 
 proc colorWrite(color: ForegroundColor, ansiEscape: string, txt: string) =
     # Remove ANSI escape sequences and use stdout.styledWrite instead
@@ -154,8 +153,10 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
             stackedRecords[scriptBlockId].ruleTitles.incl(ruleTitle)
             stackedRecords[scriptBlockId].scriptBlocks.incl(scriptBlock)
         else:
-            stackedRecords[scriptBlockId] = Script(scriptBlockId: scriptBlockId,
-                    firstTimestamp: timestamp, scriptBlocks: toOrderedSet([scriptBlock]),
+            stackedRecords[scriptBlockId] = Script(firstTimestamp: timestamp,
+                    computerName: computerName,
+                    scriptBlockId: scriptBlockId,
+                    scriptBlocks: toOrderedSet([scriptBlock]),
                     levels:toHashSet([eventLevel]), ruleTitles:toHashSet([ruleTitle]))
 
         let scriptObj = stackedRecords[scriptBlockId]
@@ -177,7 +178,7 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
         echo "No malicious powershell script block were found. There are either no malicious powershell script block or you need to change the level."
     else:
         let summaryFile = output & "/" & "summary.csv"
-        let header = ["Creation Time", "Script ID", "Script Name", "Results", "Extracted Records", "Max alert", "Alerts"]
+        let header = ["Creation Time", "Computer Name", "Script ID", "Script Name", "Records", "Level", "Alerts"]
         var outputFile = open(summaryFile, fmWrite)
         var table: TerminalTable
         table.add header
