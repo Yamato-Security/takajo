@@ -46,6 +46,7 @@ proc buildSummaryRecord(path: string, messageTotal: int,
     return [ts, id, path, status, records, maxLevel, ruleTitles]
 
 proc colorWrite(color: ForegroundColor, ansiEscape: string, txt: string) =
+    # Remove ANSI escape sequences and use stdout.styledWrite instead
     let replacedTxt = txt.replace(ansiEscape,"").replace(termClear,"")
     if "│" in replacedTxt:
       stdout.styledWrite(color, replacedTxt.replace("│ ",""))
@@ -65,18 +66,21 @@ proc stdoutStyledWrite(txt: string) =
     else:
       stdout.write txt.replace(termClear,"")
 
-proc echoTableSepsWithStyled*(table: TerminalTable, maxSize = terminalWidth(), seps = defaultSeps) =
-  let sizes = table.getColumnSizes(maxSize - 4, padding = 3)
-  printSeparator(top)
-  for k, entry in table.entries(sizes):
-    for _, row in entry():
-      stdout.write seps.vertical & " "
-      for i, cell in row():
-        stdoutStyledWrite cell & (if i != sizes.high: " " & seps.vertical & " " else: "")
-      stdout.write " " & seps.vertical & "\n"
-    if k != table.rows - 1:
-      printSeparator(center)
-  printSeparator(bottom)
+proc echoTableSepsWithStyled(table: TerminalTable, maxSize = terminalWidth(), seps = defaultSeps) =
+    # This function equivalent to echoTableSeps without using ANSI escape to avoid the following issue.
+    # https://github.com/PMunch/nancy/issues/4
+    # https://github.com/PMunch/nancy/blob/9918716a563f64d740df6a02db42662781e94fc8/src/nancy.nim#L195C6-L195C19
+    let sizes = table.getColumnSizes(maxSize - 4, padding = 3)
+    printSeparator(top)
+    for k, entry in table.entries(sizes):
+      for _, row in entry():
+        stdout.write seps.vertical & " "
+        for i, cell in row():
+          stdoutStyledWrite cell & (if i != sizes.high: " " & seps.vertical & " " else: "")
+        stdout.write " " & seps.vertical & "\n"
+      if k != table.rows - 1:
+        printSeparator(center)
+    printSeparator(bottom)
 
 proc extractScriptblocks(level: string = "low", output: string = "scriptblock-logs",
         quiet: bool = false, timeline: string) =
@@ -176,30 +180,29 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
         let header = ["Creation Time", "Script ID", "Script Name", "Results", "Extracted Records", "Max alert", "Alerts"]
         var outputFile = open(summaryFile, fmWrite)
         var table: TerminalTable
-        table.add header[0], header[1], header[2], header[3], header[4], header[5], header[6]
+        table.add header
         for i, val in header:
             if i < 6:
                 outputFile.write(escapeCsvField(val) & ",")
             else:
                 outputFile.write(escapeCsvField(val) & "\p")
-        for v in summaryRecords.values:
-            if v[5] == "crit":
-                table.add red v[0], red v[1], red v[2], red v[3], red v[4], red v[5], red v[6]
-            elif v[5] == "high":
-                table.add yellow v[0], yellow v[1], yellow v[2], yellow v[3], yellow v[4], yellow v[5], yellow v[6]
-            elif v[5] == "med":
-                table.add cyan v[0], cyan v[1], cyan v[2], cyan v[3], cyan v[4], cyan v[5], cyan v[6]
-            elif v[5] == "low":
-                table.add green v[0], green v[1], green v[2], green v[3], green v[4], green v[5], green v[6]
-            elif v[5] == "info":
-                table.add v[0], v[1], v[2], v[3], v[4], v[5], v[6]
+        for row in summaryRecords.values:
+            let level = row[5]
+            if level == "crit":
+                table.add red row
+            elif level == "high":
+                table.add yellow row
+            elif level == "med":
+                table.add cyan row
+            elif level == "low":
+                table.add green row
             else:
-                table.add v[0], v[1], v[2], v[3], v[4], v[5], v[6]
-            for i, val in v:
+                table.add row
+            for i, cell in row:
                 if i < 6:
-                    outputFile.write(escapeCsvField(val) & ",")
+                    outputFile.write(escapeCsvField(cell) & ",")
                 else:
-                    outputFile.write(escapeCsvField(val) & "\p")
+                    outputFile.write(escapeCsvField(cell) & "\p")
         let outputFileSize = getFileSize(outputFile)
         outputFile.close()
         table.echoTableSepsWithStyled(seps = boxSeps)
