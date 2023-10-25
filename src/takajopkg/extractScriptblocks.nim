@@ -45,6 +45,39 @@ proc buildSummaryRecord(path: string, messageTotal: int,
     let maxLevel = calcMaxAlert(scriptObj.levels)
     return [ts, id, path, status, records, maxLevel, ruleTitles]
 
+proc colorWrite(color: ForegroundColor, ansiEscape: string, txt: string) =
+    let replacedTxt = txt.replace(ansiEscape,"").replace(termClear,"")
+    if "│" in replacedTxt:
+      stdout.styledWrite(color, replacedTxt.replace("│ ",""))
+      stdout.write "│ "
+    else:
+      stdout.styledWrite(color, replacedTxt)
+
+proc stdoutStyledWrite(txt: string) =
+    if txt.startsWith(termRed):
+      colorWrite(fgRed, termRed,txt)
+    elif txt.startsWith(termGreen):
+      colorWrite(fgGreen, termGreen, txt)
+    elif txt.startsWith(termYellow):
+      colorWrite(fgYellow, termYellow, txt)
+    elif txt.startsWith(termCyan):
+      colorWrite(fgCyan, termCyan, txt)
+    else:
+      stdout.write txt
+
+proc echoTableSepsWithStyled*(table: TerminalTable, maxSize = terminalWidth(), seps = defaultSeps) =
+  let sizes = table.getColumnSizes(maxSize - 4, padding = 3)
+  printSeparator(top)
+  for k, entry in table.entries(sizes):
+    for _, row in entry():
+      stdout.write seps.vertical & " "
+      for i, cell in row():
+        stdoutStyledWrite cell & (if i != sizes.high: " " & seps.vertical & " " else: "")
+      stdout.write " " & seps.vertical & "\n"
+    if k != table.rows - 1:
+      printSeparator(center)
+  printSeparator(bottom)
+
 proc extractScriptblocks(level: string = "low", output: string = "scriptblock-logs",
         quiet: bool = false, timeline: string) =
     let startTime = epochTime()
@@ -169,7 +202,7 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
                     outputFile.write(escapeCsvField(val) & "\p")
         let outputFileSize = getFileSize(outputFile)
         outputFile.close()
-        table.echoTableSeps(seps = boxSeps)
+        table.echoTableSepsWithStyled(seps = boxSeps)
         echo ""
         echo "The extracted PowerShell ScriptBlock is saved in the directory: " & output
         echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"
