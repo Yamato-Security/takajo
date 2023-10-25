@@ -187,7 +187,6 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
             else:
                 outputFile.write(escapeCsvField(val) & "\p")
         for v in summaryRecords.values:
-            let level = v[5]
             if v[5] == "crit":
                 table.add red v[0], red v[1], red v[2], red v[3], red v[4], red v[5], red v[6]
             elif v[5] == "high":
