@@ -63,7 +63,7 @@ proc stdoutStyledWrite(txt: string) =
     elif txt.startsWith(termCyan):
       colorWrite(fgCyan, termCyan, txt)
     else:
-      stdout.write txt
+      stdout.write txt.replace(termClear,"")
 
 proc echoTableSepsWithStyled*(table: TerminalTable, maxSize = terminalWidth(), seps = defaultSeps) =
   let sizes = table.getColumnSizes(maxSize - 4, padding = 3)
