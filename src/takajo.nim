@@ -1,6 +1,7 @@
 import algorithm
 import cligen
 import json
+import nancy
 import puppy
 import re
 import sets
@@ -9,6 +10,7 @@ import strformat
 import strutils
 import tables
 import terminal
+import termstyle
 import times
 import threadpool
 import uri
@@ -16,6 +18,7 @@ import os
 import std/enumerate
 import suru
 import takajopkg/general
+include takajopkg/extractScriptblocks
 include takajopkg/listDomains
 include takajopkg/listIpAddresses
 include takajopkg/listUndetectedEvtxFiles
@@ -34,6 +37,7 @@ include takajopkg/vtHashLookup
 when isMainModule:
     clCfg.version = "2.1.0-dev"
     const examples = "Examples:\p"
+    const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl -o domains.txt\p"
     const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
@@ -50,7 +54,7 @@ when isMainModule:
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
     clCfg.useMulti = "Version: 2.1.0-dev\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
-        examples & example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
+        examples & example_extract_scriptblocks & example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_tree &
         example_timeline_logon & example_timeline_suspicious_processes &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
@@ -58,6 +62,16 @@ when isMainModule:
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
     dispatchMulti(
+        [
+            extractScriptblocks, cmdName = "extract-scriptblocks",
+            doc = "extract and reassemble PowerShell EID 4104 script block logs",
+            help = {
+                "level": "specify the minimum alert level",
+                "output": "output directory (default: scriptblock-logs)",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any)",
+            }
+        ],
         [
             listDomains, cmdName = "list-domains",
             doc = "create a list of unique domains to be used with vt-domain-lookup",
