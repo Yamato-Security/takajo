@@ -123,7 +123,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 # コマンド一覧
 
 ## Extractコマンド
-* `extract-scriptblocks`: PowerShell EID 4104 スクリプトブロックログを抽出して再構築する
+* `extract-scriptblocks`: PowerShell EID 4104 スクリプトブロックログからPowerShellスクリプトを抽出して再構築する
 
 ## Listコマンド
 * `list-domains`: `vt-domain-lookup`コマンドで使用する、重複のないドメインのリストを作成する
@@ -169,7 +169,7 @@ PowerShell EID 4104 スクリプトブロックログからPowerShellスクリ�
 
 - `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
 
-Options:
+任意オプション:
 
  - `-l, --level`: 最小のアラートレベルを指定 (デフォルト: `low`)
  - `-o, --output`: PowerShellスクリプトを保存するディレクトリ  (デフォルト: `scriptblock-logs`)
