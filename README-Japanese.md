@@ -39,6 +39,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Gitクローン](#gitクローン)
   - [アドバンス: ソースコードからのコンパイル（任意）](#アドバンス-ソースコードからのコンパイル任意)
 - [コマンド一覧](#コマンド一覧)
+  - [Extractコマンド](#extractコマンド)
   - [Listコマンド](#listコマンド)
   - [Splitコマンド](#splitコマンド)
   - [Stackコマンド](#stackコマンド)
@@ -46,6 +47,9 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Timelineコマンド](#timelineコマンド)
   - [VirusTotalコマンド](#virustotalコマンド)
 - [コマンド使用方法](#コマンド使用方法)
+  - [Extractコマンド](#extractコマンド-1)
+    - [`extract-scriptblocks`コマンド](#extract-scriptblocksコマンド)
+    - [`extract-scriptblocks`コマンドの使用例](#extract-scriptblocksコマンドの使用例)
   - [Listコマンド](#listコマンド-1)
     - [`list-domains`コマンド](#list-domainsコマンド)
       - [`list-domains`コマンドの使用例](#list-domainsコマンドの使用例)
@@ -113,10 +117,13 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 ```
 > nimble update
-> nimble build -d:release --threads:on 
+> nimble build -d:release --threads:on
 ```
 
 # コマンド一覧
+
+## Extractコマンド
+* `extract-scriptblocks`: extract and reassemble PowerShell EID 4104 script block logs
 
 ## Listコマンド
 * `list-domains`: `vt-domain-lookup`コマンドで使用する、重複のないドメインのリストを作成する
@@ -146,6 +153,42 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 # コマンド使用方法
 
+## Extractコマンド
+
+### `extract-scriptblocks`コマンド
+
+Extracts and reassemles PowerShell EID 4104 script block logs.
+
+> Note: The PowerShell scripts are best opened as `.ps1` files with code syntax highlighting but we use the `.txt` extension in order to prevent any accidental running of malicious code.
+
+* 入力: `JSONL`
+* プロファイル: Any
+* 出力: `PowerShell Scripts`
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+Options:
+
+ - `-l, --level`: specify the minimum alert level (default: `low`)
+ - `-o, --output`: output directory (default: `scriptblock-logs`)
+ - `-q, --quiet`: do not display the launch banner (default: `false`)
+
+### `extract-scriptblocks`コマンドの使用例
+
+HayabusaでJSONLタイムラインを出力する:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
+```
+
+Extract PowerShell EID 4104 script block logs to the `scriptblock-logs` directory:
+
+```
+takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
+```
+
 ## Listコマンド
 
 ### `list-domains`コマンド
@@ -174,7 +217,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 HayabusaでJSONLタイムラインを出力する:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 結果をテキストファイルに保存する:
@@ -212,7 +255,7 @@ takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o domains.txt -s
 HayabusaでJSONLタイムラインを作成する:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 ハッシュタイプ毎に異なるファイルに結果を保存する:
@@ -249,7 +292,7 @@ takajo.exe list-hashes -t ../hayabusa/timeline.jsonl -o case-1
 HayabusaでJSONLタイムラインを作成する:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 結果をテキストファイルに保存する:
@@ -295,7 +338,7 @@ Hayabusaで検知するルールがなかったすべての`.evtx`ファイル�
 HayabusaでCSVタイムラインを出力する:
 
 ```
-hayabusa.exe -d <EVTX-DIR> -p verbose -o timeline.csv
+hayabusa.exe -d <EVTX-DIR> -p verbose -o timeline.csv -w
 ```
 
 結果を標準出力に表示する:
@@ -336,7 +379,7 @@ takajo.exe list-undetected-evtx -t ../hayabusa/timeline.csv -e <EVTX-DIR> -o und
 HayabusaでCSVタイムラインを出力する:
 
 ```
-hayabusa.exe csv-timeline -d <EVTX-DIR> -p verbose -o timeline.csv
+hayabusa.exe csv-timeline -d <EVTX-DIR> -p verbose -o timeline.csv -w
 ```
 
 結果を標準出力に表示する:
@@ -376,7 +419,7 @@ takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules -o
 HayabusaでCSVタイムラインを出力する:
 
 ```
-hayabusa.exe csv-timeline -d <EVTX-DIR> -o timeline.csv
+hayabusa.exe csv-timeline -d <EVTX-DIR> -o timeline.csv -w
 ```
 
 1つのCSVタイムラインを複数のCSVタイムラインに分割して `output` ディレクトリに出力:
@@ -413,7 +456,7 @@ takajo.exe split-csv-timeline -t ../hayabusa/timeline.csv -m -o case-1-csv
 HayabusaでJSONLタイムラインを作成する:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 1つのJSONLタイムラインを複数のJSONLタイムラインに分割して `output` ディレクトリに出力:
@@ -466,7 +509,7 @@ takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
 HayabusaでJSONLタイムラインを作成する:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 結果をテキストファイルに保存する:
@@ -511,7 +554,7 @@ takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5
 HayabusaでJSONLタイムラインを作成する:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 ログオンタイムラインをCSVに保存する:
@@ -543,7 +586,7 @@ takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
 HayabusaでJSONLタイムラインを作成する:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 アラートレベルが`high`以上のプロセスを検索し、結果を標準出力に表示:
