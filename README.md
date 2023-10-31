@@ -50,7 +50,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 - [Command Usage](#command-usage)
   - [Extract Commands](#extract-commands-1)
     - [`extract-scriptblocks` command](#extract-scriptblocks-command)
-    - [`extract-scriptblocks` command example](#extract-scriptblocks-command-example)
+      - [`extract-scriptblocks` command example](#extract-scriptblocks-command-example)
   - [List Commands](#list-commands-1)
     - [`list-domains` command](#list-domains-command)
       - [`list-domains` command examples](#list-domains-command-examples)
@@ -177,7 +177,7 @@ Options:
  - `-o, --output`: output directory (default: `scriptblock-logs`)
  - `-q, --quiet`: do not display the launch banner (default: `false`)
 
-### `extract-scriptblocks` command example
+#### `extract-scriptblocks` command example
 
 Prepare the JSONL timeline with Hayabusa:
 
