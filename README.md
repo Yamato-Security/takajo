@@ -40,6 +40,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Git cloning](#git-cloning)
   - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
 - [Command List](#command-list)
+  - [Extract Commands](#extract-commands)
   - [List Commands](#list-commands)
   - [Split Commands](#split-commands)
   - [Stack Commands](#stack-commands)
@@ -47,6 +48,9 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Timeline Commands](#timeline-commands)
   - [VirusTotal Commands](#virustotal-commands)
 - [Command Usage](#command-usage)
+  - [Extract Commands](#extract-commands-1)
+    - [`extract-scriptblocks` command](#extract-scriptblocks-command)
+      - [`extract-scriptblocks` command example](#extract-scriptblocks-command-example)
   - [List Commands](#list-commands-1)
     - [`list-domains` command](#list-domains-command)
       - [`list-domains` command examples](#list-domains-command-examples)
@@ -115,10 +119,13 @@ If you have Nim installed, you can compile from source with the following comman
 
 ```
 > nimble update
-> nimble build -d:release --threads:on 
+> nimble build -d:release --threads:on
 ```
 
 # Command List
+
+## Extract Commands
+* `extract-scriptblocks`: extract and reassemble PowerShell EID 4104 script block logs
 
 ## List Commands
 * `list-domains`: create a list of unique domains to be used with `vt-domain-lookup`
@@ -148,6 +155,42 @@ If you have Nim installed, you can compile from source with the following comman
 
 # Command Usage
 
+## Extract Commands
+
+### `extract-scriptblocks` command
+
+Extracts and reassemles PowerShell EID 4104 script block logs.
+
+> Note: The PowerShell scripts are best opened as `.ps1` files with code syntax highlighting but we use the `.txt` extension in order to prevent any accidental running of malicious code.
+
+* Input: `JSONL`
+* Profile: Any
+* Output: `PowerShell Scripts`
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline
+
+Options:
+
+ - `-l, --level`: specify the minimum alert level (default: `low`)
+ - `-o, --output`: output directory (default: `scriptblock-logs`)
+ - `-q, --quiet`: do not display the launch banner (default: `false`)
+
+#### `extract-scriptblocks` command example
+
+Prepare the JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
+```
+
+Extract PowerShell EID 4104 script block logs to the `scriptblock-logs` directory:
+
+```
+takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
+```
+
 ## List Commands
 
 ### `list-domains` command
@@ -175,7 +218,7 @@ Options:
 Prepare the JSONL timeline with Hayabusa:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 Save the results to a text file:
@@ -213,7 +256,7 @@ Options:
 Prepare JSONL timeline with Hayabusa:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 Save the results to a different text file for each hash type:
@@ -250,7 +293,7 @@ Options:
 Prepare the JSONL timeline with Hayabusa:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 Save the results to a text file:
@@ -298,7 +341,7 @@ Options:
 Prepare the CSV timeline with Hayabusa:
 
 ```
-hayabusa.exe -d <EVTX-DIR> -p verbose -o timeline.csv
+hayabusa.exe -d <EVTX-DIR> -p verbose -o timeline.csv -w
 ```
 
 Output the results to screen:
@@ -341,7 +384,7 @@ Options:
 Prepare the CSV timeline with Hayabusa:
 
 ```
-hayabusa.exe csv-timeline -d <EVTX-DIR> -p verbose -o timeline.csv
+hayabusa.exe csv-timeline -d <EVTX-DIR> -p verbose -o timeline.csv -w
 ```
 
 Output the results to screen:
@@ -381,7 +424,7 @@ Options:
 Prepare the CSV timeline with Hayabusa:
 
 ```
-hayabusa.exe csv-timeline -d <EVTX-DIR> -o timeline.csv
+hayabusa.exe csv-timeline -d <EVTX-DIR> -o timeline.csv -w
 ```
 
 Split the single CSV timeline into multiple CSV timelines in the default `output` directory:
@@ -418,7 +461,7 @@ Options:
 Prepare the JSONL timeline with Hayabusa:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 Split the single JSONL timeline into multiple JSONL timelines in the default `output` directory:
@@ -493,7 +536,7 @@ Options:
 Prepare JSONL timeline with Hayabusa:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 Save the results to a text file:
@@ -538,7 +581,7 @@ Options:
 Prepare JSONL timeline with Hayabusa:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 Save logon timeline to a CSV file:
@@ -570,7 +613,7 @@ Options:
 Prepare JSONL timeline with Hayabusa:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 
 Search for processes that had an alert level of `high` or above and output results to screen:

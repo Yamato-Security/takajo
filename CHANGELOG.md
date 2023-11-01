@@ -1,6 +1,6 @@
 # Changes
 
-## x.x.x [xxxx/xx/xx]
+## 2.1.0 [2023/10/31] - Halloween Release
 
 **New Features:**
 
