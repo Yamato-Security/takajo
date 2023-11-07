@@ -89,9 +89,11 @@ proc getHayabusaCsvData*(csvPath: string, columnName: string): Tableref[string, 
 
     # parse csv
     var p: CsvParser
-    open(p, s, csvPath)
-    p.readHeaderRow()
-
+    try:
+        open(p, s, csvPath)
+        p.readHeaderRow()
+    except:
+        quit("Failed to open '" & csvPath & "' because it is not in CSV format.\nPlease specify a CSV that has been created with the Hayabusa csv-timeline command.")
     let r = newTable[string, seq[string]]()
     # initialize table
     for h in items(p.headers):
