@@ -132,21 +132,33 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
         inc bar
         bar.update(1000000000) # refresh every second
         let jsonLine = parseJson(line)
-        let eventLevel = jsonLine["Level"].getStr()
-        if jsonLine["EventID"].getInt(0) != 4104 or isMinLevel(eventLevel, level) == false:
-            continue
+        var
+            timestamp: string
+            computerName: string
+            eventLevel: string
+            ruleTitle: string
+            scriptBlock: string
+            scriptBlockId: string
+            messageNumber: int
+            messageTotal: int
+            path: string
 
-        let
+        if jsonLine["EventID"].getInt(0) != 4104 or isMinLevel(jsonLine["Level"].getStr(), level) == false:
+            continue
+        try:
             timestamp = jsonLine["Timestamp"].getStr()
             computerName = jsonLine["Computer"].getStr()
+            eventLevel = jsonLine["Level"].getStr()
             ruleTitle = jsonLine["RuleTitle"].getStr()
             scriptBlock = jsonLine["Details"]["ScriptBlock"].getStr()
             scriptBlockId = jsonLine["ExtraFieldInfo"]["ScriptBlockId"].getStr()
             messageNumber = jsonLine["ExtraFieldInfo"]["MessageNumber"].getInt()
             messageTotal = jsonLine["ExtraFieldInfo"]["MessageTotal"].getInt()
-        var path = jsonLine["ExtraFieldInfo"].getOrDefault("Path").getStr()
-        if path == "":
-            path = "no-path"
+            path = jsonLine["ExtraFieldInfo"].getOrDefault("Path").getStr()
+            if path == "":
+                path = "no-path"
+        except:
+            continue
 
         if scriptBlockId in stackedRecords:
             stackedRecords[scriptBlockId].levels.incl(eventLevel)
