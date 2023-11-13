@@ -1,5 +1,11 @@
 # Changes
 
+## x.x.x [xxxx/xx/xx]
+
+**Bug Fixes*:**
+
+- Fixed an unhandled exception bug when key is not found. (#65) (@fukusuket)
+
 ## 2.1.0 [2023/10/31] - Halloween Release
 
 **New Features:**
