@@ -56,9 +56,12 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
 
         ## Write contents
         for table in seqOfResultsTables:
-            for key in header:
+            for i, key in enumerate(header):
                 if table.hasKey(key):
-                    outputFile.write(escapeCsvField(table[key]) & ",")
+                    if i < header.len() - 1:
+                        outputFile.write(escapeCsvField(table[key]) & ",")
+                    else:
+                        outputFile.write(escapeCsvField(table[key]))
                 else:
                     outputFile.write(",")
             outputFile.write("\p")
