@@ -46,10 +46,10 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
 
     bar.finish()
 
+    let header = ["Timestamp", "Computer", "Manufacturer", "Model", "Revision", "SerialNumber"]
     if output != "":
         # Open file to save results
         var outputFile = open(output, fmWrite)
-        let header = ["Timestamp", "Computer", "Manufacturer", "Model", "Revision", "SerialNumber"]
 
         ## Write CSV header
         outputFile.write(header.join(",") & "\p")
@@ -66,6 +66,14 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
         let fileSize = getFileSize(output)
         echo ""
         echo "Saved results to " & output & " (" & formatFileSize(fileSize) & ")"
+        echo ""
+    else:
+        echo ""
+        var table: TerminalTable
+        table.add header
+        for t in seqOfResultsTables:
+            table.add t[header[0]], t[header[1]], t[header[2]], t[header[3]], t[header[4]], t[header[5]]
+        table.echoTableSeps(seps = boxSeps)
         echo ""
 
     let endTime = epochTime()

@@ -157,7 +157,7 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
             path = jsonLine["ExtraFieldInfo"].getOrDefault("Path").getStr()
             if path == "":
                 path = "no-path"
-        except:
+        except CatchableError:
             continue
 
         if scriptBlockId in stackedRecords:
