@@ -12,9 +12,9 @@ proc queryDomainAPI(domain:string, headers: httpheaders.HttpHeaders) {.thread.} 
     var malicious = false
     singleResultTable["Domain"] = domain
     singleResultTable["Link"] = "https://www.virustotal.com/gui/domain/" & domain
+    singleResultTable["Response"] = intToStr(response.code)
     if response.code == 200:
         jsonResponse = parseJson(response.body)
-        singleResultTable["Response"] = "200"
         # Parse values that need epoch time to human readable time
         singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
         singleResultTable["LastAnalysisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_analysis_date"])
@@ -36,20 +36,7 @@ proc queryDomainAPI(domain:string, headers: httpheaders.HttpHeaders) {.thread.} 
         singleResultTable["SSL-Issuer"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "O"])
         singleResultTable["SSL-IssuerCountry"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "C"])
 
-        # If it was found to be malicious, print to screen an alert
-        if parseInt(singleResultTable["MaliciousCount"]) > 0:
-            malicious = true
-            echo "\pFound malicious domain: " & domain & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
-
-    # If we get a 404 not found
-    elif response.code == 404:
-        echo "\pDomain not found: ", domain
-        singleResultTable["Response"] = "404"
-    else:
-        echo "\pUnknown error: ", intToStr(response.code), " - " & domain
-        singleResultTable["Response"] = intToStr(response.code)
-
-    vtAPIDomainChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse, isMalicious:malicious))
+    vtAPIDomainChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse))
 
 
 proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "", output: string, rateLimit: int = 4, quiet: bool = false) =
@@ -115,18 +102,24 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
         let vtResult: VirusTotalResult = vtAPIDomainChannel.recv() # get results of queries executed in parallel
         seqOfResultsTables.add(vtResult.resTable)
         jsonResponses.add(vtResult.resJson)
-        if vtResult.isMalicious:
+        if vtResult.resTable["Response"] == "200" and parseInt(vtResult.resTable["MaliciousCount"]) > 0:
           totalMaliciousDomainCount += 1
 
     sync()
     vtAPIDomainChannel.close()
-
     bar.finish()
 
     echo ""
-    echo "Finished querying domains"
-    echo "Malicious domains found: ", totalMaliciousDomainCount
-    # Print elapsed time
+    echo "Finished querying domains. " & intToStr(totalMaliciousDomainCount) & " Malicious domains found."
+    echo ""
+    for table in seqOfResultsTables:
+        if table["Response"] == "200":
+            if parseInt(table["MaliciousCount"]) > 0:
+                echo "Found malicious domains: " & table["Domain"] & " (Malicious count: " & table["MaliciousCount"] & ")"
+        elif table["Response"] == "404":
+            echo "Domain not found: ", table["Domain"]
+        else:
+            echo "Unknown error: ", table["Response"], " - " & table["Domain"]
 
     # If saving to a file
     if output != "":
@@ -150,7 +143,7 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
             outputFile.write("\p")
         let fileSize = getFileSize(output)
         outputFile.close()
-
+        echo ""
         echo "Saved CSV results to " & output & " (" & formatFileSize(fileSize) & ")"
 
     # After the for loop, check if jsonOutput is not blank and then write the JSON responses to a file

@@ -11,10 +11,9 @@ proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders) {.thread.} =
     var malicious = false
     singleResultTable["Hash"] = hash
     singleResultTable["Link"] = "https://www.virustotal.com/gui/file/" & hash
+    singleResultTable["Response"] = intToStr(response.code)
     if response.code == 200:
         jsonResponse = parseJson(response.body)
-        singleResultTable["Response"] = "200"
-
         # Parse values that need epoch time to human readable time
         singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
         singleResultTable["FirstInTheWildDate"] = getJsonDate(jsonResponse, @["data", "attributes", "first_seen_itw_date"])
@@ -26,18 +25,7 @@ proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders) {.thread.} =
         singleResultTable["HarmlessCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "harmless"])
         singleResultTable["SuspiciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "suspicious"])
 
-        # If it was found to be malicious
-        if parseInt(singleResultTable["MaliciousCount"]) > 0:
-            malicious = true
-            echo "\pFound malicious hash: " & hash & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
-    elif response.code == 404:
-        echo "\pHash not found: ", hash
-        singleResultTable["Response"] = "404"
-    else:
-        echo "\pUnknown error: ", intToStr(response.code), " - " & hash
-        singleResultTable["Response"] = intToStr(response.code)
-
-    vtAPIHashChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse, isMalicious:malicious))
+    vtAPIHashChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse))
 
 
 proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", output: string = "", rateLimit: int = 4, quiet: bool = false) =
@@ -104,18 +92,25 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
         let vtResult: VirusTotalResult = vtAPIHashChannel.recv() # get results of queries executed in parallel
         seqOfResultsTables.add(vtResult.resTable)
         jsonResponses.add(vtResult.resJson)
-        if vtResult.isMalicious:
+        if vtResult.resTable["Response"] == "200" and parseInt(vtResult.resTable["MaliciousCount"]) > 0:
           totalMaliciousHashCount += 1
 
     sync()
     vtAPIHashChannel.close()
-
-
     bar.finish()
+
     echo ""
-    echo "Finished querying hashes"
-    echo "Malicious hashes found: ", totalMaliciousHashCount
-    # Print elapsed time
+    echo "Finished querying hashes. " & intToStr(totalMaliciousHashCount) & " Malicious hashes found."
+    echo ""
+    for table in seqOfResultsTables:
+        if table["Response"] == "200":
+            if parseInt(table["MaliciousCount"]) > 0:
+                echo "Found malicious hashes: " & table["Hash"] & " (Malicious count: " & table["MaliciousCount"] & ")"
+        elif table["Response"] == "404":
+            echo "Hash not found: ", table["Hash"]
+        else:
+            echo "Unknown error: ", table["Response"], " - " & table["Hash"]
+
 
     # If saving to a file
     if output != "":
@@ -137,7 +132,7 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
             outputFile.write("\p")
         let fileSize = getFileSize(output)
         outputFile.close()
-
+        echo ""
         echo "Saved CSV results to " & output & " (" & formatFileSize(fileSize) & ")"
 
     # After the for loop, check if jsonOutput is not blank and then write the JSON responses to a file

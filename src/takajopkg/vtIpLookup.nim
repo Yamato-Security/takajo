@@ -9,9 +9,9 @@ proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders) {.thread.} =
     var malicious = false
     singleResultTable["IP-Address"] = ipAddress
     singleResultTable["Link"] = "https://www.virustotal.com/gui/ip_addresses/" & ipAddress
+    singleResultTable["Response"] = intToStr(response.code)
     if response.code == 200:
         jsonResponse = parseJson(response.body)
-        singleResultTable["Response"] = "200"
 
         # Parse values that need epoch time to human readable time
         singleResultTable["LastAnalysisDate"] = getJsonDate(jsonResponse, @["data", "attributes", "last_analysis_date"])
@@ -38,20 +38,7 @@ proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders) {.thread.} =
         singleResultTable["SSL-IssuerCountry"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "C"])
         singleResultTable["SSL-CommonName"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "subject", "CN"])
 
-        # If it was found to be malicious
-        if parseInt(singleResultTable["MaliciousCount"]) > 0:
-            malicious = true
-            echo "\pFound malicious IP address: " & ipAddress & " (Malicious count: " & singleResultTable["MaliciousCount"] & " )"
-
-    # If we get a 404 not found
-    elif response.code == 404:
-        echo "\pIP address not found: ", ipAddress
-        singleResultTable["Response"] = "404"
-    else:
-        echo "\pUnknown error: ", intToStr(response.code), " - " & ipAddress
-        singleResultTable["Response"] = intToStr(response.code)
-
-    vtIpAddressChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse, isMalicious:malicious))
+    vtIpAddressChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse,))
 
 
 proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output: string, rateLimit: int = 4, quiet: bool = false) =
@@ -118,18 +105,24 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
         let vtResult: VirusTotalResult = vtIpAddressChannel.recv() # get results of queries executed in parallel
         seqOfResultsTables.add(vtResult.resTable)
         jsonResponses.add(vtResult.resJson)
-        if vtResult.isMalicious:
+        if vtResult.resTable["Response"] == "200" and parseInt(vtResult.resTable["MaliciousCount"]) > 0:
           totalMaliciousIpAddressCount += 1
 
     sync()
     vtIpAddressChannel.close()
-
     bar.finish()
 
     echo ""
-    echo "Finished querying IP addresses"
-    echo "Malicious IP addresses found: ", totalMaliciousIpAddressCount
-    # Print elapsed time
+    echo "Finished querying IP addresses. " & intToStr(totalMaliciousIpAddressCount) & " Malicious IP addresses found."
+    echo ""
+    for table in seqOfResultsTables:
+        if table["Response"] == "200":
+            if parseInt(table["MaliciousCount"]) > 0:
+                echo "Found malicious IP address: " & table["IP-Address"] & " (Malicious count: " & table["MaliciousCount"] & ")"
+        elif table["Response"] == "404":
+            echo "IP address not found: ", table["IP-Address"]
+        else:
+            echo "Unknown error: ", table["Response"], " - " & table["IP-Address"]
 
     # If saving to a file
     if output != "":
@@ -153,7 +146,7 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
             outputFile.write("\p")
         let fileSize = getFileSize(output)
         outputFile.close()
-
+        echo ""
         echo "Saved CSV results to " & output & " (" & formatFileSize(fileSize) & ")"
 
     # After the for loop, check if jsonOutput is not blank and then write the JSON responses to a file
