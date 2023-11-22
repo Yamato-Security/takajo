@@ -2,6 +2,10 @@
 
 ## x.x.x [xxxx/xx/xx]
 
+**Enhancements:**
+
+- Improved the display of the progress bar in the `vt-lookup` command. (#68) (@fukusuket)
+
 **Bug Fixes*:**
 
 - Fixed an unhandled exception bug when key is not found. (#65) (@fukusuket)
