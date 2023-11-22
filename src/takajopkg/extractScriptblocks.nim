@@ -11,7 +11,7 @@ proc outputScriptText(output: string, timestamp: string, computerName: string,
         scriptObj: Script) =
     var scriptText = ""
     for text in scriptObj.scriptBlocks.items:
-        scriptText = scriptText & text.replace("\\r", "\p").replace("\\n", "\p").replace("\\t", "\t").replace("\\\"", "\"")
+        scriptText = scriptText & text.replace("\\r\\n", "\p").replace("\\n", "\p").replace("\\t", "\t").replace("\\\"", "\"")
     let date = timestamp.replace(":", "_").replace(" ", "_")
     let fileName = output & "/" & computerName & "-" & date & "-" & scriptObj.scriptBlockId & ".txt"
     var outputFile = open(filename, fmWrite)
