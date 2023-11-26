@@ -9,6 +9,7 @@
 **バグ修正*:**
 
 - キーが存在しない場合の未処理の例外のバグを修正した。 (#65) (@fukusuket)
+- JSON入力の場合、`extract-scriptblocks`コマンドで改行処理が正しく行われていなかった。 (#71) (@fukusuket)
 
 ## 2.1.0 [2023/10/31] - Halloween Release
 

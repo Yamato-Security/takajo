@@ -9,6 +9,7 @@
 **Bug Fixes*:**
 
 - Fixed an unhandled exception bug when key is not found. (#65) (@fukusuket)
+- Newline handling was not done properly in `extract-scriptblocks` command for JSON input. (#71) (@fukusuket)
 
 ## 2.1.0 [2023/10/31] - Halloween Release
 
