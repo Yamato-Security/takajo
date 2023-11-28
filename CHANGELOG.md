@@ -2,6 +2,10 @@
 
 ## x.x.x [xxxx/xx/xx]
 
+**New Features:**
+
+- Added `timeline-partition-diagnostic` command to parse the Windows 10 `Microsoft-Windows-Partition%4Diagnostic.evtx` log file and report information about all the connected devices and their Volume Serial Numbers, both currently present on the device and previously existed. (Based on https://github.com/theAtropos4n6/Partition-4DiagnosticParser) (#70) (@fukusuket)
+
 **Bug Fixes*:**
 
 - Fixed an unhandled exception bug when key is not found. (#65) (@fukusuket)
