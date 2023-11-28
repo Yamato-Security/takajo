@@ -7,7 +7,7 @@ proc changeByteOrder(vsnStr:string): string =
 
 proc extractVSN(jsonLine: JsonNode) : array[4, string] =
     var res:array[4, string] = ["n/a", "n/a", "n/a", "n/a"]
-    if jsonLine["ExtraFieldInfo"]["PartitionStyle"].getInt() != 0:
+    if "PartitionStyle" notin jsonLine["ExtraFieldInfo"] or jsonLine["ExtraFieldInfo"]["PartitionStyle"].getInt() != 0:
         return res
     for i, vbrNo in ["Vbr0", "Vbr1", "Vbr2", "Vbr3"]:
         if vbrNo notin jsonLine["ExtraFieldInfo"]:
