@@ -4,7 +4,7 @@
 
 **新機能:**
 
-- Added `timeline-partition-diagnostic` command to parse the Windows 10 `Microsoft-Windows-Partition%4Diagnostic.evtx` log file and report information about all the connected devices and their Volume Serial Numbers, both currently present on the device and previously existed. (Based on https://github.com/theAtropos4n6/Partition-4DiagnosticParser) (#70) (@fukusuket)
+- Windows10の`Microsoft-Windows-Partition%4Diagnostic.evtx`を解析し、接続されたすべてのデバイスおよびそれらのボリュームシリアル番号に関する情報を出力する`timeline-partition-diagnostic`コマンドを追加した。現在および過去に接続されたデバイスに関する情報を出力する。 (処理は https://github.com/theAtropos4n6/Partition-4DiagnosticParser を参考に作成された) (#70) (@fukusuket)
 
 **改善:**
 
