@@ -6,9 +6,14 @@
 
 - Added `timeline-partition-diagnostic` command to parse the Windows 10 `Microsoft-Windows-Partition%4Diagnostic.evtx` log file and report information about all the connected devices and their Volume Serial Numbers, both currently present on the device and previously existed. (Based on https://github.com/theAtropos4n6/Partition-4DiagnosticParser) (#70) (@fukusuket)
 
-**Bug Fixes*:**
+**Enhancements:**
+
+- Improved the display of the progress bar in the `vt-lookup` command. (#68) (@fukusuket)
+
+**Bug Fixes:**
 
 - Fixed an unhandled exception bug when key is not found. (#65) (@fukusuket)
+- Newline handling was not done properly in `extract-scriptblocks` command for JSON input. (#71) (@fukusuket)
 
 ## 2.1.0 [2023/10/31] - Halloween Release
 

@@ -344,4 +344,3 @@ proc isJsonConvertible*(timeline: string) : bool =
 type VirusTotalResult* = object
   resTable*: TableRef[string, string]
   resJson*: JsonNode
-  isMalicious* : bool
