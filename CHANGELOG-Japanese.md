@@ -2,11 +2,15 @@
 
 ## x.x.x [xxxx/xx/xx]
 
+**新機能:**
+
+- Windows10の`Microsoft-Windows-Partition%4Diagnostic.evtx`を解析し、接続されたすべてのデバイスおよびそれらのボリュームシリアル番号に関する情報を出力する`timeline-partition-diagnostic`コマンドを追加した。現在および過去に接続されたデバイスに関する情報を出力する。 (処理は https://github.com/theAtropos4n6/Partition-4DiagnosticParser を参考に作成された) (#70) (@fukusuket)
+
 **改善:**
 
 - `vt-lookup`コマンドのプログレスバーの表示を改善した。 (#68) (@fukusuket)
 
-**バグ修正*:**
+**バグ修正:**
 
 - キーが存在しない場合の未処理の例外のバグを修正した。 (#65) (@fukusuket)
 - JSON入力の場合、`extract-scriptblocks`コマンドで改行処理が正しく行われていなかった。 (#71) (@fukusuket)
