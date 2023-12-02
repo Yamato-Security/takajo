@@ -1,6 +1,6 @@
 # Changes
 
-## x.x.x [xxxx/xx/xx]
+## 2.2.0 [2023/12/03] - Nasi Lemak Release
 
 **New Features:**
 
