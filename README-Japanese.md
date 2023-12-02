@@ -568,7 +568,7 @@ takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
 
 ### `timeline-partition-diagnostic`コマンド
 
-partition diagnosticイベントのCSVタイムラインを作成します。Windows 10の`Microsoft-Windows-Partition%4Diagnostic.evtx`を解析し、現在および過去に接続されたデバイスのボリュームシリアル番号を出力します。  
+partition diagnosticイベントのCSVタイムラインを作成します。Windows 10の`Microsoft-Windows-Partition%4Diagnostic.evtx`を解析し、現在および過去に接続されたデバイスのボリュームシリアル番号を出力します。
 この処理は [Partition-4DiagnosticParser](https://github.com/theAtropos4n6/Partition-4DiagnosticParser)を参考にして作成されました。
 
 * 入力: `JSONL`
