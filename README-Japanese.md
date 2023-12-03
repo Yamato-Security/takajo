@@ -75,6 +75,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Timelineコマンド](#timelineコマンド-1)
     - [`timeline-logon`コマンド](#timeline-logonコマンド)
       - [`timeline-logon`コマンドの使用例](#timeline-logonコマンドの使用例)
+    - [`timeline-partition-diagnostic`コマンド](#timeline-partition-diagnosticコマンド)
+      - [`timeline-partition-diagnostic`コマンドの使用例](#timeline-partition-diagnosticコマンドの使用例)
     - [`timeline-suspicious-processes`コマンド](#timeline-suspicious-processesコマンド)
       - [`timeline-suspicious-processes`コマンドの使用例](#timeline-suspicious-processesコマンドの使用例)
   - [VirusTotalコマンド](#virustotalコマンド-1)
@@ -145,6 +147,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 ## Timelineコマンド
 * `timeline-logon`: ログオンイベントのCSVタイムラインを作成する
 * `timeline-suspicious-processes`: 不審なプロセスのCSVタイムラインを作成する
+* `timeline-partition-diagnostic`: partition diagnosticイベントのCSVタイムラインを作成する
 
 ## VirusTotalコマンド
 * `vt-domain-lookup`: VirusTotalでドメインのリストを検索し、悪意のあるドメインをレポートする
@@ -563,9 +566,41 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
 ```
 
+### `timeline-partition-diagnostic`コマンド
+
+partition diagnosticイベントのCSVタイムラインを作成します。Windows 10の`Microsoft-Windows-Partition%4Diagnostic.evtx`を解析し、現在および過去に接続されたデバイスのボリュームシリアル番号を出力します。
+この処理は [Partition-4DiagnosticParser](https://github.com/theAtropos4n6/Partition-4DiagnosticParser)を参考にして作成されました。
+
+* 入力: `JSONL`
+* プロファイル: `すべて`
+* 出力: `CSV`
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `timeline-partition-diagnostic`コマンドの使用例
+
+HayabusaでJSONLタイムラインを作成する:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
+```
+
+接続されたデバイスのCSVタイムラインを作成する:
+
+```
+takajo.exe timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partition-diagnostic-timeline.csv
+```
+
 ### `timeline-suspicious-processes`コマンド
 
-不審なプロセスのCSVタイムラインを作成する
+不審なプロセスのCSVタイムラインを作成します。
 
 * 入力: `JSONL`
 * プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて

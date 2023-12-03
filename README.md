@@ -76,6 +76,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Timeline Commands](#timeline-commands-1)
     - [`timeline-logon` command](#timeline-logon-command)
       - [`timeline-logon` command examples](#timeline-logon-command-examples)
+    - [`timeline-partition-diagnostic` command](#timeline-partition-diagnostic-command)
+      - [`timeline-partition-diagnostic` command examples](#timeline-partition-diagnostic-command-examples)
     - [`timeline-suspicious-processes` command](#timeline-suspicious-processes-command)
       - [`timeline-suspicious-processes` command examples](#timeline-suspicious-processes-command-examples)
   - [VirusTotal Commands](#virustotal-commands-1)
@@ -146,6 +148,7 @@ If you have Nim installed, you can compile from source with the following comman
 
 ## Timeline Commands
 * `timeline-logon`: create a CSV timeline of logon events
+* `timeline-partition-diagnostic`: create a CSV timeline of partition diagnostic events
 * `timeline-suspicious-processes`: create a CSV timeline of suspicious processes
 
 ## VirusTotal Commands
@@ -588,6 +591,38 @@ Save logon timeline to a CSV file:
 
 ```
 takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
+```
+
+### `timeline-partition-diagnostic` command
+
+Creates a CSV timeline of partition diagnostic events by parsing Windows 10 `Microsoft-Windows-Partition%4Diagnostic.evtx` files and reporting information about all the connected devices and their Volume Serial Numbers, both currently present on the device and previously existed.
+This process is based on the tool [Partition-4DiagnosticParser](https://github.com/theAtropos4n6/Partition-4DiagnosticParser).
+
+* Input: `JSONL`
+* Profile: Any
+* Output: `CSV`
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `timeline-partition-diagnostic` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
+```
+
+Create a CSV timeline of connected devices:
+
+```
+takajo.exe timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partition-diagnostic-timeline.csv
 ```
 
 ### `timeline-suspicious-processes` command
