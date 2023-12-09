@@ -111,7 +111,7 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
         table.add header
         for t in seqOfResultsTables:
             table.add t[header[0]], t[header[1]], t[header[2]], t[header[3]], t[header[4]], t[header[5]], t[header[6]], t[header[7]], t[header[8]], t[header[9]]
-        table.echoTableSeps(seps = boxSeps)
+        table.echoTableSepsWithStyled(seps = boxSeps)
         echo ""
 
     let endTime = epochTime()
