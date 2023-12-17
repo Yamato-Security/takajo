@@ -79,11 +79,11 @@ when isMainModule:
         ],
         [
             extractTTPs, cmdName = "extract-ttps",
-            doc = "extracts TTPs and creates JSON in a format that can be imported into MITRE ATT&CK Navigator",
+            doc = "extract TTPs and create JSON in a format that can be imported into MITRE ATT&CK Navigator",
             help = {
-                "output": "to a JSON file",
+                "output": "save results to a json file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
+                "timeline": "Hayabusa JSONL timeline (profile: any verbose profile)",
             }
         ],
         [
