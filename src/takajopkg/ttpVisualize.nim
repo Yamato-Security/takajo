@@ -39,7 +39,7 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
     bar.finish()
     echo ""
     if stackedMitreTags.len == 0:
-        echo "No MITRE tags were found in the Hayabusa results."
+        echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
     else:
         let jsonObj = %* {
