@@ -1,5 +1,15 @@
 # 変更点
 
+## 2.3.0 [2023/12/24] - SECCON Christmas Release
+
+**新機能:**
+
+- ATT&CK Navigatorで可視化するために、TTPを抽出してJSONファイルを作成する`http-visualize`コマンドを追加した。 (#76) (@fukusuket)
+
+**バグ修正:**
+
+- `timeline-partition-diagnostic`コマンドの文字化けを修正した。 (#74) (@fukusuket)
+
 ## 2.2.0 [2023/12/03] - Nasi Lemak Release
 
 **新機能:**

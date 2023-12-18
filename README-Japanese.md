@@ -100,6 +100,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 - VirusTotalの検索で使用するIPアドレス、ドメイン、ハッシュなどをリストアップします。
 - ドメイン、ハッシュ、IPアドレスをVirusTotalで検索します。
 - 検知されていない`.evtx` ファイルをリストアップします。
+- MITRE ATT&CK NavigatorでTTPを可視化します。
 
 # ダウンロード
 

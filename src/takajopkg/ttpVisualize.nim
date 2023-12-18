@@ -1,4 +1,4 @@
-proc extractTTPs(output: string = "mitre-attack-navigator.json", quiet: bool = false, timeline: string) =
+proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -10,8 +10,8 @@ proc extractTTPs(output: string = "mitre-attack-navigator.json", quiet: bool = f
     if not isJsonConvertible(timeline):
         quit(1)
 
-    echo "Started the Extract TTPs command."
-    echo "This command extracts TTPs and creates JSON in a format that can be imported into MITRE ATT&CK Navigator."
+    echo "Started the TTP Visualize command."
+    echo "This command extracts TTPs and creates a JSON file to visualize in MITRE ATT&CK Navigator."
     echo ""
 
     echo "Counting total lines. Please wait."
