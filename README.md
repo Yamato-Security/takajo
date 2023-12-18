@@ -102,6 +102,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 - List up IP addresses, domains, hashes etc... to be used with VirusTotal lookups
 - VirusTotal lookups of domains, hashes and IP addresses.
 - List up `.evtx` files that cannot be detected yet.
+- Visualize TTPs in MITRE ATT&CK Navigator.
 
 # Downloads
 
