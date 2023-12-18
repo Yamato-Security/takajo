@@ -38,24 +38,27 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
 
     bar.finish()
     echo ""
+    if stackedMitreTags.len == 0:
+        echo "No MITRE tags were found in the Hayabusa results."
+        echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
+    else:
+        let jsonObj = %* {
+                            "name": "Hayabusa detection result heatmap",
+                            "versions": {
+                                "attack": "14",
+                                "navigator": "4.9.1",
+                                "layer": "4.5"
+                            },
+                            "domain": "enterprise-attack",
+                            "description": "Hayabusa detection result heatmap",
+                            "techniques": stackedMitreTags
+                        }
 
-    let jsonObj = %* {
-                        "name": "Hayabusa detection result heatmap",
-                        "versions": {
-                            "attack": "14",
-                            "navigator": "4.9.1",
-                            "layer": "4.5"
-                        },
-                        "domain": "enterprise-attack",
-                        "description": "Hayabusa detection result heatmap",
-                        "techniques": stackedMitreTags
-                    }
-
-    let outputFile = open(output, FileMode.fmWrite)
-    outputFile.write(jsonObj.pretty())
-    let outputFileSize = getFileSize(outputFile)
-    outputFile.close()
-    echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+        let outputFile = open(output, FileMode.fmWrite)
+        outputFile.write(jsonObj.pretty())
+        let outputFileSize = getFileSize(outputFile)
+        outputFile.close()
+        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
 
     let endTime = epochTime()
     let elapsedTime = int(endTime - startTime)
