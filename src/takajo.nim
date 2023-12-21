@@ -219,7 +219,7 @@ when isMainModule:
         ],
         [
             ttpSummary, cmdName = "ttp-summary",
-            doc = "TODO",
+            doc = "summarize tactics and techniques found in each computer",
             help = {
                 "output": "save results to a csv file",
                 "quiet": "do not display the launch banner",
