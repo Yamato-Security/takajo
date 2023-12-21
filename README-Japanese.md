@@ -179,9 +179,9 @@ PowerShell EID 4104 スクリプトブロックログからPowerShellスクリ�
 
 > 注意: PowerShellスクリプトは、コード構文が強調表示された「.ps1」ファイルとして開くのが最適ですが、悪意のあるコードが誤って実行されるのを防ぐために「.txt」拡張子を使用します。
 
-* 入力: `JSONL`
-* プロファイル: `すべて`
-* 出力: `PowerShellスクリプト`
+* 入力: JSONL
+* プロファイル: すべて
+* 出力: ターミナルとPowerShellスクリプトのディレクトリ
 
 必須オプション:
 
@@ -219,9 +219,9 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 `vt-domain-lookup` で使用する重複のないドメインのリストを作成します。
 現在は、Sysmon EID 22ログでクエリが記録されたドメインのみをチェックしますが、ビルトインのWindows DNSクライアント・サーバーログも今後サポート予定です。
 
-* 入力: `JSONL`
+* 入力: JSONL
 * プロファイル: `all-field-info` と`all-field-info-verbose` 以外すべて
-* 出力: `テキストファイル`
+* 出力: テキストファイル
 
 必須オプション:
 
@@ -258,9 +258,9 @@ takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o domains.txt -s
 
 `vt-hash-lookup`で使用するプロセスハッシュ値のリストを作成します (入力: JSONL, プロファイル: standard)
 
-* 入力: `JSONL`
+* 入力: JSONL
 * プロファイル: `all-field-info` と `all-field-info-verbose`以外すべて
-* 出力: `テキストファイル`
+* 出力: テキストファイル
 
 必須オプション:
 
@@ -293,9 +293,9 @@ takajo.exe list-hashes -t ../hayabusa/timeline.jsonl -o case-1
 
 `vt-ip-lookup`で使用する重複のない送信先/送信先IPアドレスのリストを作成します。すべての結果から送信先IPアドレスの`TgtIP`フィールドと送信元IPアドレスの `SrcIP`フィールドが抽出され、重複のないIPアドレスをテキストファイルに出力します。
 
-* 入力: `JSONL`
+* 入力: JSONL
 * プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
-* 出力: `テキストファイル`
+* 出力: テキストファイル
 
 必須オプション:
 
@@ -338,11 +338,11 @@ takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -p
 ### `list-undetected-evtx`コマンド
 Hayabusaで検知するルールがなかったすべての`.evtx`ファイルをリストアップします。これは、[hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx)リポジトリ内のevtxファイルなど、悪意のあるアクティビティの証拠を含むすべてのevtxファイルをリストアップすることを目的としています
 
-* 入力: `CSV`
+* 入力: CSV
 * プロファイル: `verbose`, `all-field-info-verbose`, `super-verbose`, `timesketch-verbose`
   > まず、`%EvtxFile%`を出力するプロファイルを使用し、Hayabusaを実行、結果をCSVタイムラインに保存する必要があります
   > [こちら](https://github.com/Yamato-Security/hayabusa#profiles)でHayabusaがプロファイルに従って、どのカラムを保存するかを確認できます。
-* 出力: `標準出力 または テキストファイル`
+* 出力: ターミナル または テキストファイル
 
 必須オプション:
 
@@ -383,7 +383,7 @@ takajo.exe list-undetected-evtx -t ../hayabusa/timeline.csv -e <EVTX-DIR> -o und
 * プロファイル: `verbose`, `all-field-info-verbose`, `super-verbose`, `timesketch-verbose`
   > まず、`%RuleFile%`を出力するプロファイルを使用し、Hayabusaを実行、結果をCSVタイムラインに保存する必要があります
   > [こちら](https://github.com/Yamato-Security/hayabusa#profiles)でHayabusaがプロファイルに従って、どのカラムを保存するかを確認できます。
-* 出力: `標準出力 または テキストファイル`
+* 出力: `ターミナル または テキストファイル`
 
 必須オプション:
 
@@ -422,9 +422,9 @@ takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules -o
 
 コンピューター名に基づき、大きなCSVタイムラインを小さなCSVタイムラインに分割します。
 
-* 入力: `複数行モード(-M)でないCSV`
+* 入力: 複数行モード(-M)でないCSV
 * プロファイル: `すべて`
-* 出力: `複数のCSV`
+* 出力: 複数のCSV
 
 必須オプション:
 
@@ -460,9 +460,9 @@ takajo.exe split-csv-timeline -t ../hayabusa/timeline.csv -m -o case-1-csv
 
 コンピューター名に基づき、大きなJSONLタイムラインを小さなJSONLタイムラインに分割します。
 
-* 入力: `JSONL`
+* 入力: JSONL
 * プロファイル: `すべて`
-* 出力: `複数のJSONL`
+* 出力: 複数のJSONL
 
 必須オプション:
 
@@ -512,9 +512,9 @@ takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
 
 不審なプロセスや悪意のあるプロセスなど、特定のプロセスのプロセスツリーを出力します。
 
-* 入力: `JSONL`
+* 入力: JSONL
 * プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
-* 出力: `テキストファイル`
+* 出力: テキストファイル
 
 必須オプション:
 
@@ -593,9 +593,9 @@ takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
 partition diagnosticイベントのCSVタイムラインを作成します。Windows 10の`Microsoft-Windows-Partition%4Diagnostic.evtx`を解析し、現在および過去に接続されたデバイスのボリュームシリアル番号を出力します。
 この処理は [Partition-4DiagnosticParser](https://github.com/theAtropos4n6/Partition-4DiagnosticParser)を参考にして作成されました。
 
-* 入力: `JSONL`
-* プロファイル: `すべて`
-* 出力: `CSV`
+* 入力: JSONL
+* プロファイル: すべて
+* 出力: CSV
 
 必須オプション:
 
@@ -624,9 +624,9 @@ takajo.exe timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partit
 
 不審なプロセスのCSVタイムラインを作成します。
 
-* 入力: `JSONL`
+* 入力: JSONL
 * プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
-* 出力: `CSV`
+* 出力: CSV
 
 必須オプション:
 
@@ -751,8 +751,8 @@ takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
 
 VirusTotalでドメインのリストを検索します。
 
-* 入力: `テキストファイル`
-* 出力: `CSV`
+* 入力: テキストファイル
+* 出力: CSV
 
 必須オプション:
 
@@ -779,8 +779,8 @@ takajo.exe vt-domain-lookup -a <API-KEY> -d domains.txt -o vt-domain-lookup.csv 
 
 VirusTotalでハッシュのリストを検索します。
 
-* 入力: `テキストファイル`
-* 出力: `CSV`
+* 入力: テキストファイル
+* 出力: CSV
 
 必須オプション:
 
@@ -804,8 +804,8 @@ takajo.exe vt-hash-lookup -a <API-KEY> -H MD5-hashes.txt -o vt-hash-lookup.csv -
 
 VirusTotalでIPアドレスのリストを検索します。
 
-* 入力: `テキストファイル`
-* 出力: `CSV`
+* 入力: テキストファイル
+* 出力: CSV
 
 必須オプション:
 
