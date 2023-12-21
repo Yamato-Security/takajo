@@ -379,11 +379,11 @@ takajo.exe list-undetected-evtx -t ../hayabusa/timeline.csv -e <EVTX-DIR> -o und
 
 何も検出されなかったすべての`.yml`ルールをリストアップします。これは、ルールの信頼性を判断するのに役立ちます。つまり、どのルールが悪意のあるアクティビティを検出するか、またどのルールがまだテストされておらずサンプル`.evtx`ファイルが必要かの判断に使えます。
 
-* 入力: `CSV`
+* 入力: CSV
 * プロファイル: `verbose`, `all-field-info-verbose`, `super-verbose`, `timesketch-verbose`
   > まず、`%RuleFile%`を出力するプロファイルを使用し、Hayabusaを実行、結果をCSVタイムラインに保存する必要があります
   > [こちら](https://github.com/Yamato-Security/hayabusa#profiles)でHayabusaがプロファイルに従って、どのカラムを保存するかを確認できます。
-* 出力: `ターミナル または テキストファイル`
+* 出力: ターミナル または テキストファイル
 
 必須オプション:
 
@@ -423,7 +423,7 @@ takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules -o
 コンピューター名に基づき、大きなCSVタイムラインを小さなCSVタイムラインに分割します。
 
 * 入力: 複数行モード(-M)でないCSV
-* プロファイル: `すべて`
+* プロファイル: すべて
 * 出力: 複数のCSV
 
 必須オプション:
@@ -461,7 +461,7 @@ takajo.exe split-csv-timeline -t ../hayabusa/timeline.csv -m -o case-1-csv
 コンピューター名に基づき、大きなJSONLタイムラインを小さなJSONLタイムラインに分割します。
 
 * 入力: JSONL
-* プロファイル: `すべて`
+* プロファイル: すべて
 * 出力: 複数のJSONL
 
 必須オプション:
@@ -558,9 +558,9 @@ takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5
 
 これにより、ラテラルムーブメント、パスワードスプレー、権限昇格などを検出しやすくなります。
 
-* 入力: `JSONL`
+* 入力: JSONL
 * プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
-* 出力: `CSV`
+* 出力: CSV
 
 必須オプション:
 
