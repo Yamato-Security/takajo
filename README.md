@@ -46,11 +46,13 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Stack Commands](#stack-commands)
   - [Sysmon Commands](#sysmon-commands)
   - [Timeline Commands](#timeline-commands)
+  - [TTP Commands](#ttp-commands)
   - [VirusTotal Commands](#virustotal-commands)
 - [Command Usage](#command-usage)
   - [Extract Commands](#extract-commands-1)
     - [`extract-scriptblocks` command](#extract-scriptblocks-command)
       - [`extract-scriptblocks` command example](#extract-scriptblocks-command-example)
+      - [`extract-scriptblocks` screenshot](#extract-scriptblocks-screenshot)
   - [List Commands](#list-commands-1)
     - [`list-domains` command](#list-domains-command)
       - [`list-domains` command examples](#list-domains-command-examples)
@@ -73,6 +75,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Sysmon Commands](#sysmon-commands-1)
     - [`sysmon-process-tree` command](#sysmon-process-tree-command)
       - [`sysmon-process-tree` command examples](#sysmon-process-tree-command-examples)
+      - [`sysmon-process-tree` screenshot](#sysmon-process-tree-screenshot)
   - [Timeline Commands](#timeline-commands-1)
     - [`timeline-logon` command](#timeline-logon-command)
       - [`timeline-logon` command examples](#timeline-logon-command-examples)
@@ -80,6 +83,13 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
       - [`timeline-partition-diagnostic` command examples](#timeline-partition-diagnostic-command-examples)
     - [`timeline-suspicious-processes` command](#timeline-suspicious-processes-command)
       - [`timeline-suspicious-processes` command examples](#timeline-suspicious-processes-command-examples)
+  - [TTP Commands](#ttp-commands-1)
+    - [`ttp-summary` command](#ttp-summary-command)
+      - [`ttp-summary` command examples](#ttp-summary-command-examples)
+      - [`ttp-summary` screenshot](#ttp-summary-screenshot)
+    - [`ttp-visualize` command](#ttp-visualize-command)
+      - [`ttp-visualize` command examples](#ttp-visualize-command-examples)
+      - [`ttp-visualize` screenshot](#ttp-visualize-screenshot)
   - [VirusTotal Commands](#virustotal-commands-1)
     - [`vt-domain-lookup` command](#vt-domain-lookup-command)
       - [`vt-domain-lookup` command examples](#vt-domain-lookup-command-examples)
@@ -103,6 +113,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 - VirusTotal lookups of domains, hashes and IP addresses.
 - List up `.evtx` files that cannot be detected yet.
 - Visualize TTPs in MITRE ATT&CK Navigator.
+- Many more!
 
 # Downloads
 
@@ -112,7 +123,7 @@ Please download the latest stable version of Takajo with compiled binaries or co
 
 You can git clone the repository with the following command and compile binary from source code:
 
->> Warning: The main branch of the repository is for development purposes so you may be able to access new features not yet officially released, however, there may be bugs so consider it unstable.
+> Warning: The main branch of the repository is for development purposes so you may be able to access new features not yet officially released, however, there may be bugs so consider it unstable.
 
 `git clone https://github.com/Yamato-Security/takajo.git`
 
@@ -152,6 +163,10 @@ If you have Nim installed, you can compile from source with the following comman
 * `timeline-partition-diagnostic`: create a CSV timeline of partition diagnostic events
 * `timeline-suspicious-processes`: create a CSV timeline of suspicious processes
 
+## TTP Commands
+* `ttp-summary`: summarize tactics and techniques found in each computer
+* `ttp-visualize`: extract TTPs and create a JSON file to visualize in MITRE ATT&CK Navigator
+
 ## VirusTotal Commands
 * `vt-domain-lookup`: look up a list of domains on VirusTotal and report on malicious ones
 * `vt-hash-lookup`: look up a list of hashes on VirusTotal and report on malicious ones
@@ -167,9 +182,9 @@ Extracts and reassemles PowerShell EID 4104 script block logs.
 
 > Note: The PowerShell scripts are best opened as `.ps1` files with code syntax highlighting but we use the `.txt` extension in order to prevent any accidental running of malicious code.
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any
-* Output: `PowerShell Scripts`
+* Output: Terminal and directory of PowerShell Scripts
 
 Required options:
 
@@ -195,6 +210,10 @@ Extract PowerShell EID 4104 script block logs to the `scriptblock-logs` director
 takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 ```
 
+#### `extract-scriptblocks` screenshot
+
+![extract-scriptblocks](screenshots/extract-scriptblocks.png)
+
 ## List Commands
 
 ### `list-domains` command
@@ -202,9 +221,9 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 Creates a list of unique domains to be used with `vt-domain-lookup`.
 Currently it will only check queried domains in Sysmon EID 22 logs but will be updated to support built-in Windows DNS Client and Server logs.
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
-* Output: `Text file`
+* Output: Text file
 
 Required options:
 
@@ -241,9 +260,9 @@ takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o domains.txt -s
 
 Create a list of process hashes to be used with vt-hash-lookup (input: JSONL, profile: standard)
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
-* Output: `Text file`
+* Output: Text file
 
 Required options:
 
@@ -276,9 +295,9 @@ For example, if `MD5`, `SHA1` and `IMPHASH` hashes are stored in the sysmon logs
 Creates a list of unique target and/or source IP addresses to be used with `vt-ip-lookup`.
 It will extract the `TgtIP` fields for target IP addresses and `SrcIP` fields for source IP addresses in all results and output just the unique IP addresses to a text file.
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
-* Output: `Text file`
+* Output: Text file
 
 Required options:
 
@@ -323,11 +342,11 @@ takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -p
 List up all of the `.evtx` files that Hayabusa didn't have a detection rule for.
 This is meant to be used on sample evtx files that all contain evidence of malicious activity such as the sample evtx files in the [hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx) repository.
 
-* Input: `CSV`
+* Input: CSV
 * Profile: `verbose`, `all-field-info-verbose`, `super-verbose`, `timesketch-verbose`
   > You first need to run Hayabusa with a profile that saves the `%EvtxFile%` column information and save the results to a CSV timeline.
   > You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
-* Output: `Standard output or text file`
+* Output: Terminal or text file
 
 Required options:
 
@@ -366,11 +385,11 @@ List up all of the `.yml` detection rules that did not detect anything.
 This is useful to help determine the reliablity of rules.
 That is, which rules are known to find malicious activity and which are still untested and need sample `.evtx` files.
 
-* Input: `CSV`
+* Input: CSV
 * Profile: `verbose`, `all-field-info-verbose`, `super-verbose`, `timesketch-verbose`
   > You first need to run Hayabusa with a profile that saves the `%RuleFile%` column information and save the results to a CSV timeline.
   > You can see which columns Hayabusa saves according to the different profiles [here](https://github.com/Yamato-Security/hayabusa#profiles).
-* Output: `Standard output or text file`
+* Output: Termianl or text file
 
 Required options:
 
@@ -409,9 +428,9 @@ takajo.exe list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules -o
 
 Split up a large CSV timeline into smaller ones based on the computer name.
 
-* Input: `non-multiline CSV`
-* Profile: `Any`
-* Output: `Multiple CSV files`
+* Input: Non-multiline CSV
+* Profile: Any
+* Output: Multiple CSV files
 
 Required options:
 
@@ -447,9 +466,9 @@ takajo.exe split-csv-timeline -t ../hayabusa/timeline.csv -m -o case-1-csv
 
 Split up a large JSONL timeline into smaller ones based on the computer name.
 
-* Input: `JSONL`
-* Profile: `Any`
-* Output: `Multiple JSONL files`
+* Input: JSONL
+* Profile: Any
+* Output: Multiple JSONL files
 
 Required options:
 
@@ -487,9 +506,9 @@ takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-jsonl
 Creates a list logons according to `Target User`, `Target Computer`, `Logon Type`, `Source IP Address`, `Source Computer`.
 Results are filtered out when the source IP address is a local IP address by default.
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
-* Output: `CSV`
+* Output: Terminal or CSV file
 
 Required options:
 
@@ -521,18 +540,18 @@ takajo.exe stack-logons -t ../hayabusa/timeline.jsonl -l
 
 Output the process tree of a certain process, such as a suspicious or malicious process.
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
-* Output: `Text file`
+* Output: Terminal or text file
 
 Required options:
 
-- `-o, --output <TXT-FILE>`: a text file to save the results to.
 - `-p, --processGuid <Process GUID>`: sysmon process GUID
 - `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
 
 Options:
 
+- `-o, --output <TXT-FILE>`: a text file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `sysmon-process-tree` command examples
@@ -549,6 +568,10 @@ Save the results to a text file:
 takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00" -o process-tree.txt
 ```
 
+#### `sysmon-process-tree` screenshot
+
+![sysmon-process-tree](screenshots/sysmon-process-tree.png)
+
 ## Timeline Commands
 
 ### `timeline-logon` command
@@ -564,9 +587,9 @@ This command extracts information from the following logon events, normalizes th
 
 This makes it easier to detect lateral movement, password guessing/spraying, privilege escalation, etc...
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
-* Output: `CSV`
+* Output: CSV
 
 Required options:
 
@@ -599,9 +622,9 @@ takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
 Creates a CSV timeline of partition diagnostic events by parsing Windows 10 `Microsoft-Windows-Partition%4Diagnostic.evtx` files and reporting information about all the connected devices and their Volume Serial Numbers, both currently present on the device and previously existed.
 This process is based on the tool [Partition-4DiagnosticParser](https://github.com/theAtropos4n6/Partition-4DiagnosticParser).
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any
-* Output: `CSV`
+* Output: Terminal or CSV
 
 Required options:
 
@@ -630,9 +653,9 @@ takajo.exe timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partit
 
 Create a CSV timeline of suspicious processes.
 
-* Input: `JSONL`
+* Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
-* Output: `CSV`
+* Output: Terminal or CSV
 
 Required options:
 
@@ -670,14 +693,95 @@ Save the results to a CSV file:
 takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
 ```
 
+## TTP Commands
+
+### `ttp-summary` command
+
+This command summarize tactics and techniques found in each computer according to the MITRE ATT&CK TTPs defined in the `tags` field of the sigma rules.
+
+* Input: JSONL
+* Profile: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)
+* Output: Terminal or CSV
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `ttp-summary` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+Print TTP summary to terminal:
+
+```
+takajo.exe ttp-summary -t ../hayabusa/timeline.jsonl
+```
+
+Save the results to a CSV file:
+
+```
+takajo.exe ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv
+```
+
+#### `ttp-summary` screenshot
+
+![ttp-summary](screenshots/ttp-summary.png)
+
+### `ttp-visualize` command
+
+This command extracts TTPs and create a JSON file to visualize in MITRE ATT&CK Navigator.
+
+* Input: JSONL
+* Profile: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)
+* Output: Terminal or CSV
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-o, --output <CSV-FILE>`: the JSON file to save the results to. (default: `mitre-attack-navigator.json`)
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `ttp-visualize` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+Extract out the TTPs and save to `mitre-attack-navigator.json`:
+
+```
+takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
+```
+
+Open [https://mitre-attack.github.io/attack-navigator/](https://mitre-attack.github.io/attack-navigator/), click `Open Existing Layer` and upload the saved JSON file.
+
+#### `ttp-visualize` screenshot
+
+![ttp-visualize](screenshots/ttp-visualize.png)
+
 ## VirusTotal Commands
 
 ### `vt-domain-lookup` command
 
 Look up a list of domains on VirusTotal
 
-* Input: `Text file`
-* Output: `CSV`
+* Input: Text file
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: CSV
 
 Required options:
 
@@ -704,8 +808,9 @@ takajo.exe vt-domain-lookup -a <API-KEY> -d domains.txt -o vt-domain-lookup.csv 
 
 Look up a list of hashes on VirusTotal.
 
-* Input: `Text file`
-* Output: `CSV`
+* Input: Text file
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: CSV
 
 Required options:
 
@@ -729,8 +834,9 @@ takajo.exe vt-hash-lookup -a <API-KEY> -H MD5-hashes.txt -o vt-hash-lookup.csv -
 
 Look up a list of IP addresses on VirusTotal.
 
-* Input: `Text file`
-* Output: `CSV`
+* Input: Text file
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: CSV
 
 Required options:
 
