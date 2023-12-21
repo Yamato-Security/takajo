@@ -750,7 +750,7 @@ Required options:
 
 Options:
 
-- `-o, --output <CSV-FILE>`: the JSON file to save the results to. (default: `mitre-attack-navigator.json`)
+- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `mitre-attack-navigator.json`)
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `ttp-visualize` command examples
