@@ -738,7 +738,7 @@ takajo.exe ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv
 
 ### `ttp-visualize` command
 
-This command extracts TTPs and create a JSON file to visualize in MITRE ATT&CK Navigator.
+This command extracts TTPs and create a JSON file to visualize in [MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/).
 
 * Input: JSONL
 * Profile: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)

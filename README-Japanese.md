@@ -79,6 +79,13 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
       - [`timeline-partition-diagnostic`コマンドの使用例](#timeline-partition-diagnosticコマンドの使用例)
     - [`timeline-suspicious-processes`コマンド](#timeline-suspicious-processesコマンド)
       - [`timeline-suspicious-processes`コマンドの使用例](#timeline-suspicious-processesコマンドの使用例)
+  - [TTPコマンド](#ttpコマンド)
+    - [`ttp-summary`コマンド](#ttp-summaryコマンド)
+      - [`ttp-summary`コマンドの使用例](#ttp-summaryコマンドの使用例)
+      - [`ttp-summary`スクリーンショット](#ttp-summaryスクリーンショット)
+    - [`ttp-visualize`コマンド](#ttp-visualizeコマンド)
+      - [`ttp-visualize`コマンドの使用例](#ttp-visualizeコマンドの使用例)
+      - [`ttp-visualize`スクリーンショット](#ttp-visualizeスクリーンショット)
   - [VirusTotalコマンド](#virustotalコマンド-1)
     - [`vt-domain-lookup`コマンド](#vt-domain-lookupコマンド)
       - [`vt-domain-lookup`コマンドの使用例](#vt-domain-lookupコマンドの使用例)
@@ -101,6 +108,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 - ドメイン、ハッシュ、IPアドレスをVirusTotalで検索します。
 - 検知されていない`.evtx` ファイルをリストアップします。
 - MITRE ATT&CK NavigatorでTTPを可視化します。
+- Many more!
 
 # ダウンロード
 
@@ -110,7 +118,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 
 以下の`git clone`コマンドでレポジトリをダウンロードし、ソースコードからコンパイルして使用することも可能です：
 
->> 注意: mainブランチは開発中のバージョンです。まだ正式にリリースされていない新機能が使えるかもしれませんが、バグがある可能性もあるので、テスト版だと思って下さい。
+> 注意: mainブランチは開発中のバージョンです。まだ正式にリリースされていない新機能が使えるかもしれませんが、バグがある可能性もあるので、テスト版だと思って下さい。
 
 `git clone https://github.com/Yamato-Security/takajo.git`
 
@@ -149,6 +157,10 @@ Nimがインストールされている場合、以下のコマンドでソー�
 * `timeline-logon`: ログオンイベントのCSVタイムラインを作成する
 * `timeline-suspicious-processes`: 不審なプロセスのCSVタイムラインを作成する
 * `timeline-partition-diagnostic`: partition diagnosticイベントのCSVタイムラインを作成する
+
+## TTP Commands
+* `ttp-summary`: コンピュータ毎に検知されたTTPsの要約を出力する
+* `ttp-visualize`: TTPs を抽出し、MITRE ATT&CK Navigator で視覚化するためのJSONファイルを作成する
 
 ## VirusTotalコマンド
 * `vt-domain-lookup`: VirusTotalでドメインのリストを検索し、悪意のあるドメインをレポートする
@@ -642,6 +654,87 @@ takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -l low
 ```
 takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
 ```
+
+## TTPコマンド
+
+### `ttp-summary`コマンド
+
+このコマンドは、Sigmaルールの「tags」フィールドで定義された MITRE ATT&CK TTP に従って、各コンピュータで見つかった戦術とテクニックを要約します。
+
+* 入力: JSONL
+* プロファイル: `%MitreTactics%` と `%MitreTags%` フィールドを出力するプロファイル (例: `verbose`, `all-field-info-verbose`, `super-verbose`)
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `ttp-summary`コマンドの使用例
+
+HayabusaでJSONLタイムラインを作成する:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+TTPsの要約を表示する:
+
+```
+takajo.exe ttp-summary -t ../hayabusa/timeline.jsonl
+```
+
+結果をCSVに保存:
+
+```
+takajo.exe ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv
+```
+
+#### `ttp-summary`スクリーンショット
+
+![ttp-summary](screenshots/ttp-summary.png)
+
+### `ttp-visualize`コマンド
+
+TTPsを抽出し、[MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)で視覚化するための JSON ファイルを作成します。
+
+* 入力: JSONL
+* プロファイル: `%MitreTactics%` と `%MitreTags%` フィールドを出力するプロファイル (例: `verbose`, `all-field-info-verbose`, `super-verbose`)
+* 出力: JSON
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-o, --output <JSON-FILE>`: 結果を保存するJSONファイル (デフォルト: `mitre-attack-navigator.json`)
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `ttp-visualize`コマンドの使用例
+
+HayabusaでJSONLタイムラインを作成する:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+TTPsを抽出し、`mitre-attack-navigator.json`に保存する:
+
+```
+takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
+```
+
+[https://mitre-attack.github.io/attack-navigator/](https://mitre-attack.github.io/attack-navigator/)を開き、`Open Existing Layer`をクリック、JSONファイルをアップロードする。
+
+#### `ttp-visualize`スクリーンショット
+
+![ttp-visualize](screenshots/ttp-visualize.png)
+
 
 ## VirusTotalコマンド
 
