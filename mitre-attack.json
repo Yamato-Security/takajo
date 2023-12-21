@@ -1,0 +1,3197 @@
+{
+    "T1001": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Data Obfuscation"
+    },
+    "T1001.001": {
+        "Sub-Technique": "Junk Data",
+        "Tactic": "Command and Control",
+        "Technique": "Data Obfuscation"
+    },
+    "T1001.002": {
+        "Sub-Technique": "Steganography",
+        "Tactic": "Command and Control",
+        "Technique": "Data Obfuscation"
+    },
+    "T1001.003": {
+        "Sub-Technique": "Protocol Impersonation",
+        "Tactic": "Command and Control",
+        "Technique": "Data Obfuscation"
+    },
+    "T1003": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1003.001": {
+        "Sub-Technique": "LSASS Memory",
+        "Tactic": "Credential Access",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1003.002": {
+        "Sub-Technique": "Security Account Manager",
+        "Tactic": "Credential Access",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1003.003": {
+        "Sub-Technique": "NTDS",
+        "Tactic": "Credential Access",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1003.004": {
+        "Sub-Technique": "LSA Secrets",
+        "Tactic": "Credential Access",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1003.005": {
+        "Sub-Technique": "Cached Domain Credentials",
+        "Tactic": "Credential Access",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1003.006": {
+        "Sub-Technique": "DCSync",
+        "Tactic": "Credential Access",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1003.007": {
+        "Sub-Technique": "Proc Filesystem",
+        "Tactic": "Credential Access",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1003.008": {
+        "Sub-Technique": "/etc/passwd and /etc/shadow",
+        "Tactic": "Credential Access",
+        "Technique": "OS Credential Dumping"
+    },
+    "T1005": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Data from Local System"
+    },
+    "T1006": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Direct Volume Access"
+    },
+    "T1007": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "System Service Discovery"
+    },
+    "T1008": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Fallback Channels"
+    },
+    "T1010": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Application Window Discovery"
+    },
+    "T1011": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Other Network Medium"
+    },
+    "T1011.001": {
+        "Sub-Technique": "Exfiltration Over Bluetooth",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Other Network Medium"
+    },
+    "T1012": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Query Registry"
+    },
+    "T1014": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Rootkit"
+    },
+    "T1016": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "System Network Configuration Discovery"
+    },
+    "T1016.001": {
+        "Sub-Technique": "Internet Connection Discovery",
+        "Tactic": "Discovery",
+        "Technique": "System Network Configuration Discovery"
+    },
+    "T1016.002": {
+        "Sub-Technique": "Wi-Fi Discovery",
+        "Tactic": "Discovery",
+        "Technique": "System Network Configuration Discovery"
+    },
+    "T1018": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Remote System Discovery"
+    },
+    "T1020": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Automated Exfiltration"
+    },
+    "T1020.001": {
+        "Sub-Technique": "Traffic Duplication",
+        "Tactic": "Exfiltration",
+        "Technique": "Automated Exfiltration"
+    },
+    "T1021": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1021.001": {
+        "Sub-Technique": "Remote Desktop Protocol",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1021.002": {
+        "Sub-Technique": "SMB/Windows Admin Shares",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1021.003": {
+        "Sub-Technique": "Distributed Component Object Model",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1021.004": {
+        "Sub-Technique": "SSH",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1021.005": {
+        "Sub-Technique": "VNC",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1021.006": {
+        "Sub-Technique": "Windows Remote Management",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1021.007": {
+        "Sub-Technique": "Cloud Services",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1021.008": {
+        "Sub-Technique": "Direct Cloud VM Connections",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Services"
+    },
+    "T1025": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Data from Removable Media"
+    },
+    "T1027": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.001": {
+        "Sub-Technique": "Binary Padding",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.002": {
+        "Sub-Technique": "Software Packing",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.003": {
+        "Sub-Technique": "Steganography",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.004": {
+        "Sub-Technique": "Compile After Delivery",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.005": {
+        "Sub-Technique": "Indicator Removal from Tools",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.006": {
+        "Sub-Technique": "HTML Smuggling",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.007": {
+        "Sub-Technique": "Dynamic API Resolution",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.008": {
+        "Sub-Technique": "Stripped Payloads",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.009": {
+        "Sub-Technique": "Embedded Payloads",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.010": {
+        "Sub-Technique": "Command Obfuscation",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.011": {
+        "Sub-Technique": "Fileless Storage",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.012": {
+        "Sub-Technique": "LNK Icon Smuggling",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1029": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Scheduled Transfer"
+    },
+    "T1030": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Data Transfer Size Limits"
+    },
+    "T1033": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "System Owner/User Discovery"
+    },
+    "T1036": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.001": {
+        "Sub-Technique": "Invalid Code Signature",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.002": {
+        "Sub-Technique": "Right-to-Left Override",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.003": {
+        "Sub-Technique": "Rename System Utilities",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.004": {
+        "Sub-Technique": "Masquerade Task or Service",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.005": {
+        "Sub-Technique": "Match Legitimate Name or Location",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.006": {
+        "Sub-Technique": "Space after Filename",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.007": {
+        "Sub-Technique": "Double File Extension",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.008": {
+        "Sub-Technique": "Masquerade File Type",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.009": {
+        "Sub-Technique": "Break Process Trees",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1037": {
+        "Sub-Technique": "-",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Initialization Scripts"
+    },
+    "T1037.001": {
+        "Sub-Technique": "Logon Script (Windows)",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Initialization Scripts"
+    },
+    "T1037.002": {
+        "Sub-Technique": "Login Hook",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Initialization Scripts"
+    },
+    "T1037.003": {
+        "Sub-Technique": "Network Logon Script",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Initialization Scripts"
+    },
+    "T1037.004": {
+        "Sub-Technique": "RC Scripts",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Initialization Scripts"
+    },
+    "T1037.005": {
+        "Sub-Technique": "Startup Items",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Initialization Scripts"
+    },
+    "T1039": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Data from Network Shared Drive"
+    },
+    "T1040": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Network Sniffing"
+    },
+    "T1041": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over C2 Channel"
+    },
+    "T1046": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Network Service Discovery"
+    },
+    "T1047": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Windows Management Instrumentation"
+    },
+    "T1048": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Alternative Protocol"
+    },
+    "T1048.001": {
+        "Sub-Technique": "Exfiltration Over Symmetric Encrypted Non-C2 Protocol",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Alternative Protocol"
+    },
+    "T1048.002": {
+        "Sub-Technique": "Exfiltration Over Asymmetric Encrypted Non-C2 Protocol",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Alternative Protocol"
+    },
+    "T1048.003": {
+        "Sub-Technique": "Exfiltration Over Unencrypted Non-C2 Protocol",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Alternative Protocol"
+    },
+    "T1049": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "System Network Connections Discovery"
+    },
+    "T1052": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Physical Medium"
+    },
+    "T1052.001": {
+        "Sub-Technique": "Exfiltration over USB",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Physical Medium"
+    },
+    "T1053": {
+        "Sub-Technique": "-",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Scheduled Task/Job"
+    },
+    "T1053.002": {
+        "Sub-Technique": "At",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Scheduled Task/Job"
+    },
+    "T1053.003": {
+        "Sub-Technique": "Cron",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Scheduled Task/Job"
+    },
+    "T1053.005": {
+        "Sub-Technique": "Scheduled Task",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Scheduled Task/Job"
+    },
+    "T1053.006": {
+        "Sub-Technique": "Systemd Timers",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Scheduled Task/Job"
+    },
+    "T1053.007": {
+        "Sub-Technique": "Container Orchestration Job",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Scheduled Task/Job"
+    },
+    "T1055": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.001": {
+        "Sub-Technique": "Dynamic-link Library Injection",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.002": {
+        "Sub-Technique": "Portable Executable Injection",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.003": {
+        "Sub-Technique": "Thread Execution Hijacking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.004": {
+        "Sub-Technique": "Asynchronous Procedure Call",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.005": {
+        "Sub-Technique": "Thread Local Storage",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.008": {
+        "Sub-Technique": "Ptrace System Calls",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.009": {
+        "Sub-Technique": "Proc Memory",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.011": {
+        "Sub-Technique": "Extra Window Memory Injection",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.012": {
+        "Sub-Technique": "Process Hollowing",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.013": {
+        "Sub-Technique": "Process Doppelg\u00e4nging",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.014": {
+        "Sub-Technique": "VDSO Hijacking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1055.015": {
+        "Sub-Technique": "ListPlanting",
+        "Tactic": "Defense Evasion",
+        "Technique": "Process Injection"
+    },
+    "T1056": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Input Capture"
+    },
+    "T1056.001": {
+        "Sub-Technique": "Keylogging",
+        "Tactic": "Collection",
+        "Technique": "Input Capture"
+    },
+    "T1056.002": {
+        "Sub-Technique": "GUI Input Capture",
+        "Tactic": "Collection",
+        "Technique": "Input Capture"
+    },
+    "T1056.003": {
+        "Sub-Technique": "Web Portal Capture",
+        "Tactic": "Collection",
+        "Technique": "Input Capture"
+    },
+    "T1056.004": {
+        "Sub-Technique": "Credential API Hooking",
+        "Tactic": "Collection",
+        "Technique": "Input Capture"
+    },
+    "T1057": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Process Discovery"
+    },
+    "T1059": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.001": {
+        "Sub-Technique": "PowerShell",
+        "Tactic": "Defense Evasion",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.002": {
+        "Sub-Technique": "AppleScript",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.003": {
+        "Sub-Technique": "Windows Command Shell",
+        "Tactic": "Defense Evasion",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.004": {
+        "Sub-Technique": "Unix Shell",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.005": {
+        "Sub-Technique": "Visual Basic",
+        "Tactic": "Defense Evasion",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.006": {
+        "Sub-Technique": "Python",
+        "Tactic": "Collection",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.007": {
+        "Sub-Technique": "JavaScript",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.008": {
+        "Sub-Technique": "Network Device CLI",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.009": {
+        "Sub-Technique": "Cloud API",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1068": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Exploitation for Privilege Escalation"
+    },
+    "T1069": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Permission Groups Discovery"
+    },
+    "T1069.001": {
+        "Sub-Technique": "Local Groups",
+        "Tactic": "Discovery",
+        "Technique": "Permission Groups Discovery"
+    },
+    "T1069.002": {
+        "Sub-Technique": "Domain Groups",
+        "Tactic": "Discovery",
+        "Technique": "Permission Groups Discovery"
+    },
+    "T1069.003": {
+        "Sub-Technique": "Cloud Groups",
+        "Tactic": "Discovery",
+        "Technique": "Permission Groups Discovery"
+    },
+    "T1070": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.001": {
+        "Sub-Technique": "Clear Windows Event Logs",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.002": {
+        "Sub-Technique": "Clear Linux or Mac System Logs",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.003": {
+        "Sub-Technique": "Clear Command History",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.004": {
+        "Sub-Technique": "File Deletion",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.005": {
+        "Sub-Technique": "Network Share Connection Removal",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.006": {
+        "Sub-Technique": "Timestomp",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.007": {
+        "Sub-Technique": "Clear Network Connection History and Configurations",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.008": {
+        "Sub-Technique": "Clear Mailbox Data",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1070.009": {
+        "Sub-Technique": "Clear Persistence",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
+    "T1071": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Application Layer Protocol"
+    },
+    "T1071.001": {
+        "Sub-Technique": "Web Protocols",
+        "Tactic": "Command and Control",
+        "Technique": "Application Layer Protocol"
+    },
+    "T1071.002": {
+        "Sub-Technique": "File Transfer Protocols",
+        "Tactic": "Command and Control",
+        "Technique": "Application Layer Protocol"
+    },
+    "T1071.003": {
+        "Sub-Technique": "Mail Protocols",
+        "Tactic": "Command and Control",
+        "Technique": "Application Layer Protocol"
+    },
+    "T1071.004": {
+        "Sub-Technique": "DNS",
+        "Tactic": "Command and Control",
+        "Technique": "Application Layer Protocol"
+    },
+    "T1072": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "Software Deployment Tools"
+    },
+    "T1074": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Data Staged"
+    },
+    "T1074.001": {
+        "Sub-Technique": "Local Data Staging",
+        "Tactic": "Collection",
+        "Technique": "Data Staged"
+    },
+    "T1074.002": {
+        "Sub-Technique": "Remote Data Staging",
+        "Tactic": "Collection",
+        "Technique": "Data Staged"
+    },
+    "T1078": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "Valid Accounts"
+    },
+    "T1078.001": {
+        "Sub-Technique": "Default Accounts",
+        "Tactic": "Defense Evasion",
+        "Technique": "Valid Accounts"
+    },
+    "T1078.002": {
+        "Sub-Technique": "Domain Accounts",
+        "Tactic": "Defense Evasion",
+        "Technique": "Valid Accounts"
+    },
+    "T1078.003": {
+        "Sub-Technique": "Local Accounts",
+        "Tactic": "Defense Evasion",
+        "Technique": "Valid Accounts"
+    },
+    "T1078.004": {
+        "Sub-Technique": "Cloud Accounts",
+        "Tactic": "Defense Evasion",
+        "Technique": "Valid Accounts"
+    },
+    "T1080": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "Taint Shared Content"
+    },
+    "T1082": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "System Information Discovery"
+    },
+    "T1083": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "File and Directory Discovery"
+    },
+    "T1087": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Account Discovery"
+    },
+    "T1087.001": {
+        "Sub-Technique": "Local Account",
+        "Tactic": "Discovery",
+        "Technique": "Account Discovery"
+    },
+    "T1087.002": {
+        "Sub-Technique": "Domain Account",
+        "Tactic": "Discovery",
+        "Technique": "Account Discovery"
+    },
+    "T1087.003": {
+        "Sub-Technique": "Email Account",
+        "Tactic": "Discovery",
+        "Technique": "Account Discovery"
+    },
+    "T1087.004": {
+        "Sub-Technique": "Cloud Account",
+        "Tactic": "Discovery",
+        "Technique": "Account Discovery"
+    },
+    "T1090": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Proxy"
+    },
+    "T1090.001": {
+        "Sub-Technique": "Internal Proxy",
+        "Tactic": "Command and Control",
+        "Technique": "Proxy"
+    },
+    "T1090.002": {
+        "Sub-Technique": "External Proxy",
+        "Tactic": "Command and Control",
+        "Technique": "Proxy"
+    },
+    "T1090.003": {
+        "Sub-Technique": "Multi-hop Proxy",
+        "Tactic": "Command and Control",
+        "Technique": "Proxy"
+    },
+    "T1090.004": {
+        "Sub-Technique": "Domain Fronting",
+        "Tactic": "Command and Control",
+        "Technique": "Proxy"
+    },
+    "T1091": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Replication Through Removable Media"
+    },
+    "T1092": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Communication Through Removable Media"
+    },
+    "T1095": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Non-Application Layer Protocol"
+    },
+    "T1098": {
+        "Sub-Technique": "-",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Account Manipulation"
+    },
+    "T1098.001": {
+        "Sub-Technique": "Additional Cloud Credentials",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Account Manipulation"
+    },
+    "T1098.002": {
+        "Sub-Technique": "Additional Email Delegate Permissions",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Account Manipulation"
+    },
+    "T1098.003": {
+        "Sub-Technique": "Additional Cloud Roles",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Account Manipulation"
+    },
+    "T1098.004": {
+        "Sub-Technique": "SSH Authorized Keys",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Account Manipulation"
+    },
+    "T1098.005": {
+        "Sub-Technique": "Device Registration",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Account Manipulation"
+    },
+    "T1098.006": {
+        "Sub-Technique": "Additional Container Cluster Roles",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Account Manipulation"
+    },
+    "T1102": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Web Service"
+    },
+    "T1102.001": {
+        "Sub-Technique": "Dead Drop Resolver",
+        "Tactic": "Command and Control",
+        "Technique": "Web Service"
+    },
+    "T1102.002": {
+        "Sub-Technique": "Bidirectional Communication",
+        "Tactic": "Command and Control",
+        "Technique": "Web Service"
+    },
+    "T1102.003": {
+        "Sub-Technique": "One-Way Communication",
+        "Tactic": "Command and Control",
+        "Technique": "Web Service"
+    },
+    "T1104": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Multi-Stage Channels"
+    },
+    "T1105": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Ingress Tool Transfer"
+    },
+    "T1106": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Native API"
+    },
+    "T1110": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Brute Force"
+    },
+    "T1110.001": {
+        "Sub-Technique": "Password Guessing",
+        "Tactic": "Credential Access",
+        "Technique": "Brute Force"
+    },
+    "T1110.002": {
+        "Sub-Technique": "Password Cracking",
+        "Tactic": "Credential Access",
+        "Technique": "Brute Force"
+    },
+    "T1110.003": {
+        "Sub-Technique": "Password Spraying",
+        "Tactic": "Credential Access",
+        "Technique": "Brute Force"
+    },
+    "T1110.004": {
+        "Sub-Technique": "Credential Stuffing",
+        "Tactic": "Credential Access",
+        "Technique": "Brute Force"
+    },
+    "T1111": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Multi-Factor Authentication Interception"
+    },
+    "T1112": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify Registry"
+    },
+    "T1113": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Screen Capture"
+    },
+    "T1114": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Email Collection"
+    },
+    "T1114.001": {
+        "Sub-Technique": "Local Email Collection",
+        "Tactic": "Collection",
+        "Technique": "Email Collection"
+    },
+    "T1114.002": {
+        "Sub-Technique": "Remote Email Collection",
+        "Tactic": "Collection",
+        "Technique": "Email Collection"
+    },
+    "T1114.003": {
+        "Sub-Technique": "Email Forwarding Rule",
+        "Tactic": "Collection",
+        "Technique": "Email Collection"
+    },
+    "T1115": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Clipboard Data"
+    },
+    "T1119": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Automated Collection"
+    },
+    "T1120": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Peripheral Device Discovery"
+    },
+    "T1123": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Audio Capture"
+    },
+    "T1124": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "System Time Discovery"
+    },
+    "T1125": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Video Capture"
+    },
+    "T1127": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Trusted Developer Utilities Proxy Execution"
+    },
+    "T1127.001": {
+        "Sub-Technique": "MSBuild",
+        "Tactic": "Defense Evasion",
+        "Technique": "Trusted Developer Utilities Proxy Execution"
+    },
+    "T1129": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Shared Modules"
+    },
+    "T1132": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Data Encoding"
+    },
+    "T1132.001": {
+        "Sub-Technique": "Standard Encoding",
+        "Tactic": "Command and Control",
+        "Technique": "Data Encoding"
+    },
+    "T1132.002": {
+        "Sub-Technique": "Non-Standard Encoding",
+        "Tactic": "Command and Control",
+        "Technique": "Data Encoding"
+    },
+    "T1133": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "External Remote Services"
+    },
+    "T1134": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Access Token Manipulation"
+    },
+    "T1134.001": {
+        "Sub-Technique": "Token Impersonation/Theft",
+        "Tactic": "Defense Evasion",
+        "Technique": "Access Token Manipulation"
+    },
+    "T1134.002": {
+        "Sub-Technique": "Create Process with Token",
+        "Tactic": "Defense Evasion",
+        "Technique": "Access Token Manipulation"
+    },
+    "T1134.003": {
+        "Sub-Technique": "Make and Impersonate Token",
+        "Tactic": "Defense Evasion",
+        "Technique": "Access Token Manipulation"
+    },
+    "T1134.004": {
+        "Sub-Technique": "Parent PID Spoofing",
+        "Tactic": "Defense Evasion",
+        "Technique": "Access Token Manipulation"
+    },
+    "T1134.005": {
+        "Sub-Technique": "SID-History Injection",
+        "Tactic": "Defense Evasion",
+        "Technique": "Access Token Manipulation"
+    },
+    "T1135": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Network Share Discovery"
+    },
+    "T1136": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Create Account"
+    },
+    "T1136.001": {
+        "Sub-Technique": "Local Account",
+        "Tactic": "Persistence",
+        "Technique": "Create Account"
+    },
+    "T1136.002": {
+        "Sub-Technique": "Domain Account",
+        "Tactic": "Persistence",
+        "Technique": "Create Account"
+    },
+    "T1136.003": {
+        "Sub-Technique": "Cloud Account",
+        "Tactic": "Persistence",
+        "Technique": "Create Account"
+    },
+    "T1137": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "Office Application Startup"
+    },
+    "T1137.001": {
+        "Sub-Technique": "Office Template Macros",
+        "Tactic": "Persistence",
+        "Technique": "Office Application Startup"
+    },
+    "T1137.002": {
+        "Sub-Technique": "Office Test",
+        "Tactic": "Persistence",
+        "Technique": "Office Application Startup"
+    },
+    "T1137.003": {
+        "Sub-Technique": "Outlook Forms",
+        "Tactic": "Persistence",
+        "Technique": "Office Application Startup"
+    },
+    "T1137.004": {
+        "Sub-Technique": "Outlook Home Page",
+        "Tactic": "Persistence",
+        "Technique": "Office Application Startup"
+    },
+    "T1137.005": {
+        "Sub-Technique": "Outlook Rules",
+        "Tactic": "Persistence",
+        "Technique": "Office Application Startup"
+    },
+    "T1137.006": {
+        "Sub-Technique": "Add-ins",
+        "Tactic": "Persistence",
+        "Technique": "Office Application Startup"
+    },
+    "T1140": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Deobfuscate/Decode Files or Information"
+    },
+    "T1176": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "Browser Extensions"
+    },
+    "T1185": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Browser Session Hijacking"
+    },
+    "T1187": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Forced Authentication"
+    },
+    "T1189": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Drive-by Compromise"
+    },
+    "T1190": {
+        "Sub-Technique": "-",
+        "Tactic": "Initial Access",
+        "Technique": "Exploit Public-Facing Application"
+    },
+    "T1195": {
+        "Sub-Technique": "-",
+        "Tactic": "Initial Access",
+        "Technique": "Supply Chain Compromise"
+    },
+    "T1195.001": {
+        "Sub-Technique": "Compromise Software Dependencies and Development Tools",
+        "Tactic": "Initial Access",
+        "Technique": "Supply Chain Compromise"
+    },
+    "T1195.002": {
+        "Sub-Technique": "Compromise Software Supply Chain",
+        "Tactic": "Initial Access",
+        "Technique": "Supply Chain Compromise"
+    },
+    "T1195.003": {
+        "Sub-Technique": "Compromise Hardware Supply Chain",
+        "Tactic": "Initial Access",
+        "Technique": "Supply Chain Compromise"
+    },
+    "T1197": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "BITS Jobs"
+    },
+    "T1199": {
+        "Sub-Technique": "-",
+        "Tactic": "Initial Access",
+        "Technique": "Trusted Relationship"
+    },
+    "T1200": {
+        "Sub-Technique": "-",
+        "Tactic": "Initial Access",
+        "Technique": "Hardware Additions"
+    },
+    "T1201": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Password Policy Discovery"
+    },
+    "T1202": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indirect Command Execution"
+    },
+    "T1203": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "Exploitation for Client Execution"
+    },
+    "T1204": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "User Execution"
+    },
+    "T1204.001": {
+        "Sub-Technique": "Malicious Link",
+        "Tactic": "Execution",
+        "Technique": "User Execution"
+    },
+    "T1204.002": {
+        "Sub-Technique": "Malicious File",
+        "Tactic": "Execution",
+        "Technique": "User Execution"
+    },
+    "T1204.003": {
+        "Sub-Technique": "Malicious Image",
+        "Tactic": "Execution",
+        "Technique": "User Execution"
+    },
+    "T1205": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Traffic Signaling"
+    },
+    "T1205.001": {
+        "Sub-Technique": "Port Knocking",
+        "Tactic": "Command and Control",
+        "Technique": "Traffic Signaling"
+    },
+    "T1205.002": {
+        "Sub-Technique": "Socket Filters",
+        "Tactic": "Command and Control",
+        "Technique": "Traffic Signaling"
+    },
+    "T1207": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Rogue Domain Controller"
+    },
+    "T1210": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "Exploitation of Remote Services"
+    },
+    "T1211": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Exploitation for Defense Evasion"
+    },
+    "T1212": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Exploitation for Credential Access"
+    },
+    "T1213": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Data from Information Repositories"
+    },
+    "T1213.001": {
+        "Sub-Technique": "Confluence",
+        "Tactic": "Collection",
+        "Technique": "Data from Information Repositories"
+    },
+    "T1213.002": {
+        "Sub-Technique": "Sharepoint",
+        "Tactic": "Collection",
+        "Technique": "Data from Information Repositories"
+    },
+    "T1213.003": {
+        "Sub-Technique": "Code Repositories",
+        "Tactic": "Collection",
+        "Technique": "Data from Information Repositories"
+    },
+    "T1216": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Script Proxy Execution"
+    },
+    "T1216.001": {
+        "Sub-Technique": "PubPrn",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Script Proxy Execution"
+    },
+    "T1217": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Browser Information Discovery"
+    },
+    "T1218": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.001": {
+        "Sub-Technique": "Compiled HTML File",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.002": {
+        "Sub-Technique": "Control Panel",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.003": {
+        "Sub-Technique": "CMSTP",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.004": {
+        "Sub-Technique": "InstallUtil",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.005": {
+        "Sub-Technique": "Mshta",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.007": {
+        "Sub-Technique": "Msiexec",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.008": {
+        "Sub-Technique": "Odbcconf",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.009": {
+        "Sub-Technique": "Regsvcs/Regasm",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.010": {
+        "Sub-Technique": "Regsvr32",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.011": {
+        "Sub-Technique": "Rundll32",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.012": {
+        "Sub-Technique": "Verclsid",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.013": {
+        "Sub-Technique": "Mavinject",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1218.014": {
+        "Sub-Technique": "MMC",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
+    "T1219": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Remote Access Software"
+    },
+    "T1220": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "XSL Script Processing"
+    },
+    "T1221": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Template Injection"
+    },
+    "T1222": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "File and Directory Permissions Modification"
+    },
+    "T1222.001": {
+        "Sub-Technique": "Windows File and Directory Permissions Modification",
+        "Tactic": "Defense Evasion",
+        "Technique": "File and Directory Permissions Modification"
+    },
+    "T1222.002": {
+        "Sub-Technique": "Linux and Mac File and Directory Permissions Modification",
+        "Tactic": "Defense Evasion",
+        "Technique": "File and Directory Permissions Modification"
+    },
+    "T1480": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Execution Guardrails"
+    },
+    "T1480.001": {
+        "Sub-Technique": "Environmental Keying",
+        "Tactic": "Defense Evasion",
+        "Technique": "Execution Guardrails"
+    },
+    "T1482": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Domain Trust Discovery"
+    },
+    "T1484": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Domain Policy Modification"
+    },
+    "T1484.001": {
+        "Sub-Technique": "Group Policy Modification",
+        "Tactic": "Defense Evasion",
+        "Technique": "Domain Policy Modification"
+    },
+    "T1484.002": {
+        "Sub-Technique": "Domain Trust Modification",
+        "Tactic": "Defense Evasion",
+        "Technique": "Domain Policy Modification"
+    },
+    "T1485": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Data Destruction"
+    },
+    "T1486": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Data Encrypted for Impact"
+    },
+    "T1489": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Service Stop"
+    },
+    "T1490": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Inhibit System Recovery"
+    },
+    "T1491": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Defacement"
+    },
+    "T1491.001": {
+        "Sub-Technique": "Internal Defacement",
+        "Tactic": "Impact",
+        "Technique": "Defacement"
+    },
+    "T1491.002": {
+        "Sub-Technique": "External Defacement",
+        "Tactic": "Impact",
+        "Technique": "Defacement"
+    },
+    "T1495": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Firmware Corruption"
+    },
+    "T1496": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Resource Hijacking"
+    },
+    "T1497": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Virtualization/Sandbox Evasion"
+    },
+    "T1497.001": {
+        "Sub-Technique": "System Checks",
+        "Tactic": "Discovery",
+        "Technique": "Virtualization/Sandbox Evasion"
+    },
+    "T1497.002": {
+        "Sub-Technique": "User Activity Based Checks",
+        "Tactic": "Discovery",
+        "Technique": "Virtualization/Sandbox Evasion"
+    },
+    "T1497.003": {
+        "Sub-Technique": "Time Based Evasion",
+        "Tactic": "Discovery",
+        "Technique": "Virtualization/Sandbox Evasion"
+    },
+    "T1498": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Network Denial of Service"
+    },
+    "T1498.001": {
+        "Sub-Technique": "Direct Network Flood",
+        "Tactic": "Impact",
+        "Technique": "Network Denial of Service"
+    },
+    "T1498.002": {
+        "Sub-Technique": "Reflection Amplification",
+        "Tactic": "Impact",
+        "Technique": "Network Denial of Service"
+    },
+    "T1499": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Endpoint Denial of Service"
+    },
+    "T1499.001": {
+        "Sub-Technique": "OS Exhaustion Flood",
+        "Tactic": "Impact",
+        "Technique": "Endpoint Denial of Service"
+    },
+    "T1499.002": {
+        "Sub-Technique": "Service Exhaustion Flood",
+        "Tactic": "Impact",
+        "Technique": "Endpoint Denial of Service"
+    },
+    "T1499.003": {
+        "Sub-Technique": "Application Exhaustion Flood",
+        "Tactic": "Impact",
+        "Technique": "Endpoint Denial of Service"
+    },
+    "T1499.004": {
+        "Sub-Technique": "Application or System Exploitation",
+        "Tactic": "Impact",
+        "Technique": "Endpoint Denial of Service"
+    },
+    "T1505": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "Server Software Component"
+    },
+    "T1505.001": {
+        "Sub-Technique": "SQL Stored Procedures",
+        "Tactic": "Persistence",
+        "Technique": "Server Software Component"
+    },
+    "T1505.002": {
+        "Sub-Technique": "Transport Agent",
+        "Tactic": "Persistence",
+        "Technique": "Server Software Component"
+    },
+    "T1505.003": {
+        "Sub-Technique": "Web Shell",
+        "Tactic": "Persistence",
+        "Technique": "Server Software Component"
+    },
+    "T1505.004": {
+        "Sub-Technique": "IIS Components",
+        "Tactic": "Persistence",
+        "Technique": "Server Software Component"
+    },
+    "T1505.005": {
+        "Sub-Technique": "Terminal Services DLL",
+        "Tactic": "Persistence",
+        "Technique": "Server Software Component"
+    },
+    "T1518": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Software Discovery"
+    },
+    "T1518.001": {
+        "Sub-Technique": "Security Software Discovery",
+        "Tactic": "Discovery",
+        "Technique": "Software Discovery"
+    },
+    "T1525": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "Implant Internal Image"
+    },
+    "T1526": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Cloud Service Discovery"
+    },
+    "T1528": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Steal Application Access Token"
+    },
+    "T1529": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "System Shutdown/Reboot"
+    },
+    "T1530": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Data from Cloud Storage"
+    },
+    "T1531": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Account Access Removal"
+    },
+    "T1534": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "Internal Spearphishing"
+    },
+    "T1535": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Unused/Unsupported Cloud Regions"
+    },
+    "T1537": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Transfer Data to Cloud Account"
+    },
+    "T1538": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Cloud Service Dashboard"
+    },
+    "T1539": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Steal Web Session Cookie"
+    },
+    "T1542": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Pre-OS Boot"
+    },
+    "T1542.001": {
+        "Sub-Technique": "System Firmware",
+        "Tactic": "Defense Evasion",
+        "Technique": "Pre-OS Boot"
+    },
+    "T1542.002": {
+        "Sub-Technique": "Component Firmware",
+        "Tactic": "Defense Evasion",
+        "Technique": "Pre-OS Boot"
+    },
+    "T1542.003": {
+        "Sub-Technique": "Bootkit",
+        "Tactic": "Defense Evasion",
+        "Technique": "Pre-OS Boot"
+    },
+    "T1542.004": {
+        "Sub-Technique": "ROMMONkit",
+        "Tactic": "Defense Evasion",
+        "Technique": "Pre-OS Boot"
+    },
+    "T1542.005": {
+        "Sub-Technique": "TFTP Boot",
+        "Tactic": "Defense Evasion",
+        "Technique": "Pre-OS Boot"
+    },
+    "T1543": {
+        "Sub-Technique": "-",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Create or Modify System Process"
+    },
+    "T1543.001": {
+        "Sub-Technique": "Launch Agent",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Create or Modify System Process"
+    },
+    "T1543.002": {
+        "Sub-Technique": "Systemd Service",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Create or Modify System Process"
+    },
+    "T1543.003": {
+        "Sub-Technique": "Windows Service",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Create or Modify System Process"
+    },
+    "T1543.004": {
+        "Sub-Technique": "Launch Daemon",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Create or Modify System Process"
+    },
+    "T1546": {
+        "Sub-Technique": "-",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.001": {
+        "Sub-Technique": "Change Default File Association",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.002": {
+        "Sub-Technique": "Screensaver",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.003": {
+        "Sub-Technique": "Windows Management Instrumentation Event Subscription",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.004": {
+        "Sub-Technique": "Unix Shell Configuration Modification",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.005": {
+        "Sub-Technique": "Trap",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.006": {
+        "Sub-Technique": "LC_LOAD_DYLIB Addition",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.007": {
+        "Sub-Technique": "Netsh Helper DLL",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.008": {
+        "Sub-Technique": "Accessibility Features",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.009": {
+        "Sub-Technique": "AppCert DLLs",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.010": {
+        "Sub-Technique": "AppInit DLLs",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.011": {
+        "Sub-Technique": "Application Shimming",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.012": {
+        "Sub-Technique": "Image File Execution Options Injection",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.013": {
+        "Sub-Technique": "PowerShell Profile",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.014": {
+        "Sub-Technique": "Emond",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.015": {
+        "Sub-Technique": "Component Object Model Hijacking",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.016": {
+        "Sub-Technique": "Installer Packages",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1547": {
+        "Sub-Technique": "-",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.001": {
+        "Sub-Technique": "Registry Run Keys / Startup Folder",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.002": {
+        "Sub-Technique": "Authentication Package",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.003": {
+        "Sub-Technique": "Time Providers",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.004": {
+        "Sub-Technique": "Winlogon Helper DLL",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.005": {
+        "Sub-Technique": "Security Support Provider",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.006": {
+        "Sub-Technique": "Kernel Modules and Extensions",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.007": {
+        "Sub-Technique": "Re-opened Applications",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.008": {
+        "Sub-Technique": "LSASS Driver",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.009": {
+        "Sub-Technique": "Shortcut Modification",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.010": {
+        "Sub-Technique": "Port Monitors",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.012": {
+        "Sub-Technique": "Print Processors",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.013": {
+        "Sub-Technique": "XDG Autostart Entries",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.014": {
+        "Sub-Technique": "Active Setup",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1547.015": {
+        "Sub-Technique": "Login Items",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Boot or Logon Autostart Execution"
+    },
+    "T1548": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Abuse Elevation Control Mechanism"
+    },
+    "T1548.001": {
+        "Sub-Technique": "Setuid and Setgid",
+        "Tactic": "Defense Evasion",
+        "Technique": "Abuse Elevation Control Mechanism"
+    },
+    "T1548.002": {
+        "Sub-Technique": "Bypass User Account Control",
+        "Tactic": "Defense Evasion",
+        "Technique": "Abuse Elevation Control Mechanism"
+    },
+    "T1548.003": {
+        "Sub-Technique": "Sudo and Sudo Caching",
+        "Tactic": "Defense Evasion",
+        "Technique": "Abuse Elevation Control Mechanism"
+    },
+    "T1548.004": {
+        "Sub-Technique": "Elevated Execution with Prompt",
+        "Tactic": "Defense Evasion",
+        "Technique": "Abuse Elevation Control Mechanism"
+    },
+    "T1548.005": {
+        "Sub-Technique": "Temporary Elevated Cloud Access",
+        "Tactic": "Defense Evasion",
+        "Technique": "Abuse Elevation Control Mechanism"
+    },
+    "T1550": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "Use Alternate Authentication Material"
+    },
+    "T1550.001": {
+        "Sub-Technique": "Application Access Token",
+        "Tactic": "Lateral Movement",
+        "Technique": "Use Alternate Authentication Material"
+    },
+    "T1550.002": {
+        "Sub-Technique": "Pass the Hash",
+        "Tactic": "Lateral Movement",
+        "Technique": "Use Alternate Authentication Material"
+    },
+    "T1550.003": {
+        "Sub-Technique": "Pass the Ticket",
+        "Tactic": "Lateral Movement",
+        "Technique": "Use Alternate Authentication Material"
+    },
+    "T1550.004": {
+        "Sub-Technique": "Web Session Cookie",
+        "Tactic": "Lateral Movement",
+        "Technique": "Use Alternate Authentication Material"
+    },
+    "T1552": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1552.001": {
+        "Sub-Technique": "Credentials In Files",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1552.002": {
+        "Sub-Technique": "Credentials in Registry",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1552.003": {
+        "Sub-Technique": "Bash History",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1552.004": {
+        "Sub-Technique": "Private Keys",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1552.005": {
+        "Sub-Technique": "Cloud Instance Metadata API",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1552.006": {
+        "Sub-Technique": "Group Policy Preferences",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1552.007": {
+        "Sub-Technique": "Container API",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1552.008": {
+        "Sub-Technique": "Chat Messages",
+        "Tactic": "Credential Access",
+        "Technique": "Unsecured Credentials"
+    },
+    "T1553": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Subvert Trust Controls"
+    },
+    "T1553.001": {
+        "Sub-Technique": "Gatekeeper Bypass",
+        "Tactic": "Defense Evasion",
+        "Technique": "Subvert Trust Controls"
+    },
+    "T1553.002": {
+        "Sub-Technique": "Code Signing",
+        "Tactic": "Defense Evasion",
+        "Technique": "Subvert Trust Controls"
+    },
+    "T1553.003": {
+        "Sub-Technique": "SIP and Trust Provider Hijacking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Subvert Trust Controls"
+    },
+    "T1553.004": {
+        "Sub-Technique": "Install Root Certificate",
+        "Tactic": "Defense Evasion",
+        "Technique": "Subvert Trust Controls"
+    },
+    "T1553.005": {
+        "Sub-Technique": "Mark-of-the-Web Bypass",
+        "Tactic": "Defense Evasion",
+        "Technique": "Subvert Trust Controls"
+    },
+    "T1553.006": {
+        "Sub-Technique": "Code Signing Policy Modification",
+        "Tactic": "Defense Evasion",
+        "Technique": "Subvert Trust Controls"
+    },
+    "T1554": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "Compromise Client Software Binary"
+    },
+    "T1555": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Credentials from Password Stores"
+    },
+    "T1555.001": {
+        "Sub-Technique": "Keychain",
+        "Tactic": "Credential Access",
+        "Technique": "Credentials from Password Stores"
+    },
+    "T1555.002": {
+        "Sub-Technique": "Securityd Memory",
+        "Tactic": "Credential Access",
+        "Technique": "Credentials from Password Stores"
+    },
+    "T1555.003": {
+        "Sub-Technique": "Credentials from Web Browsers",
+        "Tactic": "Credential Access",
+        "Technique": "Credentials from Password Stores"
+    },
+    "T1555.004": {
+        "Sub-Technique": "Windows Credential Manager",
+        "Tactic": "Credential Access",
+        "Technique": "Credentials from Password Stores"
+    },
+    "T1555.005": {
+        "Sub-Technique": "Password Managers",
+        "Tactic": "Credential Access",
+        "Technique": "Credentials from Password Stores"
+    },
+    "T1555.006": {
+        "Sub-Technique": "Cloud Secrets Management Stores",
+        "Tactic": "Credential Access",
+        "Technique": "Credentials from Password Stores"
+    },
+    "T1556": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.001": {
+        "Sub-Technique": "Domain Controller Authentication",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.002": {
+        "Sub-Technique": "Password Filter DLL",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.003": {
+        "Sub-Technique": "Pluggable Authentication Modules",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.004": {
+        "Sub-Technique": "Network Device Authentication",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.005": {
+        "Sub-Technique": "Reversible Encryption",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.006": {
+        "Sub-Technique": "Multi-Factor Authentication",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.007": {
+        "Sub-Technique": "Hybrid Identity",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.008": {
+        "Sub-Technique": "Network Provider DLL",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1557": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Adversary-in-the-Middle"
+    },
+    "T1557.001": {
+        "Sub-Technique": "LLMNR/NBT-NS Poisoning and SMB Relay",
+        "Tactic": "Collection",
+        "Technique": "Adversary-in-the-Middle"
+    },
+    "T1557.002": {
+        "Sub-Technique": "ARP Cache Poisoning",
+        "Tactic": "Collection",
+        "Technique": "Adversary-in-the-Middle"
+    },
+    "T1557.003": {
+        "Sub-Technique": "DHCP Spoofing",
+        "Tactic": "Collection",
+        "Technique": "Adversary-in-the-Middle"
+    },
+    "T1558": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Steal or Forge Kerberos Tickets"
+    },
+    "T1558.001": {
+        "Sub-Technique": "Golden Ticket",
+        "Tactic": "Credential Access",
+        "Technique": "Steal or Forge Kerberos Tickets"
+    },
+    "T1558.002": {
+        "Sub-Technique": "Silver Ticket",
+        "Tactic": "Credential Access",
+        "Technique": "Steal or Forge Kerberos Tickets"
+    },
+    "T1558.003": {
+        "Sub-Technique": "Kerberoasting",
+        "Tactic": "Credential Access",
+        "Technique": "Steal or Forge Kerberos Tickets"
+    },
+    "T1558.004": {
+        "Sub-Technique": "AS-REP Roasting",
+        "Tactic": "Credential Access",
+        "Technique": "Steal or Forge Kerberos Tickets"
+    },
+    "T1559": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "Inter-Process Communication"
+    },
+    "T1559.001": {
+        "Sub-Technique": "Component Object Model",
+        "Tactic": "Execution",
+        "Technique": "Inter-Process Communication"
+    },
+    "T1559.002": {
+        "Sub-Technique": "Dynamic Data Exchange",
+        "Tactic": "Execution",
+        "Technique": "Inter-Process Communication"
+    },
+    "T1559.003": {
+        "Sub-Technique": "XPC Services",
+        "Tactic": "Execution",
+        "Technique": "Inter-Process Communication"
+    },
+    "T1560": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Archive Collected Data"
+    },
+    "T1560.001": {
+        "Sub-Technique": "Archive via Utility",
+        "Tactic": "Collection",
+        "Technique": "Archive Collected Data"
+    },
+    "T1560.002": {
+        "Sub-Technique": "Archive via Library",
+        "Tactic": "Collection",
+        "Technique": "Archive Collected Data"
+    },
+    "T1560.003": {
+        "Sub-Technique": "Archive via Custom Method",
+        "Tactic": "Collection",
+        "Technique": "Archive Collected Data"
+    },
+    "T1561": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Disk Wipe"
+    },
+    "T1561.001": {
+        "Sub-Technique": "Disk Content Wipe",
+        "Tactic": "Impact",
+        "Technique": "Disk Wipe"
+    },
+    "T1561.002": {
+        "Sub-Technique": "Disk Structure Wipe",
+        "Tactic": "Impact",
+        "Technique": "Disk Wipe"
+    },
+    "T1562": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.001": {
+        "Sub-Technique": "Disable or Modify Tools",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.002": {
+        "Sub-Technique": "Disable Windows Event Logging",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.003": {
+        "Sub-Technique": "Impair Command History Logging",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.004": {
+        "Sub-Technique": "Disable or Modify System Firewall",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.006": {
+        "Sub-Technique": "Indicator Blocking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.007": {
+        "Sub-Technique": "Disable or Modify Cloud Firewall",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.008": {
+        "Sub-Technique": "Disable or Modify Cloud Logs",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.009": {
+        "Sub-Technique": "Safe Mode Boot",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.010": {
+        "Sub-Technique": "Downgrade Attack",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.011": {
+        "Sub-Technique": "Spoof Security Alerting",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.012": {
+        "Sub-Technique": "Disable or Modify Linux Audit System",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1563": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Service Session Hijacking"
+    },
+    "T1563.001": {
+        "Sub-Technique": "SSH Hijacking",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Service Session Hijacking"
+    },
+    "T1563.002": {
+        "Sub-Technique": "RDP Hijacking",
+        "Tactic": "Lateral Movement",
+        "Technique": "Remote Service Session Hijacking"
+    },
+    "T1564": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.001": {
+        "Sub-Technique": "Hidden Files and Directories",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.002": {
+        "Sub-Technique": "Hidden Users",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.003": {
+        "Sub-Technique": "Hidden Window",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.004": {
+        "Sub-Technique": "NTFS File Attributes",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.005": {
+        "Sub-Technique": "Hidden File System",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.006": {
+        "Sub-Technique": "Run Virtual Instance",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.007": {
+        "Sub-Technique": "VBA Stomping",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.008": {
+        "Sub-Technique": "Email Hiding Rules",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.009": {
+        "Sub-Technique": "Resource Forking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.010": {
+        "Sub-Technique": "Process Argument Spoofing",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.011": {
+        "Sub-Technique": "Ignore Process Interrupts",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1565": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Data Manipulation"
+    },
+    "T1565.001": {
+        "Sub-Technique": "Stored Data Manipulation",
+        "Tactic": "Impact",
+        "Technique": "Data Manipulation"
+    },
+    "T1565.002": {
+        "Sub-Technique": "Transmitted Data Manipulation",
+        "Tactic": "Impact",
+        "Technique": "Data Manipulation"
+    },
+    "T1565.003": {
+        "Sub-Technique": "Runtime Data Manipulation",
+        "Tactic": "Impact",
+        "Technique": "Data Manipulation"
+    },
+    "T1566": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Phishing"
+    },
+    "T1566.001": {
+        "Sub-Technique": "Spearphishing Attachment",
+        "Tactic": "Execution",
+        "Technique": "Phishing"
+    },
+    "T1566.002": {
+        "Sub-Technique": "Spearphishing Link",
+        "Tactic": "Execution",
+        "Technique": "Phishing"
+    },
+    "T1566.003": {
+        "Sub-Technique": "Spearphishing via Service",
+        "Tactic": "Initial Access",
+        "Technique": "Phishing"
+    },
+    "T1566.004": {
+        "Sub-Technique": "Spearphishing Voice",
+        "Tactic": "Initial Access",
+        "Technique": "Phishing"
+    },
+    "T1567": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Web Service"
+    },
+    "T1567.001": {
+        "Sub-Technique": "Exfiltration to Code Repository",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Web Service"
+    },
+    "T1567.002": {
+        "Sub-Technique": "Exfiltration to Cloud Storage",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Web Service"
+    },
+    "T1567.003": {
+        "Sub-Technique": "Exfiltration to Text Storage Sites",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Web Service"
+    },
+    "T1567.004": {
+        "Sub-Technique": "Exfiltration Over Webhook",
+        "Tactic": "Exfiltration",
+        "Technique": "Exfiltration Over Web Service"
+    },
+    "T1568": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Dynamic Resolution"
+    },
+    "T1568.001": {
+        "Sub-Technique": "Fast Flux DNS",
+        "Tactic": "Command and Control",
+        "Technique": "Dynamic Resolution"
+    },
+    "T1568.002": {
+        "Sub-Technique": "Domain Generation Algorithms",
+        "Tactic": "Command and Control",
+        "Technique": "Dynamic Resolution"
+    },
+    "T1568.003": {
+        "Sub-Technique": "DNS Calculation",
+        "Tactic": "Command and Control",
+        "Technique": "Dynamic Resolution"
+    },
+    "T1569": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "System Services"
+    },
+    "T1569.001": {
+        "Sub-Technique": "Launchctl",
+        "Tactic": "Execution",
+        "Technique": "System Services"
+    },
+    "T1569.002": {
+        "Sub-Technique": "Service Execution",
+        "Tactic": "Execution",
+        "Technique": "System Services"
+    },
+    "T1570": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Lateral Tool Transfer"
+    },
+    "T1571": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Non-Standard Port"
+    },
+    "T1572": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Protocol Tunneling"
+    },
+    "T1573": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Encrypted Channel"
+    },
+    "T1573.001": {
+        "Sub-Technique": "Symmetric Cryptography",
+        "Tactic": "Command and Control",
+        "Technique": "Encrypted Channel"
+    },
+    "T1573.002": {
+        "Sub-Technique": "Asymmetric Cryptography",
+        "Tactic": "Command and Control",
+        "Technique": "Encrypted Channel"
+    },
+    "T1574": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.001": {
+        "Sub-Technique": "DLL Search Order Hijacking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.002": {
+        "Sub-Technique": "DLL Side-Loading",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.004": {
+        "Sub-Technique": "Dylib Hijacking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.005": {
+        "Sub-Technique": "Executable Installer File Permissions Weakness",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.006": {
+        "Sub-Technique": "Dynamic Linker Hijacking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.007": {
+        "Sub-Technique": "Path Interception by PATH Environment Variable",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.008": {
+        "Sub-Technique": "Path Interception by Search Order Hijacking",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.009": {
+        "Sub-Technique": "Path Interception by Unquoted Path",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.010": {
+        "Sub-Technique": "Services File Permissions Weakness",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.011": {
+        "Sub-Technique": "Services Registry Permissions Weakness",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.012": {
+        "Sub-Technique": "COR_PROFILER",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1574.013": {
+        "Sub-Technique": "KernelCallbackTable",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
+    "T1578": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify Cloud Compute Infrastructure"
+    },
+    "T1578.001": {
+        "Sub-Technique": "Create Snapshot",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify Cloud Compute Infrastructure"
+    },
+    "T1578.002": {
+        "Sub-Technique": "Create Cloud Instance",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify Cloud Compute Infrastructure"
+    },
+    "T1578.003": {
+        "Sub-Technique": "Delete Cloud Instance",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify Cloud Compute Infrastructure"
+    },
+    "T1578.004": {
+        "Sub-Technique": "Revert Cloud Instance",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify Cloud Compute Infrastructure"
+    },
+    "T1578.005": {
+        "Sub-Technique": "Modify Cloud Compute Configurations",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify Cloud Compute Infrastructure"
+    },
+    "T1580": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Cloud Infrastructure Discovery"
+    },
+    "T1583": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1583.001": {
+        "Sub-Technique": "Domains",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1583.002": {
+        "Sub-Technique": "DNS Server",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1583.003": {
+        "Sub-Technique": "Virtual Private Server",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1583.004": {
+        "Sub-Technique": "Server",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1583.005": {
+        "Sub-Technique": "Botnet",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1583.006": {
+        "Sub-Technique": "Web Services",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1583.007": {
+        "Sub-Technique": "Serverless",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1583.008": {
+        "Sub-Technique": "Malvertising",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Infrastructure"
+    },
+    "T1584": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
+    "T1584.001": {
+        "Sub-Technique": "Domains",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
+    "T1584.002": {
+        "Sub-Technique": "DNS Server",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
+    "T1584.003": {
+        "Sub-Technique": "Virtual Private Server",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
+    "T1584.004": {
+        "Sub-Technique": "Server",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
+    "T1584.005": {
+        "Sub-Technique": "Botnet",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
+    "T1584.006": {
+        "Sub-Technique": "Web Services",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
+    "T1584.007": {
+        "Sub-Technique": "Serverless",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
+    "T1585": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Establish Accounts"
+    },
+    "T1585.001": {
+        "Sub-Technique": "Social Media Accounts",
+        "Tactic": "Resource Development",
+        "Technique": "Establish Accounts"
+    },
+    "T1585.002": {
+        "Sub-Technique": "Email Accounts",
+        "Tactic": "Resource Development",
+        "Technique": "Establish Accounts"
+    },
+    "T1585.003": {
+        "Sub-Technique": "Cloud Accounts",
+        "Tactic": "Resource Development",
+        "Technique": "Establish Accounts"
+    },
+    "T1586": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Accounts"
+    },
+    "T1586.001": {
+        "Sub-Technique": "Social Media Accounts",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Accounts"
+    },
+    "T1586.002": {
+        "Sub-Technique": "Email Accounts",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Accounts"
+    },
+    "T1586.003": {
+        "Sub-Technique": "Cloud Accounts",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Accounts"
+    },
+    "T1587": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Develop Capabilities"
+    },
+    "T1587.001": {
+        "Sub-Technique": "Malware",
+        "Tactic": "Resource Development",
+        "Technique": "Develop Capabilities"
+    },
+    "T1587.002": {
+        "Sub-Technique": "Code Signing Certificates",
+        "Tactic": "Resource Development",
+        "Technique": "Develop Capabilities"
+    },
+    "T1587.003": {
+        "Sub-Technique": "Digital Certificates",
+        "Tactic": "Resource Development",
+        "Technique": "Develop Capabilities"
+    },
+    "T1587.004": {
+        "Sub-Technique": "Exploits",
+        "Tactic": "Resource Development",
+        "Technique": "Develop Capabilities"
+    },
+    "T1588": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Obtain Capabilities"
+    },
+    "T1588.001": {
+        "Sub-Technique": "Malware",
+        "Tactic": "Resource Development",
+        "Technique": "Obtain Capabilities"
+    },
+    "T1588.002": {
+        "Sub-Technique": "Tool",
+        "Tactic": "Resource Development",
+        "Technique": "Obtain Capabilities"
+    },
+    "T1588.003": {
+        "Sub-Technique": "Code Signing Certificates",
+        "Tactic": "Resource Development",
+        "Technique": "Obtain Capabilities"
+    },
+    "T1588.004": {
+        "Sub-Technique": "Digital Certificates",
+        "Tactic": "Resource Development",
+        "Technique": "Obtain Capabilities"
+    },
+    "T1588.005": {
+        "Sub-Technique": "Exploits",
+        "Tactic": "Resource Development",
+        "Technique": "Obtain Capabilities"
+    },
+    "T1588.006": {
+        "Sub-Technique": "Vulnerabilities",
+        "Tactic": "Resource Development",
+        "Technique": "Obtain Capabilities"
+    },
+    "T1589": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Identity Information"
+    },
+    "T1589.001": {
+        "Sub-Technique": "Credentials",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Identity Information"
+    },
+    "T1589.002": {
+        "Sub-Technique": "Email Addresses",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Identity Information"
+    },
+    "T1589.003": {
+        "Sub-Technique": "Employee Names",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Identity Information"
+    },
+    "T1590": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Network Information"
+    },
+    "T1590.001": {
+        "Sub-Technique": "Domain Properties",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Network Information"
+    },
+    "T1590.002": {
+        "Sub-Technique": "DNS",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Network Information"
+    },
+    "T1590.003": {
+        "Sub-Technique": "Network Trust Dependencies",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Network Information"
+    },
+    "T1590.004": {
+        "Sub-Technique": "Network Topology",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Network Information"
+    },
+    "T1590.005": {
+        "Sub-Technique": "IP Addresses",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Network Information"
+    },
+    "T1590.006": {
+        "Sub-Technique": "Network Security Appliances",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Network Information"
+    },
+    "T1591": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Org Information"
+    },
+    "T1591.001": {
+        "Sub-Technique": "Determine Physical Locations",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Org Information"
+    },
+    "T1591.002": {
+        "Sub-Technique": "Business Relationships",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Org Information"
+    },
+    "T1591.003": {
+        "Sub-Technique": "Identify Business Tempo",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Org Information"
+    },
+    "T1591.004": {
+        "Sub-Technique": "Identify Roles",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Org Information"
+    },
+    "T1592": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Host Information"
+    },
+    "T1592.001": {
+        "Sub-Technique": "Hardware",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Host Information"
+    },
+    "T1592.002": {
+        "Sub-Technique": "Software",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Host Information"
+    },
+    "T1592.003": {
+        "Sub-Technique": "Firmware",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Host Information"
+    },
+    "T1592.004": {
+        "Sub-Technique": "Client Configurations",
+        "Tactic": "Reconnaissance",
+        "Technique": "Gather Victim Host Information"
+    },
+    "T1593": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Websites/Domains"
+    },
+    "T1593.001": {
+        "Sub-Technique": "Social Media",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Websites/Domains"
+    },
+    "T1593.002": {
+        "Sub-Technique": "Search Engines",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Websites/Domains"
+    },
+    "T1593.003": {
+        "Sub-Technique": "Code Repositories",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Websites/Domains"
+    },
+    "T1594": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Victim-Owned Websites"
+    },
+    "T1595": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Active Scanning"
+    },
+    "T1595.001": {
+        "Sub-Technique": "Scanning IP Blocks",
+        "Tactic": "Reconnaissance",
+        "Technique": "Active Scanning"
+    },
+    "T1595.002": {
+        "Sub-Technique": "Vulnerability Scanning",
+        "Tactic": "Reconnaissance",
+        "Technique": "Active Scanning"
+    },
+    "T1595.003": {
+        "Sub-Technique": "Wordlist Scanning",
+        "Tactic": "Reconnaissance",
+        "Technique": "Active Scanning"
+    },
+    "T1596": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Technical Databases"
+    },
+    "T1596.001": {
+        "Sub-Technique": "DNS/Passive DNS",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Technical Databases"
+    },
+    "T1596.002": {
+        "Sub-Technique": "WHOIS",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Technical Databases"
+    },
+    "T1596.003": {
+        "Sub-Technique": "Digital Certificates",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Technical Databases"
+    },
+    "T1596.004": {
+        "Sub-Technique": "CDNs",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Technical Databases"
+    },
+    "T1596.005": {
+        "Sub-Technique": "Scan Databases",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Open Technical Databases"
+    },
+    "T1597": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Closed Sources"
+    },
+    "T1597.001": {
+        "Sub-Technique": "Threat Intel Vendors",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Closed Sources"
+    },
+    "T1597.002": {
+        "Sub-Technique": "Purchase Technical Data",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Closed Sources"
+    },
+    "T1598": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Phishing for Information"
+    },
+    "T1598.001": {
+        "Sub-Technique": "Spearphishing Service",
+        "Tactic": "Reconnaissance",
+        "Technique": "Phishing for Information"
+    },
+    "T1598.002": {
+        "Sub-Technique": "Spearphishing Attachment",
+        "Tactic": "Reconnaissance",
+        "Technique": "Phishing for Information"
+    },
+    "T1598.003": {
+        "Sub-Technique": "Spearphishing Link",
+        "Tactic": "Resource Development",
+        "Technique": "Phishing for Information"
+    },
+    "T1598.004": {
+        "Sub-Technique": "Spearphishing Voice",
+        "Tactic": "Reconnaissance",
+        "Technique": "Phishing for Information"
+    },
+    "T1599": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Network Boundary Bridging"
+    },
+    "T1599.001": {
+        "Sub-Technique": "Network Address Translation Traversal",
+        "Tactic": "Defense Evasion",
+        "Technique": "Network Boundary Bridging"
+    },
+    "T1600": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Weaken Encryption"
+    },
+    "T1600.001": {
+        "Sub-Technique": "Reduce Key Space",
+        "Tactic": "Defense Evasion",
+        "Technique": "Weaken Encryption"
+    },
+    "T1600.002": {
+        "Sub-Technique": "Disable Crypto Hardware",
+        "Tactic": "Defense Evasion",
+        "Technique": "Weaken Encryption"
+    },
+    "T1601": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify System Image"
+    },
+    "T1601.001": {
+        "Sub-Technique": "Patch System Image",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify System Image"
+    },
+    "T1601.002": {
+        "Sub-Technique": "Downgrade System Image",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify System Image"
+    },
+    "T1602": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "Data from Configuration Repository"
+    },
+    "T1602.001": {
+        "Sub-Technique": "SNMP (MIB Dump)",
+        "Tactic": "Collection",
+        "Technique": "Data from Configuration Repository"
+    },
+    "T1602.002": {
+        "Sub-Technique": "Network Device Configuration Dump",
+        "Tactic": "Collection",
+        "Technique": "Data from Configuration Repository"
+    },
+    "T1606": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Forge Web Credentials"
+    },
+    "T1606.001": {
+        "Sub-Technique": "Web Cookies",
+        "Tactic": "Credential Access",
+        "Technique": "Forge Web Credentials"
+    },
+    "T1606.002": {
+        "Sub-Technique": "SAML Tokens",
+        "Tactic": "Credential Access",
+        "Technique": "Forge Web Credentials"
+    },
+    "T1608": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Stage Capabilities"
+    },
+    "T1608.001": {
+        "Sub-Technique": "Upload Malware",
+        "Tactic": "Resource Development",
+        "Technique": "Stage Capabilities"
+    },
+    "T1608.002": {
+        "Sub-Technique": "Upload Tool",
+        "Tactic": "Resource Development",
+        "Technique": "Stage Capabilities"
+    },
+    "T1608.003": {
+        "Sub-Technique": "Install Digital Certificate",
+        "Tactic": "Resource Development",
+        "Technique": "Stage Capabilities"
+    },
+    "T1608.004": {
+        "Sub-Technique": "Drive-by Target",
+        "Tactic": "Resource Development",
+        "Technique": "Stage Capabilities"
+    },
+    "T1608.005": {
+        "Sub-Technique": "Link Target",
+        "Tactic": "Resource Development",
+        "Technique": "Stage Capabilities"
+    },
+    "T1608.006": {
+        "Sub-Technique": "SEO Poisoning",
+        "Tactic": "Resource Development",
+        "Technique": "Stage Capabilities"
+    },
+    "T1609": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "Container Administration Command"
+    },
+    "T1610": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Deploy Container"
+    },
+    "T1611": {
+        "Sub-Technique": "-",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Escape to Host"
+    },
+    "T1612": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Build Image on Host"
+    },
+    "T1613": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Container and Resource Discovery"
+    },
+    "T1614": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "System Location Discovery"
+    },
+    "T1614.001": {
+        "Sub-Technique": "System Language Discovery",
+        "Tactic": "Discovery",
+        "Technique": "System Location Discovery"
+    },
+    "T1615": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Group Policy Discovery"
+    },
+    "T1619": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Cloud Storage Object Discovery"
+    },
+    "T1620": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Reflective Code Loading"
+    },
+    "T1621": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Multi-Factor Authentication Request Generation"
+    },
+    "T1622": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Debugger Evasion"
+    },
+    "T1647": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Plist File Modification"
+    },
+    "T1648": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "Serverless Execution"
+    },
+    "T1649": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Steal or Forge Authentication Certificates"
+    },
+    "T1650": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Acquire Access"
+    },
+    "T1651": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "Cloud Administration Command"
+    },
+    "T1652": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Device Driver Discovery"
+    },
+    "T1653": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "Power Settings"
+    },
+    "T1654": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Log Enumeration"
+    },
+    "T1656": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impersonation"
+    },
+    "T1657": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Financial Theft"
+    },
+    "T1659": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Content Injection"
+    },
+    "TA0001": {
+        "Sub-Technique": "-",
+        "Tactic": "Initial Access",
+        "Technique": "-"
+    },
+    "TA0002": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "-"
+    },
+    "TA0003": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "-"
+    },
+    "TA0004": {
+        "Sub-Technique": "-",
+        "Tactic": "Privilege Escalation",
+        "Technique": "-"
+    },
+    "TA0005": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "-"
+    },
+    "TA0006": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "-"
+    },
+    "TA0007": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "-"
+    },
+    "TA0008": {
+        "Sub-Technique": "-",
+        "Tactic": "Lateral Movement",
+        "Technique": "-"
+    },
+    "TA0009": {
+        "Sub-Technique": "-",
+        "Tactic": "Collection",
+        "Technique": "-"
+    },
+    "TA0010": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "-"
+    },
+    "TA0011": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "-"
+    },
+    "TA0040": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "-"
+    },
+    "TA0042": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "-"
+    },
+    "TA0043": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "-"
+    }
+}

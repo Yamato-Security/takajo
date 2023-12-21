@@ -31,6 +31,7 @@ include takajopkg/sysmonProcessTree
 include takajopkg/timelineLogon
 include takajopkg/timelinePartitionDiagnostic
 include takajopkg/timelineSuspiciousProcesses
+include takajopkg/ttpSummary
 include takajopkg/ttpVisualize
 include takajopkg/vtDomainLookup
 include takajopkg/vtIpLookup
@@ -53,6 +54,7 @@ when isMainModule:
     const example_timeline_partition_diagnostic = "  timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partition-diagnostic-timeline.csv\p"
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [-o suspicious-processes.csv]\p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
+    const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv\p"
     const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl -o mitre-attack-navigator.json\p"
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
@@ -61,7 +63,8 @@ when isMainModule:
         examples & example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_tree &
-        example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes & example_ttp_visualize &
+        example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes &
+        example_ttp_visualize & example_ttp_summary &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
@@ -212,6 +215,15 @@ when isMainModule:
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            }
+        ],
+        [
+            ttpSummary, cmdName = "ttp-summary",
+            doc = "summarize tactics and techniques found in each computer",
+            help = {
+                "output": "save results to a csv file",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any verbose profile)",
             }
         ],
         [
