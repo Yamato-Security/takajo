@@ -5,6 +5,7 @@
 **New Features:**
 
 - Added the `ttp-visualize` command to extract TTPs and create a JSON file to visualize in ATT&CK Navigator. (#76) (@fukusuket)
+- Added the `ttp-summary` command to summarize tactics and techniques found in each computer. (#78) (@fukusuket)
 
 **Bug Fixes:**
 

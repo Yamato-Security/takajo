@@ -4,7 +4,9 @@
 
 **新機能:**
 
-- ATT&CK Navigatorで可視化するために、TTPを抽出してJSONファイルを作成する`http-visualize`コマンドを追加した。 (#76) (@fukusuket)
+- ATT&CK Navigatorで可視化するために、TTPを抽出してJSONファイルを作成する`ttp-visualize`コマンドを追加した。 (#76) (@fukusuket)
+- コンピュータ毎に検知されたTTPsの要約を出力する`ttp-summary`コマンドを追加した。 (#78) (@fukusuket)
+
 
 **バグ修正:**
 

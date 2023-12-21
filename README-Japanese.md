@@ -668,7 +668,7 @@ takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicou
 
 ### `ttp-summary`コマンド
 
-このコマンドは、Sigmaルールの「tags」フィールドで定義された MITRE ATT&CK TTP に従って、各コンピュータで見つかった戦術とテクニックを要約します。
+このコマンドは、Sigmaルールの「tags」フィールドで定義された MITRE ATT&CK TTP に従って、各コンピュータで見つかった戦術とテクニックの要約を出力します。
 
 * 入力: JSONL
 * プロファイル: `%MitreTactics%` と `%MitreTags%` フィールドを出力するプロファイル (例: `verbose`, `all-field-info-verbose`, `super-verbose`)
