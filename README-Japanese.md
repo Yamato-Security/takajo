@@ -50,6 +50,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Extractコマンド](#extractコマンド-1)
     - [`extract-scriptblocks`コマンド](#extract-scriptblocksコマンド)
       - [`extract-scriptblocks`コマンドの使用例](#extract-scriptblocksコマンドの使用例)
+      - [`extract-scriptblocks`スクリーンショット](#extract-scriptblocksスクリーンショット)
   - [Listコマンド](#listコマンド-1)
     - [`list-domains`コマンド](#list-domainsコマンド)
       - [`list-domains`コマンドの使用例](#list-domainsコマンドの使用例)
@@ -72,6 +73,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Sysmonコマンド](#sysmonコマンド-1)
     - [`sysmon-process-tree`コマンド](#sysmon-process-treeコマンド)
       - [`sysmon-process-tree`コマンドの使用例](#sysmon-process-treeコマンドの使用例)
+      - [`sysmon-process-tree`スクリーンショット](#sysmon-process-treeスクリーンショット)
   - [Timelineコマンド](#timelineコマンド-1)
     - [`timeline-logon`コマンド](#timeline-logonコマンド)
       - [`timeline-logon`コマンドの使用例](#timeline-logonコマンドの使用例)
@@ -204,6 +206,10 @@ PowerShell EID 4104 スクリプトブロックログから抽出し、`scriptbl
 ```
 takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 ```
+
+#### `extract-scriptblocks`スクリーンショット
+
+![extract-scriptblocks](screenshots/extract-scriptblocks.png)
 
 ## Listコマンド
 
@@ -533,6 +539,9 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00" -o process-tree.txt
 ```
+#### `sysmon-process-tree`スクリーンショット
+
+![sysmon-process-tree](screenshots/sysmon-process-tree.png)
 
 ## Timelineコマンド
 
