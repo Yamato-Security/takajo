@@ -32,6 +32,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 * [WELA (Windows Event Log Analyzer)](https://github.com/Yamato-Security/WELA/blob/main/README-Japanese.md) - PowerShellで書かれたWindowsイベントログの解析ツール。
 
 ## 目次
+
 - [関連プロジェクト](#関連プロジェクト)
   - [目次](#目次)
   - [機能](#機能)
@@ -45,6 +46,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Stackコマンド](#stackコマンド)
   - [Sysmonコマンド](#sysmonコマンド)
   - [Timelineコマンド](#timelineコマンド)
+  - [TTP Commands](#ttp-commands)
   - [VirusTotalコマンド](#virustotalコマンド)
 - [コマンド使用方法](#コマンド使用方法)
   - [Extractコマンド](#extractコマンド-1)
@@ -77,10 +79,12 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Timelineコマンド](#timelineコマンド-1)
     - [`timeline-logon`コマンド](#timeline-logonコマンド)
       - [`timeline-logon`コマンドの使用例](#timeline-logonコマンドの使用例)
+      - [`timeline-logon`スクリーンショット](#timeline-logonスクリーンショット)
     - [`timeline-partition-diagnostic`コマンド](#timeline-partition-diagnosticコマンド)
       - [`timeline-partition-diagnostic`コマンドの使用例](#timeline-partition-diagnosticコマンドの使用例)
     - [`timeline-suspicious-processes`コマンド](#timeline-suspicious-processesコマンド)
       - [`timeline-suspicious-processes`コマンドの使用例](#timeline-suspicious-processesコマンドの使用例)
+      - [`timeline-suspicious-processes`スクリーンショット](#timeline-suspicious-processesスクリーンショット)
   - [TTPコマンド](#ttpコマンド)
     - [`ttp-summary`コマンド](#ttp-summaryコマンド)
       - [`ttp-summary`コマンドの使用例](#ttp-summaryコマンドの使用例)
@@ -101,6 +105,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Twitter](#twitter)
 
 ## 機能
+
 - Nimで開発され、プログラミングが簡単、メモリ安全、ネイティブCコードと同じくらい高速で、単一のスタンドアロンバイナリとして動作します。
 - ログオンイベント、疑わしいプロセスなどさまざまなタイムラインを作成します。
 - 不審なプロセスのプロセスツリーを出力します。
@@ -110,7 +115,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 - ドメイン、ハッシュ、IPアドレスをVirusTotalで検索します。
 - 検知されていない`.evtx` ファイルをリストアップします。
 - MITRE ATT&CK NavigatorでTTPを可視化します。
-- Many more!
+- その他、たくさん！
 
 # ダウンロード
 
@@ -215,7 +220,6 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 
 ### `list-domains`コマンド
 
-
 `vt-domain-lookup` で使用する重複のないドメインのリストを作成します。
 現在は、Sysmon EID 22ログでクエリが記録されたドメインのみをチェックしますが、ビルトインのWindows DNSクライアント・サーバーログも今後サポート予定です。
 
@@ -294,7 +298,7 @@ takajo.exe list-hashes -t ../hayabusa/timeline.jsonl -o case-1
 `vt-ip-lookup`で使用する重複のない送信先/送信先IPアドレスのリストを作成します。すべての結果から送信先IPアドレスの`TgtIP`フィールドと送信元IPアドレスの `SrcIP`フィールドが抽出され、重複のないIPアドレスをテキストファイルに出力します。
 
 * 入力: JSONL
-* プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
 * 出力: テキストファイル
 
 必須オプション:
@@ -336,7 +340,9 @@ takajo.exe list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt -p
 ```
 
 ### `list-undetected-evtx`コマンド
-Hayabusaで検知するルールがなかったすべての`.evtx`ファイルをリストアップします。これは、[hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx)リポジトリ内のevtxファイルなど、悪意のあるアクティビティの証拠を含むすべてのevtxファイルをリストアップすることを目的としています
+
+Hayabusaで検知するルールがなかったすべての`.evtx`ファイルをリストアップします。
+これは、[hayabusa-sample-evtx](https://github.com/Yamato-Security/hayabusa-evtx)リポジトリ内のevtxファイルなど、悪意のあるアクティビティの証拠を含むすべてのevtxファイルをリストアップすることを目的としています
 
 * 入力: CSV
 * プロファイル: `verbose`, `all-field-info-verbose`, `super-verbose`, `timesketch-verbose`
@@ -377,7 +383,9 @@ takajo.exe list-undetected-evtx -t ../hayabusa/timeline.csv -e <EVTX-DIR> -o und
 
 ### `list-unused-rules`コマンド
 
-何も検出されなかったすべての`.yml`ルールをリストアップします。これは、ルールの信頼性を判断するのに役立ちます。つまり、どのルールが悪意のあるアクティビティを検出するか、またどのルールがまだテストされておらずサンプル`.evtx`ファイルが必要かの判断に使えます。
+何も検出されなかったすべての`.yml`ルールをリストアップします。
+これは、ルールの信頼性を判断するのに役立ちます。
+つまり、どのルールが悪意のあるアクティビティを検出するか、またどのルールがまだテストされておらずサンプル`.evtx`ファイルが必要かの判断に使えます。
 
 * 入力: CSV
 * プロファイル: `verbose`, `all-field-info-verbose`, `super-verbose`, `timesketch-verbose`
@@ -497,13 +505,35 @@ takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-jsonl
 
 ### `stack-logons`コマンド
 
-ログインしている上位アカウントのリストを作成します (入力: JSONL, プロファイル: standard)
-まだ実装されていません。
+`Target User`、`Target Computer`、`Logon Type`、`Source IP Address`、`Source Computer`によってログインのリストを作成します。
+デフォルトでは、ローカルIPアドレスのソースIPアドレスはフィルタされます。
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナルまたはCSVファイル
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-l, --localSrcIpAddresses`: ソースIPアドレスがローカルIPアドレスであっても結果に含む
+- `-o, --output <CSV-FILE>`: テキストの結果のベースネームを指定する
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
 #### `stack-logons`コマンドの使用例
 
+デフォルトの設定で実行する:
+
 ```
-takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
+takajo.exe stack-logons -t ../hayabusa/timeline.jsonl
+```
+
+ローカルログオンを含む:
+
+```
+takajo.exe stack-logons -t ../hayabusa/timeline.jsonl -l
 ```
 
 ## Sysmonコマンド
@@ -513,7 +543,7 @@ takajo.exe stack-remote-logons -t ../hayabusa/timeline.jsonl
 不審なプロセスや悪意のあるプロセスなど、特定のプロセスのプロセスツリーを出力します。
 
 * 入力: JSONL
-* プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
 * 出力: テキストファイル
 
 必須オプション:
@@ -539,6 +569,7 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00" -o process-tree.txt
 ```
+
 #### `sysmon-process-tree`スクリーンショット
 
 ![sysmon-process-tree](screenshots/sysmon-process-tree.png)
@@ -559,7 +590,7 @@ takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5
 これにより、ラテラルムーブメント、パスワードスプレー、権限昇格などを検出しやすくなります。
 
 * 入力: JSONL
-* プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
 * 出力: CSV
 
 必須オプション:
@@ -587,6 +618,10 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 ```
 takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
 ```
+
+#### `timeline-logon`スクリーンショット
+
+![timeline-logon](screenshots/timeline-logon.png)
 
 ### `timeline-partition-diagnostic`コマンド
 
@@ -625,7 +660,7 @@ takajo.exe timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partit
 不審なプロセスのCSVタイムラインを作成します。
 
 * 入力: JSONL
-* プロファイル: `all-field-info` と `all-field-info-verbose` 以外すべて
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
 * 出力: CSV
 
 必須オプション:
@@ -664,6 +699,10 @@ takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -l low
 takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
 ```
 
+#### `timeline-suspicious-processes`スクリーンショット
+
+![timeline-suspicious-processes](screenshots/timeline-suspicious-processes.png)
+
 ## TTPコマンド
 
 ### `ttp-summary`コマンド
@@ -671,7 +710,7 @@ takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicou
 このコマンドは、Sigmaルールの「tags」フィールドで定義された MITRE ATT&CK TTP に従って、各コンピュータで見つかった戦術とテクニックの要約を出力します。
 
 * 入力: JSONL
-* プロファイル: `%MitreTactics%` と `%MitreTags%` フィールドを出力するプロファイル (例: `verbose`, `all-field-info-verbose`, `super-verbose`)
+* プロファイル: `%MitreTactics%`と`%MitreTags%`フィールドを出力するプロファイル (例: `verbose`, `all-field-info-verbose`, `super-verbose`)
 * 出力: ターミナル または CSV
 
 必須オプション:
@@ -744,7 +783,6 @@ takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
 
 ![ttp-visualize](screenshots/ttp-visualize.png)
 
-
 ## VirusTotalコマンド
 
 ### `vt-domain-lookup`コマンド
@@ -752,6 +790,7 @@ takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
 VirusTotalでドメインのリストを検索します。
 
 * 入力: テキストファイル
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
 * 出力: CSV
 
 必須オプション:
@@ -780,6 +819,7 @@ takajo.exe vt-domain-lookup -a <API-KEY> -d domains.txt -o vt-domain-lookup.csv 
 VirusTotalでハッシュのリストを検索します。
 
 * 入力: テキストファイル
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
 * 出力: CSV
 
 必須オプション:
@@ -805,6 +845,7 @@ takajo.exe vt-hash-lookup -a <API-KEY> -H MD5-hashes.txt -o vt-hash-lookup.csv -
 VirusTotalでIPアドレスのリストを検索します。
 
 * 入力: テキストファイル
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
 * 出力: CSV
 
 必須オプション:

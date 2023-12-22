@@ -79,10 +79,12 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Timeline Commands](#timeline-commands-1)
     - [`timeline-logon` command](#timeline-logon-command)
       - [`timeline-logon` command examples](#timeline-logon-command-examples)
+      - [`timeline-logon` screenshot](#timeline-logon-screenshot)
     - [`timeline-partition-diagnostic` command](#timeline-partition-diagnostic-command)
       - [`timeline-partition-diagnostic` command examples](#timeline-partition-diagnostic-command-examples)
     - [`timeline-suspicious-processes` command](#timeline-suspicious-processes-command)
       - [`timeline-suspicious-processes` command examples](#timeline-suspicious-processes-command-examples)
+      - [`timeline-suspicious-processes` screenshot](#timeline-suspicious-processes-screenshot)
   - [TTP Commands](#ttp-commands-1)
     - [`ttp-summary` command](#ttp-summary-command)
       - [`ttp-summary` command examples](#ttp-summary-command-examples)
@@ -617,6 +619,10 @@ Save logon timeline to a CSV file:
 takajo.exe timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv
 ```
 
+#### `timeline-logon` screenshot
+
+![timeline-logon](screenshots/timeline-logon.png)
+
 ### `timeline-partition-diagnostic` command
 
 Creates a CSV timeline of partition diagnostic events by parsing Windows 10 `Microsoft-Windows-Partition%4Diagnostic.evtx` files and reporting information about all the connected devices and their Volume Serial Numbers, both currently present on the device and previously existed.
@@ -692,6 +698,10 @@ Save the results to a CSV file:
 ```
 takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
 ```
+
+#### `timeline-suspicious-processes` screenshot
+
+![timeline-suspicious-processes](screenshots/timeline-suspicious-processes.png)
 
 ## TTP Commands
 
