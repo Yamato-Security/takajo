@@ -1,10 +1,11 @@
 # Changes
 
-## 2.3.0 [2023/12/24] - SECCON Christmas Release
+## 2.3.0 [2023/12/23] - SECCON Christmas Release
 
 **New Features:**
 
 - Added the `ttp-visualize` command to extract TTPs and create a JSON file to visualize in ATT&CK Navigator. (#76) (@fukusuket)
+- Added the `ttp-summary` command to summarize tactics and techniques found in each computer. (#78) (@fukusuket)
 
 **Bug Fixes:**
 

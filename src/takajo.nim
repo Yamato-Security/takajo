@@ -64,7 +64,7 @@ when isMainModule:
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_tree &
         example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes &
-        example_ttp_visualize & example_ttp_summary &
+        example_ttp_summary & example_ttp_visualize &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
