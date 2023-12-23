@@ -1,6 +1,6 @@
 # Changes
 
-## 2.3.0 [2023/12/24] - SECCON Christmas Release
+## 2.3.0 [2023/12/23] - SECCON Christmas Release
 
 **New Features:**
 
