@@ -1,5 +1,11 @@
 # 変更点
 
+## 2.x.x [xxxx/xx/xx]
+
+**Enhancements:**
+
+- In the `ttp-visualize` command, the name of the rule that detected the technique will now be shown in the comment when hovering over the technique in MITRE ATT&CK Navigator. (#82) (@fukusuket)
+
 ## 2.3.0 [2023/12/23] - SECCON Christmas Release
 
 **新機能:**
