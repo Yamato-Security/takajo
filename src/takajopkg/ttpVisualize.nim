@@ -32,7 +32,7 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
         let jsonLine = parseJson(line)
         try:
             for tag in jsonLine["MitreTags"]:
-              stackedMitreTags.add({"techniqueID":  tag.getStr(), "color": "#fd8d3c"}.newTable)
+              stackedMitreTags.add({"techniqueID":  tag.getStr(), "color": "#fd8d3c", "comment": jsonLine["RuleTitle"].getStr()}.newTable)
         except CatchableError:
             continue
 
