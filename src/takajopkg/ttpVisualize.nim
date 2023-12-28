@@ -21,7 +21,8 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
 
     var
         bar: SuruBar = initSuruBar()
-        stackedMitreTags = newSeq[TableRef[string, string]]()
+        stackedMitreTags = initTable[string, string]()
+
 
     bar[0].total = totalLines
     bar.setup()
@@ -32,7 +33,12 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
         let jsonLine = parseJson(line)
         try:
             for tag in jsonLine["MitreTags"]:
-              stackedMitreTags.add({"techniqueID":  tag.getStr(), "color": "#fd8d3c", "comment": jsonLine["RuleTitle"].getStr()}.newTable)
+                let techniqueID = tag.getStr()
+                let ruleTitle = strip(jsonLine["RuleTitle"].getStr())
+                if stackedMitreTags.hasKey(techniqueID) and ruleTitle notin stackedMitreTags[techniqueID]:
+                    stackedMitreTags[techniqueID] = stackedMitreTags[techniqueID] & "," & ruleTitle
+                else:
+                    stackedMitreTags[techniqueID] = ruleTitle
         except CatchableError:
             continue
 
@@ -42,6 +48,9 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
         echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
     else:
+        var mitreTags = newSeq[TableRef[string, string]]()
+        for techniqueID, ruleTitle in stackedMitreTags:
+            mitreTags.add({"techniqueID":  techniqueID, "comment": ruleTitle, "color": "#fd8d3c"}.newTable)
         let jsonObj = %* {
                             "name": "Hayabusa detection result heatmap",
                             "versions": {
@@ -51,7 +60,7 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
                             },
                             "domain": "enterprise-attack",
                             "description": "Hayabusa detection result heatmap",
-                            "techniques": stackedMitreTags
+                            "techniques": mitreTags
                         }
 
         let outputFile = open(output, FileMode.fmWrite)
