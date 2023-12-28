@@ -102,7 +102,7 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
                 continue
             for i, val in enumerate(arr[0..<4]):
                 outputFile.write(escapeCsvField(val) & ",")
-            outputFile.write(escapeCsvField(ruleStr.mapIt($it).join(", ")))
+            outputFile.write(escapeCsvField(ruleStr.mapIt($it).join(", ")) & ",")
             outputFile.write(escapeCsvField(intToStr(count)))
             prev = arr
             count = 1
