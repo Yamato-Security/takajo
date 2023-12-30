@@ -1,0 +1,69 @@
+name: Takajo Release Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_ver:
+        required: true
+        default: "2.x.x"
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Nim
+        uses: jiro4989/setup-nim-action@v1
+
+      - name: Build Takajo Binary
+        run: |
+             nimble update
+             nimble build -d:release --threads:on
+
+      - name: Package and Zip - Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir -p artifacts
+          Copy-Item -Path takajo.exe -Destination artifacts/
+          Copy-Item -Path mitre-attack.json -Destination artifacts/
+          Copy-Item -Path pcre64.dll -Destination artifacts/
+          Compress-Archive -Path artifacts/* -DestinationPath artifacts/takajo-${{ github.event.inputs.release_ver }}-win.zip -Force
+
+      - name: Package and Zip - Unix
+        if: matrix.os != 'windows-latest'
+        run: |
+          mkdir -p artifacts
+          cp takajo artifacts/
+          cp mitre-attack.json artifacts/
+          case ${{ matrix.os }} in
+            'ubuntu-latest') zip -j artifacts/takajo-${{ github.event.inputs.release_ver }}-linux.zip artifacts/* ;;
+            'macos-latest') zip -j artifacts/takajo-${{ github.event.inputs.release_ver }}-mac.zip artifacts/* ;;
+          esac
+          
+      - name: Setup node
+        if: matrix.os == 'macos-latest'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Create PDF
+        if: matrix.os == 'macos-latest'
+        run: |
+          npm i -g md-to-pdf
+          md-to-pdf ./*.md --md-file-encoding utf-8
+          mv ./README.pdf ./README-${{ github.event.inputs.release_ver }}-English.pdf
+          mv ./README-Japanese.pdf ./README-${{ github.event.inputs.release_ver }}-Japanese.pdf
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-artifact
+          path: |
+            artifacts/*.zip
+            ./*.pdf
