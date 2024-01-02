@@ -7,7 +7,7 @@ proc readJsonFromFile(filename: string): JsonNode =
     file.close()
     result = parseJson(content)
 
-proc compareArrays(a, b: array[4, string]): int =
+proc compareArrays(a, b: array[5, string]): int =
   for i in 0..<4:
     if a[i] < b[i]:
       return -1
@@ -58,7 +58,7 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
     let attack = readJsonFromFile("mitre-attack.json")
     var
         bar: SuruBar = initSuruBar()
-        seqOfResultsTables: seq[array[4, string]]
+        seqOfResultsTables: seq[array[5, string]]
 
     bar[0].total = totalLines
     bar.setup()
@@ -77,15 +77,16 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
                 let tac = tac_no[dat] & dat
                 let tec = res["Technique"].getStr()
                 let sub = res["Sub-Technique"].getStr()
-                seqOfResultsTables.add([com, tac, tec, sub])
+                let rul = jsonLine["RuleTitle"].getStr()
+                seqOfResultsTables.add([com, tac, tec, sub, rul])
         except CatchableError:
             continue
     seqOfResultsTables.sort(compareArrays)
     bar.finish()
-
-    let header = ["Computer", "Tactic", "Technique", "Sub-Technique", "Count"]
-    var prev = ["","","",""]
+    let header = ["Computer", "Tactic", "Technique", "Sub-Technique", "RuleTitle", "Count"]
+    var prev = ["","","","",""]
     var count = 1
+    var ruleStr = initHashSet[string]()
     if output != "":
         # Open file to save results
         var outputFile = open(output, fmWrite)
@@ -95,14 +96,17 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
 
         ## Write contents
         for arr in seqOfResultsTables:
-            if arr == prev:
+            ruleStr.incl(arr[4])
+            if arr[0..<4] == prev[0..<4]:
                 count += 1
                 continue
-            for i, val in enumerate(arr):
+            for i, val in enumerate(arr[0..<4]):
                 outputFile.write(escapeCsvField(val) & ",")
+            outputFile.write(escapeCsvField(ruleStr.mapIt($it).join(", ")) & ",")
             outputFile.write(escapeCsvField(intToStr(count)))
             prev = arr
             count = 1
+            ruleStr = initHashSet[string]()
             outputFile.write("\p")
         outputFile.close()
         let fileSize = getFileSize(output)
@@ -113,12 +117,14 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
         var table: TerminalTable
         table.add header
         for arr in seqOfResultsTables:
-            if arr == prev:
+            ruleStr.incl(arr[4])
+            if arr[0..<4] == prev[0..<4]:
                 count += 1
                 continue
-            table.add arr[0], arr[1], arr[2], arr[3], intToStr(count)
+            table.add arr[0], arr[1], arr[2], arr[3], ruleStr.mapIt($it).join(", "), intToStr(count)
             prev = arr
             count = 1
+            ruleStr = initHashSet[string]()
         table.echoTableSepsWithStyled(seps = boxSeps)
 
     echo ""

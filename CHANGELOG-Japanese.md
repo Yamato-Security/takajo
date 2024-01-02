@@ -5,6 +5,7 @@
 **改善:**
 
 - `ttp-visualize` コマンドで、MITRE ATT&CK Navigator上のテクニックをマウスオーバーしたときに、検知ルール名が表示されるようした。(#82) (@fukusuket)
+- `ttp-summary`コマンドの結果にルールのタイトルを追加した。(#83) (@fukusuket)
 
 ## 2.3.0 [2023/12/23] - SECCON Christmas Release
 
