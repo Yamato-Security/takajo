@@ -39,21 +39,21 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           mkdir -p artifacts
-          Copy-Item -Path takajo.exe -Destination artifacts/
-          Copy-Item -Path mitre-attack.json -Destination artifacts/
-          Copy-Item -Path pcre64.dll -Destination artifacts/
-          Compress-Archive -Path artifacts/* -DestinationPath artifacts/takajo-${{ github.event.inputs.release_ver }}-win.zip -Force
+          Copy-Item -Path takajo.exe -Destination release-binaries/
+          Copy-Item -Path mitre-attack.json -Destination release-binaries/
+          Copy-Item -Path pcre64.dll -Destination release-binaries/
+          Compress-Archive -Path release-binaries/* -DestinationPath release-binaries/takajo-${{ github.event.inputs.release_ver }}-win.zip -Force
 
       - name: Package and Zip - Unix
         if: matrix.os != 'windows-latest'
         run: |
-          mkdir -p artifacts
-          cp takajo artifacts/
-          cp mitre-attack.json artifacts/
+          mkdir -p release-binaries
+          cp takajo release-binaries/
+          cp mitre-attack.json release-binaries/
           case ${{ matrix.os }} in
-            'ubuntu-latest') zip -j artifacts/takajo-${{ github.event.inputs.release_ver }}-linux.zip artifacts/* ;;
-            'macos-latest') zip -j artifacts/takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip artifacts/* ;;
-            'macos-12') zip -j artifacts/takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip artifacts/* ;;
+            'ubuntu-latest') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-linux.zip release-binaries/* ;;
+            'macos-latest') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip release-binaries/* ;;
+            'macos-12') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip release-binaries/* ;;
           esac
 
       - name: Setup node
@@ -73,7 +73,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: release-artifact
+          name: release-binaries
           path: |
-            artifacts/*.zip
+            release-binaries/*.zip
             ./*.pdf
