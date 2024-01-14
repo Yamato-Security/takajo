@@ -1,0 +1,79 @@
+name: Takajo Release Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_ver:
+        required: true
+        default: "2.x.x"
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest, macos-12]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Nim
+        uses: jiro4989/setup-nim-action@v1
+
+      - name: Update nimble libraries
+        run: |
+          nimble update
+
+      - name: Build Takajo binary
+        if: matrix.os != 'macos-12'
+        run: |
+          nimble build -d:release --threads:on
+
+      - name: Build Takajo binary for Intel Mac
+        if: matrix.os == 'macos-12'
+        run: |
+          nimble build -d:release --threads:on --os:macosx --cpu:amd64 
+
+      - name: Package and Zip - Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir -p release-binaries
+          Copy-Item -Path takajo.exe -Destination release-binaries/
+          Copy-Item -Path mitre-attack.json -Destination release-binaries/
+          Copy-Item -Path pcre64.dll -Destination release-binaries/
+          Compress-Archive -Path release-binaries/* -DestinationPath release-binaries/takajo-${{ github.event.inputs.release_ver }}-win.zip -Force
+
+      - name: Package and Zip - Unix
+        if: matrix.os != 'windows-latest'
+        run: |
+          mkdir -p release-binaries
+          cp takajo release-binaries/
+          cp mitre-attack.json release-binaries/
+          case ${{ matrix.os }} in
+            'ubuntu-latest') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-linux.zip release-binaries/* ;;
+            'macos-latest') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip release-binaries/* ;;
+            'macos-12') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip release-binaries/* ;;
+          esac
+
+      - name: Setup node
+        if: matrix.os == 'macos-latest'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Create PDF
+        if: matrix.os == 'macos-latest'
+        run: |
+          npm i -g md-to-pdf
+          md-to-pdf ./*.md --md-file-encoding utf-8
+          mv ./README.pdf ./README-${{ github.event.inputs.release_ver }}-English.pdf
+          mv ./README-Japanese.pdf ./README-${{ github.event.inputs.release_ver }}-Japanese.pdf
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-binaries
+          path: |
+            release-binaries/*.zip
+            ./*.pdf
