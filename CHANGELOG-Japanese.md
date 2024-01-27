@@ -1,11 +1,15 @@
 # 変更点
 
-## 2.x.x [xxxx/xx/xx]
+## 2.3.1 [2024/01/27] - Year Of The Dragon Release
 
 **改善:**
 
 - `ttp-visualize` コマンドで、MITRE ATT&CK Navigator上のテクニックをマウスオーバーしたときに、検知ルール名が表示されるようした。(#82) (@fukusuket)
 - `ttp-summary`コマンドの結果にルールのタイトルを追加した。(#83) (@fukusuket)
+
+**バグ修正:**
+
+`timeline-suspicious-process`コマンドで、Security 4688またはSysmon 1のイベント数が0であり、他の形式のイベントがある場合、CSVファイルは保存されなかった。(#86) (@YamatoSecurity)
 
 ## 2.3.0 [2023/12/23] - SECCON Christmas Release
 
