@@ -1,8 +1,6 @@
 # TODO: add SAN array info
 
-var vtIpAddressChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
-
-proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders) {.thread.} =
+proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders, results: ptr seq[VirusTotalResult]; L: ptr TicketLock) =
     let response = get("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, headers)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
@@ -37,8 +35,8 @@ proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders) {.thread.} =
         singleResultTable["SSL-Issuer"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "O"])
         singleResultTable["SSL-IssuerCountry"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "C"])
         singleResultTable["SSL-CommonName"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "subject", "CN"])
-
-    vtIpAddressChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse,))
+    withLock L[]:
+          results[].add VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse)
 
 
 proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output: string, rateLimit: int = 4, quiet: bool = false) =
@@ -91,25 +89,23 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
     headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
-    vtIpAddressChannel.open()
+    var m = createMaster()
+    var results = newSeq[VirusTotalResult]()
+    var L = initTicketLock() # protects `results`
+    m.awaitAll:
+      for ipAddress in lines:
+          inc bar
+          bar.update(1000000000) # refresh every second
+          m.spawn queryIpAPI(ipAddress, headers, addr results, addr L) # run queries in parallel
+          # Sleep to respect the rate limit.
+          sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
 
-    for ipAddress in lines:
-        inc bar
-        bar.update(1000000000) # refresh every second
-        spawn queryIpAPI(ipAddress, headers) # run queries in parallel
-
-        # Sleep to respect the rate limit.
-        sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
-
-    for ipAddress in lines:
-        let vtResult: VirusTotalResult = vtIpAddressChannel.recv() # get results of queries executed in parallel
-        seqOfResultsTables.add(vtResult.resTable)
-        jsonResponses.add(vtResult.resJson)
-        if vtResult.resTable["Response"] == "200" and parseInt(vtResult.resTable["MaliciousCount"]) > 0:
+    for r in results:
+        seqOfResultsTables.add(r.resTable)
+        jsonResponses.add(r.resJson)
+        if r.resTable["Response"] == "200" and parseInt(r.resTable["MaliciousCount"]) > 0:
           totalMaliciousIpAddressCount += 1
 
-    sync()
-    vtIpAddressChannel.close()
     bar.finish()
 
     echo ""

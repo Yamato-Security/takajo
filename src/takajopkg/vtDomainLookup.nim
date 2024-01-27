@@ -3,9 +3,7 @@
 # Add categories and SAN info
 # Add output not found to txt file
 
-var vtAPIDomainChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
-
-proc queryDomainAPI(domain:string, headers: httpheaders.HttpHeaders) {.thread.} =
+proc queryDomainAPI(domain:string, headers: httpheaders.HttpHeaders, results: ptr seq[VirusTotalResult]; L: ptr TicketLock) =
     let response = get("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain), headers)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
@@ -35,8 +33,8 @@ proc queryDomainAPI(domain:string, headers: httpheaders.HttpHeaders) {.thread.} 
         singleResultTable["SSL-ValidUntil"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "not_after"])
         singleResultTable["SSL-Issuer"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "O"])
         singleResultTable["SSL-IssuerCountry"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "C"])
-
-    vtAPIDomainChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse))
+    withLock L[]:
+          results[].add VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse)
 
 
 proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "", output: string, rateLimit: int = 4, quiet: bool = false) =
@@ -88,25 +86,22 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
     headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
-    vtAPIDomainChannel.open()
+    var m = createMaster()
+    var results = newSeq[VirusTotalResult]()
+    var L = initTicketLock() # protects `results`
+    m.awaitAll:
+      for domain in lines:
+          inc bar
+          bar.update(1000000000) # refresh every second
+          m.spawn queryDomainAPI(domain, headers, addr results, addr L) # run queries in parallel
+          # Sleep to respect the rate limit.
+          sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
 
-    for domain in lines:
-        inc bar
-        bar.update(1000000000) # refresh every second
-        spawn queryDomainAPI(domain, headers) # run queries in parallel
-
-        # Sleep to respect the rate limit.
-        sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
-
-    for domain in lines:
-        let vtResult: VirusTotalResult = vtAPIDomainChannel.recv() # get results of queries executed in parallel
-        seqOfResultsTables.add(vtResult.resTable)
-        jsonResponses.add(vtResult.resJson)
-        if vtResult.resTable["Response"] == "200" and parseInt(vtResult.resTable["MaliciousCount"]) > 0:
+    for r in results:
+        seqOfResultsTables.add(r.resTable)
+        jsonResponses.add(r.resJson)
+        if r.resTable["Response"] == "200" and parseInt(r.resTable["MaliciousCount"]) > 0:
           totalMaliciousDomainCount += 1
-
-    sync()
-    vtAPIDomainChannel.close()
     bar.finish()
 
     echo ""
