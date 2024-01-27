@@ -1,11 +1,15 @@
 # Changes
 
-## 2.x.x [xxxx/xx/xx]
+## 2.3.1 [2024/01/27] - Year Of The Dragon Release
 
 **Enhancements:**
 
 - In the `ttp-visualize` command, the name of the rule that detected the technique will now be shown in the comment when hovering over the technique in MITRE ATT&CK Navigator. (#82) (@fukusuket)
 - Added rule titles to the `ttp-summary` command output. (#83) (@fukusuket)
+
+**Bug Fixes:**
+
+- The CSV file would not be saved in the `timeline-suspicious-process` command if either the number of Security 4688 or Sysmon 1 events was zero while having events in the other format. (#86) (@YamatoSecurity)
 
 ## 2.3.0 [2023/12/23] - SECCON Christmas Release
 

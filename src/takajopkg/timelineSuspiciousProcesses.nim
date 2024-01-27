@@ -209,7 +209,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
                 seqOfResultsTables.add(singleResultTable)
     bar.finish()
 
-    if output != "" and suspicousProcessCount_Sec_4688 != 0 and suspicousProcessCount_Sysmon_1 != 0: # Save results to CSV
+    if output != "" and (suspicousProcessCount_Sec_4688 > 0 or suspicousProcessCount_Sysmon_1 > 0): # Save results to CSV
         # Open file to save results
         var outputFile = open(output, fmWrite)
         let header = ["Timestamp", "Computer", "Type", "Level", "Rule", "RuleAuthor", "Cmdline", "Process", "PID", "User", "LID", "LGUID", "ProcessGUID", "ParentCmdline", "ParentPID", "ParentPGUID", "Description", "Product", "Company", "MD5 Hash", "SHA1 Hash", "SHA256 Hash", "Import Hash"]
@@ -228,6 +228,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
         outputFile.close()
         let fileSize = getFileSize(output)
 
+        echo ""
         echo "Saved results to " & output & " (" & formatFileSize(fileSize) & ")"
         echo ""
 
