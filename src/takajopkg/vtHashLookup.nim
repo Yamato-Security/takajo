@@ -126,8 +126,8 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
                 else:
                     outputFile.write(",")
             outputFile.write("\p")
-        let fileSize = getFileSize(output)
         outputFile.close()
+        let fileSize = getFileSize(output)
         echo ""
         echo "Saved CSV results to " & output & " (" & formatFileSize(fileSize) & ")"
 
