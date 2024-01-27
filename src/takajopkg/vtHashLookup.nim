@@ -2,9 +2,7 @@
 # https://blog.virustotal.com/2021/08/introducing-known-distributors.html
 # Add output not found to txt file
 
-var vtAPIHashChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
-
-proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders) {.thread.} =
+proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders, results: ptr seq[VirusTotalResult]; L: ptr TicketLock) =
     let response = get("https://www.virustotal.com/api/v3/files/" & hash, headers)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
@@ -24,8 +22,8 @@ proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders) {.thread.} =
         singleResultTable["MaliciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "malicious"])
         singleResultTable["HarmlessCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "harmless"])
         singleResultTable["SuspiciousCount"] = getJsonValue(jsonResponse, @["data", "attributes", "last_analysis_stats", "suspicious"])
-
-    vtAPIHashChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse))
+    withLock L[]:
+          results[].add VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse)
 
 
 proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", output: string = "", rateLimit: int = 4, quiet: bool = false) =
@@ -78,25 +76,23 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
     headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
-    vtAPIHashChannel.open()
+    var m = createMaster()
+    var results = newSeq[VirusTotalResult]()
+    var L = initTicketLock() # protects `results`
+    m.awaitAll:
+      for hash in lines:
+          inc bar
+          bar.update(1000000000) # refresh every second
+          m.spawn queryHashAPI(hash, headers, addr results, addr L) # run queries in parallel
+          # Sleep to respect the rate limit.
+          sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
 
-    for hash in lines:
-        inc bar
-        bar.update(1000000000) # refresh every second
-        spawn queryHashAPI(hash, headers) # run queries in parallel
-
-        # Sleep to respect the rate limit.
-        sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
-
-    for hash in lines:
-        let vtResult: VirusTotalResult = vtAPIHashChannel.recv() # get results of queries executed in parallel
-        seqOfResultsTables.add(vtResult.resTable)
-        jsonResponses.add(vtResult.resJson)
-        if vtResult.resTable["Response"] == "200" and parseInt(vtResult.resTable["MaliciousCount"]) > 0:
+    for r in results:
+        seqOfResultsTables.add(r.resTable)
+        jsonResponses.add(r.resJson)
+        if r.resTable["Response"] == "200" and parseInt(r.resTable["MaliciousCount"]) > 0:
           totalMaliciousHashCount += 1
 
-    sync()
-    vtAPIHashChannel.close()
     bar.finish()
 
     echo ""
