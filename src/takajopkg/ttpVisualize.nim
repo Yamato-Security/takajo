@@ -1,3 +1,23 @@
+type
+  TTPResult = object
+    techniqueID: string
+    comment: string
+    color: string
+    score: int
+
+proc newTTPResult(techniqueID: string, comment: string, score: int): TTPResult =
+  result.techniqueID = techniqueID
+  result.comment = comment
+  if score == 1:
+    result.color = "#fca2a2"
+  elif score == 2 :
+    result.color = "#fc6b6b"
+  elif score == 3 :
+    result.color = "#fc3b3b"
+  else:
+    result.color = "#e60d0d"
+  result.score = score
+
 proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
@@ -22,7 +42,7 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
     var
         bar: SuruBar = initSuruBar()
         stackedMitreTags = initTable[string, string]()
-
+        stackedMitreTagsCount = initTable[string, int]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -37,8 +57,10 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
                 let ruleTitle = strip(jsonLine["RuleTitle"].getStr())
                 if stackedMitreTags.hasKey(techniqueID) and ruleTitle notin stackedMitreTags[techniqueID]:
                     stackedMitreTags[techniqueID] = stackedMitreTags[techniqueID] & "," & ruleTitle
+                    stackedMitreTagsCount[techniqueID] += 1
                 else:
                     stackedMitreTags[techniqueID] = ruleTitle
+                    stackedMitreTagsCount[techniqueID] = 1
         except CatchableError:
             continue
 
@@ -48,9 +70,9 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
         echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
     else:
-        var mitreTags = newSeq[TableRef[string, string]]()
+        var mitreTags = newSeq[TTPResult]()
         for techniqueID, ruleTitle in stackedMitreTags:
-            mitreTags.add({"techniqueID":  techniqueID, "comment": ruleTitle, "color": "#fd8d3c"}.newTable)
+            mitreTags.add(newTTPResult(techniqueID, ruleTitle, stackedMitreTagsCount[techniqueID]))
         let jsonObj = %* {
                             "name": "Hayabusa detection result heatmap",
                             "versions": {
