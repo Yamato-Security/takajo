@@ -8,14 +8,12 @@ type
 proc newTTPResult(techniqueID: string, comment: string, score: int): TTPResult =
   result.techniqueID = techniqueID
   result.comment = comment
-  if score == 1:
-    result.color = "#fca2a2"
-  elif score == 2 :
-    result.color = "#fc6b6b"
-  elif score == 3 :
-    result.color = "#fc3b3b"
+  if score < toInt(100 / 3):
+    result.color = "#8ec843ff"
+  elif score < toInt((100 / 3) * 2):
+    result.color = "#ffe766ff"
   else:
-    result.color = "#e60d0d"
+    result.color = "#ff6666ff"
   result.score = score
 
 proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = false, timeline: string) =
@@ -71,8 +69,10 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
     else:
         var mitreTags = newSeq[TTPResult]()
+        let maxCount = stackedMitreTagsCount.values.toSeq.max
         for techniqueID, ruleTitle in stackedMitreTags:
-            mitreTags.add(newTTPResult(techniqueID, ruleTitle, stackedMitreTagsCount[techniqueID]))
+            let score = toInt(round(stackedMitreTagsCount[techniqueID]/maxCount * 100))
+            mitreTags.add(newTTPResult(techniqueID, ruleTitle, score))
         let jsonObj = %* {
                             "name": "Hayabusa detection result heatmap",
                             "versions": {
