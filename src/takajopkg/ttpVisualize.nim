@@ -1,3 +1,14 @@
+type
+  TTPResult = object
+    techniqueID: string
+    comment: string
+    score: int
+
+proc newTTPResult(techniqueID: string, comment: string, score: int): TTPResult =
+  result.techniqueID = techniqueID
+  result.comment = comment
+  result.score = score
+
 proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
@@ -22,7 +33,7 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
     var
         bar: SuruBar = initSuruBar()
         stackedMitreTags = initTable[string, string]()
-
+        stackedMitreTagsCount = initTable[string, int]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -37,8 +48,10 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
                 let ruleTitle = strip(jsonLine["RuleTitle"].getStr())
                 if stackedMitreTags.hasKey(techniqueID) and ruleTitle notin stackedMitreTags[techniqueID]:
                     stackedMitreTags[techniqueID] = stackedMitreTags[techniqueID] & "," & ruleTitle
+                    stackedMitreTagsCount[techniqueID] += 1
                 else:
                     stackedMitreTags[techniqueID] = ruleTitle
+                    stackedMitreTagsCount[techniqueID] = 1
         except CatchableError:
             continue
 
@@ -48,9 +61,11 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
         echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
     else:
-        var mitreTags = newSeq[TableRef[string, string]]()
+        var mitreTags = newSeq[TTPResult]()
+        let maxCount = stackedMitreTagsCount.values.toSeq.max
         for techniqueID, ruleTitle in stackedMitreTags:
-            mitreTags.add({"techniqueID":  techniqueID, "comment": ruleTitle, "color": "#fd8d3c"}.newTable)
+            let score = toInt(round(stackedMitreTagsCount[techniqueID]/maxCount * 100))
+            mitreTags.add(newTTPResult(techniqueID, ruleTitle, score))
         let jsonObj = %* {
                             "name": "Hayabusa detection result heatmap",
                             "versions": {
@@ -60,7 +75,24 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
                             },
                             "domain": "enterprise-attack",
                             "description": "Hayabusa detection result heatmap",
-                            "techniques": mitreTags
+                            "techniques": mitreTags,
+                            "gradient": {
+                                "colors": [
+                                  "#8ec843ff",
+                                  "#ffe766ff",
+                                  "#ff6666ff"
+                                ],
+                              "minValue": 0,
+                              "maxValue": 100
+                              },
+                              "legendItems": [],
+                              "metadata": [],
+                              "links": [],
+                              "showTacticRowBackground": false,
+                              "tacticRowBackground": "#dddddd",
+                              "selectTechniquesAcrossTactics": true,
+                              "selectSubtechniquesWithParent": false,
+                              "selectVisibleTechniques": false
                         }
 
         let outputFile = open(output, FileMode.fmWrite)
