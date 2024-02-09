@@ -2,18 +2,11 @@ type
   TTPResult = object
     techniqueID: string
     comment: string
-    color: string
     score: int
 
 proc newTTPResult(techniqueID: string, comment: string, score: int): TTPResult =
   result.techniqueID = techniqueID
   result.comment = comment
-  if score < toInt(100 / 3):
-    result.color = "#8ec843ff"
-  elif score < toInt((100 / 3) * 2):
-    result.color = "#ffe766ff"
-  else:
-    result.color = "#ff6666ff"
   result.score = score
 
 proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = false, timeline: string) =
@@ -82,7 +75,24 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
                             },
                             "domain": "enterprise-attack",
                             "description": "Hayabusa detection result heatmap",
-                            "techniques": mitreTags
+                            "techniques": mitreTags,
+                            "gradient": {
+                                "colors": [
+                                  "#8ec843ff",
+                                  "#ffe766ff",
+                                  "#ff6666ff"
+                                ],
+                              "minValue": 0,
+                              "maxValue": 100
+                              },
+                              "legendItems": [],
+                              "metadata": [],
+                              "links": [],
+                              "showTacticRowBackground": false,
+                              "tacticRowBackground": "#dddddd",
+                              "selectTechniquesAcrossTactics": true,
+                              "selectSubtechniquesWithParent": false,
+                              "selectVisibleTechniques": false
                         }
 
         let outputFile = open(output, FileMode.fmWrite)
