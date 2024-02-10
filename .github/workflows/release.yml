@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Nim
         uses: jiro4989/setup-nim-action@v1
@@ -71,9 +71,9 @@ jobs:
           mv ./README-Japanese.pdf ./README-${{ github.event.inputs.release_ver }}-Japanese.pdf
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: release-binaries
+          name: release-binaries-${{ matrix.os }}
           path: |
             release-binaries/*.zip
             ./*.pdf
