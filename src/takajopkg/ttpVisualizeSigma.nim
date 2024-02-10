@@ -8,7 +8,7 @@ proc ttpVisualizeSigma(output: string = "mitre-attack-navigator.json", quiet: bo
         quit(1)
 
     echo "Started the TTP Visualize Sigma command."
-    echo "This command extracts TTPs from Sigma rule and creates a JSON file to visualize in MITRE ATT&CK Navigator."
+    echo "This command extracts TTPs from Sigma rules and creates a JSON file to visualize the heatmap in MITRE ATT&CK Navigator."
     echo ""
 
     echo "Counting total rule files. Please wait."

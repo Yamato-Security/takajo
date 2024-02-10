@@ -40,7 +40,7 @@ include takajopkg/vtIpLookup
 include takajopkg/vtHashLookup
 
 when isMainModule:
-    clCfg.version = "2.3.1"
+    clCfg.version = "2.4.0-dev"
     const examples = "Examples:\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl -o domains.txt\p"
@@ -57,8 +57,8 @@ when isMainModule:
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [-o suspicious-processes.csv]\p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv\p"
-    const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl -o mitre-attack-navigator.json\p"
-    const example_ttp_visualize_sigma = "  ttp-visualize-sigma -r ../hayabusa/rules -o mitre-attack-navigator.json\p"
+    const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl -o mitre-ttp-heatmap.json\p"
+    const example_ttp_visualize_sigma = "  ttp-visualize-sigma -r ../hayabusa/rules -o sigma-rules-heatmap.json\p"
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
