@@ -27,6 +27,7 @@ include takajopkg/listUnusedRules
 include takajopkg/splitCsvTimeline
 include takajopkg/splitJsonTimeline
 include takajopkg/stackLogons
+include takajopkg/stackProcesses
 include takajopkg/listHashes
 include takajopkg/sysmonProcessTree
 include takajopkg/timelineLogon
@@ -49,6 +50,7 @@ when isMainModule:
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
+    const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl -o processes.csv\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
@@ -63,7 +65,9 @@ when isMainModule:
     clCfg.useMulti = "Version: 2.3.1 Year Of The Dragon Release\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples & example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
-        example_split_csv_timeline & example_split_json_timeline & example_stack_logons & example_sysmon_process_tree &
+        example_split_csv_timeline & example_split_json_timeline &
+        example_stack_logons & example_stack_processes &
+        example_sysmon_process_tree &
         example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes &
         example_ttp_summary & example_ttp_visualize &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
@@ -172,6 +176,17 @@ when isMainModule:
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
+        ],
+        [
+            stackProcesses, cmdName = "stack-processes",
+            doc = "stack executed processes",
+            help = {
+                "ignoreSysmon": "exclude results when Sysmon event",
+                "ignoreSecurity": "exclude results when Security event",
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            },
         ],
         [
             sysmonProcessTree, cmdName = "sysmon-process-tree",
