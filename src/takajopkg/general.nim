@@ -235,6 +235,14 @@ proc countLinesInTimeline*(filePath: string): int =
     file.close()
     return count
 
+proc getYAMLpathes*(rulesDir: string): seq[string] =
+    var pathes:seq[string] = @[]
+    for entry in walkDirRec(rulesDir):
+        if entry.endsWith(".yml"):
+            pathes.add(entry)
+    return pathes
+
+
 proc formatFileSize*(fileSize: BiggestInt): string =
     let
         kilo = 1024
