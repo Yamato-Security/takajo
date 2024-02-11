@@ -38,7 +38,7 @@ proc stackServices(output: string = "", quiet: bool = false, timeline: string) =
         let eventId = jsonLine["EventID"].getInt(0)
         let channel = jsonLine["Channel"].getStr("N/A")
         if (eventId == 7040 and channel == "Sysmon") or
-           (eventId == 4697 and channel == "Security"):
+           (eventId == 4697 and channel == "Sec"):
             let svc = jsonLine["Details"]["Svc"].getStr("N/A")
             let path = jsonLine["Details"]["Path"].getStr("N/A")
             let res = svc & " -> " & path
