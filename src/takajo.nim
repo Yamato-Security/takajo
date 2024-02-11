@@ -196,7 +196,7 @@ when isMainModule:
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
-        ]
+        ],
         [
             stackLogons, cmdName = "stack-logons",
             doc = "stack logons by target user, target computer, source IP address and source computer",
