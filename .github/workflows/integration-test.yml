@@ -1,0 +1,93 @@
+name: Integration-Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  takajo-integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup Nim
+        uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: '2.x' # default is 'stable'
+
+      - name: clone takajo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: takajo
+
+      - name: build takajo
+        run: |
+          cd takajo
+          nimble update
+          nimble build -d:release --threads:on
+          cd ../
+
+      - name: clone hayabusa
+        uses: actions/checkout@v4
+        with:
+          repository: Yamato-Security/hayabusa
+          submodules: recursive
+          path: hayabusa
+
+      - name: clone hayabusa-sample-evtx
+        uses: actions/checkout@v4
+        with:
+          repository: Yamato-Security/hayabusa-sample-evtx
+          path: hayabusa-sample-evtx
+
+      - name: run hayabusa timeline
+        run: |
+          cd hayabusa
+          git fetch --prune --unshallow
+          LATEST_VER=`git describe --tags --abbrev=0`
+          URL="https://github.com/Yamato-Security/hayabusa/releases/download/${LATEST_VER}/hayabusa-${LATEST_VER#v}-linux.zip"
+          mkdir tmp
+          cd tmp
+          curl -OL $URL
+          unzip *.zip
+          chmod +x hayabusa-${LATEST_VER#v}-lin-x64-gnu
+          ./hayabusa-${LATEST_VER#v}-lin-x64-gnu update-rules
+          ./hayabusa-${LATEST_VER#v}-lin-x64-gnu csv-timeline -d ../../hayabusa-sample-evtx -w -p super-verbose -o ../../takajo/timeline.csv
+          ./hayabusa-${LATEST_VER#v}-lin-x64-gnu json-timeline -d ../../hayabusa-sample-evtx -L -w -p super-verbose -o ../../takajo/timeline.jsonl
+
+      - name: run extract-scriptblocks
+        run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl
+
+      - name: run list-undetected-evtx
+        run: cd takajo && ./takajo list-undetected-evtx -t timeline.csv -e ../hayabusa-sample-evtx -o undetected-evtx.txt
+
+      - name: run list-unused-rules
+        run: cd takajo && ./takajo list-unused-rules -t timeline.csv -r ../hayabusa/tmp/rules -o unused-rules.txt
+
+      - name: run split-csv-timeline
+        run: cd takajo && ./takajo split-csv-timeline -t timeline.csv
+
+      - name: run split-json-timeline
+        run: cd takajo && ./takajo split-json-timeline -t timeline.jsonl
+
+      - name: run stack-logons
+        run: cd takajo && ./takajo stack-logons -t timeline.jsonl
+
+      - name: run sysmon-process-tree
+        run: cd takajo && ./takajo sysmon-process-tree -t timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00" -o process-tree.txt
+
+      - name: run timeline-logon
+        run: cd takajo && ./takajo timeline-logon -t timeline.jsonl -o logon-timeline.csv
+
+      - name: run timeline-partition-diagnostic
+        run: cd takajo && ./takajo timeline-partition-diagnostic -t timeline.jsonl -o partition-diagnostic-timeline.csv
+
+      - name: run timeline-suspicious-process
+        run: cd takajo && ./takajo timeline-suspicious-process -t timeline.jsonl -o suspicous-processes.csv
+
+      - name: run ttp-summary
+        run: cd takajo && ./takajo ttp-summary -t timeline.jsonl -o ttp-summary.csv
+
+      - name: run ttp-visualize
+        run: cd takajo && ./takajo ttp-visualize -t timeline.jsonl
+
+      - name: run ttp-visualize-sigma
+        run: cd takajo && ./takajo ttp-visualize-sigma -r ../hayabusa/tmp/rules
