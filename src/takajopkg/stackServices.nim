@@ -37,7 +37,8 @@ proc stackServices(output: string = "", quiet: bool = false, timeline: string) =
         let jsonLine = parseJson(line)
         let eventId = jsonLine["EventID"].getInt(0)
         let channel = jsonLine["Channel"].getStr("N/A")
-        if (eventId == 4697 and channel == "Security"):
+        if (eventId == 7040 and channel == "Sysmon") or
+           (eventId == 4697 and channel == "Security"):
             let svc = jsonLine["Details"]["Svc"].getStr("N/A")
             let path = jsonLine["Details"]["Path"].getStr("N/A")
             let res = svc & " -> " & path
@@ -45,29 +46,31 @@ proc stackServices(output: string = "", quiet: bool = false, timeline: string) =
 
     bar.finish()
     echo ""
-
-    stackServices.sort()
-
-    # Print results to screen
-    var outputFileSize = 0
-    if output == "":
-        for service, count in stackServices:
-            var commaDelimitedStr = $count & "," & service
-            commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
-            echo commaDelimitedStr
-    # Save to CSV file
+    if stackServices.len == 0:
+       echo "No results where found."
     else:
-        let outputFile = open(output, fmWrite)
-        writeLine(outputFile, "Count,Services")
+        stackServices.sort()
 
-        # Write results
-        for service, count in stackServices:
-            writeLine(outputFile, $count & "," & service)
-        outputFileSize = getFileSize(outputFile)
-        close(outputFile)
+        # Print results to screen
+        var outputFileSize = 0
+        if output == "":
+            for service, count in stackServices:
+                var commaDelimitedStr = $count & "," & service
+                commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
+                echo commaDelimitedStr
+        # Save to CSV file
+        else:
+            let outputFile = open(output, fmWrite)
+            writeLine(outputFile, "Count,Services")
 
-    echo ""
-    echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+            # Write results
+            for service, count in stackServices:
+                writeLine(outputFile, $count & "," & service)
+            outputFileSize = getFileSize(outputFile)
+            close(outputFile)
+
+        echo ""
+        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
 
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)
