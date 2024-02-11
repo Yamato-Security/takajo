@@ -26,6 +26,7 @@ include takajopkg/listUndetectedEvtxFiles
 include takajopkg/listUnusedRules
 include takajopkg/splitCsvTimeline
 include takajopkg/splitJsonTimeline
+include takajopkg/stackCmdlines
 include takajopkg/stackDNS
 include takajopkg/stackLogons
 include takajopkg/stackProcesses
@@ -51,6 +52,7 @@ when isMainModule:
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
+    const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl -o cmdlines.csv\p"
     const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl -o dns.csv\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
     const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl -o processes.csv\p"
@@ -69,8 +71,8 @@ when isMainModule:
     clCfg.useMulti = "Version: 2.4.0 Dev Build\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples & example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
-        example_split_csv_timeline & example_split_json_timeline & example_stack_dns &
-        example_stack_logons & example_stack_processes &
+        example_split_csv_timeline & example_split_json_timeline &
+        example_stack_cmdlines & example_stack_dns & example_stack_logons & example_stack_processes &
         example_sysmon_process_tree &
         example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes &
         example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
@@ -172,6 +174,21 @@ when isMainModule:
             }
         ],
         [
+            stackCmdlines, cmdName = "stack-cmdlines",
+            doc = "stack executed command lines",
+            help = {
+                "ignoreSysmon": "exclude Sysmon 1 events",
+                "ignoreSecurity": "exclude Security 4688 events",
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            },
+            short = {
+                "ignoreSysmon": 'y',
+                "ignoreSecurity": 'e'
+            }
+        ],
+        [            
             stackDNS, cmdName = "stack-dns",
             doc = "stack DNS queries and responses",
             help = {
@@ -179,7 +196,7 @@ when isMainModule:
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
-        ],
+        ]
         [
             stackLogons, cmdName = "stack-logons",
             doc = "stack logons by target user, target computer, source IP address and source computer",

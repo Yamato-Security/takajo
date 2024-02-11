@@ -4,6 +4,7 @@
 
 **新機能:**
 
+- `stack-cmdlines`コマンド: 実行されたコマンドラインのスタック分析。 (#94) (@fukusuket)
 - `stack-dns`コマンド: DNSリクエストのスタック分析。 (#95) (@fukusuket)
 - `stack-processes`コマンド: 実行されたプロセスのスタック分析。 (#93) (@fukusuket)
 - `ttp-visualize-sigma`コマンド: MITRE ATT&CK Navigatorにアップロードし、SigmaルールのTTPをヒートマップで可視化するために、JSONファイルに作成する。 (#92) (@fukusuket)
