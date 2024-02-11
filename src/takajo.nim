@@ -35,6 +35,7 @@ include takajopkg/timelinePartitionDiagnostic
 include takajopkg/timelineSuspiciousProcesses
 include takajopkg/ttpSummary
 include takajopkg/ttpVisualize
+include takajopkg/ttpVisualizeSigma
 include takajopkg/vtDomainLookup
 include takajopkg/vtIpLookup
 include takajopkg/vtHashLookup
@@ -58,7 +59,8 @@ when isMainModule:
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [-o suspicious-processes.csv]\p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv\p"
-    const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl -o mitre-attack-navigator.json\p"
+    const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl -o mitre-ttp-heatmap.json\p"
+    const example_ttp_visualize_sigma = "  ttp-visualize-sigma -r ../hayabusa/rules -o sigma-rules-heatmap.json\p"
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
@@ -69,7 +71,7 @@ when isMainModule:
         example_stack_logons & example_stack_processes &
         example_sysmon_process_tree &
         example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes &
-        example_ttp_summary & example_ttp_visualize &
+        example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
     if paramCount() == 0:
@@ -249,6 +251,15 @@ when isMainModule:
                 "output": "save results to a json file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any verbose profile)",
+            }
+        ],
+        [
+            ttpVisualizeSigma, cmdName = "ttp-visualize-sigma",
+            doc = "extract TTPs from Sigma and create a JSON file to visualize in MITRE ATT&CK Navigator",
+            help = {
+                "output": "save results to a json file",
+                "quiet": "do not display the launch banner",
+                "rulesDir": "Sigma rules directory",
             }
         ],
         [
