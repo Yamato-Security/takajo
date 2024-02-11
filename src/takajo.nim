@@ -183,12 +183,16 @@ when isMainModule:
             stackProcesses, cmdName = "stack-processes",
             doc = "stack executed processes",
             help = {
-                "ignoreSysmon": "exclude results when Sysmon event",
-                "ignoreSecurity": "exclude results when Security event",
+                "ignoreSysmon": "exclude Sysmon 1 events",
+                "ignoreSecurity": "exclude Security 4688 events",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
-            },
+            },            
+            short = {
+                "ignoreSysmon": 'y',
+                "ignoreSecurity": 'e'
+            }
         ],
         [
             sysmonProcessTree, cmdName = "sysmon-process-tree",
