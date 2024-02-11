@@ -1,5 +1,16 @@
 # Changes
 
+## 2.4.0-dev [xxxx/xx/xx] - Year Of The Dragon Release
+
+**New Features:**
+
+- `ttp-visualize-sigma` command: extracts out TTPs from sigma rules and puts in a JSON file to upload to MITRE ATT&CK Navigator to visualize in a heatmap. (#92) (@fukusuket)
+- `stack-processes` command: stack executed processes. (#93) (@fukusuket)
+
+**Enhancements:**
+
+- `ttp-visualize` command: added color gradient to the heatmap. (#90) (@fukusuket)
+
 ## 2.3.1 [2024/01/27] - Year Of The Dragon Release
 
 **Enhancements:**
