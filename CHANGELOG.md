@@ -10,6 +10,10 @@
 
 - `ttp-visualize` command: added color gradient to the heatmap. (#90) (@fukusuket)
 
+**Bug Fixes:**
+
+- `split-csv-timeline` command failed with Haybuasa 2.13.0 CSV results. (#103) (@fukusuket)
+
 ## 2.3.1 [2024/01/27] - Year Of The Dragon Release
 
 **Enhancements:**

@@ -10,6 +10,10 @@
 
 - `ttp-visualize`コマンド: ヒートマップにカラーグラデーションを追加した。 (#90) (@fukusuket)
 
+**バグ修正:**
+
+- `split-csv-timeline`コマンドが、Haybuasa 2.13.0のCSV結果で失敗するので、修正した。(#103) (@fukusuket)
+
 ## 2.3.1 [2024/01/27] - Year Of The Dragon Release
 
 **改善:**
