@@ -69,9 +69,8 @@ when isMainModule:
     clCfg.useMulti = "Version: 2.4.0 Dev Build\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples & example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
-        example_split_csv_timeline & example_split_json_timeline &
+        example_split_csv_timeline & example_split_json_timeline & example_stack_dns &
         example_stack_logons & example_stack_processes &
-        example_stack_dns &
         example_sysmon_process_tree &
         example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes &
         example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
