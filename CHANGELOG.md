@@ -6,6 +6,7 @@
 
 - `ttp-visualize-sigma` command: extracts out TTPs from sigma rules and puts in a JSON file to upload to MITRE ATT&CK Navigator to visualize in a heatmap. (#92) (@fukusuket)
 - `stack-processes` command: stack executed processes. (#93) (@fukusuket)
+- `stack-cmdlines` command: stack executed command lines. (#94) (@fukusuket)
 
 **Enhancements:**
 
