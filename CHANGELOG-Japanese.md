@@ -6,6 +6,7 @@
 
 - `ttp-visualize-sigma`コマンド: MITRE ATT&CK Navigatorにアップロードし、SigmaルールのTTPをヒートマップで可視化するために、JSONファイルに作成する。 (#92) (@fukusuket)
 - `stack-processes`コマンド: 実行されたプロセスのスタック分析。 (#93) (@fukusuket)
+- `stack-cmdlines`コマンド: 実行されたコマンドラインのスタック分析。 (#94) (@fukusuket)
 
 **改善:**
 
