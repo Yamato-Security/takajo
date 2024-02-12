@@ -1,4 +1,4 @@
-proc stackServices(output: string = "", quiet: bool = false, timeline: string) =
+proc stackServices(ignoreSysmon: bool = false, ignoreSecurity: bool = false,output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     if not quiet:
         styledEcho(fgGreen, outputLogo())
