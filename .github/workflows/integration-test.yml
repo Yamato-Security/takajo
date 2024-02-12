@@ -68,8 +68,23 @@ jobs:
       - name: run split-json-timeline
         run: cd takajo && ./takajo split-json-timeline -t timeline.jsonl
 
+      - name: run stack-cmdlines
+        run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl
+
+      - name: run stack-dns
+        run: cd takajo && ./takajo stack-dns -t timeline.jsonl
+
       - name: run stack-logons
         run: cd takajo && ./takajo stack-logons -t timeline.jsonl
+
+      - name: run stack-processes
+        run: cd takajo && ./takajo stack-processes -t timeline.jsonl
+
+      - name: run stack-services
+        run: cd takajo && ./takajo stack-services -t timeline.jsonl
+
+      - name: run stack-tasks
+        run: cd takajo && ./takajo stack-tasks -t timeline.jsonl
 
       - name: run sysmon-process-tree
         run: cd takajo && ./takajo sysmon-process-tree -t timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00" -o process-tree.txt
