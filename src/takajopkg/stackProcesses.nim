@@ -39,7 +39,7 @@ proc stackProcesses(ignoreSysmon: bool = false, ignoreSecurity: bool = false, ou
         let eventId = jsonLine["EventID"].getInt(0)
         let channel = jsonLine["Channel"].getStr("N/A")
         if (eventId == 1 and not ignoreSysmon and channel == "Sysmon") or
-           (eventId == 4688 and not ignoreSecurity and channel == "Security"):
+           (eventId == 4688 and not ignoreSecurity and channel == "Sec"):
             let process = jsonLine["Details"]["Proc"].getStr("N/A")
             stackProcesses.inc(process)
 
