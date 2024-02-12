@@ -220,6 +220,10 @@ when isMainModule:
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            },
+            short = {
+                "ignoreSysmon": 'y',
+                "ignoreSecurity": 'e'
             }
         ],
         [
