@@ -4,13 +4,19 @@
 
 **新機能:**
 
-- `ttp-visualize-sigma`コマンド: MITRE ATT&CK Navigatorにアップロードし、SigmaルールのTTPをヒートマップで可視化するために、JSONファイルに作成する。 (#92) (@fukusuket)
-- `stack-processes`コマンド: 実行されたプロセスのスタック分析。 (#93) (@fukusuket)
-- `stack-cmdlines`コマンド: 実行されたコマンドラインのスタック分析。 (#94) (@fukusuket)
+- `stack-cmdlines`コマンド: 実行されたコマンドラインのスタック分析。(#94) (@fukusuket)
+- `stack-dns`コマンド: DNSリクエストのスタック分析。(#95) (@fukusuket)
+- `stack-processes`コマンド: 実行されたプロセスのスタック分析。(#93) (@fukusuket)
+- `stack-tasks`コマンド: スケジュールされたタスクのパースとスタック分析。(#97) (@fukusuket)
+- `ttp-visualize-sigma`コマンド: MITRE ATT&CK Navigatorにアップロードし、SigmaルールのTTPをヒートマップで可視化するために、JSONファイルに作成する。(#92) (@fukusuket)
 
 **改善:**
 
-- `ttp-visualize`コマンド: ヒートマップにカラーグラデーションを追加した。 (#90) (@fukusuket)
+- `ttp-visualize`コマンド: ヒートマップにカラーグラデーションを追加した。(#90) (@fukusuket)
+
+**バグ修正:**
+
+- `split-csv-timeline`コマンドが、Haybuasa 2.13.0のCSV結果で失敗するので、修正した。(#103) (@fukusuket)
 
 ## 2.3.1 [2024/01/27] - Year Of The Dragon Release
 

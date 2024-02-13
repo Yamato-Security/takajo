@@ -34,10 +34,22 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
         bar: SuruBar = initSuruBar()
 
     bar[0].total = totalLines
-    bar.setup()
 
     # Read in the CSV header
     let csvHeader = inputFile.readLine()
+    let headerColums = csvHeader.split(',')
+    var computerColumnNum = 0
+    for i, col in enumerate(headerColums):
+        if "Computer" in col:
+            computerColumnNum = i
+            break
+    if computerColumnNum == 0:
+        echo ""
+        echo "There is no column for Computer. Please specify a valid csv."
+        createDir(output)
+    echo ""
+    bar.setup()
+
     inc bar
     while inputFile.endOfFile == false:
         inc bar
@@ -45,7 +57,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
 
         var currentLine = inputFile.readLine()
         let splitFields = currentLine.split(',')
-        var computerName = splitFields[1]
+        var computerName = splitFields[computerColumnNum]
         computerName = computerName[1 .. computerName.len - 2] # Remove surrounding double quotes
 
         # If it is the first time we see this computer name, then record it in a str sequence, create a file,
