@@ -50,11 +50,26 @@ proc stackServices(ignoreSysmon: bool = false, ignoreSecurity: bool = false,outp
        echo "No results where found."
     else:
         stackServices.sort()
+        var stackServicesSorted = newOrderedTable[string, int]()
+        var stack: seq[string] = newSeq[string]()
+        var prevCount = 0
+        for service, count in stackServices:
+            stack.add(service)
+            if prevCount == count:
+                continue
+            stack.sort()
+            for s in stack:
+                stackServicesSorted[s] = count
+            stack = newSeq[string]()
+            prevCount = count
+        stack.sort()
+        for s in stack:
+            stackServicesSorted[s] = prevCount
 
         # Print results to screen
         var outputFileSize = 0
         if output == "":
-            for service, count in stackServices:
+            for service, count in stackServicesSorted:
                 var commaDelimitedStr = $count & "," & service
                 commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
                 echo commaDelimitedStr
@@ -64,7 +79,7 @@ proc stackServices(ignoreSysmon: bool = false, ignoreSecurity: bool = false,outp
             writeLine(outputFile, "Count,Services")
 
             # Write results
-            for service, count in stackServices:
+            for service, count in stackServicesSorted:
                 writeLine(outputFile, $count & "," & service)
             outputFileSize = getFileSize(outputFile)
             close(outputFile)
