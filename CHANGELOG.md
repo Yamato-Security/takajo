@@ -4,13 +4,18 @@
 
 **New Features:**
 
-- `ttp-visualize-sigma` command: extracts out TTPs from sigma rules and puts in a JSON file to upload to MITRE ATT&CK Navigator to visualize in a heatmap. (#92) (@fukusuket)
-- `stack-processes` command: stack executed processes. (#93) (@fukusuket)
 - `stack-cmdlines` command: stack executed command lines. (#94) (@fukusuket)
+- `stack-dns` command: stack DNS requests. (#95) (@fukusuket)
+- `stack-processes` command: stack executed processes. (#93) (@fukusuket)
+- `ttp-visualize-sigma` command: extracts out TTPs from sigma rules and puts in a JSON file to upload to MITRE ATT&CK Navigator to visualize in a heatmap. (#92) (@fukusuket)
 
 **Enhancements:**
 
 - `ttp-visualize` command: added color gradient to the heatmap. (#90) (@fukusuket)
+
+**Bug Fixes:**
+
+- `split-csv-timeline` command failed with Haybuasa 2.13.0 CSV results. (#103) (@fukusuket)
 
 ## 2.3.1 [2024/01/27] - Year Of The Dragon Release
 
