@@ -1,4 +1,4 @@
-proc decodeEntity(txt: string): string =
+proc decodeEntity*(txt: string): string =
    return txt.replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'")
 
 proc stackTasks(ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =

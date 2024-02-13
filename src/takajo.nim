@@ -39,6 +39,7 @@ include takajopkg/sysmonProcessTree
 include takajopkg/timelineLogon
 include takajopkg/timelinePartitionDiagnostic
 include takajopkg/timelineSuspiciousProcesses
+include takajopkg/timelineTasks
 include takajopkg/ttpSummary
 include takajopkg/ttpVisualize
 include takajopkg/ttpVisualizeSigma
@@ -67,6 +68,7 @@ when isMainModule:
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
     const example_timeline_partition_diagnostic = "  timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partition-diagnostic-timeline.csv\p"
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [-o suspicious-processes.csv]\p"
+    const example_timeline_tasks = "  timeline-tasks -t ../hayabusa/timeline.jsonl -o task-timeline.csv\p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv\p"
     const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl -o mitre-ttp-heatmap.json\p"
@@ -80,7 +82,7 @@ when isMainModule:
         example_split_csv_timeline & example_split_json_timeline &
         example_stack_cmdlines & example_stack_dns & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks &
         example_sysmon_process_tree &
-        example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes &
+        example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes & example_timeline_tasks &
         example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
@@ -293,6 +295,15 @@ when isMainModule:
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            }
+        ],
+        [
+            timelineTasks, cmdName = "timeline-tasks",
+            doc = "create a CSV timeline of scheduled tasks",
+            help = {
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any)",
             }
         ],
         [
