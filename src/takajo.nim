@@ -32,6 +32,7 @@ include takajopkg/stackCmdlines
 include takajopkg/stackDNS
 include takajopkg/stackLogons
 include takajopkg/stackProcesses
+include takajopkg/stackServices
 include takajopkg/stackTasks
 include takajopkg/listHashes
 include takajopkg/sysmonProcessTree
@@ -58,6 +59,7 @@ when isMainModule:
     const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl -o cmdlines.csv\p"
     const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl -o dns.csv\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
+    const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl -o services.csv\p"
     const example_stack_tasks = "  stack-tasks -t ../hayabusa/timeline.jsonl -o tasks.csv\p"
     const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl -o processes.csv\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
@@ -76,8 +78,7 @@ when isMainModule:
         examples & example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
-        example_stack_cmdlines & example_stack_dns & example_stack_logons & example_stack_processes &
-        example_stack_cmdlines & example_stack_dns & example_stack_logons & example_stack_processes & example_stack_tasks &
+        example_stack_cmdlines & example_stack_dns & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks &
         example_sysmon_process_tree &
         example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes &
         example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
@@ -222,6 +223,19 @@ when isMainModule:
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             },            
+            short = {
+                "ignoreSysmon": 'y',
+                "ignoreSecurity": 'e'
+            }
+        ],
+        [
+            stackServices, cmdName = "stack-services",
+            doc = "stack service names and paths",
+            help = {
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            },
             short = {
                 "ignoreSysmon": 'y',
                 "ignoreSecurity": 'e'
