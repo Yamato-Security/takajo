@@ -4,14 +4,15 @@
 
 **新機能:**
 
-- `stack-cmdlines`コマンド: 実行されたコマンドラインのスタック分析。 (#94) (@fukusuket)
-- `stack-dns`コマンド: DNSリクエストのスタック分析。 (#95) (@fukusuket)
-- `stack-processes`コマンド: 実行されたプロセスのスタック分析。 (#93) (@fukusuket)
-- `ttp-visualize-sigma`コマンド: MITRE ATT&CK Navigatorにアップロードし、SigmaルールのTTPをヒートマップで可視化するために、JSONファイルに作成する。 (#92) (@fukusuket)
+- `stack-cmdlines`コマンド: 実行されたコマンドラインのスタック分析。(#94) (@fukusuket)
+- `stack-dns`コマンド: DNSリクエストのスタック分析。(#95) (@fukusuket)
+- `stack-processes`コマンド: 実行されたプロセスのスタック分析。(#93) (@fukusuket)
+- `stack-tasks`コマンド: スケジュールされたタスクのパースとスタック分析。(#97) (@fukusuket)
+- `ttp-visualize-sigma`コマンド: MITRE ATT&CK Navigatorにアップロードし、SigmaルールのTTPをヒートマップで可視化するために、JSONファイルに作成する。(#92) (@fukusuket)
 
 **改善:**
 
-- `ttp-visualize`コマンド: ヒートマップにカラーグラデーションを追加した。 (#90) (@fukusuket)
+- `ttp-visualize`コマンド: ヒートマップにカラーグラデーションを追加した。(#90) (@fukusuket)
 
 **バグ修正:**
 
