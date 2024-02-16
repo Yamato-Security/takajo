@@ -96,7 +96,7 @@ proc timelineTasks(output: string, outputLogoffEvents: bool = false, quiet: bool
             for key in detailedTable.keys:
                 allDetailedKeys.incl(key)
         let basicHeader = @["Timestamp", "TaskName", "User", "SubjectUserSid", "SubjectDomainName", "SubjectLogonId", "Command", "Arguments"]
-        let detailedHeader = toSeq(allDetailedKeys)
+        let detailedHeader = toSeq(allDetailedKeys).sorted
 
         # Save results
         var outputFile = open(output, fmWrite)
