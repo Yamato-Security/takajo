@@ -8,6 +8,7 @@
 - `stack-dns` command: stack DNS requests. (#95) (@fukusuket)
 - `stack-processes` command: stack executed processes. (#93) (@fukusuket)
 - `stack-tasks` command: parse and stack scheduled tasks. (#97) (@fukusuket)
+- `timeline-tasks` command: parse created scheduled task events into a CSV file. (#110) (@fukusuket)
 - `ttp-visualize-sigma` command: extracts out TTPs from sigma rules and puts in a JSON file to upload to MITRE ATT&CK Navigator to visualize in a heatmap. (#92) (@fukusuket)
 
 **Enhancements:**
