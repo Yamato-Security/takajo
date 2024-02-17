@@ -26,6 +26,7 @@ proc stackServices(ignoreSysmon: bool = false, ignoreSecurity: bool = false,outp
     var
         bar: SuruBar = initSuruBar()
         stackServices = initCountTable[string]()
+        stackCount = initTable[string, CountTable[string]]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -43,12 +44,15 @@ proc stackServices(ignoreSysmon: bool = false, ignoreSecurity: bool = false,outp
             let path = jsonLine["Details"]["Path"].getStr("N/A")
             let res = svc & " -> " & path
             stackServices.inc(res)
-
+            stackRuleCount(jsonLine, stackCount)
     bar.finish()
     echo ""
+
     if stackServices.len == 0:
        echo "No results where found."
     else:
+        # Print results to screen
+        printAlertCount(stackCount)
         stackServices.sort()
         var stackServicesSorted = newOrderedTable[string, int]()
         var stack: seq[string] = newSeq[string]()

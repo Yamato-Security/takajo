@@ -29,6 +29,7 @@ proc stackTasks(ignoreSysmon: bool = false, ignoreSecurity: bool = false, output
     var
         bar: SuruBar = initSuruBar()
         stackTasks = initCountTable[string]()
+        stackCount = initTable[string, CountTable[string]]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -57,15 +58,16 @@ proc stackTasks(ignoreSysmon: bool = false, ignoreSecurity: bool = false, output
                 commandAndArgs = commandAndArgs.replace("<Arguments>", "").replace("</Arguments>","")
             let result = user & " -> "  & name & " -> " & decodeEntity(commandAndArgs)
             stackTasks.inc(result)
-
+            stackRuleCount(jsonLine, stackCount)
     bar.finish()
     echo ""
 
-    stackTasks.sort()
     if stackTasks.len == 0:
         echo "No results where found."
     else:
         # Print results to screen
+        printAlertCount(stackCount)
+        stackTasks.sort()
         var outputFileSize = 0
         if output == "":
             for task, count in stackTasks:

@@ -26,6 +26,7 @@ proc stackDNS(output: string = "", quiet: bool = false, timeline: string) =
     var
         bar: SuruBar = initSuruBar()
         stackDNS = initCountTable[string]()
+        stackCount = initTable[string, CountTable[string]]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -43,32 +44,36 @@ proc stackDNS(output: string = "", quiet: bool = false, timeline: string) =
             let res = jsonLine["Details"]["Result"].getStr("N/A")
             let result = prog & " -> " & query & " -> " & res
             stackDNS.inc(result)
+            stackRuleCount(jsonLine, stackCount)
 
     bar.finish()
     echo ""
 
-    stackDNS.sort()
-
-    # Print results to screen
-    var outputFileSize = 0
-    if output == "":
-        for res, count in stackDNS:
-            var commaDelimitedStr = $count & "," & res
-            commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
-            echo commaDelimitedStr
-    # Save to CSV file
+    if stackDNS.len == 0:
+        echo "No results where found."
     else:
-        let outputFile = open(output, fmWrite)
-        writeLine(outputFile, "Count,DNS query and response")
+        # Print results to screen
+        printAlertCount(stackCount)
+        stackDNS.sort()
+        var outputFileSize = 0
+        if output == "":
+            for res, count in stackDNS:
+                var commaDelimitedStr = $count & "," & res
+                commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
+                echo commaDelimitedStr
+        # Save to CSV file
+        else:
+            let outputFile = open(output, fmWrite)
+            writeLine(outputFile, "Count,DNS query and response")
 
-        # Write results
-        for res, count in stackDNS:
-            writeLine(outputFile, $count & "," & res)
-        outputFileSize = getFileSize(outputFile)
-        close(outputFile)
+            # Write results
+            for res, count in stackDNS:
+                writeLine(outputFile, $count & "," & res)
+            outputFileSize = getFileSize(outputFile)
+            close(outputFile)
 
-    echo ""
-    echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+        echo ""
+        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
 
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)

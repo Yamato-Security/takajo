@@ -11,7 +11,6 @@ import strformat
 import strutils
 import tables
 import terminal
-import termstyle
 import times
 import threadpool
 import uri
@@ -21,6 +20,8 @@ import std/xmlparser
 import std/xmltree
 import suru
 import takajopkg/general
+import takajopkg/stackUtil
+import takajopkg/takajoTerminal
 include takajopkg/extractScriptblocks
 include takajopkg/listDomains
 include takajopkg/listIpAddresses

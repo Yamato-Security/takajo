@@ -26,6 +26,7 @@ proc stackCmdlines(ignoreSysmon: bool = false, ignoreSecurity: bool = false, out
     var
         bar: SuruBar = initSuruBar()
         stackCmdlines = initCountTable[string]()
+        stackCount = initTable[string, CountTable[string]]()
         uniqueCmd = 0
 
     bar[0].total = totalLines
@@ -42,34 +43,37 @@ proc stackCmdlines(ignoreSysmon: bool = false, ignoreSecurity: bool = false, out
            (eventId == 4688 and not ignoreSecurity and channel == "Security"):
             let command = jsonLine["Details"]["Cmdline"].getStr("N/A")
             stackCmdlines.inc(command)
-
+            stackRuleCount(jsonLine, stackCount)
     bar.finish()
     echo ""
 
-    stackCmdlines.sort()
-
-    # Print results to screen
-    var outputFileSize = 0
-    if output == "":
-        for commandline, count in stackCmdlines:
-            inc uniqueCmd
-            var commaDelimitedStr = $count & "," & commandline
-            commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
-            echo commaDelimitedStr
-    # Save to CSV file
+    if stackCmdlines.len == 0:
+       echo "No results where found."
     else:
-        let outputFile = open(output, fmWrite)
-        writeLine(outputFile, "Count,Cmdlines")
+        # Print results to screen
+        printAlertCount(stackCount)
+        stackCmdlines.sort()
+        var outputFileSize = 0
+        if output == "":
+            for commandline, count in stackCmdlines:
+                inc uniqueCmd
+                var commaDelimitedStr = $count & "," & commandline
+                commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
+                echo commaDelimitedStr
+        # Save to CSV file
+        else:
+            let outputFile = open(output, fmWrite)
+            writeLine(outputFile, "Count,Cmdlines")
 
-        # Write results
-        for commandline, count in stackCmdlines:
-            inc uniqueCmd
-            writeLine(outputFile, $count & "," & commandline)
-        outputFileSize = getFileSize(outputFile)
-        close(outputFile)
+            # Write results
+            for commandline, count in stackCmdlines:
+                inc uniqueCmd
+                writeLine(outputFile, $count & "," & commandline)
+            outputFileSize = getFileSize(outputFile)
+            close(outputFile)
 
-    echo ""
-    echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+        echo ""
+        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
 
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)
