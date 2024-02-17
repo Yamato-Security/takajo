@@ -8,6 +8,7 @@
 - `stack-dns`コマンド: DNSリクエストのスタック分析。(#95) (@fukusuket)
 - `stack-processes`コマンド: 実行されたプロセスのスタック分析。(#93) (@fukusuket)
 - `stack-tasks`コマンド: スケジュールされたタスクのパースとスタック分析。(#97) (@fukusuket)
+- `timeline-tasks`コマンド: 作成されたスケジュールタスクをパースし、CSVファイルに保存する。 (#110) (@fukusuket)
 - `ttp-visualize-sigma`コマンド: MITRE ATT&CK Navigatorにアップロードし、SigmaルールのTTPをヒートマップで可視化するために、JSONファイルに作成する。(#92) (@fukusuket)
 
 **改善:**

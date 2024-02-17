@@ -98,6 +98,9 @@ jobs:
       - name: run timeline-suspicious-process
         run: cd takajo && ./takajo timeline-suspicious-process -t timeline.jsonl -o suspicous-processes.csv
 
+      - name: run timeline-tasks
+        run: cd takajo && ./takajo timeline-tasks -t timeline.jsonl -o task-timeline.csv
+
       - name: run ttp-summary
         run: cd takajo && ./takajo ttp-summary -t timeline.jsonl -o ttp-summary.csv
 
