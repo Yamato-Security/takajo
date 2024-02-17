@@ -49,31 +49,7 @@ proc stackDNS(output: string = "", quiet: bool = false, timeline: string) =
     bar.finish()
     echo ""
 
-    if stackDNS.len == 0:
-        echo "No results where found."
-    else:
-        # Print results to screen
-        printAlertCount(stackCount)
-        stackDNS.sort()
-        var outputFileSize = 0
-        if output == "":
-            for res, count in stackDNS:
-                var commaDelimitedStr = $count & "," & res
-                commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
-                echo commaDelimitedStr
-        # Save to CSV file
-        else:
-            let outputFile = open(output, fmWrite)
-            writeLine(outputFile, "Count,DNS query and response")
-
-            # Write results
-            for res, count in stackDNS:
-                writeLine(outputFile, $count & "," & res)
-            outputFileSize = getFileSize(outputFile)
-            close(outputFile)
-
-        echo ""
-        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+    outputResult(output, stackDNS, stackCount)
 
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)

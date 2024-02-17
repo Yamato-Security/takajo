@@ -61,30 +61,7 @@ proc stackTasks(ignoreSysmon: bool = false, ignoreSecurity: bool = false, output
             stackRuleCount(jsonLine, stackCount)
     bar.finish()
     echo ""
-
-    if stackTasks.len == 0:
-        echo "No results where found."
-    else:
-        # Print results to screen
-        printAlertCount(stackCount)
-        stackTasks.sort()
-        var outputFileSize = 0
-        if output == "":
-            for task, count in stackTasks:
-                var commaDelimitedStr = $count & "," & task
-                commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
-                echo commaDelimitedStr
-        # Save to CSV file
-        else:
-            let outputFile = open(output, fmWrite)
-            writeLine(outputFile, "Count,Tasks")
-
-            # Write results
-            for task, count in stackTasks:
-                writeLine(outputFile, $count & "," & task)
-            outputFileSize = getFileSize(outputFile)
-            close(outputFile)
-            echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+    outputResult(output, stackTasks, stackCount)
 
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)

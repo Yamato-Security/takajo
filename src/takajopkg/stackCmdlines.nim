@@ -46,34 +46,7 @@ proc stackCmdlines(ignoreSysmon: bool = false, ignoreSecurity: bool = false, out
             stackRuleCount(jsonLine, stackCount)
     bar.finish()
     echo ""
-
-    if stackCmdlines.len == 0:
-       echo "No results where found."
-    else:
-        # Print results to screen
-        printAlertCount(stackCount)
-        stackCmdlines.sort()
-        var outputFileSize = 0
-        if output == "":
-            for commandline, count in stackCmdlines:
-                inc uniqueCmd
-                var commaDelimitedStr = $count & "," & commandline
-                commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
-                echo commaDelimitedStr
-        # Save to CSV file
-        else:
-            let outputFile = open(output, fmWrite)
-            writeLine(outputFile, "Count,Cmdlines")
-
-            # Write results
-            for commandline, count in stackCmdlines:
-                inc uniqueCmd
-                writeLine(outputFile, $count & "," & commandline)
-            outputFileSize = getFileSize(outputFile)
-            close(outputFile)
-
-        echo ""
-        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+    outputResult(output, stackCmdlines, stackCount)
 
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)

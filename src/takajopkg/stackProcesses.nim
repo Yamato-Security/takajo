@@ -27,7 +27,6 @@ proc stackProcesses(ignoreSysmon: bool = false, ignoreSecurity: bool = false, ou
         bar: SuruBar = initSuruBar()
         stackProcesses = initCountTable[string]()
         stackCount = initTable[string, CountTable[string]]()
-        uniqueProcesses = 0
 
     bar[0].total = totalLines
     bar.setup()
@@ -46,34 +45,7 @@ proc stackProcesses(ignoreSysmon: bool = false, ignoreSecurity: bool = false, ou
             stackRuleCount(jsonLine, stackCount)
     bar.finish()
     echo ""
-
-    if stackProcesses.len == 0:
-        echo "No results where found."
-    else:
-        # Print results to screen
-        printAlertCount(stackCount)
-        stackProcesses.sort()
-        var outputFileSize = 0
-        if output == "":
-            for process, count in stackProcesses:
-                inc uniqueProcesses
-                var commaDelimitedStr = $count & "," & process
-                commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
-                echo commaDelimitedStr
-        # Save to CSV file
-        else:
-            let outputFile = open(output, fmWrite)
-            writeLine(outputFile, "Count,Processes")
-
-            # Write results
-            for process, count in stackProcesses:
-                inc uniqueProcesses
-                writeLine(outputFile, $count & "," & process)
-            outputFileSize = getFileSize(outputFile)
-            close(outputFile)
-
-        echo ""
-        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+    outputResult(output, stackProcesses, stackCount)
 
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)

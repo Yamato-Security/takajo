@@ -1,7 +1,9 @@
+import general
 import json
 import nancy
 import takajoTerminal
 import std/algorithm
+import std/strutils
 import std/tables
 
 proc stackRuleCount*(jsonLine:JsonNode, stackCount: var Table[string, CountTable[string]]) =
@@ -16,7 +18,15 @@ proc alertCmp(x, y: (string, int)): int =
   if result == 0:
     result = cmp(x[0], y[0])
 
-proc printAlertCount*(countTable: Table[string, CountTable[string]]) =
+proc sortCountTable(countTable: var CountTable[string]): seq[(string, int)] =
+    countTable.sort()
+    var stack = newSeq[(string, int)]()
+    for ruleTitle, count in countTable:
+        stack.add((ruleTitle, count))
+    stack.sort(alertCmp) # Sort by rule name
+    return stack
+
+proc printAlertCount(countTable: Table[string, CountTable[string]]) =
     if countTable.len == 0:
         return
     var table: TerminalTable
@@ -25,13 +35,35 @@ proc printAlertCount*(countTable: Table[string, CountTable[string]]) =
         if level notin countTable:
             continue
         var result = countTable[level]
-        result.sort() # Sort by number of detections
-        var stack = newSeq[(string, int)]()
-        for ruleTitle, count in result:
-            stack.add((ruleTitle, count))
-        stack.sort(alertCmp) # Sort by rule name
-        for (ruleTitle, count) in stack:
+        var sortedResult = sortCountTable(result)
+        for (ruleTitle, count) in sortedResult:
             let color = levelColor(level)
             table.add color count, color level, color ruleTitle
     table.echoTableSepsWithStyled(seps = boxSeps)
     echo ""
+
+proc outputResult*(output:string, stackTarget: var CountTable[string], stackAlert: Table[string,  CountTable[string]]) =
+    if stackTarget.len == 0:
+        echo "No results where found."
+    else:
+        # Print results to screen
+        printAlertCount(stackAlert)
+        let sortedStack = sortCountTable(stackTarget)
+        var outputFileSize = 0
+        if output == "":
+            for (key, count) in sortedStack:
+                var commaDelimitedStr = $count & "," & key
+                commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
+                echo commaDelimitedStr
+        # Save to CSV file
+        else:
+            let outputFile = open(output, fmWrite)
+            writeLine(outputFile, "Count,Processes")
+
+            # Write results
+            for (key, count) in sortedStack:
+                writeLine(outputFile, $count & "," & key)
+            outputFileSize = getFileSize(outputFile)
+            close(outputFile)
+            echo ""
+            echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
