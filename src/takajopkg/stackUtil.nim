@@ -7,11 +7,9 @@ import std/algorithm
 proc stackRuleCount*(jsonLine:JsonNode, stackCount: var Table[string, CountTable[string]]) =
     let level = jsonLine["Level"].getStr("N/A")
     if level != "info":
-        let ruleTitle = jsonLine["RuleTitle"].getStr("N/A")
         if level notin stackCount:
-              var ct = initCountTable[string]()
-              stackCount[level] = ct
-        stackCount[level].inc(ruleTitle)
+              stackCount[level] = initCountTable[string]()
+        stackCount[level].inc(jsonLine["RuleTitle"].getStr("N/A"))
 
 proc printAlertCount*(countTable: Table[string, CountTable[string]]) =
     if countTable.len == 0:
