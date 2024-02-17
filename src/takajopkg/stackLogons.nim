@@ -4,15 +4,7 @@
 
 proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    if not quiet:
-        styledEcho(fgGreen, outputLogo())
-
-    if not os.fileExists(timeline):
-        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
-        quit(1)
-
-    if not isJsonConvertible(timeline):
-        quit(1)
+    checkArgs(quiet, timeline)
 
     echo "Started the Stack Logons command"
     echo ""
@@ -105,11 +97,4 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
     echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
 
-    let endTime = epochTime()
-    let elapsedTime2 = int(endTime - startTime)
-    let hours = elapsedTime2 div 3600
-    let minutes = (elapsedTime2 mod 3600) div 60
-    let seconds = elapsedTime2 mod 60
-    echo ""
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElasptedTime(startTime)

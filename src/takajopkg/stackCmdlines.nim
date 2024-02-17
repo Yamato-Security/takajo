@@ -1,28 +1,7 @@
 proc stackCmdlines(ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    if not quiet:
-        styledEcho(fgGreen, outputLogo())
-
-    if not os.fileExists(timeline):
-        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
-        quit(1)
-
-    if not isJsonConvertible(timeline):
-        quit(1)
-
-    echo "Started the Stack Cmdlines command"
-    echo ""
-    echo "This command will stack executed command lines."
-    echo ""
-
-    echo "Counting total lines. Please wait."
-    echo ""
-    let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
-    echo "Scanning the Hayabusa timeline. Please wait."
-    echo ""
-
+    checkArgs(quiet, timeline)
+    let totalLines = countJsonlAndStartMsg("Cmdlines", "executed command lines", timeline)
     var
         bar: SuruBar = initSuruBar()
         stackCmdlines = initCountTable[string]()
@@ -31,7 +10,6 @@ proc stackCmdlines(ignoreSysmon: bool = false, ignoreSecurity: bool = false, out
 
     bar[0].total = totalLines
     bar.setup()
-
     # Loop through JSON lines
     for line in lines(timeline):
         inc bar
@@ -45,14 +23,5 @@ proc stackCmdlines(ignoreSysmon: bool = false, ignoreSecurity: bool = false, out
             stackCmdlines.inc(command)
             stackRuleCount(jsonLine, stackCount)
     bar.finish()
-    echo ""
     outputResult(output, stackCmdlines, stackCount)
-
-    let endTime = epochTime()
-    let elapsedTime2 = int(endTime - startTime)
-    let hours = elapsedTime2 div 3600
-    let minutes = (elapsedTime2 mod 3600) div 60
-    let seconds = elapsedTime2 mod 60
-    echo ""
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElasptedTime(startTime)

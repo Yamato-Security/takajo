@@ -43,6 +43,7 @@ proc printAlertCount(countTable: Table[string, CountTable[string]]) =
     echo ""
 
 proc outputResult*(output:string, stackTarget: var CountTable[string], stackAlert: Table[string,  CountTable[string]]) =
+    echo ""
     if stackTarget.len == 0:
         echo "No results where found."
     else:

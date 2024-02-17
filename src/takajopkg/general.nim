@@ -6,7 +6,9 @@ import std/sequtils
 import std/strformat
 import std/strutils
 import std/tables
+import terminal
 import times
+import takajoTerminal
 from std/streams import newFileStream
 
 
@@ -317,7 +319,6 @@ proc extractDomain*(domain: string): string =
 proc isLocalIP*(ip: string): bool =
   return ip == "127.0.0.1" or ip == "-" or ip == "::1"
 
-
 proc isJsonConvertible*(timeline: string) : bool =
   var
     file: File
@@ -338,6 +339,41 @@ proc isJsonConvertible*(timeline: string) : bool =
   echo "Failed to open '" & timeline & "'. Please specify a valid file path.\p"
   return false
 
+proc outputElasptedTime*(startTime: float) =
+    let endTime = epochTime()
+    let elapsedTime2 = int(endTime - startTime)
+    let hours = elapsedTime2 div 3600
+    let minutes = (elapsedTime2 mod 3600) div 60
+    let seconds = elapsedTime2 mod 60
+    echo ""
+    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
+    echo ""
+
+proc checkArgs*(quiet: bool = false, timeline: string) =
+    if not quiet:
+        styledEcho(fgGreen, outputLogo())
+
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
+
+    if not isJsonConvertible(timeline):
+        quit(1)
+
+proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
+    echo "Started the Stack " & cmdName & " command"
+    echo ""
+    echo "This command will stack " &  msg & "."
+    echo ""
+
+    echo "Counting total lines. Please wait."
+    echo ""
+    let totalLines = countLinesInTimeline(timeline)
+    echo "Total lines: ", totalLines
+    echo ""
+    echo "Scanning the Hayabusa timeline. Please wait."
+    echo ""
+    return totalLines
 
 type VirusTotalResult* = object
   resTable*: TableRef[string, string]
