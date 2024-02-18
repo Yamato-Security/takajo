@@ -84,7 +84,8 @@ proc outputResult*(output:string, culumnName: string, stack: Table[string, Stack
                 if i < row.len - 1:
                   outputFile.write(escapeCsvField(col) & ",")
                 else:
-                  outputFile.write(escapeCsvField(col))
+                  outputFile.write(escapeCsvField(col) & "\p")
+        let outputFileSize = getFileSize(outputFile)
         close(outputFile)
         echo ""
-        echo "Saved file: " & output & " (" & formatFileSize(getFileSize(outputFile)) & ")"
+        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
