@@ -1,14 +1,13 @@
 proc decodeEntity(txt: string): string =
    return txt.replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'")
 
-proc stackTasks(ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
+proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    checkArgs(quiet, timeline)
+    checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("Tasks", "new scheduled tasks", timeline)
     var
         bar: SuruBar = initSuruBar()
-        stackTasks = initCountTable[string]()
-        stackCount = initTable[string, CountTable[string]]()
+        stack = initTable[string, StackRecord]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -33,9 +32,8 @@ proc stackTasks(ignoreSysmon: bool = false, ignoreSecurity: bool = false, output
             if len(arguments) > 0:
                 commandAndArgs = commandAndArgs & " " & $arguments[0]
                 commandAndArgs = commandAndArgs.replace("<Arguments>", "").replace("</Arguments>","")
-            let result = user & " -> "  & name & " -> " & decodeEntity(commandAndArgs)
-            stackTasks.inc(result)
-            stackRuleCount(jsonLine, stackCount)
+            let stackKey = user & " -> "  & name & " -> " & decodeEntity(commandAndArgs)
+            stackResult(stackKey, level, jsonLine, stack)
     bar.finish()
-    outputResult(output, stackTasks, stackCount)
+    outputResult(output, "Task", stack)
     outputElasptedTime(startTime)

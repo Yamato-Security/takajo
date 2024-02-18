@@ -1,12 +1,10 @@
-proc stackProcesses(ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
+proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    checkArgs(quiet, timeline)
+    checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("Processes", "executed processes", timeline)
     var
         bar: SuruBar = initSuruBar()
-        stackProcesses = initCountTable[string]()
-        stackCount = initTable[string, CountTable[string]]()
-
+        stack = initTable[string, StackRecord]()
     bar[0].total = totalLines
     bar.setup()
     # Loop through JSON lines
@@ -18,9 +16,8 @@ proc stackProcesses(ignoreSysmon: bool = false, ignoreSecurity: bool = false, ou
         let channel = jsonLine["Channel"].getStr("N/A")
         if (eventId == 1 and not ignoreSysmon and channel == "Sysmon") or
            (eventId == 4688 and not ignoreSecurity and channel == "Sec"):
-            let process = jsonLine["Details"]["Proc"].getStr("N/A")
-            stackProcesses.inc(process)
-            stackRuleCount(jsonLine, stackCount)
+            let stackKey = jsonLine["Details"]["Proc"].getStr("N/A")
+            stackResult(stackKey, level, jsonLine, stack)
     bar.finish()
-    outputResult(output, stackProcesses, stackCount)
+    outputResult(output, "Process", stack)
     outputElasptedTime(startTime)

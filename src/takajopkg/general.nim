@@ -349,7 +349,7 @@ proc outputElasptedTime*(startTime: float) =
     echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
     echo ""
 
-proc checkArgs*(quiet: bool = false, timeline: string) =
+proc checkArgs*(quiet: bool = false, timeline: string, level:string) =
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
@@ -359,6 +359,12 @@ proc checkArgs*(quiet: bool = false, timeline: string) =
 
     if not isJsonConvertible(timeline):
         quit(1)
+
+    if level != "critical" and level != "high" and level != "medium" and level != "low" and level != "informational":
+        echo "You must specify a minimum level of critical, high, medium, low or informational. (default: low)"
+        echo ""
+        quit(1)
+
 
 proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
     echo "Started the Stack " & cmdName & " command"

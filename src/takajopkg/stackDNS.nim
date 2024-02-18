@@ -1,11 +1,10 @@
-proc stackDNS(output: string = "", quiet: bool = false, timeline: string) =
+proc stackDNS(level: string = "informational", output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    checkArgs(quiet, timeline)
+    checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("DNS", "DNS queries and responses", timeline)
     var
         bar: SuruBar = initSuruBar()
-        stackDNS = initCountTable[string]()
-        stackCount = initTable[string, CountTable[string]]()
+        stack = initTable[string, StackRecord]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -20,10 +19,8 @@ proc stackDNS(output: string = "", quiet: bool = false, timeline: string) =
             let prog = jsonLine["Details"]["Proc"].getStr("N/A")
             let query = jsonLine["Details"]["Query"].getStr("N/A")
             let res = jsonLine["Details"]["Result"].getStr("N/A")
-            let result = prog & " -> " & query & " -> " & res
-            stackDNS.inc(result)
-            stackRuleCount(jsonLine, stackCount)
-
+            let stackKey = prog & " -> " & query & " -> " & res
+            stackResult(stackKey, level, jsonLine, stack)
     bar.finish()
-    outputResult(output, stackDNS, stackCount)
+    outputResult(output, "DNS", stack)
     outputElasptedTime(startTime)

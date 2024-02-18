@@ -4,7 +4,7 @@
 
 proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    checkArgs(quiet, timeline)
+    checkArgs(quiet, timeline, "informational")
 
     echo "Started the Stack Logons command"
     echo ""

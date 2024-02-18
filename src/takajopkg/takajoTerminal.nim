@@ -56,12 +56,12 @@ proc echoTableSepsWithStyled*(table: TerminalTable, maxSize = terminalWidth(), s
     printSeparator(bottom)
 
 proc levelColor*(level:string): proc(ss: varargs[string, `$`]): string =
-    if level == "crit":
+    if "crit" in level:
         return red
-    elif level == "high":
+    elif "high" in level:
         return yellow
-    elif level == "med":
+    elif "med" in level:
         return cyan
-    elif level == "low":
+    elif "low" in level:
         return green
     return white

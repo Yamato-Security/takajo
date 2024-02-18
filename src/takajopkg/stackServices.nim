@@ -1,12 +1,11 @@
-proc stackServices(ignoreSysmon: bool = false, ignoreSecurity: bool = false,output: string = "", quiet: bool = false, timeline: string) =
+proc stackServices(level: string = "informational", ignoreSysmon: bool = false, ignoreSecurity: bool = false,output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    checkArgs(quiet, timeline)
+    checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("Services", "service names and paths", timeline)
 
     var
         bar: SuruBar = initSuruBar()
-        stackServices = initCountTable[string]()
-        stackCount = initTable[string, CountTable[string]]()
+        stack = initTable[string, StackRecord]()
 
     bar[0].total = totalLines
     bar.setup()
@@ -21,9 +20,8 @@ proc stackServices(ignoreSysmon: bool = false, ignoreSecurity: bool = false,outp
            (eventId == 4697 and not ignoreSecurity and channel == "Sec"):
             let svc = jsonLine["Details"]["Svc"].getStr("N/A")
             let path = jsonLine["Details"]["Path"].getStr("N/A")
-            let res = svc & " -> " & path
-            stackServices.inc(res)
-            stackRuleCount(jsonLine, stackCount)
+            let stackKey = svc & " -> " & path
+            stackResult(stackKey, level, jsonLine, stack)
     bar.finish()
-    outputResult(output, stackServices, stackCount)
+    outputResult(output, "Service", stack)
     outputElasptedTime(startTime)

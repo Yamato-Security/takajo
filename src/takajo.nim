@@ -184,6 +184,7 @@ when isMainModule:
             stackCmdlines, cmdName = "stack-cmdlines",
             doc = "stack executed command lines",
             help = {
+                "level": "specify the minimum alert level",
                 "ignoreSysmon": "exclude Sysmon 1 events",
                 "ignoreSecurity": "exclude Security 4688 events",
                 "output": "save results to a CSV file",
@@ -199,6 +200,7 @@ when isMainModule:
             stackDNS, cmdName = "stack-dns",
             doc = "stack DNS queries and responses",
             help = {
+                "level": "specify the minimum alert level",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -218,6 +220,7 @@ when isMainModule:
             stackProcesses, cmdName = "stack-processes",
             doc = "stack executed processes",
             help = {
+                "level": "specify the minimum alert level",
                 "ignoreSysmon": "exclude Sysmon 1 events",
                 "ignoreSecurity": "exclude Security 4688 events",
                 "output": "save results to a CSV file",
@@ -233,6 +236,7 @@ when isMainModule:
             stackServices, cmdName = "stack-services",
             doc = "stack service names and paths",
             help = {
+                "level": "specify the minimum alert level",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -246,6 +250,7 @@ when isMainModule:
             stackTasks, cmdName = "stack-tasks",
             doc = "stack new scheduled tasks",
             help = {
+                "level": "specify the minimum alert level",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
