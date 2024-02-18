@@ -59,6 +59,9 @@ jobs:
       - name: run extract-scriptblocks(-o)
         run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl -o scriptblocks
 
+      - name: run extract-scriptblocks(-l)
+        run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl -o scriptblocks -l informational
+
       - name: run list-domain(-o)
         run: cd takajo && ./takajo list-domains -t timeline.jsonl -o domains.txt
 
@@ -95,8 +98,17 @@ jobs:
       - name: run stack-cmdlines
         run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl
 
+      - name: run stack-cmdlines(-o)
+        run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl -o cmdlines.csv
+
+      - name: run stack-cmdlines(-l)
+        run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl -o cmdlines.csv -l informational
+
       - name: run stack-dns
         run: cd takajo && ./takajo stack-dns -t timeline.jsonl
+
+      - name: run stack-dns(-o)
+        run: cd takajo && ./takajo stack-dns -t timeline.jsonl -o dns.csv
 
       - name: run stack-logons
         run: cd takajo && ./takajo stack-logons -t timeline.jsonl
@@ -112,6 +124,9 @@ jobs:
 
       - name: run stack-processes(-o)
         run: cd takajo && ./takajo stack-processes -t timeline.jsonl -o processes.csv
+
+      - name: run stack-processes(-l)
+        run: cd takajo && ./takajo stack-processes -t timeline.jsonl -o processes.csv -l informational
 
       - name: run stack-services
         run: cd takajo && ./takajo stack-services -t timeline.jsonl
