@@ -242,7 +242,7 @@ when isMainModule:
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             },
             short = {
-                "ignoreSysmon": 'y',
+                "ignoreSystem": 'y',
                 "ignoreSecurity": 'e'
             }
         ],
