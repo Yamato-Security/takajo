@@ -14,6 +14,8 @@ let LEVEL_ORDER = {"crit": 5, "high": 4, "med": 3, "low": 2, "info": 1}.toTable
 type StackRecord* = object
   key*: string
   count* = 0
+  eid* = ""
+  channel* = ""
   levelsOrder* = 0
   levels* = initHashSet[string]()
   ruleTitles* = initHashSet[string]()
@@ -39,12 +41,16 @@ proc recordCmp(x, y: StackRecord): int =
   if result == 0:
       result = cmp(x.count, y.count) * - 1
   if result == 0:
+      result = cmp(x.channel, y.channel)
+  if result == 0:
+      result = cmp(x.eid, y.eid)
+  if result == 0:
       result = cmp(x.key, y.key)
 
-proc buildCSVRecord(x: StackRecord): array[4, string] =
+proc buildCSVRecord(x: StackRecord): array[6, string] =
   let levelsStr = toSeq(x.levels).sorted(levelCmp).join(",")
   let ruleTitlesStr = toSeq(x.ruleTitles).sorted.join(",")
-  return [intToStr(x.count), x.key, levelsStr, ruleTitlesStr]
+  return [intToStr(x.count), x.channel, x.eid, x.key, levelsStr, ruleTitlesStr]
 
 proc stackResult*(key:string, minLevel:string, jsonLine:JsonNode, stack: var Table[string, StackRecord]) =
     let level = jsonLine["Level"].getStr("N/A")
@@ -52,7 +58,7 @@ proc stackResult*(key:string, minLevel:string, jsonLine:JsonNode, stack: var Tab
         return
     var val: StackRecord
     if key notin stack:
-        val = StackRecord(key: key)
+        val = StackRecord(key: key, eid: intToStr(jsonLine["EventID"].getInt(0)), channel: jsonLine["Channel"].getStr("N/A"))
     else:
         val = stack[key]
     val.count += 1
@@ -67,12 +73,12 @@ proc outputResult*(output:string, culumnName: string, stack: Table[string, Stack
         echo "No results where found."
     else:
         let stackRecords = toSeq(stack.values).sorted(recordCmp).map(buildCSVRecord)
-        let header = ["Count", culumnName, "Levels", "Alerts"]
+        let header = ["Count", "Channel", "EventID", culumnName, "Levels", "Alerts"]
         var table: TerminalTable
         table.add header
         for row in stackRecords:
-            let color = levelColor(row[2])
-            table.add color row[0], color row[1], color row[2], color row[3]
+            let color = levelColor(row[4])
+            table.add color row[0], color row[1], color row[2], color row[3], color row[4], color row[5]
         table.echoTableSepsWithStyled(seps = boxSeps)
         echo ""
         if output == "":
