@@ -17,7 +17,7 @@ proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSec
         if (eventId == 1 and not ignoreSysmon and channel == "Sysmon") or
            (eventId == 4688 and not ignoreSecurity and channel == "Sec"):
             let stackKey = jsonLine["Details"]["Proc"].getStr("N/A")
-            stackResult(stackKey, level, jsonLine, stack)
+            stackResult(stackKey, stack, level, jsonLine)
     bar.finish()
     outputResult(output, "Process", stack)
     outputElasptedTime(startTime)

@@ -24,16 +24,17 @@ proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ign
             let content = jsonLine["Details"]["Content"].getStr("N/A").replace("\\r\\n", "")
             let node = parseXml(content)
             let commands = node.findAll("Command")
-            var commandAndArgs = ""
+            var command = ""
+            var args = ""
             if len(commands) > 0:
-                commandAndArgs = $commands[0]
-                commandAndArgs = commandAndArgs.replace("<Command>", "").replace("</Command>","")
+                command = $commands[0]
+                command = command.replace("<Command>", "").replace("</Command>","")
             let arguments = node.findAll("Arguments")
             if len(arguments) > 0:
-                commandAndArgs = commandAndArgs & " " & $arguments[0]
-                commandAndArgs = commandAndArgs.replace("<Arguments>", "").replace("</Arguments>","")
-            let stackKey = user & " -> "  & name & " -> " & decodeEntity(commandAndArgs)
-            stackResult(stackKey, level, jsonLine, stack)
+                args = $arguments[0]
+                args = args.replace("<Arguments>", "").replace("</Arguments>","")
+            let stackKey = user & " -> "  & name & " -> " & decodeEntity(command & " " & args)
+            stackResult(stackKey, stack, level, jsonLine, @[name, command, args])
     bar.finish()
-    outputResult(output, "Task", stack)
+    outputResult(output, "Task", stack, @["TaskName", "Command", "Arguments"])
     outputElasptedTime(startTime)

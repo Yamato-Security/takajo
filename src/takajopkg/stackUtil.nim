@@ -19,6 +19,7 @@ type StackRecord* = object
   levelsOrder* = 0
   levels* = initHashSet[string]()
   ruleTitles* = initHashSet[string]()
+  otherColumn = newSeq[string]()
 
 proc calcLevelOrder(x: StackRecord): int =
   result = 0
@@ -47,12 +48,14 @@ proc recordCmp(x, y: StackRecord): int =
   if result == 0:
       result = cmp(x.key, y.key)
 
-proc buildCSVRecord(x: StackRecord): array[6, string] =
+proc buildCSVRecord(x: StackRecord): seq[string] =
   let levelsStr = toSeq(x.levels).sorted(levelCmp).join(",")
   let ruleTitlesStr = toSeq(x.ruleTitles).sorted.join(",")
-  return [intToStr(x.count), x.channel, x.eid, x.key, levelsStr, ruleTitlesStr]
+  if x.otherColumn.len == 0:
+    return @[intToStr(x.count), x.channel, x.eid, x.key, levelsStr, ruleTitlesStr]
+  return concat(@[intToStr(x.count), x.channel, x.eid], x.otherColumn, @[levelsStr, ruleTitlesStr])
 
-proc stackResult*(key:string, minLevel:string, jsonLine:JsonNode, stack: var Table[string, StackRecord]) =
+proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:string, jsonLine:JsonNode, otherColumn:seq[string] = @[]) =
     let level = jsonLine["Level"].getStr("N/A")
     if not isMinLevel(level, minLevel):
         return
@@ -65,20 +68,23 @@ proc stackResult*(key:string, minLevel:string, jsonLine:JsonNode, stack: var Tab
     val.levels.incl(level)
     val.levelsOrder = val.calcLevelOrder()
     val.ruleTitles.incl(jsonLine["RuleTitle"].getStr("N/A"))
+    val.otherColumn = otherColumn
     stack[key] = val
 
-proc outputResult*(output:string, culumnName: string, stack: Table[string, StackRecord]) =
+proc outputResult*(output:string, culumnName: string, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string]()) =
     echo ""
     if stack.len == 0:
         echo "No results where found."
     else:
         let stackRecords = toSeq(stack.values).sorted(recordCmp).map(buildCSVRecord)
-        let header = ["Count", "Channel", "EventID", culumnName, "Levels", "Alerts"]
+        var header = @["Count", "Channel", "EventID", culumnName, "Levels", "Alerts"]
+        if otherHeader.len > 0:
+            header = concat(@["Count", "Channel", "EventID"], otherHeader, @["Levels", "Alerts"])
         var table: TerminalTable
         table.add header
         for row in stackRecords:
-            let color = levelColor(row[4])
-            table.add color row[0], color row[1], color row[2], color row[3], color row[4], color row[5]
+            let color = levelColor(row[^2])
+            table.add map(row, proc(col: string): string = color col)
         table.echoTableSepsWithStyled(seps = boxSeps)
         echo ""
         if output == "":

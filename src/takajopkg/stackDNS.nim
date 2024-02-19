@@ -20,7 +20,7 @@ proc stackDNS(level: string = "informational", output: string = "", quiet: bool 
             let query = jsonLine["Details"]["Query"].getStr("N/A")
             let res = jsonLine["Details"]["Result"].getStr("N/A")
             let stackKey = prog & " -> " & query & " -> " & res
-            stackResult(stackKey, level, jsonLine, stack)
+            stackResult(stackKey, stack, level, jsonLine, @[prog, query, res])
     bar.finish()
-    outputResult(output, "DNS", stack)
+    outputResult(output, "DNS", stack, @["Image", "Query", "Result"])
     outputElasptedTime(startTime)

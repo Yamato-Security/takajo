@@ -21,7 +21,7 @@ proc stackServices(level: string = "informational", ignoreSystem: bool = false, 
             let svc = jsonLine["Details"]["Svc"].getStr("N/A")
             let path = jsonLine["Details"]["Path"].getStr("N/A")
             let stackKey = svc & " -> " & path
-            stackResult(stackKey, level, jsonLine, stack)
+            stackResult(stackKey, stack, level, jsonLine, @["ServiceName", "Path"])
     bar.finish()
-    outputResult(output, "Service", stack)
+    outputResult(output, "Service", stack, @["ServiceName", "Path"])
     outputElasptedTime(startTime)
