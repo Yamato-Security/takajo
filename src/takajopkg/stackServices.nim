@@ -1,7 +1,7 @@
 proc stackServices(level: string = "informational", ignoreSystem: bool = false, ignoreSecurity: bool = false,output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let totalLines = countJsonlAndStartMsg("Services", "service names and paths", timeline)
+    let totalLines = countJsonlAndStartMsg("Services", "service names and paths from System 7045 and Security 4697 events", timeline)
 
     var
         bar: SuruBar = initSuruBar()

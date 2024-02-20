@@ -4,7 +4,7 @@ proc decodeEntity(txt: string): string =
 proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let totalLines = countJsonlAndStartMsg("Tasks", "new scheduled tasks", timeline)
+    let totalLines = countJsonlAndStartMsg("Tasks", "new scheduled tasks from Security 4698 events", timeline)
     var
         bar: SuruBar = initSuruBar()
         stack = initTable[string, StackRecord]()

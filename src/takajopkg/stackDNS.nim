@@ -1,7 +1,7 @@
 proc stackDNS(level: string = "informational", output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let totalLines = countJsonlAndStartMsg("DNS", "DNS queries and responses", timeline)
+    let totalLines = countJsonlAndStartMsg("DNS", "DNS queries and responses from Sysmon 22 events", timeline)
     var
         bar: SuruBar = initSuruBar()
         stack = initTable[string, StackRecord]()

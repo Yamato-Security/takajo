@@ -1,7 +1,7 @@
 proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let totalLines = countJsonlAndStartMsg("Cmdlines", "executed command lines", timeline)
+    let totalLines = countJsonlAndStartMsg("Cmdlines", "executed command lines from Sysmon 1 and Security 4688 events", timeline)
     var
         bar: SuruBar = initSuruBar()
         stack = initTable[string, StackRecord]()

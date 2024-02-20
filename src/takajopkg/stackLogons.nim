@@ -8,7 +8,7 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
 
     echo "Started the Stack Logons command"
     echo ""
-    echo "This command will stack logons based on target user, target computer, source IP address and source computer."
+    echo "This command will stack logons based on target user, target computer, source IP address and source computer from Security 4624 events."
     echo "Local source IP addresses are not included by default but can be enabled with -l, --localSrcIpAddresses."
     echo ""
 
