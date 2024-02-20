@@ -49,8 +49,8 @@ proc recordCmp(x, y: StackRecord): int =
       result = cmp(x.key, y.key)
 
 proc buildCSVRecord(x: StackRecord): seq[string] =
-  let levelsStr = toSeq(x.levels).sorted(levelCmp).join(",")
-  let ruleTitlesStr = toSeq(x.ruleTitles).sorted.join(",")
+  let levelsStr = toSeq(x.levels).sorted(levelCmp).join(" | ")
+  let ruleTitlesStr = toSeq(x.ruleTitles).sorted.join(" | ")
   if x.otherColumn.len == 0:
     return @[intToStr(x.count), x.channel, x.eid, x.key, levelsStr, ruleTitlesStr]
   return concat(@[intToStr(x.count), x.channel, x.eid], x.otherColumn, @[levelsStr, ruleTitlesStr])
