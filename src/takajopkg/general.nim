@@ -1,7 +1,4 @@
 import json
-import nancy
-import terminal
-import termstyle
 import re
 import std/os
 import std/parsecsv
@@ -9,20 +6,11 @@ import std/sequtils
 import std/strformat
 import std/strutils
 import std/tables
+import terminal
 import times
+import takajoTerminal
 from std/streams import newFileStream
 
-proc outputLogo*(): string =
-    let logo = """
-╔════╦═══╦╗╔═╦═══╗ ╔╦═══╗
-║╔╗╔╗║╔═╗║║║╔╣╔═╗║ ║║╔═╗║
-╚╝║║╚╣║ ║║╚╝╝║║ ║║ ║║║ ║║
-  ║║ ║╚═╝║╔╗╖║╚═╝╠╗║║║ ║║
- ╔╝╚╗║╔═╗║║║╚╣╔═╗║╚╝║╚═╝║
- ╚══╝╚╝ ╚╩╝╚═╩╝ ╚╩══╩═══╝
-  by Yamato Security
-"""
-    return logo
 
 proc getJsonValue*(jsonResponse: JsonNode, keys: seq[string], default: string = "Unknown"): string =
     var value = jsonResponse
@@ -331,7 +319,6 @@ proc extractDomain*(domain: string): string =
 proc isLocalIP*(ip: string): bool =
   return ip == "127.0.0.1" or ip == "-" or ip == "::1"
 
-
 proc isJsonConvertible*(timeline: string) : bool =
   var
     file: File
@@ -352,42 +339,47 @@ proc isJsonConvertible*(timeline: string) : bool =
   echo "Failed to open '" & timeline & "'. Please specify a valid file path.\p"
   return false
 
-proc colorWrite*(color: ForegroundColor, ansiEscape: string, txt: string) =
-    # Remove ANSI escape sequences and use stdout.styledWrite instead
-    let replacedTxt = txt.replace(ansiEscape,"").replace(termClear,"")
-    if "│" in replacedTxt:
-      stdout.styledWrite(color, replacedTxt.replace("│ ",""))
-      stdout.write "│ "
-    else:
-      stdout.styledWrite(color, replacedTxt)
+proc outputElasptedTime*(startTime: float) =
+    let endTime = epochTime()
+    let elapsedTime2 = int(endTime - startTime)
+    let hours = elapsedTime2 div 3600
+    let minutes = (elapsedTime2 mod 3600) div 60
+    let seconds = elapsedTime2 mod 60
+    echo ""
+    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
+    echo ""
 
-proc stdoutStyledWrite*(txt: string) =
-    if txt.startsWith(termRed):
-      colorWrite(fgRed, termRed,txt)
-    elif txt.startsWith(termGreen):
-      colorWrite(fgGreen, termGreen, txt)
-    elif txt.startsWith(termYellow):
-      colorWrite(fgYellow, termYellow, txt)
-    elif txt.startsWith(termCyan):
-      colorWrite(fgCyan, termCyan, txt)
-    else:
-      stdout.write txt.replace(termClear,"")
+proc checkArgs*(quiet: bool = false, timeline: string, level:string) =
+    if not quiet:
+        styledEcho(fgGreen, outputLogo())
 
-proc echoTableSepsWithStyled*(table: TerminalTable, maxSize = terminalWidth(), seps = defaultSeps) =
-    # This function equivalent to echoTableSeps without using ANSI escape to avoid the following issue.
-    # https://github.com/PMunch/nancy/issues/4
-    # https://github.com/PMunch/nancy/blob/9918716a563f64d740df6a02db42662781e94fc8/src/nancy.nim#L195C6-L195C19
-    let sizes = table.getColumnSizes(maxSize - 4, padding = 3)
-    printSeparator(top)
-    for k, entry in table.entries(sizes):
-      for _, row in entry():
-        stdout.write seps.vertical & " "
-        for i, cell in row():
-          stdoutStyledWrite cell & (if i != sizes.high: " " & seps.vertical & " " else: "")
-        stdout.write " " & seps.vertical & "\n"
-      if k != table.rows - 1:
-        printSeparator(center)
-    printSeparator(bottom)
+    if not os.fileExists(timeline):
+        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
+        quit(1)
+
+    if not isJsonConvertible(timeline):
+        quit(1)
+
+    if level != "critical" and level != "high" and level != "medium" and level != "low" and level != "informational":
+        echo "You must specify a minimum level of critical, high, medium, low or informational. (default: low)"
+        echo ""
+        quit(1)
+
+
+proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
+    echo "Started the Stack " & cmdName & " command"
+    echo ""
+    echo "This command will stack " &  msg & "."
+    echo ""
+
+    echo "Counting total lines. Please wait."
+    echo ""
+    let totalLines = countLinesInTimeline(timeline)
+    echo "Total lines: ", totalLines
+    echo ""
+    echo "Scanning the Hayabusa timeline. Please wait."
+    echo ""
+    return totalLines
 
 type VirusTotalResult* = object
   resTable*: TableRef[string, string]

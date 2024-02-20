@@ -164,16 +164,8 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
             else:
                 outputFile.write(escapeCsvField(val) & "\p")
         for v in summaryRecords.values:
-            if v[5] == "crit":
-                table.add red v[0], red v[1], red v[2], red v[3], red v[4], red v[5], red v[6]
-            elif v[5] == "high":
-                table.add yellow v[0], yellow v[1], yellow v[2], yellow v[3], yellow v[4], yellow v[5], yellow v[6]
-            elif v[5] == "med":
-                table.add cyan v[0], cyan v[1], cyan v[2], cyan v[3], cyan v[4], cyan v[5], cyan v[6]
-            elif v[5] == "low":
-                table.add green v[0], green v[1], green v[2], green v[3], green v[4], green v[5], green v[6]
-            else:
-                table.add v
+            let color = levelColor(v[5])
+            table.add color v[0], color v[1], color v[2], color v[3], color v[4], color v[5], color v[6]
             for i, cell in v:
                 if i < 6:
                     outputFile.write(escapeCsvField(cell) & ",")

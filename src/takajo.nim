@@ -11,7 +11,6 @@ import strformat
 import strutils
 import tables
 import terminal
-import termstyle
 import times
 import threadpool
 import uri
@@ -21,6 +20,8 @@ import std/xmlparser
 import std/xmltree
 import suru
 import takajopkg/general
+import takajopkg/stackUtil
+import takajopkg/takajoTerminal
 include takajopkg/extractScriptblocks
 include takajopkg/listDomains
 include takajopkg/listIpAddresses
@@ -57,12 +58,12 @@ when isMainModule:
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
-    const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl -o cmdlines.csv\p"
-    const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl -o dns.csv\p"
+    const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] -o cmdlines.csv\p"
+    const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl [--level infomational]  -o dns.csv\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
-    const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl -o services.csv\p"
-    const example_stack_tasks = "  stack-tasks -t ../hayabusa/timeline.jsonl -o tasks.csv\p"
-    const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl -o processes.csv\p"
+    const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl [--level infomational] -o services.csv\p"
+    const example_stack_tasks = "  stack-tasks -t ../hayabusa/timeline.jsonl [--level infomational] -o tasks.csv\p"
+    const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl [--level low] -o processes.csv\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
@@ -93,7 +94,7 @@ when isMainModule:
             extractScriptblocks, cmdName = "extract-scriptblocks",
             doc = "extract and reassemble PowerShell EID 4104 script block logs",
             help = {
-                "level": "specify the minimum alert level",
+                "level": "specify the minimum alert level (default: low)",
                 "output": "output directory (default: scriptblock-logs)",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
@@ -185,6 +186,7 @@ when isMainModule:
             stackCmdlines, cmdName = "stack-cmdlines",
             doc = "stack executed command lines",
             help = {
+                "level": "specify the minimum alert level (default: low)",
                 "ignoreSysmon": "exclude Sysmon 1 events",
                 "ignoreSecurity": "exclude Security 4688 events",
                 "output": "save results to a CSV file",
@@ -200,6 +202,7 @@ when isMainModule:
             stackDNS, cmdName = "stack-dns",
             doc = "stack DNS queries and responses",
             help = {
+                "level": "specify the minimum alert level (default: informational)",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -219,6 +222,7 @@ when isMainModule:
             stackProcesses, cmdName = "stack-processes",
             doc = "stack executed processes",
             help = {
+                "level": "specify the minimum alert level (default: low)",
                 "ignoreSysmon": "exclude Sysmon 1 events",
                 "ignoreSecurity": "exclude Security 4688 events",
                 "output": "save results to a CSV file",
@@ -234,12 +238,13 @@ when isMainModule:
             stackServices, cmdName = "stack-services",
             doc = "stack service names and paths",
             help = {
+                "level": "specify the minimum alert level (default: informational)",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             },
             short = {
-                "ignoreSysmon": 'y',
+                "ignoreSystem": 'y',
                 "ignoreSecurity": 'e'
             }
         ],
@@ -247,6 +252,7 @@ when isMainModule:
             stackTasks, cmdName = "stack-tasks",
             doc = "stack new scheduled tasks",
             help = {
+                "level": "specify the minimum alert level (default: informational)",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",

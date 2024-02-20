@@ -56,10 +56,37 @@ jobs:
       - name: run extract-scriptblocks
         run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl
 
+      - name: run extract-scriptblocks(-o)
+        run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl -o scriptblocks
+
+      - name: run extract-scriptblocks(-l)
+        run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl -o scriptblocks -l informational
+
+      - name: run list-domain(-o)
+        run: cd takajo && ./takajo list-domains -t timeline.jsonl -o domains.txt
+
+      - name: run list-domain(-s)
+        run: cd takajo && ./takajo list-domains -t timeline.jsonl -o domains.txt -s
+
+      - name: run list-hashes(-o)
+        run: cd takajo && ./takajo list-hashes -t timeline.jsonl -o case-1
+
+      - name: run list-ip-addresses(-o)
+        run: cd takajo && ./takajo list-ip-addresses -t timeline.jsonl -o ipAddresses.txt
+
+      - name: run list-ip-addresses(-i)
+        run: cd takajo && ./takajo list-ip-addresses -t timeline.jsonl -o ipAddresses.txt -i=false
+
       - name: run list-undetected-evtx
+        run: cd takajo && ./takajo list-undetected-evtx -t timeline.csv -e ../hayabusa-sample-evtx
+
+      - name: run list-undetected-evtx(-o)
         run: cd takajo && ./takajo list-undetected-evtx -t timeline.csv -e ../hayabusa-sample-evtx -o undetected-evtx.txt
 
       - name: run list-unused-rules
+        run: cd takajo && ./takajo list-unused-rules -t timeline.csv -r ../hayabusa/tmp/rules
+
+      - name: run list-unused-rules(-o)
         run: cd takajo && ./takajo list-unused-rules -t timeline.csv -r ../hayabusa/tmp/rules -o unused-rules.txt
 
       - name: run split-csv-timeline
@@ -71,20 +98,47 @@ jobs:
       - name: run stack-cmdlines
         run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl
 
+      - name: run stack-cmdlines(-o)
+        run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl -o cmdlines.csv
+
+      - name: run stack-cmdlines(-l)
+        run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl -o cmdlines.csv -l informational
+
       - name: run stack-dns
         run: cd takajo && ./takajo stack-dns -t timeline.jsonl
+
+      - name: run stack-dns(-o)
+        run: cd takajo && ./takajo stack-dns -t timeline.jsonl -o dns.csv
 
       - name: run stack-logons
         run: cd takajo && ./takajo stack-logons -t timeline.jsonl
 
+      - name: run stack-logons(-l)
+        run: cd takajo && ./takajo stack-logons -t timeline.jsonl -l
+
+      - name: run stack-logons(-o)
+        run: cd takajo && ./takajo stack-logons -t timeline.jsonl -o logon.csv
+
       - name: run stack-processes
         run: cd takajo && ./takajo stack-processes -t timeline.jsonl
+
+      - name: run stack-processes(-o)
+        run: cd takajo && ./takajo stack-processes -t timeline.jsonl -o processes.csv
+
+      - name: run stack-processes(-l)
+        run: cd takajo && ./takajo stack-processes -t timeline.jsonl -o processes.csv -l informational
 
       - name: run stack-services
         run: cd takajo && ./takajo stack-services -t timeline.jsonl
 
+      - name: run stack-services(-o)
+        run: cd takajo && ./takajo stack-services -t timeline.jsonl -o services.csv
+
       - name: run stack-tasks
         run: cd takajo && ./takajo stack-tasks -t timeline.jsonl
+
+      - name: run stack-tasks(-o)
+        run: cd takajo && ./takajo stack-tasks -t timeline.jsonl -o tasks.csv
 
       - name: run sysmon-process-tree
         run: cd takajo && ./takajo sysmon-process-tree -t timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00" -o process-tree.txt
