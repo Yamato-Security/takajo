@@ -541,7 +541,7 @@ Options:
 - `-l, --level`: specify the minimum alert level (default: `low`)
 - `-y, --ignoreSysmon`: exclude Sysmon 1 events (default: `false`)
 - `-e, --ignoreSecurity`: exclude Security 4688 events (default: `false`)
-- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `stack-cmdlines` command examples
@@ -573,7 +573,7 @@ Required options:
 Options:
 
 - `-l, --level`: specify the minimum alert level (default: `informational`)
-- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `stack-dns` command examples
@@ -606,7 +606,7 @@ Required options:
 Options:
 
 - `-l, --localSrcIpAddresses`: include results when the source IP address is local.
-- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `stack-logons` command examples
@@ -638,7 +638,7 @@ Required options:
 Options:
 
 - `-l, --level`: specify the minimum alert level (default: `low`)
-- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `stack-processes` command examples
@@ -672,7 +672,7 @@ Options:
 - `-l, --level`: specify the minimum alert level (default: `informational`)
 - `-y, --ignoreSystem`: exclude System 7040 events (default: `false`)
 - `-e, --ignoreSecurity`: exclude Security 4697 events (default: `false`)
-- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `stack-services` command examples
@@ -704,7 +704,7 @@ Required options:
 Options:
 
 - `-l, --level`: specify the minimum alert level (default: `informational`)
-- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `stack-tasks` command examples
@@ -902,7 +902,7 @@ Required options:
 
 Options:
 
-- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `timeline-tasks` command examples
