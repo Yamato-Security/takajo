@@ -21,7 +21,7 @@
 ## Takajoについて
 
 Takajō (鷹匠)は 日本の[Yamato Security](https://yamatosecurity.connpass.com/)グループによって作られた [Hayabusa](https://github.com/Yamato-Security/hayabusa)から得られた結果を解析するツールです。Takajōは[Nim](https://nim-lang.org/)で作られました。
-Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wikipedia.org/wiki/Falconry)を意味し、ハヤブサが得た結果をさらに活かすことから選ばれました。
+Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wikipedia.org/wiki/Falconry)を意味し、ハヤブサの「獲物」（結果）を分析することから選ばれました。
 
 # 関連プロジェクト
 
@@ -70,8 +70,18 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
     - [`split-json-timeline`コマンド](#split-json-timelineコマンド)
       - [`split-json-timeline`コマンドの使用例](#split-json-timelineコマンドの使用例)
   - [Stackコマンド](#stackコマンド-1)
+    - [`stack-cmdlines`コマンド](#stack-cmdlinesコマンド)
+      - [`stack-cmdlines`コマンドの使用例](#stack-cmdlinesコマンドの使用例)
+    - [`stack-dns`コマンド](#stack-dnsコマンド)
+      - [`stack-dns`コマンドの使用例](#stack-dnsコマンドの使用例)
     - [`stack-logons`コマンド](#stack-logonsコマンド)
       - [`stack-logons`コマンドの使用例](#stack-logonsコマンドの使用例)
+    - [`stack-processes`コマンド](#stack-processesコマンド)
+      - [`stack-processes`コマンドの使用例](#stack-processesコマンドの使用例)
+    - [`stack-services`コマンド](#stack-servicesコマンド)
+      - [`stack-services`コマンドの使用例](#stack-servicessコマンドの使用例)
+    - [`stack-tasks`コマンド](#stack-tasksコマンド)
+      - [`stack-tasks`コマンドの使用例](#stack-tasksコマンドの使用例)
   - [Sysmonコマンド](#sysmonコマンド-1)
     - [`sysmon-process-tree`コマンド](#sysmon-process-treeコマンド)
       - [`sysmon-process-tree`コマンドの使用例](#sysmon-process-treeコマンドの使用例)
@@ -85,6 +95,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
     - [`timeline-suspicious-processes`コマンド](#timeline-suspicious-processesコマンド)
       - [`timeline-suspicious-processes`コマンドの使用例](#timeline-suspicious-processesコマンドの使用例)
       - [`timeline-suspicious-processes`スクリーンショット](#timeline-suspicious-processesスクリーンショット)
+    - [`timeline-tasks`コマンド](#timeline-tasksコマンド)
+      - [`timeline-tasks`コマンドの使用例](#timeline-tasksコマンドの使用例)
   - [TTPコマンド](#ttpコマンド)
     - [`ttp-summary`コマンド](#ttp-summaryコマンド)
       - [`ttp-summary`コマンドの使用例](#ttp-summaryコマンドの使用例)
@@ -92,6 +104,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
     - [`ttp-visualize`コマンド](#ttp-visualizeコマンド)
       - [`ttp-visualize`コマンドの使用例](#ttp-visualizeコマンドの使用例)
       - [`ttp-visualize`スクリーンショット](#ttp-visualizeスクリーンショット)
+    - [`ttp-visualize-sigma`コマンド](#ttp-visualize-sigmaコマンド)
+      - [`ttp-visualize-simga`コマンドの使用例](#ttp-visualize-sigmaコマンドの使用例)
   - [VirusTotalコマンド](#virustotalコマンド-1)
     - [`vt-domain-lookup`コマンド](#vt-domain-lookupコマンド)
       - [`vt-domain-lookup`コマンドの使用例](#vt-domain-lookupコマンドの使用例)
@@ -115,6 +129,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 - ドメイン、ハッシュ、IPアドレスをVirusTotalで検索します。
 - 検知されていない`.evtx` ファイルをリストアップします。
 - MITRE ATT&CK NavigatorでTTPを可視化します。
+- コマンドライン DNSリクエスト, ログオン, プロセス, サービス, スケジュールタスクなどを集計します。
+- ログオン, USB使用, 不審プロセス, タスクなどのタイムラインを作成します。
 - その他、たくさん！
 
 # ダウンロード
@@ -155,7 +171,12 @@ Nimがインストールされている場合、以下のコマンドでソー�
 * `split-json-timeline`: コンピューター名に基づき、大きなJSONLタイムラインを小さなJSONLタイムラインに分割する
 
 ## Stackコマンド
+* `stack-cmdlines`: 実行されたコマンドラインを集計する
+* `stack-dns`: DNSクエリとレスポンスを集計する
 * `stack-logons`: ユーザー名、コンピューター名、送信元IPアドレス、送信元コンピューター名など、項目ごとの上位ログオンを出力する
+* `stack-processes`: 実行されたプロセスを集計する
+* `stack-services`: 作成されたサービス名とプロセスを集計する
+* `stack-tasks`: 作成されたスケジュールタスクを集計する
 
 ## Sysmonコマンド
 * `sysmon-process-tree`: プロセスツリーを出力する
@@ -164,10 +185,12 @@ Nimがインストールされている場合、以下のコマンドでソー�
 * `timeline-logon`: ログオンイベントのCSVタイムラインを作成する
 * `timeline-suspicious-processes`: 不審なプロセスのCSVタイムラインを作成する
 * `timeline-partition-diagnostic`: partition diagnosticイベントのCSVタイムラインを作成する
+* `timeline-tasks`: スケジュールタスクのCSVタイムラインを作成する
 
 ## TTP Commands
 * `ttp-summary`: コンピュータ毎に検知されたTTPsの要約を出力する
 * `ttp-visualize`: TTPs を抽出し、MITRE ATT&CK Navigator で視覚化するためのJSONファイルを作成する
+* `ttp-visualize-sigma`: TTPs をSigmaルールから抽出し、MITRE ATT&CK Navigator で視覚化するためのJSONファイルを作成する
 
 ## VirusTotalコマンド
 * `vt-domain-lookup`: VirusTotalでドメインのリストを検索し、悪意のあるドメインをレポートする
@@ -503,6 +526,72 @@ takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-jsonl
 
 ## Stackコマンド
 
+### `stack-cmdlines`コマンド
+
+Sysmon 1 と Security 4688 イベントから実行されたコマンドラインを抽出し、集計します。
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `low`)
+- `-y, --ignoreSysmon`: Sysmon 1 イベントを除外 (デフォルト: `false`)
+- `-e, --ignoreSecurity`:  Security 4688 イベントを除外 (デフォルト: `false`)
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `stack-cmdlines`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe stack-cmdlines -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe stack-cmdlines -t ../hayabusa/timeline.jsonl -o stack-cmdlines.csv
+```
+
+### `stack-dns`コマンド
+
+Sysmon 22 イベントからDNSクエリとレスポンスを抽出し、集計します。
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `informational`)
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `stack-dns`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe stack-dns -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe stack-dns -t ../hayabusa/timeline.jsonl -o stack-dns.csv
+```
+
 ### `stack-logons`コマンド
 
 `Target User`、`Target Computer`、`Logon Type`、`Source IP Address`、`Source Computer`によってログインのリストを作成します。
@@ -519,7 +608,7 @@ takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-jsonl
 任意オプション:
 
 - `-l, --localSrcIpAddresses`: ソースIPアドレスがローカルIPアドレスであっても結果に含む
-- `-o, --output <CSV-FILE>`: テキストの結果のベースネームを指定する
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
 #### `stack-logons`コマンドの使用例
@@ -534,6 +623,104 @@ takajo.exe stack-logons -t ../hayabusa/timeline.jsonl
 
 ```
 takajo.exe stack-logons -t ../hayabusa/timeline.jsonl -l
+```
+
+### `stack-processes`コマンド
+
+Sysmon 1 と Security 4688 イベントから実行されたプロセスを抽出し、集計します。
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `low`)
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `stack-processes`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe stack-processes -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe stack-processes -t ../hayabusa/timeline.jsonl -o stack-processes.csv
+```
+
+### `stack-services`コマンド
+
+System 7040 と Security 4697 イベントからサービス名とパスを抽出し、集計します。
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `infomational`)
+- `-y, --ignoreSystem`: System 7040 イベントを除外 (デフォルト: `false`)
+- `-e, --ignoreSecurity`: Security 4697 イベントを除外 (デフォルト: `false`)
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `stack-services`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe stack-services -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe stack-services -t ../hayabusa/timeline.jsonl -o stack-services.csv
+```
+
+### `stack-tasks`コマンド
+
+Security 4698 イベントから作成されたスケジュールタスクを抽出し、集計します。またタスクXMLをパースします。
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `infomational`)
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `stack-tasks`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl -o stack-tasks.csv
 ```
 
 ## Sysmonコマンド
@@ -703,6 +890,37 @@ takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicou
 
 ![timeline-suspicious-processes](screenshots/timeline-suspicious-processes.png)
 
+### `timeline-tasks`コマンド
+
+Security 4698 イベントからスケジュールタスク作成を抽出し、 タスクXMLをパースします。
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `timeline-tasks`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe timeline-tasks -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe timeline-tasks -t ../hayabusa/timeline.jsonl -o timeline-tasks.csv
+```
+
 ## TTPコマンド
 
 ### `ttp-summary`コマンド
@@ -746,7 +964,7 @@ takajo.exe ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv
 
 ![ttp-summary](screenshots/ttp-summary.png)
 
-### `ttp-visualize`コマンド
+### `ttp-visualize-sigma`コマンド
 
 TTPsを抽出し、[MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)で視覚化するための JSON ファイルを作成します。
 
@@ -760,7 +978,7 @@ TTPsを抽出し、[MITRE ATT&CK Navigator](https://mitre-attack.github.io/attac
 
 任意オプション:
 
-- `-o, --output <JSON-FILE>`: 結果を保存するJSONファイル (デフォルト: `mitre-attack-navigator.json`)
+- `-o, --output <JSON-FILE>`: 結果を保存するJSONファイル (デフォルト: `mitre-ttp-heatmap.json`)
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
 #### `ttp-visualize`コマンドの使用例
@@ -771,7 +989,7 @@ HayabusaでJSONLタイムラインを作成する:
 hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
 ```
 
-TTPsを抽出し、`mitre-attack-navigator.json`に保存する:
+TTPsを抽出し、`mitre-ttp-heatmap.json`に保存する:
 
 ```
 takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
@@ -782,6 +1000,37 @@ takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
 #### `ttp-visualize`スクリーンショット
 
 ![ttp-visualize](screenshots/ttp-visualize.png)
+
+### `ttp-visualize-sigma`コマンド
+
+TTPsをSigmaルールから抽出し、[MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)で視覚化するための JSON ファイルを作成します。
+
+* 入力: JSONL
+* プロファイル: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+
+任意オプション:
+
+- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (デフォルト: `sigma-rules-heatmap.json`)
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+
+#### `ttp-visualize-sigma`コマンドの使用例
+
+HayabusaでJSONLタイムラインを作成する:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+TTPsを抽出し `sigma-rules-heatmap.json`に保存します。:
+
+```
+takajo.exe ttp-visualize-sigma -t ../hayabusa/timeline.jsonl
+```
 
 ## VirusTotalコマンド
 

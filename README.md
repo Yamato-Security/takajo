@@ -21,7 +21,7 @@
 ## About Takajō
 
 Takajō (鷹匠), created by [Yamato Security](https://github.com/Yamato-Security), is a fast forensics analyzer for [Hayabusa](https://github.com/Yamato-Security/hayabusa) results written in [Nim](https://nim-lang.org/).
-Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese and was chosen as Hayabusa's catches (results) can be put to even better use.
+Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese and was chosen as it analyzes Hayabusa's "catches" (results).
 
 # Companion Projects
 
@@ -70,8 +70,18 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
     - [`split-json-timeline` command](#split-json-timeline-command)
       - [`split-json-timeline` command examples](#split-json-timeline-command-examples)
   - [Stack Commands](#stack-commands-1)
+    - [`stack-cmdlines` command](#stack-cmdlines-command)
+      - [`stack-cmdlines` command examples](#stack-cmdlines-command-examples)
+    - [`stack-dns` command](#stack-dns-command)
+      - [`stack-dns` command examples](#stack-dns-command-examples)
     - [`stack-logons` command](#stack-logons-command)
       - [`stack-logons` command examples](#stack-logons-command-examples)
+    - [`stack-processes` command](#stack-processes-command)
+      - [`stack-processes` command examples](#stack-processes-command-examples)
+    - [`stack-services` command](#stack-services-command)
+      - [`stack-services` command examples](#stack-services-command-examples)
+    - [`stack-tasks` command](#stack-tasks-command)
+      - [`stack-tasks` command examples](#stack-tasks-command-examples)
   - [Sysmon Commands](#sysmon-commands-1)
     - [`sysmon-process-tree` command](#sysmon-process-tree-command)
       - [`sysmon-process-tree` command examples](#sysmon-process-tree-command-examples)
@@ -85,6 +95,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
     - [`timeline-suspicious-processes` command](#timeline-suspicious-processes-command)
       - [`timeline-suspicious-processes` command examples](#timeline-suspicious-processes-command-examples)
       - [`timeline-suspicious-processes` screenshot](#timeline-suspicious-processes-screenshot)
+    - [`timeline-tasks` command](#timeline-tasks-command)
+      - [`timeline-tasks` command examples](#timeline-tasks-command-examples)
   - [TTP Commands](#ttp-commands-1)
     - [`ttp-summary` command](#ttp-summary-command)
       - [`ttp-summary` command examples](#ttp-summary-command-examples)
@@ -92,6 +104,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
     - [`ttp-visualize` command](#ttp-visualize-command)
       - [`ttp-visualize` command examples](#ttp-visualize-command-examples)
       - [`ttp-visualize` screenshot](#ttp-visualize-screenshot)
+    - [`ttp-visualize-sigma` command](#ttp-visualize-sigma-command)
+      - [`ttp-visualize-simga` command examples](#ttp-visualize-sigma-command-examples)
   - [VirusTotal Commands](#virustotal-commands-1)
     - [`vt-domain-lookup` command](#vt-domain-lookup-command)
       - [`vt-domain-lookup` command examples](#vt-domain-lookup-command-examples)
@@ -107,14 +121,14 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 ## Features
 
 - Written in Nim so it is very easy to program, memory safe, as fast as native C code and works as a single standalone binary on any OS.
-- Create a timeline of all of the various logon events, suspicious processes, etc...
 - Print the process trees of a malicious processes.
-- Various stacking analysis.
 - Split up CSV and JSONL timelines.
-- List up IP addresses, domains, hashes etc... to be used with VirusTotal lookups
+- Extracting IP addresses, domains, hashes etc... to be used with VirusTotal lookups
 - VirusTotal lookups of domains, hashes and IP addresses.
 - List up `.evtx` files that cannot be detected yet.
-- Visualize TTPs in MITRE ATT&CK Navigator.
+- Visualize TTPs with heatmaps in MITRE ATT&CK Navigator.
+- Stacking command lines, DNS requests, logons, processes, services, tasks, etc...
+- Timelines for logons, USB usage, suspicious processes, tasks, etc...
 - Many more!
 
 # Downloads
@@ -155,7 +169,12 @@ If you have Nim installed, you can compile from source with the following comman
 * `split-json-timeline`: split up a large JSONL timeline into smaller ones based on the computer name
 
 ## Stack Commands
+* `stack-cmdlines`: stack executed command lines
+* `stack-dns`: stack DNS queries and responses
 * `stack-logons`: stack logons by target user, target computer, source IP address and source computer
+* `stack-processes`: stack executed processes
+* `stack-services`: stack new service names and processes
+* `stack-tasks`: stack new scheduled tasks
 
 ## Sysmon Commands
 * `sysmon-process-tree`: output the process tree of a certain process
@@ -164,10 +183,12 @@ If you have Nim installed, you can compile from source with the following comman
 * `timeline-logon`: create a CSV timeline of logon events
 * `timeline-partition-diagnostic`: create a CSV timeline of partition diagnostic events
 * `timeline-suspicious-processes`: create a CSV timeline of suspicious processes
+* `timeline-tasks`: create a CSV timeline of scheduled tasks
 
 ## TTP Commands
 * `ttp-summary`: summarize tactics and techniques found in each computer
 * `ttp-visualize`: extract TTPs and create a JSON file to visualize in MITRE ATT&CK Navigator
+* `ttp-visualize-sigma`: extract TTPs from Sigma rules and create a JSON file to visualize in MITRE ATT&CK Navigator
 
 ## VirusTotal Commands
 * `vt-domain-lookup`: look up a list of domains on VirusTotal and report on malicious ones
@@ -503,6 +524,72 @@ takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-jsonl
 
 ## Stack Commands
 
+### `stack-cmdlines` command
+
+This command will stack executed command lines by extracting information from Sysmon 1 and Security 4688 events.
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-l, --level`: specify the minimum alert level (default: `low`)
+- `-y, --ignoreSysmon`: exclude Sysmon 1 events (default: `false`)
+- `-e, --ignoreSecurity`: exclude Security 4688 events (default: `false`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `stack-cmdlines` command examples
+
+Output to terminal:
+
+```
+takajo.exe stack-cmdlines -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe stack-cmdlines -t ../hayabusa/timeline.jsonl -o stack-cmdlines.csv
+```
+
+### `stack-dns` command
+
+This command will stack DNS queries and responses from Sysmon 22 events.
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-l, --level`: specify the minimum alert level (default: `informational`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `stack-dns` command examples
+
+Output to terminal:
+
+```
+takajo.exe stack-dns -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe stack-dns -t ../hayabusa/timeline.jsonl -o stack-dns.csv
+```
+
 ### `stack-logons` command
 
 Creates a list logons according to `Target User`, `Target Computer`, `Logon Type`, `Source IP Address`, `Source Computer`.
@@ -519,7 +606,7 @@ Required options:
 Options:
 
 - `-l, --localSrcIpAddresses`: include results when the source IP address is local.
-- `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `stack-logons` command examples
@@ -534,6 +621,104 @@ Include local logons:
 
 ```
 takajo.exe stack-logons -t ../hayabusa/timeline.jsonl -l
+```
+
+### `stack-processes` command
+
+This command will stack executed processes from Sysmon 1 and Security 4688 events.
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-l, --level`: specify the minimum alert level (default: `low`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `stack-processes` command examples
+
+Output to terminal:
+
+```
+takajo.exe stack-processes -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe stack-processes -t ../hayabusa/timeline.jsonl -o stack-processes.csv
+```
+
+### `stack-services` command
+
+This command will stack service names and paths from System 7040 and Security 4697 events.
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-l, --level`: specify the minimum alert level (default: `informational`)
+- `-y, --ignoreSystem`: exclude System 7040 events (default: `false`)
+- `-e, --ignoreSecurity`: exclude Security 4697 events (default: `false`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `stack-services` command examples
+
+Output to terminal:
+
+```
+takajo.exe stack-services -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe stack-services -t ../hayabusa/timeline.jsonl -o stack-services.csv
+```
+
+### `stack-tasks` command
+
+This command will stack new scheduled tasks from Security 4698 events and parse out the XML task content.
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-l, --level`: specify the minimum alert level (default: `informational`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `stack-tasks` command examples
+
+Output to terminal:
+
+```
+takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl -o stack-tasks.csv
 ```
 
 ## Sysmon Commands
@@ -703,6 +888,37 @@ takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicou
 
 ![timeline-suspicious-processes](screenshots/timeline-suspicious-processes.png)
 
+### `timeline-tasks` command
+
+This command will stack new scheduled tasks from Security 4698 events and parse out the XML task content.
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `timeline-tasks` command examples
+
+Output to terminal:
+
+```
+takajo.exe timeline-tasks -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe timeline-tasks -t ../hayabusa/timeline.jsonl -o timeline-tasks.csv
+```
+
 ## TTP Commands
 
 ### `ttp-summary` command
@@ -760,7 +976,7 @@ Required options:
 
 Options:
 
-- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `mitre-attack-navigator.json`)
+- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `mitre-ttp-heatmap.json`)
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `ttp-visualize` command examples
@@ -771,7 +987,7 @@ Prepare JSONL timeline with Hayabusa:
 hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
 ```
 
-Extract out the TTPs and save to `mitre-attack-navigator.json`:
+Extract out the TTPs and save to `mitre-ttp-heatmap.json`:
 
 ```
 takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
@@ -783,6 +999,36 @@ Open [https://mitre-attack.github.io/attack-navigator/](https://mitre-attack.git
 
 ![ttp-visualize](screenshots/ttp-visualize.png)
 
+### `ttp-visualize-sigma` command
+
+This command extracts TTPs from Sigma and create a JSON file to visualize in [MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/).
+
+* Input: JSONL
+* Profile: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)
+* Output: Terminal or CSV
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `sigma-rules-heatmap.json`)
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `ttp-visualize-sigma` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+Extract out the TTPs from Sigma and save to `sigma-rules-heatmap.json`:
+
+```
+takajo.exe ttp-visualize-sigma -t ../hayabusa/timeline.jsonl
+```
 ## VirusTotal Commands
 
 ### `vt-domain-lookup` command
