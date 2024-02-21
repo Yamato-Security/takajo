@@ -885,7 +885,7 @@ takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicou
 
 ![timeline-suspicious-processes](screenshots/timeline-suspicious-processes.png)
 
-### `timeline-tasksコマンド
+### `timeline-tasks`コマンド
 
 Security 4698 イベントからスケジュールタスク作成を抽出し、 タスクXMLをパースします。
 
@@ -902,7 +902,7 @@ Security 4698 イベントからスケジュールタスク作成を抽出し、
 - `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
-#### `timeline-tasksコマンドの使用例
+#### `timeline-tasks`コマンドの使用例
 
 ターミナルに出力する:
 
