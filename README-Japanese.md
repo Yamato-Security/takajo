@@ -127,8 +127,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 - ドメイン、ハッシュ、IPアドレスをVirusTotalで検索します。
 - 検知されていない`.evtx` ファイルをリストアップします。
 - MITRE ATT&CK NavigatorでTTPを可視化します。
-- Stacking command lines, DNS requests, logons, processes, services, tasks, etc...
-- Timelines for logons, USB usage, suspicious processes, tasks, etc...
+- コマンドライン DNSリクエスト, ログオン, プロセス, サービス, スケジュールタスクなどを集計します。
+- ログオン, USB使用, 不審プロセス, タスクなどのタイムラインを作成します。
 - その他、たくさん！
 
 # ダウンロード

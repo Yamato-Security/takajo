@@ -560,8 +560,6 @@ takajo.exe stack-cmdlines -t ../hayabusa/timeline.jsonl -o stack-cmdlines.csv
 ### `stack-dns` command
 
 This command will stack DNS queries and responses from Sysmon 22 events.
-The output format is `<Process> -> <DNS Request> -> <DNS Response>`.
-Example: `C:\TOOLS\PsExec64.exe -> fs03vuln -> 10.23.42.38;`
 
 * Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
