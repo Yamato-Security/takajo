@@ -996,7 +996,7 @@ takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
 
 ![ttp-visualize](screenshots/ttp-visualize.png)
 
-### `ttp-visualize-sigmaコマンド
+### `ttp-visualize-sigma`コマンド
 
 TTPsをSigmaルールから抽出し、[MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)で視覚化するための JSON ファイルを作成します。
 
@@ -1013,7 +1013,7 @@ TTPsをSigmaルールから抽出し、[MITRE ATT&CK Navigator](https://mitre-at
 - `-o, --output <JSON-FILE>`: the JSON file to save the results to. (デフォルト: `sigma-rules-heatmap.json`)
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
-#### `ttp-visualize-sigmaコマンドの使用例
+#### `ttp-visualize-sigma`コマンドの使用例
 
 HayabusaでJSONLタイムラインを作成する:
 
