@@ -104,6 +104,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
     - [`ttp-visualize` command](#ttp-visualize-command)
       - [`ttp-visualize` command examples](#ttp-visualize-command-examples)
       - [`ttp-visualize` screenshot](#ttp-visualize-screenshot)
+    - [`ttp-visualize-sigma` command](#ttp-visualize-sigma-command)
+      - [`ttp-visualize-simga` command examples](#ttp-visualize-sigma-command-examples)
   - [VirusTotal Commands](#virustotal-commands-1)
     - [`vt-domain-lookup` command](#vt-domain-lookup-command)
       - [`vt-domain-lookup` command examples](#vt-domain-lookup-command-examples)
@@ -186,6 +188,7 @@ If you have Nim installed, you can compile from source with the following comman
 ## TTP Commands
 * `ttp-summary`: summarize tactics and techniques found in each computer
 * `ttp-visualize`: extract TTPs and create a JSON file to visualize in MITRE ATT&CK Navigator
+* `ttp-visualize-sigma`: extract TTPs from Sigma rules and create a JSON file to visualize in MITRE ATT&CK Navigator
 
 ## VirusTotal Commands
 * `vt-domain-lookup`: look up a list of domains on VirusTotal and report on malicious ones
@@ -970,7 +973,7 @@ Required options:
 
 Options:
 
-- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `mitre-attack-navigator.json`)
+- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `mitre-ttp-heatmap.json`)
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `ttp-visualize` command examples
@@ -981,7 +984,7 @@ Prepare JSONL timeline with Hayabusa:
 hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
 ```
 
-Extract out the TTPs and save to `mitre-attack-navigator.json`:
+Extract out the TTPs and save to `mitre-ttp-heatmap.json`:
 
 ```
 takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
@@ -993,6 +996,36 @@ Open [https://mitre-attack.github.io/attack-navigator/](https://mitre-attack.git
 
 ![ttp-visualize](screenshots/ttp-visualize.png)
 
+### `ttp-visualize-sigma` command
+
+This command extracts TTPs from Sigma and create a JSON file to visualize in [MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/).
+
+* Input: JSONL
+* Profile: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)
+* Output: Terminal or CSV
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+
+Options:
+
+- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `sigma-rules-heatmap.json`)
+- `-q, --quiet`: do not display logo. (default: `false`)
+
+#### `ttp-visualize-sigma` command examples
+
+Prepare JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+Extract out the TTPs from Sigma and save to `sigma-rules-heatmap.json`:
+
+```
+takajo.exe ttp-visualize-sigma -t ../hayabusa/timeline.jsonl
+```
 ## VirusTotal Commands
 
 ### `vt-domain-lookup` command
