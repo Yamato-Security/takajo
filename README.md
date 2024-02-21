@@ -538,6 +538,7 @@ Required options:
 
 Options:
 
+- `-l, --level`: specify the minimum alert level (default: `low`)
 - `-y, --ignoreSysmon`: exclude Sysmon 1 events (default: `false`)
 - `-e, --ignoreSecurity`: exclude Security 4688 events (default: `false`)
 - `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
@@ -571,6 +572,7 @@ Required options:
 
 Options:
 
+- `-l, --level`: specify the minimum alert level (default: `informational`)
 - `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
@@ -635,6 +637,7 @@ Required options:
 
 Options:
 
+- `-l, --level`: specify the minimum alert level (default: `low`)
 - `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 
@@ -666,6 +669,7 @@ Required options:
 
 Options:
 
+- `-l, --level`: specify the minimum alert level (default: `informational`)
 - `-y, --ignoreSystem`: exclude System 7040 events (default: `false`)
 - `-e, --ignoreSecurity`: exclude Security 4697 events (default: `false`)
 - `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
@@ -699,6 +703,7 @@ Required options:
 
 Options:
 
+- `-l, --level`: specify the minimum alert level (default: `informational`)
 - `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
 - `-q, --quiet`: do not display logo. (default: `false`)
 

@@ -540,6 +540,7 @@ Sysmon 1 と Security 4688 イベントから実行されたコマンドライ�
 
 任意オプション:
 
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `low`)
 - `-y, --ignoreSysmon`: Sysmon 1 イベントを除外 (デフォルト: `false`)
 - `-e, --ignoreSecurity`:  Security 4688 イベントを除外 (デフォルト: `false`)
 - `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
@@ -573,6 +574,7 @@ Sysmon 22 イベントからDNSクエリとレスポンスを抽出し、集計�
 
 任意オプション:
 
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `informational`)
 - `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
@@ -637,6 +639,7 @@ Sysmon 1 と Security 4688 イベントから実行されたプロセスを抽�
 
 任意オプション:
 
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `low`)
 - `-o, --output <CSV-FILE>`: specify the base name to save the text results to.
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
@@ -668,8 +671,9 @@ System 7040 と Security 4697 イベントからサービス名とパスを抽�
 
 任意オプション:
 
-- `-y, --ignoreSystem`: exclude System 7040 events (デフォルト: `false`)
-- `-e, --ignoreSecurity`: exclude Security 4697 events (デフォルト: `false`)
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `infomational`)
+- `-y, --ignoreSystem`: System 7040 イベントを除外 (デフォルト: `false`)
+- `-e, --ignoreSecurity`: Security 4697 イベントを除外 (デフォルト: `false`)
 - `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
@@ -701,6 +705,7 @@ Security 4698 イベントから作成されたスケジュールタスクを抽
 
 任意オプション:
 
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `infomational`)
 - `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
