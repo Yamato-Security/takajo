@@ -104,6 +104,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
     - [`ttp-visualize`コマンド](#ttp-visualizeコマンド)
       - [`ttp-visualize`コマンドの使用例](#ttp-visualizeコマンドの使用例)
       - [`ttp-visualize`スクリーンショット](#ttp-visualizeスクリーンショット)
+  - [`ttp-visualize-sigma`コマンド](#ttp-visualize-sigmaコマンド)
+    - [`ttp-visualize-simga`コマンドの使用例](#ttp-visualize-sigmaコマンドの使用例)
   - [VirusTotalコマンド](#virustotalコマンド-1)
     - [`vt-domain-lookup`コマンド](#vt-domain-lookupコマンド)
       - [`vt-domain-lookup`コマンドの使用例](#vt-domain-lookupコマンドの使用例)
