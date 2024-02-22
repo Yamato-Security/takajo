@@ -1,6 +1,6 @@
 # Changes
 
-## 2.4.0-dev [xxxx/xx/xx] - Year Of The Dragon Release
+## 2.4.0 [2024/02/22] - Ninja Day Release
 
 **New Features:**
 
