@@ -58,12 +58,7 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
     echo "Loading domains. Please wait."
     echo ""
 
-    let file = open(domainList)
-    # Read each line into a sequence.
-    var lines = newSeq[string]()
-    for line in file.lines:
-        lines.add(line)
-    file.close()
+    let lines = readFile(domainList).splitLines()
 
     echo "Loaded domains: ", len(lines)
     echo "Rate limit per minute: ", rateLimit

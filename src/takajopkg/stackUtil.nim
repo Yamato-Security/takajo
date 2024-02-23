@@ -11,15 +11,15 @@ import std/tables
 
 let LEVEL_ORDER = {"crit": 5, "high": 4, "med": 3, "low": 2, "info": 1}.toTable
 
-type StackRecord* = object
-  key*: string
-  count* = 0
-  eid* = ""
-  channel* = ""
-  levelsOrder* = 0
-  levels* = initHashSet[string]()
-  ruleTitles* = initHashSet[string]()
-  otherColumn = newSeq[string]()
+type StackRecord* = ref object
+    key*: string
+    count* = 0
+    eid* = ""
+    channel* = ""
+    levelsOrder* = 0
+    levels* = initHashSet[string]()
+    ruleTitles* = initHashSet[string]()
+    otherColumn = newSeq[string]()
 
 proc calcLevelOrder(x: StackRecord): int =
   result = 0

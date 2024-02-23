@@ -47,13 +47,7 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
     echo "Loading hashes. Please wait."
     echo ""
 
-    let file = open(hashList)
-
-    # Read each line into a sequence.
-    var lines = newSeq[string]()
-    for line in file.lines:
-        lines.add(line)
-    file.close()
+    let lines = readFile(hashList).splitLines()
 
     echo "Loaded hashes: ", len(lines)
     echo "Rate limit per minute: ", rateLimit
