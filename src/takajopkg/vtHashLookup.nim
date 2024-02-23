@@ -96,15 +96,7 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
     echo ""
     echo "Finished querying hashes. " & intToStr(totalMaliciousHashCount) & " Malicious hashes found."
     echo ""
-    for table in seqOfResultsTables:
-        if table["Response"] == "200":
-            if parseInt(table["MaliciousCount"]) > 0:
-                echo "Found malicious hashes: " & table["Hash"] & " (Malicious count: " & table["MaliciousCount"] & ")"
-        elif table["Response"] == "404":
-            echo "Hash not found: ", table["Hash"]
-        else:
-            echo "Unknown error: ", table["Response"], " - " & table["Hash"]
-
+    outputVtQueryResult(seqOfResultsTables, "Hash")
     let header = @["Response", "Hash", "FirstInTheWildDate", "FirstSubmissionDate", "LastSubmissionDate", "MaliciousCount", "HarmlessCount", "SuspiciousCount", "Link"]
     outputVtCmdResult(output, header, seqOfResultsTables, jsonOutput, jsonResponses)
     outputElapsedTime(startTime)

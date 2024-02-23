@@ -107,15 +107,7 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
     echo ""
     echo "Finished querying domains. " & intToStr(totalMaliciousDomainCount) & " Malicious domains found."
     echo ""
-    for table in seqOfResultsTables:
-        if table["Response"] == "200":
-            if parseInt(table["MaliciousCount"]) > 0:
-                echo "Found malicious domains: " & table["Domain"] & " (Malicious count: " & table["MaliciousCount"] & ")"
-        elif table["Response"] == "404":
-            echo "Domain not found: ", table["Domain"]
-        else:
-            echo "Unknown error: ", table["Response"], " - " & table["Domain"]
-
+    outputVtQueryResult(seqOfResultsTables, "Domain")
     let header = @["Response", "Domain", "CreationDate", "LastAnalysisDate", "LastModifiedDate", "LastWhoisDate", "MaliciousCount", "HarmlessCount",
         "SuspiciousCount", "UndetectedCount", "CommunityVotesHarmless", "CommunityVotesMalicious", "Reputation", "Registrar", "WhoisInfo",
         "SSL-ValidAfter", "SSL-ValidUntil", "SSL-Issuer", "SSL-IssuerCountry", "Link"]

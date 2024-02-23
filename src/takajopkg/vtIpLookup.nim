@@ -109,15 +109,7 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
     echo ""
     echo "Finished querying IP addresses. " & intToStr(totalMaliciousIpAddressCount) & " Malicious IP addresses found."
     echo ""
-    for table in seqOfResultsTables:
-        if table["Response"] == "200":
-            if parseInt(table["MaliciousCount"]) > 0:
-                echo "Found malicious IP address: " & table["IP-Address"] & " (Malicious count: " & table["MaliciousCount"] & ")"
-        elif table["Response"] == "404":
-            echo "IP address not found: ", table["IP-Address"]
-        else:
-            echo "Unknown error: ", table["Response"], " - " & table["IP-Address"]
-
+    outputVtQueryResult(seqOfResultsTables, "IP-Address")
     let header = @["Response", "IP-Address", "SSL-CommonName", "SSL-IssuerCountry", "LastAnalysisDate", "LastModifiedDate", "LastHTTPSCertDate", "LastWhoisDate", "MaliciousCount", "HarmlessCount",
         "SuspiciousCount", "UndetectedCount", "CommunityVotesHarmless", "CommunityVotesMalicious", "Reputation", "RegionalInternetRegistry",
         "Network", "Country", "AS-Owner", "SSL-ValidAfter", "SSL-ValidUntil", "SSL-Issuer", "WhoisInfo", "Link"]

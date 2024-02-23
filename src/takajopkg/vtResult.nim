@@ -1,10 +1,21 @@
-import json
 import general
+import json
+import std/strutils
 import std/tables
 
 type VirusTotalResult* = ref object
     resTable*: TableRef[string, string]
     resJson*: JsonNode
+
+proc outputVtQueryResult*(seqOfResultsTables: seq[TableRef[string, string]], key:string) =
+    for table in seqOfResultsTables:
+        if table["Response"] == "200":
+            if parseInt(table["MaliciousCount"]) > 0:
+                echo "Found malicious domains: " & table[key] & " (Malicious count: " & table["MaliciousCount"] & ")"
+        elif table["Response"] == "404":
+            echo key & " not found: ", table[key]
+        else:
+            echo "Unknown error: ", table["Response"], " - " & table[key]
 
 proc outputVtCmdResult*(output:string, header:seq[string], seqOfResultsTables: seq[TableRef[string, string]], jsonOutput:string, jsonResponses: seq[JsonNode]) =
     if output != "":
