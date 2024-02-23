@@ -145,13 +145,4 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
         jsonOutputFile.close()
         let fileSize = getFileSize(jsonOutput)
         echo "Saved JSON responses to " & jsonOutput & " (" & formatFileSize(fileSize) & ")"
-
-    # Print elapsed time
-    echo ""
-    let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElapsedTime(startTime)

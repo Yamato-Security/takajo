@@ -1,11 +1,10 @@
-type
-    Script = object
-        firstTimestamp: string
-        computerName: string
-        scriptBlockId: string
-        scriptBlocks: OrderedSet[string]
-        levels: HashSet[string]
-        ruleTitles: HashSet[string]
+type Script = ref object
+    firstTimestamp: string
+    computerName: string
+    scriptBlockId: string
+    scriptBlocks: OrderedSet[string]
+    levels: HashSet[string]
+    ruleTitles: HashSet[string]
 
 proc outputScriptText(output: string, timestamp: string, computerName: string,
         scriptObj: Script) =
@@ -177,12 +176,4 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
         echo ""
         echo "The extracted PowerShell ScriptBlock is saved in the directory: " & output
         echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"
-
-    let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
-    echo ""
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElapsedTime(startTime)

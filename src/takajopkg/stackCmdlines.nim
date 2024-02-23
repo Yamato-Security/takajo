@@ -21,4 +21,4 @@ proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecu
             stackResult(stackKey, stack, level, jsonLine)
     bar.finish()
     outputResult(output, "Cmdline", stack)
-    outputElasptedTime(startTime)
+    outputElapsedTime(startTime)

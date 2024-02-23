@@ -24,4 +24,4 @@ proc stackServices(level: string = "informational", ignoreSystem: bool = false, 
             stackResult(stackKey, stack, level, jsonLine, @[svc, path])
     bar.finish()
     outputResult(output, "Service", stack, @["ServiceName", "Path"])
-    outputElasptedTime(startTime)
+    outputElapsedTime(startTime)

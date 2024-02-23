@@ -1,11 +1,10 @@
-type
-    processObject = object
-        timeStamp: string
-        procName: string
-        processID: string
-        processGUID: string
-        parentProcessGUID: string
-        children: seq[processObject]
+type processObject = ref object
+    timeStamp: string
+    procName: string
+    processID: string
+    processGUID: string
+    parentProcessGUID: string
+    children: seq[processObject]
 
 proc `==`*(a, b: processObject): bool =
     return a.processGUID == b.processGUID
@@ -97,18 +96,8 @@ proc createProcessObj(jsonLine: JsonNode, isParent: bool): processObject =
 
 proc sysmonProcessTree(output: string = "", processGuid: string,
         quiet: bool = false, timeline: string) =
-    ## Procedure for displaying Sysmon's process tree
     let startTime = epochTime()
-    if not quiet:
-        # Display the logo
-        styledEcho(fgGreen, outputLogo())
-
-    if not os.fileExists(timeline):
-        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
-        quit(1)
-
-    if not isJsonConvertible(timeline):
-        quit(1)
+    checkArgs(quiet, timeline, "informational")
 
     if not isGUID(processGuid):
         echo "The format of the Process GUID specified with the -p option is invalid. Please specify a valid Process GUID."
@@ -223,13 +212,4 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             else:
                 echo line
         echo ""
-
-    let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
-
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " &
-            $seconds & " seconds"
-    echo ""
+    outputElapsedTime(startTime)

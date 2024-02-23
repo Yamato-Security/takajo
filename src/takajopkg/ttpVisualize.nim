@@ -100,12 +100,4 @@ proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = 
         let outputFileSize = getFileSize(outputFile)
         outputFile.close()
         echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
-
-    let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
-    echo ""
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+        outputElapsedTime(startTime)

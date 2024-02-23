@@ -131,12 +131,4 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
     if seqOfResultsTables.len == 0:
         echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
-
-    let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
-    echo ""
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElapsedTime(startTime)

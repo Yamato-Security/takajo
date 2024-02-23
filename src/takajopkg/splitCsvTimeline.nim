@@ -95,11 +95,4 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
         echo "Saved file: " & fn & " (" & formatFileSize(fileSize) & ")"
 
     echo ""
-
-    let endTime = epochTime()
-    let elapsedTime2 = int(endTime - startTime)
-    let hours = elapsedTime2 div 3600
-    let minutes = (elapsedTime2 mod 3600) div 60
-    let seconds = elapsedTime2 mod 60
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElapsedTime(startTime)

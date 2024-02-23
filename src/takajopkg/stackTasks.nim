@@ -37,4 +37,4 @@ proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ign
             stackResult(stackKey, stack, level, jsonLine, @[name, command, args])
     bar.finish()
     outputResult(output, "Task", stack, @["TaskName", "Command", "Arguments"])
-    outputElasptedTime(startTime)
+    outputElapsedTime(startTime)
