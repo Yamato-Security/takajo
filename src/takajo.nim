@@ -1,7 +1,6 @@
 import algorithm
 import cligen
 import json
-import math
 import nancy
 import puppy
 import re
@@ -22,6 +21,7 @@ import suru
 import takajopkg/general
 import takajopkg/stackUtil
 import takajopkg/takajoTerminal
+import takajopkg/ttpResult
 import takajopkg/vtResult
 include takajopkg/extractScriptblocks
 include takajopkg/listDomains

@@ -17,18 +17,10 @@ proc compareArrays(a, b: array[5, string]): int =
 
 proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    if not quiet:
-        styledEcho(fgGreen, outputLogo())
-
-    if not os.fileExists(timeline):
-        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
-        quit(1)
+    checkArgs(quiet, timeline, "informational")
 
     if not os.fileExists("mitre-attack.json"):
         echo "The file '" & "mitre-attack.json" & "' does not exist. Please specify a valid file path."
-        quit(1)
-
-    if not isJsonConvertible(timeline):
         quit(1)
 
     echo "Started the TTP Summary command."
