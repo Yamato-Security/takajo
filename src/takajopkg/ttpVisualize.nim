@@ -1,4 +1,4 @@
-proc ttpVisualize(output: string = "mitre-attack-navigator.json", quiet: bool = false, timeline: string) =
+proc ttpVisualize(output: string = "mitre-ttp-heatmap.json", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, "informational")
 
