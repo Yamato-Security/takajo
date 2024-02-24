@@ -10,9 +10,7 @@ type TTPResult* = ref object
     score: int
 
 proc newTTPResult*(techniqueID: string, comment: string, score: int): TTPResult =
-  result.techniqueID = techniqueID
-  result.comment = comment
-  result.score = score
+  result = TTPResult(techniqueID: techniqueID, comment: comment, score:score)
 
 proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCount:Table[string, int], output:string) =
     echo ""
