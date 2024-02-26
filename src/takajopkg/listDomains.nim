@@ -2,15 +2,7 @@
 # Graceful error when no domains loaded
 proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, output: string, quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    if not quiet:
-        styledEcho(fgGreen, outputLogo())
-
-    if not os.fileExists(timeline):
-        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
-        quit(1)
-
-    if not isJsonConvertible(timeline):
-        quit(1)
+    checkArgs(quiet, timeline, "informational")
 
     echo "Started the List Domains command"
     echo ""
@@ -72,12 +64,4 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
     echo "Domains: ", len(domainHashSet)
     echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
-
-    let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
-
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElapsedTime(startTime)

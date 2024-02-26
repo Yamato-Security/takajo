@@ -96,5 +96,4 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
     echo "Unique logons: " & $uniqueLogons
     echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
-
-    outputElasptedTime(startTime)
+    outputElapsedTime(startTime)

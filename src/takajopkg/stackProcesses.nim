@@ -20,4 +20,4 @@ proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSec
             stackResult(stackKey, stack, level, jsonLine)
     bar.finish()
     outputResult(output, "Process", stack)
-    outputElasptedTime(startTime)
+    outputElapsedTime(startTime)

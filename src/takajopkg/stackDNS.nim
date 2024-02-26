@@ -23,4 +23,4 @@ proc stackDNS(level: string = "informational", output: string = "", quiet: bool 
             stackResult(stackKey, stack, level, jsonLine, @[prog, query, res])
     bar.finish()
     outputResult(output, "DNS", stack, @["Image", "Query", "Result"])
-    outputElasptedTime(startTime)
+    outputElapsedTime(startTime)

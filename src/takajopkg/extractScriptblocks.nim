@@ -1,11 +1,10 @@
-type
-    Script = object
-        firstTimestamp: string
-        computerName: string
-        scriptBlockId: string
-        scriptBlocks: OrderedSet[string]
-        levels: HashSet[string]
-        ruleTitles: HashSet[string]
+type Script = ref object
+    firstTimestamp: string
+    computerName: string
+    scriptBlockId: string
+    scriptBlocks: OrderedSet[string]
+    levels: HashSet[string]
+    ruleTitles: HashSet[string]
 
 proc outputScriptText(output: string, timestamp: string, computerName: string,
         scriptObj: Script) =
@@ -48,20 +47,7 @@ proc buildSummaryRecord(path: string, messageTotal: int,
 proc extractScriptblocks(level: string = "low", output: string = "scriptblock-logs",
         quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    if not quiet:
-        styledEcho(fgGreen, outputLogo())
-
-    if not os.fileExists(timeline):
-        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
-        quit(1)
-
-    if not isJsonConvertible(timeline):
-        quit(1)
-
-    if level != "critical" and level != "high" and level != "medium" and level != "low" and level != "informational":
-        echo "You must specify a minimum level of critical, high, medium, low or informational. (default: low)"
-        echo ""
-        return
+    checkArgs(quiet, timeline, level)
 
     echo "Started the Extract ScriptBlock command."
     echo "This command will extract PowerShell Script Block."
@@ -177,12 +163,4 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
         echo ""
         echo "The extracted PowerShell ScriptBlock is saved in the directory: " & output
         echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"
-
-    let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
-    echo ""
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElapsedTime(startTime)

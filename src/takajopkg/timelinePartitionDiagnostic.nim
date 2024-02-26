@@ -31,15 +31,7 @@ proc extractVSN(jsonLine: JsonNode) : array[4, string] =
 
 proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    if not quiet:
-        styledEcho(fgGreen, outputLogo())
-
-    if not os.fileExists(timeline):
-        echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
-        quit(1)
-
-    if not isJsonConvertible(timeline):
-        quit(1)
+    checkArgs(quiet, timeline, "informational")
 
     echo "Started the Timeline partition diagnostic command"
     echo "This command will create a CSV timeline of partition diagnostic."
@@ -113,12 +105,4 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
             table.add t[header[0]], t[header[1]], t[header[2]], t[header[3]], t[header[4]], t[header[5]], t[header[6]], t[header[7]], t[header[8]], t[header[9]]
         table.echoTableSepsWithStyled(seps = boxSeps)
         echo ""
-
-    let endTime = epochTime()
-    let elapsedTime = int(endTime - startTime)
-    let hours = elapsedTime div 3600
-    let minutes = (elapsedTime mod 3600) div 60
-    let seconds = elapsedTime mod 60
-
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
-    echo ""
+    outputElapsedTime(startTime)

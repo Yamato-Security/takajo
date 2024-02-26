@@ -339,7 +339,7 @@ proc isJsonConvertible*(timeline: string) : bool =
   echo "Failed to open '" & timeline & "'. Please specify a valid file path.\p"
   return false
 
-proc outputElasptedTime*(startTime: float) =
+proc outputElapsedTime*(startTime: float) =
     let endTime = epochTime()
     let elapsedTime2 = int(endTime - startTime)
     let hours = elapsedTime2 div 3600
@@ -380,7 +380,3 @@ proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
     echo "Scanning the Hayabusa timeline. Please wait."
     echo ""
     return totalLines
-
-type VirusTotalResult* = object
-  resTable*: TableRef[string, string]
-  resJson*: JsonNode
