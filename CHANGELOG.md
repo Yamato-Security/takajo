@@ -1,5 +1,11 @@
 # Changes
 
+## 2.5.0 [xxxx/xx/xx]
+
+**Enhancements:**
+
+- Refactoring to remove duplicate code. (#99) (@fukusuket)
+
 ## 2.4.0 [2024/02/22] - Ninja Day Release
 
 **New Features:**
