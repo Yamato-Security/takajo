@@ -36,7 +36,10 @@ proc listHashes(level: string = "high", output: string, quiet: bool = false, tim
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
         let eventId = jsonLine.EventID
         let channel = jsonLine.Channel
         let eventLevel = jsonLine.Level

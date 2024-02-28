@@ -16,6 +16,7 @@ import threadpool
 import uri
 import os
 import std/enumerate
+import std/options
 import std/xmlparser
 import std/xmltree
 import suru

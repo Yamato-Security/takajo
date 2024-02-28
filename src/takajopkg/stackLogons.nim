@@ -35,7 +35,10 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
         let ruleTitle = jsonLine.RuleTitle
 
         # EID 4624 Successful Logon

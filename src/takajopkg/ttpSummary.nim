@@ -58,7 +58,10 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
         try:
             let com = jsonLine.Computer
             for tag in jsonLine.MitreTags:

@@ -11,7 +11,10 @@ proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSec
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
         let eventId = jsonLine.EventID
         let channel = jsonLine.Channel
         if (eventId == 1 and not ignoreSysmon and channel == "Sysmon") or

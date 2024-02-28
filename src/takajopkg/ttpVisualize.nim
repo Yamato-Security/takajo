@@ -22,7 +22,10 @@ proc ttpVisualize(output: string = "mitre-ttp-heatmap.json", quiet: bool = false
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
         try:
             for tag in jsonLine.MitreTags:
                 let techniqueID = tag

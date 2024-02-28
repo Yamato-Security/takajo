@@ -30,7 +30,10 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
     for line in lines(timeline):
         inc bar
         bar.update(1000000000)
-        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
         let eventId = jsonLine.EventID
         let channel = jsonLine.Channel
         let details = jsonLine.Details

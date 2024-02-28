@@ -90,7 +90,10 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
         inc currentIndex
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
 
         if jsonLine.EventID != 4104 or isMinLevel(jsonLine.Level, level) == false:
             continue

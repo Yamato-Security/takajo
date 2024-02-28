@@ -1,4 +1,6 @@
 import json
+import jsony
+import std/options
 
 type HayabusaJson* = ref object
     Timestamp*: string
@@ -20,3 +22,9 @@ type HayabusaJson* = ref object
     MitreTags*: seq[string]
     MitreTactics*: seq[string]
     OtherTags*: seq[string]
+
+proc parseLine*(line:string): Option[HayabusaJson] =
+  try:
+      return some(line.fromJson(HayabusaJson))
+  except CatchableError:
+      return none(HayabusaJson)
