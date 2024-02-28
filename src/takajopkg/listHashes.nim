@@ -26,9 +26,8 @@ proc listHashes(level: string = "high", output: string, quiet: bool = false, tim
 
     var
         md5hashes, sha1hashes, sha256hashes, impHashes = initHashSet[string]()
-        channel, eventLevel, hashes = ""
-        eventId, md5hashCount, sha1hashCount, sha256hashCount, impHashCount = 0
-        jsonLine: JsonNode
+        hashes = ""
+        md5hashCount, sha1hashCount, sha256hashCount, impHashCount = 0
         bar: SuruBar = initSuruBar()
 
     bar[0].total = totalLines
@@ -37,15 +36,15 @@ proc listHashes(level: string = "high", output: string, quiet: bool = false, tim
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        jsonLine = parseJson(line)
-        channel = jsonLine["Channel"].getStr()
-        eventId = jsonLine["EventID"].getInt()
-        eventLevel = jsonLine["Level"].getStr()
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
+        let eventLevel = jsonLine.Level
 
         # Found a Sysmon 1 process creation event
         if channel == "Sysmon" and eventId == 1 and isMinLevel(eventLevel, level) == true:
             try:
-                hashes = jsonLine["Details"]["Hashes"].getStr() # Hashes are not enabled by default so this field may not exist.
+                hashes = jsonLine.Details["Hashes"].getStr() # Hashes are not enabled by default so this field may not exist.
                 let pairs = hashes.split(",")  # Split the string into key-value pairs. Ex: MD5=DE9C75F34F47B60A71BBA03760F0579E,SHA256=12F06D3B1601004DB3F7F1A07E7D3AF4CC838E890E0FF50C51E4A0C9366719ED,IMPHASH=336674CB3C8337BDE2C22255345BFF43
                 for pair in pairs:
                     let keyVal = pair.split("=")

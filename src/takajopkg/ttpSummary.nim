@@ -58,18 +58,18 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine = parseJson(line)
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
         try:
-            let com = jsonLine["Computer"].getStr()
-            for tag in jsonLine["MitreTags"]:
-                if tag.getStr() notin attack:
+            let com = jsonLine.Computer
+            for tag in jsonLine.MitreTags:
+                if tag notin attack:
                     continue
-                let res = attack[tag.getStr()]
+                let res = attack[tag]
                 let dat = res["Tactic"].getStr()
                 let tac = tac_no[dat] & dat
                 let tec = res["Technique"].getStr()
                 let sub = res["Sub-Technique"].getStr()
-                let rul = jsonLine["RuleTitle"].getStr()
+                let rul = jsonLine.RuleTitle
                 seqOfResultsTables.add([com, tac, tec, sub, rul])
         except CatchableError:
             continue

@@ -25,10 +25,8 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
     echo ""
 
     var
-        channel, ipAddress = ""
-        eventId = 0
+        ipAddress = ""
         ipHashSet = initHashSet[string]()
-        jsonLine: JsonNode
         bar: SuruBar = initSuruBar()
 
     bar[0].total = totalLines
@@ -37,20 +35,20 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
     for line in lines(timeline):
         inc bar
         bar.update(1000000000)
-        jsonLine = parseJson(line)
-        channel = jsonLine["Channel"].getStr()
-        eventId = jsonLine["EventID"].getInt()
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
 
         # Search for events with a SrcIP field if inbound == true
         if inbound == true:
-            ipAddress = getJsonValue(jsonLine, @["Details", "SrcIP"])
+            ipAddress = getJsonValue(jsonLine.Details, @["SrcIP"])
             if (not isPrivateIP(ipAddress) or privateIp) and
                 isMulticast(ipAddress) == false and isLoopback(ipAddress) == false and ipAddress != "Unknown" and ipAddress != "-":
                 ipHashSet.incl(ipAddress)
 
         # Search for events with a TgtIP field if outbound == true
         if outbound == true:
-                ipAddress = getJsonValue(jsonLine, @["Details", "TgtIP"])
+                ipAddress = getJsonValue(jsonLine.Details, @["TgtIP"])
                 if (not isPrivateIP(ipAddress) or privateIp) and
                     isMulticast(ipAddress) == false and isLoopback(ipAddress) == false and ipAddress != "Unknown" and ipAddress != "-":
                     ipHashSet.incl(ipAddress)

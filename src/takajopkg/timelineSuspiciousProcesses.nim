@@ -36,34 +36,34 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        jsonLine = parseJson(line)
-        channel = jsonLine["Channel"].getStr()
-        eventId = jsonLine["EventID"].getInt()
-        eventLevel = jsonLine["Level"].getStr()
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
+        let eventLevel = jsonLine.Level
 
         # Found a Security 4688 process creation event
         if channel == "Sec" and eventId == 4688 and isMinLevel(eventLevel, level) == true:
             inc suspicousProcessCount_Sec_4688
             try:
-                cmdLine = jsonLine["Details"]["Cmdline"].getStr()
+                cmdLine = jsonLine.Details["Cmdline"].getStr()
             except KeyError:
                 cmdLine = ""
             eventType = "Security 4688"
-            timestamp = jsonLine["Timestamp"].getStr()
-            ruleTitle = jsonLine["RuleTitle"].getStr()
-            computer = jsonLine["Computer"].getStr()
-            process = jsonLine["Details"]["Proc"].getStr()
-            pidStr = $jsonLine["Details"]["PID"].getInt()
-            user = jsonLine["Details"]["User"].getStr()
-            lid = jsonLine["Details"]["LID"].getStr()
+            timestamp = jsonLine.Timestamp
+            ruleTitle = jsonLine.RuleTitle
+            computer = jsonLine.Computer
+            process = jsonLine.Details["Proc"].getStr()
+            pidStr = $jsonLine.Details["PID"].getInt()
+            user = jsonLine.Details["User"].getStr()
+            lid = jsonLine.Details["LID"].getStr()
             try:
               if pidStr == "0":
                 # -F, --no-field-data-mapping JSONL requires hex conversion
-                pidStr = intToStr(fromHex[int](jsonLine["Details"]["PID"].getStr()))
+                pidStr = intToStr(fromHex[int](jsonLine.Details["PID"].getStr()))
             except ValueError:
               discard
             try:
-                ruleAuthor = jsonLine["RuleAuthor"].getStr()
+                ruleAuthor = jsonLine.RuleAuthor
             except KeyError:
                 ruleAuthor = ""
 
@@ -98,32 +98,32 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
         # Found a Sysmon 1 process creation event
         if channel == "Sysmon" and eventId == 1 and isMinLevel(eventLevel, level) == true:
             inc suspicousProcessCount_Sysmon_1
-            cmdLine = jsonLine["Details"]["Cmdline"].getStr()
+            cmdLine = jsonLine.Details["Cmdline"].getStr()
             eventType = "Sysmon 1"
-            timestamp = jsonLine["Timestamp"].getStr()
-            ruleTitle = jsonLine["RuleTitle"].getStr()
-            computer = jsonLine["Computer"].getStr()
-            process = jsonLine["Details"]["Proc"].getStr()
-            pidStr = $jsonLine["Details"]["PID"].getInt()
-            user = jsonLine["Details"]["User"].getStr()
-            lid = jsonLine["Details"]["LID"].getStr()
-            lguid = jsonLine["Details"]["LGUID"].getStr()
-            processGuid = jsonLine["Details"]["PGUID"].getStr()
-            parentCmdline = jsonLine["Details"]["ParentCmdline"].getStr()
-            parentPid = $jsonLine["Details"]["ParentPID"].getInt()
-            parentGuid = jsonLine["Details"]["ParentPGUID"].getStr()
-            description = jsonLine["Details"]["Description"].getStr()
-            product = jsonLine["Details"]["Product"].getStr()
+            timestamp = jsonLine.Timestamp
+            ruleTitle = jsonLine.RuleTitle
+            computer = jsonLine.Computer
+            process = jsonLine.Details["Proc"].getStr()
+            pidStr = $jsonLine.Details["PID"].getInt()
+            user = jsonLine.Details["User"].getStr()
+            lid = jsonLine.Details["LID"].getStr()
+            lguid = jsonLine.Details["LGUID"].getStr()
+            processGuid = jsonLine.Details["PGUID"].getStr()
+            parentCmdline = jsonLine.Details["ParentCmdline"].getStr()
+            parentPid = $jsonLine.Details["ParentPID"].getInt()
+            parentGuid = jsonLine.Details["ParentPGUID"].getStr()
+            description = jsonLine.Details["Description"].getStr()
+            product = jsonLine.Details["Product"].getStr()
             try:
-                company = jsonLine["Details"]["Company"].getStr()
+                company = jsonLine.Details["Company"].getStr()
             except KeyError:
                 company = ""
             try:
-                ruleAuthor = jsonLine["RuleAuthor"].getStr()
+                ruleAuthor = jsonLine.RuleAuthor
             except KeyError:
                 ruleAuthor = ""
             try:
-                hashes = jsonLine["Details"]["Hashes"].getStr() # Hashes are not enabled by default so this field may not exist.
+                hashes = jsonLine.Details["Hashes"].getStr() # Hashes are not enabled by default so this field may not exist.
                 let pairs = hashes.split(",")  # Split the string into key-value pairs. Ex: MD5=DE9C75F34F47B60A71BBA03760F0579E,SHA256=12F06D3B1601004DB3F7F1A07E7D3AF4CC838E890E0FF50C51E4A0C9366719ED,IMPHASH=336674CB3C8337BDE2C22255345BFF43
                 for pair in pairs:
                     let keyVal = pair.split("=")

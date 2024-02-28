@@ -12,12 +12,12 @@ proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecu
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine = parseJson(line)
-        let eventId = jsonLine["EventID"].getInt(0)
-        let channel = jsonLine["Channel"].getStr("N/A")
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
         if (eventId == 1 and not ignoreSysmon and channel == "Sysmon") or
            (eventId == 4688 and not ignoreSecurity and channel == "Sec"):
-            let stackKey = jsonLine["Details"]["Cmdline"].getStr("N/A")
+            let stackKey = jsonLine.Details["Cmdline"].getStr("N/A")
             stackResult(stackKey, stack, level, jsonLine)
     bar.finish()
     outputResult(output, "Cmdline", stack)

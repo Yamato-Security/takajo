@@ -22,11 +22,11 @@ proc ttpVisualize(output: string = "mitre-ttp-heatmap.json", quiet: bool = false
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine = parseJson(line)
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
         try:
-            for tag in jsonLine["MitreTags"]:
-                let techniqueID = tag.getStr()
-                let ruleTitle = strip(jsonLine["RuleTitle"].getStr())
+            for tag in jsonLine.MitreTags:
+                let techniqueID = tag
+                let ruleTitle = strip(jsonLine.RuleTitle)
                 if stackedMitreTags.hasKey(techniqueID) and ruleTitle notin stackedMitreTags[techniqueID]:
                     stackedMitreTags[techniqueID] = stackedMitreTags[techniqueID] & "," & ruleTitle
                     stackedMitreTagsCount[techniqueID] += 1

@@ -1,6 +1,7 @@
 import algorithm
 import cligen
 import json
+import jsony
 import nancy
 import puppy
 import re
@@ -19,6 +20,7 @@ import std/xmlparser
 import std/xmltree
 import suru
 import takajopkg/general
+import takajopkg/hayabusaJson
 import takajopkg/stackUtil
 import takajopkg/takajoTerminal
 import takajopkg/ttpResult

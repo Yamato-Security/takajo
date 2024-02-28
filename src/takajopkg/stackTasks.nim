@@ -15,13 +15,13 @@ proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ign
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine = parseJson(line)
-        let eventId = jsonLine["EventID"].getInt(0)
-        let channel = jsonLine["Channel"].getStr("N/A")
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
         if eventId == 4698 and channel == "Sec":
-            let user = jsonLine["Details"]["User"].getStr("N/A")
-            let name = jsonLine["Details"]["Name"].getStr("N/A")
-            let content = jsonLine["Details"]["Content"].getStr("N/A").replace("\\r\\n", "")
+            let user = jsonLine.Details["User"].getStr("N/A")
+            let name = jsonLine.Details["Name"].getStr("N/A")
+            let content = jsonLine.Details["Content"].getStr("N/A").replace("\\r\\n", "")
             let node = parseXml(content)
             let commands = node.findAll("Command")
             var command = ""

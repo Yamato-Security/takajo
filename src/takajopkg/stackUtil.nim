@@ -2,6 +2,7 @@ import general
 import json
 import nancy
 import takajoTerminal
+import hayabusaJson
 import std/algorithm
 import std/enumerate
 import std/sets
@@ -68,6 +69,22 @@ proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:st
     val.levels.incl(level)
     val.levelsOrder = val.calcLevelOrder()
     val.ruleTitles.incl(jsonLine["RuleTitle"].getStr("N/A"))
+    val.otherColumn = otherColumn
+    stack[key] = val
+
+proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:string, jsonLine:HayabusaJson, otherColumn:seq[string] = @[]) =
+    let level = jsonLine.Level
+    if not isMinLevel(level, minLevel):
+        return
+    var val: StackRecord
+    if key notin stack:
+        val = StackRecord(key: key, eid: intToStr(jsonLine.EventID), channel: jsonLine.Channel)
+    else:
+        val = stack[key]
+    val.count += 1
+    val.levels.incl(level)
+    val.levelsOrder = val.calcLevelOrder()
+    val.ruleTitles.incl(jsonLine.RuleTitle)
     val.otherColumn = otherColumn
     stack[key] = val
 

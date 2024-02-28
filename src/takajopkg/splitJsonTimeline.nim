@@ -33,8 +33,8 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
         inc bar
         bar.update(1000000000) # refresh every second
 
-        let jsonLine = parseJson(line)
-        let computerName = jsonLine["Computer"].getStr()
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let computerName = jsonLine.Computer
 
         if not filesTable.hasKey(computerName):
             let filename = output & "/" & computerName & "-HayabusaResults.jsonl"

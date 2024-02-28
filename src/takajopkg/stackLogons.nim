@@ -35,18 +35,18 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine = parseJson(line)
-        let ruleTitle = jsonLine["RuleTitle"].getStr()
+        let jsonLine:HayabusaJson = line.fromJson(HayabusaJson)
+        let ruleTitle = jsonLine.RuleTitle
 
         # EID 4624 Successful Logon
         if isEID_4624(ruleTitle) == true:
             inc EID_4624_count
 
-            tgtUser = getJsonValue(jsonLine, @["Details", "TgtUser"])
-            tgtComp = getJsonValue(jsonLine, @["Computer"])
-            logonType = getJsonValue(jsonLine, @["Details", "Type"])
-            srcIP = getJsonValue(jsonLine, @["Details", "SrcIP"])
-            srcComp = getJsonValue(jsonLine, @["Details", "SrcComp"])
+            tgtUser = getJsonValue(jsonLine.Details, @["TgtUser"])
+            tgtComp = jsonLine.Computer
+            logonType = getJsonValue(jsonLine.Details, @["Type"])
+            srcIP = getJsonValue(jsonLine.Details, @["SrcIP"])
+            srcComp = getJsonValue(jsonLine.Details, @["SrcComp"])
 
             if not localSrcIpAddresses and isLocalIP(srcIP):
                 discard
