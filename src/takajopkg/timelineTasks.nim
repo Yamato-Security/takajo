@@ -43,17 +43,20 @@ proc timelineTasks(output: string, outputLogoffEvents: bool = false, quiet: bool
     for line in lines(timeline):
         inc bar
         bar.update(1000000000)
-        let jsonLine = parseJson(line)
-        let eventId = jsonLine["EventID"].getInt(0)
-        let channel = jsonLine["Channel"].getStr("N/A")
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
         if eventId == 4698 and channel == "Sec":
-            let ts = jsonLine["Timestamp"].getStr("N/A")
-            let taskName = jsonLine["Details"]["Name"].getStr("N/A")
-            let subjectUserName = jsonLine["Details"]["User"].getStr("N/A")
-            let subjectUserSid = jsonLine["ExtraFieldInfo"]["SubjectUserSid"].getStr("N/A")
-            let subjectDomainName = jsonLine["ExtraFieldInfo"]["SubjectDomainName"].getStr("N/A")
-            let subjectLogonId = jsonLine["Details"]["LID"].getStr("N/A")
-            let content = jsonLine["Details"]["Content"].getStr("N/A").replace("\\r\\n", "")
+            let ts = jsonLine.Timestamp
+            let taskName = jsonLine.Details["Name"].getStr("N/A")
+            let subjectUserName = jsonLine.Details["User"].getStr("N/A")
+            let subjectUserSid = jsonLine.ExtraFieldInfo["SubjectUserSid"].getStr("N/A")
+            let subjectDomainName = jsonLine.ExtraFieldInfo["SubjectDomainName"].getStr("N/A")
+            let subjectLogonId = jsonLine.Details["LID"].getStr("N/A")
+            let content = jsonLine.Details["Content"].getStr("N/A").replace("\\r\\n", "")
             var basicTable = initOrderedTable[string, string]()
             basicTable["Timestamp"] = ts
             basicTable["TaskName"] = taskName

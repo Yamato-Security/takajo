@@ -15,10 +15,12 @@ import threadpool
 import uri
 import os
 import std/enumerate
+import std/options
 import std/xmlparser
 import std/xmltree
 import suru
 import takajopkg/general
+import takajopkg/hayabusaJson
 import takajopkg/stackUtil
 import takajopkg/takajoTerminal
 import takajopkg/ttpResult

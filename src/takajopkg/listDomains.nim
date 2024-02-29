@@ -21,10 +21,7 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
     echo ""
 
     var
-        channel, domain = ""
-        eventId = 0
         domainHashSet = initHashSet[string]()
-        jsonLine: JsonNode
         bar: SuruBar = initSuruBar()
 
     bar[0].total = totalLines
@@ -33,13 +30,16 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
     for line in lines(timeline):
         inc bar
         bar.update(1000000000)
-        jsonLine = parseJson(line)
-        channel = jsonLine["Channel"].getStr()
-        eventId = jsonLine["EventID"].getInt()
-        let details = jsonLine["Details"]
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
+        let details = jsonLine.Details
         # Found a Sysmon 22 DNS Query event
         if channel == "Sysmon" and eventId == 22:
-            domain = details.extractStr("Query")
+            var domain = details.extractStr("Query")
 
             # If includeWorkstations is false, only add domain if it contains a period
             # Filter out ".", "*.lan" and "*.LAN"

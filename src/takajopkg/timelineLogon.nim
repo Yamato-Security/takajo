@@ -39,23 +39,26 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
     for line in lines(timeline):
         inc bar
         bar.update(1000000000)
-        let jsonLine = parseJson(line)
-        let ruleTitle = jsonLine["RuleTitle"].getStr()
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
+        let ruleTitle = jsonLine.RuleTitle
 
         #EID 4624 Successful Logon
         if isEID_4624(ruleTitle) == true:
             inc EID_4624_count
             var singleResultTable = newTable[string, string]()
             singleResultTable["Event"] = "Successful Logon"
-            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            singleResultTable["Timestamp"] = jsonLine.Timestamp
+            singleResultTable["Channel"] = jsonLine.Channel
             singleResultTable["EventID"] = "4624"
-            let details = jsonLine["Details"]
-            let extraFieldInfo = jsonLine["ExtraFieldInfo"]
+            let details = jsonLine.Details
+            let extraFieldInfo = jsonLine.ExtraFieldInfo
             let logonType = details.extractStr("Type") # Will be Int if field mapping is turned off
             singleResultTable["Type"] = logonType # Needs to be logonNumberToString(logonType) if data field mapping is turned off. TODO
             singleResultTable["Auth"] = extraFieldInfo.extractStr("AuthenticationPackageName")
-            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+            singleResultTable["TargetComputer"] = jsonLine.Computer
             singleResultTable["TargetUser"] = details.extractStr("TgtUser")
             let impersonationLevel = extraFieldInfo.extractStr("ImpersonationLevel")
             singleResultTable["Impersonation"] = impersonationLevelIdToName(impersonationLevel)
@@ -80,15 +83,15 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
             inc EID_4625_count
             var singleResultTable = newTable[string, string]()
             singleResultTable["Event"] = "Failed Logon"
-            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            singleResultTable["Timestamp"] = jsonLine.Timestamp
+            singleResultTable["Channel"] = jsonLine.Channel
             singleResultTable["EventID"] = "4625"
-            let details = jsonLine["Details"]
-            let extraFieldInfo = jsonLine["ExtraFieldInfo"]
+            let details = jsonLine.Details
+            let extraFieldInfo = jsonLine.ExtraFieldInfo
             let logonType = details.extractStr("Type")
             singleResultTable["Type"] = logonType # Needs to be logonNumberToString(logonType) if data field mapping is turned off. TODO
             singleResultTable["Auth"] = details.extractStr("AuthPkg")
-            singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+            singleResultTable["TargetComputer"] = jsonLine.Computer
             singleResultTable["TargetUser"] = details.extractStr("TgtUser")
             singleResultTable["SourceIP"] = details.extractStr("SrcIP")
             singleResultTable["Process"] = details.extractStr("Proc")
@@ -105,17 +108,17 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
             # If we want to calculate ElapsedTime
             if calculateElapsedTime == true:
                 # Create the key in the format of LID:Computer:User with a value of the timestamp
-                let key = jsonLine["Details"]["LID"].getStr() & ":" & jsonLine["Computer"].getStr() & ":" & jsonLine["Details"]["User"].getStr()
-                let logoffTime = jsonLine["Timestamp"].getStr()
+                let key = jsonLine.Details["LID"].getStr() & ":" & jsonLine.Computer & ":" & jsonLine.Details["User"].getStr()
+                let logoffTime = jsonLine.Timestamp
                 logoffEvents[key] = logoffTime
             if outputLogoffEvents == true:
                 var singleResultTable = newTable[string, string]()
                 singleResultTable["Event"] = "User Initiated Logoff"
-                singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-                singleResultTable["Channel"] = jsonLine["Channel"].getStr()
-                singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+                singleResultTable["Timestamp"] = jsonLine.Timestamp
+                singleResultTable["Channel"] = jsonLine.Channel
+                singleResultTable["TargetComputer"] = jsonLine.Computer
                 singleResultTable["EventID"] = "4634"
-                let details = jsonLine["Details"]
+                let details = jsonLine.Details
                 singleResultTable["TargetUser"] = details.extractStr("User")
                 singleResultTable["LID"] = details.extractStr("LID")
                 seqOfResultsTables.add(singleResultTable)
@@ -126,17 +129,17 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
             # If we want to calculate ElapsedTime
             if calculateElapsedTime == true:
                 # Create the key in the format of LID:Computer:User with a value of the timestamp
-                let key = jsonLine["Details"]["LID"].getStr() & ":" & jsonLine["Computer"].getStr() & ":" & jsonLine["Details"]["User"].getStr()
-                let logoffTime = jsonLine["Timestamp"].getStr()
+                let key = jsonLine.Details["LID"].getStr() & ":" & jsonLine.Computer & ":" & jsonLine.Details["User"].getStr()
+                let logoffTime = jsonLine.Timestamp
                 logoffEvents[key] = logoffTime
             if outputLogoffEvents == true:
                 var singleResultTable = newTable[string, string]()
                 singleResultTable["Event"] = "User Initiated Logoff"
-                singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-                singleResultTable["Channel"] = jsonLine["Channel"].getStr()
-                singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
+                singleResultTable["Timestamp"] = jsonLine.Timestamp
+                singleResultTable["Channel"] = jsonLine.Channel
+                singleResultTable["TargetComputer"] = jsonLine.Computer
                 singleResultTable["EventID"] = "4647"
-                let details = jsonLine["Details"]
+                let details = jsonLine.Details
                 singleResultTable["TargetUser"] = details.extractStr("User")
                 singleResultTable["LID"] = details.extractStr("LID")
                 seqOfResultsTables.add(singleResultTable)
@@ -146,11 +149,11 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
             inc EID_4648_count
             var singleResultTable = newTable[string, string]()
             singleResultTable["Event"] = "Explicit Logon"
-            singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-            singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+            singleResultTable["Timestamp"] = jsonLine.Timestamp
+            singleResultTable["Channel"] = jsonLine.Channel
             singleResultTable["EventID"] = "4648"
-            let details = jsonLine["Details"]
-            let extraFieldInfo = jsonLine["ExtraFieldInfo"]
+            let details = jsonLine.Details
+            let extraFieldInfo = jsonLine.ExtraFieldInfo
             singleResultTable["TargetComputer"] = details.extractStr("TgtSvr")
             singleResultTable["TargetUser"] = details.extractStr("TgtUser")
             singleResultTable["SourceUser"] = details.extractStr("SrcUser")
@@ -158,7 +161,7 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
             singleResultTable["Process"] = details.extractStr("Proc")
             singleResultTable["LID"] = details.extractStr("LID")
             singleResultTable["LGUID"] = extraFieldInfo.extractStr("LogonGuid")
-            singleResultTable["SourceComputer"] = jsonLine.extractStr("Computer") # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
+            singleResultTable["SourceComputer"] = jsonLine.Computer # 4648 is a little different in that the log is saved on the source computer so Computer will be the source.
             seqOfResultsTables.add(singleResultTable)
 
         # EID 4672 Admin Logon
@@ -167,18 +170,18 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
         # The timing will be very close to the 4624 log so I am checking if the Computer, LID and TgtUser are the same and then if the two events happened within 10 seconds.
         if ruleTitle == "Admin Logon":
             inc EID_4672_count
-            let key = jsonLine["Details"]["LID"].getStr() & ":" & jsonLine["Computer"].getStr() & ":" & jsonLine["Details"]["TgtUser"].getStr()
-            let adminLogonTime = jsonLine["Timestamp"].getStr()
+            let key = jsonLine.Details["LID"].getStr() & ":" & jsonLine.Computer & ":" & jsonLine.Details["TgtUser"].getStr()
+            let adminLogonTime = jsonLine.Timestamp
             adminLogonEvents[key] = adminLogonTime
             if outputAdminLogonEvents == true:
                 var singleResultTable = newTable[string, string]()
                 singleResultTable["Event"] = "Admin Logon"
-                singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-                singleResultTable["Channel"] = jsonLine["Channel"].getStr()
+                singleResultTable["Timestamp"] = jsonLine.Timestamp
+                singleResultTable["Channel"] = jsonLine.Channel
                 singleResultTable["EventID"] = "4672"
-                singleResultTable["TargetComputer"] = jsonLine.extractStr("Computer")
-                let eventId = jsonLine["EventID"].getInt()
-                let details = jsonLine["Details"]
+                singleResultTable["TargetComputer"] = jsonLine.Computer
+                let eventId = jsonLine.EventID
+                let details = jsonLine.Details
                 singleResultTable["TargetUser"] = details.extractStr("TgtUser")
                 singleResultTable["LID"] = details.extractStr("LID")
                 seqOfResultsTables.add(singleResultTable)

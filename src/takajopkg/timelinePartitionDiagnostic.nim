@@ -5,25 +5,25 @@ proc changeByteOrder(vsnStr:string): string =
             res.add(vsnStr[i - 1] & vsnStr[i])
     return join(res.reversed, "")
 
-proc extractVSN(jsonLine: JsonNode) : array[4, string] =
+proc extractVSN(jsonLine: HayabusaJson) : array[4, string] =
     var res:array[4, string] = ["n/a", "n/a", "n/a", "n/a"]
-    if "PartitionStyle" notin jsonLine["ExtraFieldInfo"] or jsonLine["ExtraFieldInfo"]["PartitionStyle"].getInt() != 0:
+    if "PartitionStyle" notin jsonLine.ExtraFieldInfo or jsonLine.ExtraFieldInfo["PartitionStyle"].getInt() != 0:
         return res
     for i, vbrNo in ["Vbr0", "Vbr1", "Vbr2", "Vbr3"]:
-        if vbrNo notin jsonLine["ExtraFieldInfo"]:
+        if vbrNo notin jsonLine.ExtraFieldInfo:
             continue
-        let vbr = jsonLine["ExtraFieldInfo"][vbrNo].getStr()
+        let vbr = jsonLine.ExtraFieldInfo[vbrNo].getStr()
         if vbr.len < 18:
             res[i] = ""
             continue
         let sig = vbr[6..17]
         var vsnLittleEndian = ""
-        if sig == "4D53444F5335" and jsonLine["ExtraFieldInfo"][vbrNo].getStr().len > 141: # FAT32
-            vsnLittleEndian = jsonLine["ExtraFieldInfo"][vbrNo].getStr()[134..141]
-        elif sig == "455846415420" and jsonLine["ExtraFieldInfo"][vbrNo].getStr().len > 207: #ExFAT
-            vsnLittleEndian = jsonLine["ExtraFieldInfo"][vbrNo].getStr()[200..207]
-        elif sig == "4E5446532020" and jsonLine["ExtraFieldInfo"][vbrNo].getStr().len > 151: # NTFS
-            vsnLittleEndian = jsonLine["ExtraFieldInfo"][vbrNo].getStr()[144..151]
+        if sig == "4D53444F5335" and jsonLine.ExtraFieldInfo[vbrNo].getStr().len > 141: # FAT32
+            vsnLittleEndian = jsonLine.ExtraFieldInfo[vbrNo].getStr()[134..141]
+        elif sig == "455846415420" and jsonLine.ExtraFieldInfo[vbrNo].getStr().len > 207: #ExFAT
+            vsnLittleEndian = jsonLine.ExtraFieldInfo[vbrNo].getStr()[200..207]
+        elif sig == "4E5446532020" and jsonLine.ExtraFieldInfo[vbrNo].getStr().len > 151: # NTFS
+            vsnLittleEndian = jsonLine.ExtraFieldInfo[vbrNo].getStr()[144..151]
         if vsnLittleEndian != "":
             res[i] = changeByteOrder(vsnLittleEndian)
     return res
@@ -44,7 +44,6 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
     echo ""
 
     var
-        jsonLine: JsonNode
         bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[Table[string, string]]
 
@@ -54,17 +53,22 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        jsonLine = parseJson(line)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
 
-        if jsonLine["EventID"].getInt() != 1006 or jsonLine["Channel"].getStr() != "MS-Win-Partition/Diagnostic":
+        if eventId != 1006 or channel != "MS-Win-Partition/Diagnostic":
             continue
         var singleResultTable = initTable[string, string]()
-        singleResultTable["Timestamp"] = jsonLine["Timestamp"].getStr()
-        singleResultTable["Computer"] = jsonLine["Computer"].getStr()
-        singleResultTable["Manufacturer"] = jsonLine["Details"]["Manufacturer"].getStr()
-        singleResultTable["Model"] = jsonLine["Details"]["Model"].getStr()
-        singleResultTable["Revision"] = jsonLine["Details"]["Revision"].getStr()
-        singleResultTable["SerialNumber"] = jsonLine["Details"]["SerialNumber"].getStr()
+        singleResultTable["Timestamp"] = jsonLine.Timestamp
+        singleResultTable["Computer"] = jsonLine.Computer
+        singleResultTable["Manufacturer"] = jsonLine.Details["Manufacturer"].getStr()
+        singleResultTable["Model"] = jsonLine.Details["Model"].getStr()
+        singleResultTable["Revision"] = jsonLine.Details["Revision"].getStr()
+        singleResultTable["SerialNumber"] = jsonLine.Details["SerialNumber"].getStr()
         for i, vsn in extractVSN(jsonLine):
             var val = "n/a"
             if vsn != "":

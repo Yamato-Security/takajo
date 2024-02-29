@@ -12,13 +12,16 @@ proc stackDNS(level: string = "informational", output: string = "", quiet: bool 
     for line in lines(timeline):
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine = parseJson(line)
-        let eventId = jsonLine["EventID"].getInt(0)
-        let channel = jsonLine["Channel"].getStr("N/A")
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
+        let eventId = jsonLine.EventID
+        let channel = jsonLine.Channel
         if (eventId == 22 and channel == "Sysmon"):
-            let prog = jsonLine["Details"]["Proc"].getStr("N/A")
-            let query = jsonLine["Details"]["Query"].getStr("N/A")
-            let res = jsonLine["Details"]["Result"].getStr("N/A")
+            let prog = jsonLine.Details["Proc"].getStr("N/A")
+            let query = jsonLine.Details["Query"].getStr("N/A")
+            let res = jsonLine.Details["Result"].getStr("N/A")
             let stackKey = prog & " -> " & query & " -> " & res
             stackResult(stackKey, stack, level, jsonLine, @[prog, query, res])
     bar.finish()

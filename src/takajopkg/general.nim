@@ -9,6 +9,7 @@ import std/tables
 import terminal
 import times
 import takajoTerminal
+
 from std/streams import newFileStream
 
 
@@ -19,12 +20,6 @@ proc getJsonValue*(jsonResponse: JsonNode, keys: seq[string], default: string = 
             value = value[key]
         else:
             return default
-        #[
-        try:
-            value = value[key]
-        except KeyError:
-            return default]#
-    # Check if the value is an integer or a string
     if value.kind == JInt:
         return $value.getInt()  # Convert to string
     elif value.kind == JString:

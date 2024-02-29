@@ -73,6 +73,15 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
         currentIndex  = 0
         stackedRecords = newTable[string, Script]()
         summaryRecords = newOrderedTable[string, array[7, string]]()
+        timestamp: string
+        computerName: string
+        eventLevel: string
+        ruleTitle: string
+        scriptBlock: string
+        scriptBlockId: string
+        messageNumber: int
+        messageTotal: int
+        path: string
 
     bar[0].total = totalLines
     bar.setup()
@@ -81,30 +90,23 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
         inc currentIndex
         inc bar
         bar.update(1000000000) # refresh every second
-        let jsonLine = parseJson(line)
-        var
-            timestamp: string
-            computerName: string
-            eventLevel: string
-            ruleTitle: string
-            scriptBlock: string
-            scriptBlockId: string
-            messageNumber: int
-            messageTotal: int
-            path: string
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
 
-        if jsonLine["EventID"].getInt(0) != 4104 or isMinLevel(jsonLine["Level"].getStr(), level) == false:
+        if jsonLine.EventID != 4104 or isMinLevel(jsonLine.Level, level) == false:
             continue
         try:
-            timestamp = jsonLine["Timestamp"].getStr()
-            computerName = jsonLine["Computer"].getStr()
-            eventLevel = jsonLine["Level"].getStr()
-            ruleTitle = jsonLine["RuleTitle"].getStr()
-            scriptBlock = jsonLine["Details"]["ScriptBlock"].getStr()
-            scriptBlockId = jsonLine["ExtraFieldInfo"]["ScriptBlockId"].getStr()
-            messageNumber = jsonLine["ExtraFieldInfo"]["MessageNumber"].getInt()
-            messageTotal = jsonLine["ExtraFieldInfo"]["MessageTotal"].getInt()
-            path = jsonLine["ExtraFieldInfo"].getOrDefault("Path").getStr()
+            timestamp = jsonLine.Timestamp
+            computerName = jsonLine.Computer
+            eventLevel = jsonLine.Level
+            ruleTitle = jsonLine.RuleTitle
+            scriptBlock = jsonLine.Details["ScriptBlock"].getStr()
+            scriptBlockId = jsonLine.ExtraFieldInfo["ScriptBlockId"].getStr()
+            messageNumber = jsonLine.ExtraFieldInfo["MessageNumber"].getInt()
+            messageTotal = jsonLine.ExtraFieldInfo["MessageTotal"].getInt()
+            path = jsonLine.ExtraFieldInfo.getOrDefault("Path").getStr()
             if path == "":
                 path = "no-path"
         except CatchableError:
