@@ -5,7 +5,6 @@ import takajoTerminal
 import hayabusaJson
 import std/algorithm
 import std/enumerate
-import std/sets
 import std/sequtils
 import std/strutils
 import std/tables
@@ -18,8 +17,8 @@ type StackRecord* = ref object
     eid* = ""
     channel* = ""
     levelsOrder* = 0
-    levels* = initHashSet[string]()
-    ruleTitles* = initHashSet[string]()
+    levels*:CountTable = initCountTable[string]()
+    ruleTitles*:CountTable = initCountTable[string]()
     otherColumn = newSeq[string]()
 
 proc calcLevelOrder(x: StackRecord): int =
@@ -35,8 +34,11 @@ proc calcLevelOrder(x: StackRecord): int =
   elif "info" in x.levels:
       result = LEVEL_ORDER["info"]
 
-proc levelCmp(x, y: string): int =
-  cmp(LEVEL_ORDER[x], LEVEL_ORDER[y]) * -1
+proc levelCmp(x, y: (string, int)): int =
+  cmp(LEVEL_ORDER[x[0]], LEVEL_ORDER[y[0]]) * -1
+
+proc buildCountStr(x:(string, int)): string =
+  x[0] & "(" & intToStr(x[1]) & ")"
 
 proc recordCmp(x, y: StackRecord): int =
   result = cmp(x.levelsOrder, y.levelsOrder) * -1
@@ -49,28 +51,14 @@ proc recordCmp(x, y: StackRecord): int =
   if result == 0:
       result = cmp(x.key, y.key)
 
-proc buildCSVRecord(x: StackRecord): seq[string] =
-  let levelsStr = toSeq(x.levels).sorted(levelCmp).join(" | ")
-  let ruleTitlesStr = toSeq(x.ruleTitles).sorted.join(" | ")
+proc buildCSVRecord(x: StackRecord, isStackComputer:bool = false): seq[string] =
+  let levelsStr = toSeq(pairs(x.levels)).sorted(levelCmp).map(buildCountStr).join(" | ")
+  let ruleTitlesStr = toSeq(pairs(x.ruleTitles)).sorted.map(buildCountStr).join(" | ")
   if x.otherColumn.len == 0:
+    if isStackComputer:
+        return @[intToStr(x.count), x.key, levelsStr, ruleTitlesStr]
     return @[intToStr(x.count), x.channel, x.eid, x.key, levelsStr, ruleTitlesStr]
   return concat(@[intToStr(x.count), x.channel, x.eid], x.otherColumn, @[levelsStr, ruleTitlesStr])
-
-proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:string, jsonLine:JsonNode, otherColumn:seq[string] = @[]) =
-    let level = jsonLine["Level"].getStr("N/A")
-    if not isMinLevel(level, minLevel):
-        return
-    var val: StackRecord
-    if key notin stack:
-        val = StackRecord(key: key, eid: intToStr(jsonLine["EventID"].getInt(0)), channel: jsonLine["Channel"].getStr("N/A"))
-    else:
-        val = stack[key]
-    val.count += 1
-    val.levels.incl(level)
-    val.levelsOrder = val.calcLevelOrder()
-    val.ruleTitles.incl(jsonLine["RuleTitle"].getStr("N/A"))
-    val.otherColumn = otherColumn
-    stack[key] = val
 
 proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:string, jsonLine:HayabusaJson, otherColumn:seq[string] = @[]) =
     let level = jsonLine.Level
@@ -82,21 +70,23 @@ proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:st
     else:
         val = stack[key]
     val.count += 1
-    val.levels.incl(level)
+    val.levels.inc(level)
     val.levelsOrder = val.calcLevelOrder()
-    val.ruleTitles.incl(jsonLine.RuleTitle)
+    val.ruleTitles.inc(jsonLine.RuleTitle)
     val.otherColumn = otherColumn
     stack[key] = val
 
-proc outputResult*(output:string, culumnName: string, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string]()) =
+proc outputResult*(output:string, culumnName: string, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string](), isStackComputer:bool = false) =
     echo ""
     if stack.len == 0:
         echo "No results where found."
     else:
-        let stackRecords = toSeq(stack.values).sorted(recordCmp).map(buildCSVRecord)
+        let stackRecords = toSeq(stack.values).sorted(recordCmp).map(proc(x: StackRecord): seq[string] = buildCSVRecord(x, isStackComputer))
         var header = @["Count", "Channel", "EventID", culumnName, "Levels", "Alerts"]
         if otherHeader.len > 0:
             header = concat(@["Count", "Channel", "EventID"], otherHeader, @["Levels", "Alerts"])
+        if isStackComputer:
+            header = @["Count", culumnName, "Levels", "Alerts"]
         var table: TerminalTable
         table.add header
         for row in stackRecords:
