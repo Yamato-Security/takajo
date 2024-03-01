@@ -11,11 +11,7 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
     echo ""
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     echo "Creating a logon timeline. Please wait."
     echo ""
@@ -230,12 +226,12 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
                     tableOfResults[]["AdminLogon"] = "Yes"
 
     echo "Found logon events:"
-    echo "EID 4624 (Successful Logon): ", EID_4624_count
-    echo "EID 4625 (Failed Logon): ", EID_4625_count
-    echo "EID 4634 (Logoff): ", EID_4634_count
-    echo "EID 4647 (User Initiated Logoff): ", EID_4647_count
-    echo "EID 4648 (Explicit Logon): ", EID_4648_count
-    echo "EID 4672 (Admin Logon): ", EID_4672_count
+    echo "EID 4624 (Successful Logon): ", intToStr(EID_4624_count).insertSep(',')
+    echo "EID 4625 (Failed Logon): ", intToStr(EID_4625_count).insertSep(',')
+    echo "EID 4634 (Logoff): ", intToStr(EID_4634_count).insertSep(',')
+    echo "EID 4647 (User Initiated Logoff): ", intToStr(EID_4647_count).insertSep(',')
+    echo "EID 4648 (Explicit Logon): ", intToStr(EID_4648_count).insertSep(',')
+    echo "EID 4672 (Admin Logon): ", intToStr(EID_4672_count).insertSep(',')
     echo ""
 
     # Save results

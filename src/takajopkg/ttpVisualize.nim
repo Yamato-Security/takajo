@@ -6,10 +6,7 @@ proc ttpVisualize(output: string = "mitre-ttp-heatmap.json", quiet: bool = false
     echo "This command extracts TTPs and creates a JSON file to visualize in MITRE ATT&CK Navigator."
     echo ""
 
-    echo "Counting total lines. Please wait."
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     var
         bar: SuruBar = initSuruBar()

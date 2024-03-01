@@ -202,6 +202,7 @@ proc elevatedTokenIdToName*(elevatedTokenId: string): string =
     return result
 
 proc countLinesInTimeline*(filePath: string): int =
+    echo "Counting total lines. Please wait."
     const BufferSize = 4 * 1024 * 1024  # 4 MiB
     var buffer = newString(BufferSize)
     var file = open(filePath)
@@ -216,6 +217,8 @@ proc countLinesInTimeline*(filePath: string): int =
                 inc(count)
     inc(count)
     file.close()
+    echo "Total lines: ", intToStr(count).insertSep(',')
+    echo ""
     return count
 
 proc getYAMLpathes*(rulesDir: string): seq[string] =
@@ -367,11 +370,7 @@ proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
     echo "This command will stack " &  msg & "."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
     echo "Scanning the Hayabusa timeline. Please wait."
     echo ""
     return totalLines

@@ -13,7 +13,7 @@ proc ttpVisualizeSigma(output: string = "mitre-attack-navigator.json", quiet: bo
 
     echo "Counting total rule files. Please wait."
     let yamlPathes = getYAMLpathes(rulesDir)
-    echo "Total rule files: ", len(yamlPathes)
+    echo "Total rule files: ", intToStr(len(yamlPathes)).insertSep(',')
     echo ""
 
     var bar: SuruBar = initSuruBar()

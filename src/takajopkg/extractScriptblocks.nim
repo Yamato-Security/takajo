@@ -53,10 +53,8 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
     echo "This command will extract PowerShell Script Block."
     echo ""
 
-    echo "Counting total lines. Please wait."
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
+
     if level == "critical":
         echo "Extracting PowerShell ScriptBlocks with an alert level of critical. Please wait."
     else:

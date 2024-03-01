@@ -24,11 +24,7 @@ proc timelineTasks(output: string, outputLogoffEvents: bool = false, quiet: bool
     echo "This command creates a CSV timeline of scheduled task events."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     echo "Creating a scheduled tasks timeline. Please wait."
     echo ""

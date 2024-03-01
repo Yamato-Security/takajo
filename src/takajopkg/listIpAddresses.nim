@@ -15,11 +15,7 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
     echo "Private IP addresses are not included by default but can be enabled with -p."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     echo "Extracting IP addresses from various logs. Please wait."
     echo ""
@@ -65,7 +61,7 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
     outputFile.close()
 
     echo ""
-    echo "IP Addresss: ", len(ipHashSet)
+    echo "IP Addresss: ", intToStr(len(ipHashSet)).insertSep(',')
     echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
     outputElapsedTime(startTime)

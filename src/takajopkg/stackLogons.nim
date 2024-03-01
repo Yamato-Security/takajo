@@ -12,11 +12,7 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
     echo "Local source IP addresses are not included by default but can be enabled with -l, --localSrcIpAddresses."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
     echo "Scanning the Hayabusa timeline. Please wait."
     echo ""
 

@@ -13,11 +13,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output", qu
     echo "If you want to separate the field data by newlines, add the -m option."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
     echo "Splitting the Hayabusa CSV timeline. Please wait."
 
     if not dirExists(output):

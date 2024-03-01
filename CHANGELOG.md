@@ -6,6 +6,7 @@
 
 - Refactoring to remove duplicate code. (#99) (@fukusuket)
 - Processing speed is more than twice as fast by changing the JSON parsing to `jsony`. (#122) (@fukusuket)
+- Added decimal points in large numbers to make them easier to read. (#120) (@fukusuket)
 
 ## 2.4.0 [2024/02/22] - Ninja Day Release
 

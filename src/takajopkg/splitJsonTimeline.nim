@@ -7,11 +7,7 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
     echo "This command will split a large JSONL timeline into many multiple ones based on computer name."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
     echo "Splitting the Hayabusa JSONL timeline. Please wait."
 
     if not dirExists(output):
