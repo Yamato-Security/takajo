@@ -1,7 +1,7 @@
 proc stackComputers(level: string = "informational", output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let totalLines = countJsonlAndStartMsg("Computers", "Alerts count each Computers", timeline)
+    let totalLines = countJsonlAndStartMsg("Computers", "the Computer field as well as show alert information", timeline)
     var
         bar: SuruBar = initSuruBar()
         stack = initTable[string, StackRecord]()
