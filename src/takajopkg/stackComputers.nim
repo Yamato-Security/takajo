@@ -5,7 +5,6 @@ proc stackComputers(level: string = "informational", output: string = "", quiet:
     var
         bar: SuruBar = initSuruBar()
         stack = initTable[string, StackRecord]()
-
     bar[0].total = totalLines
     bar.setup()
     # Loop through JSON lines
