@@ -57,7 +57,7 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
     outputFile.close()
 
     echo ""
-    echo "Domains: ", len(domainHashSet)
+    echo "Domains: ", intToStr(len(domainHashSet)).insertSep(',')
     echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
     outputElapsedTime(startTime)

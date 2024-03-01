@@ -104,9 +104,9 @@ proc listHashes(level: string = "high", output: string, quiet: bool = false, tim
     echo impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ")"
     echo ""
     echo "Hashes:"
-    echo "MD5: " & $md5hashCount
-    echo "SHA1: ", $sha1hashCount
-    echo "SHA256: ", $sha256hashCount
-    echo "Import: ", $impHashCount
+    echo "MD5: ",  intToStr(md5hashCount).insertSep(',')
+    echo "SHA1: ", intToStr(sha1hashCount).insertSep(',')
+    echo "SHA256: ", intToStr(sha256hashCount).insertSep(',')
+    echo "Import: ", intToStr(impHashCount).insertSep(',')
     echo ""
     outputElapsedTime(startTime)

@@ -61,7 +61,7 @@ proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string
     outputFile.close()
 
     echo ""
-    echo "IP Addresss: ", len(ipHashSet)
+    echo "IP Addresss: ", intToStr(len(ipHashSet)).insertSep(',')
     echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
     outputElapsedTime(startTime)
