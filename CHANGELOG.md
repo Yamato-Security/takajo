@@ -2,6 +2,10 @@
 
 ## 2.5.0 [xxxx/xx/xx]
 
+**New Features:**
+
+- `stack-computers` command: stack the `Computer` field as well as provide alert information. (#125) (@fukusuket)
+
 **Enhancements:**
 
 - Refactoring to remove duplicate code. (#99) (@fukusuket)
