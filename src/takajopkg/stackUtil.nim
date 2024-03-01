@@ -38,7 +38,7 @@ proc levelCmp(x, y: (string, int)): int =
   cmp(LEVEL_ORDER[x[0]], LEVEL_ORDER[y[0]]) * -1
 
 proc buildCountStr(x:(string, int)): string =
-  x[0] & "(" & intToStr(x[1]) & ")"
+  x[0] & " (" & intToStr(x[1]) & ")"
 
 proc recordCmp(x, y: StackRecord): int =
   result = cmp(x.levelsOrder, y.levelsOrder) * -1
