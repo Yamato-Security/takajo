@@ -62,7 +62,7 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
 
     let lines = readFile(ipList).splitLines()
 
-    echo "Loaded IP addresses: ", len(lines)
+    echo "Loaded IP addresses: ", intToStr(len(lines)).insertSep(',')
     echo "Rate limit per minute: ", rateLimit
     echo ""
 

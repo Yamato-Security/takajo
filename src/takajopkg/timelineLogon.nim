@@ -11,11 +11,7 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
     echo ""
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     echo "Creating a logon timeline. Please wait."
     echo ""

@@ -49,7 +49,7 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
 
     let lines = readFile(hashList).splitLines()
 
-    echo "Loaded hashes: ", len(lines)
+    echo "Loaded hashes: ", intToStr(len(lines)).insertSep(',')
     echo "Rate limit per minute: ", rateLimit
     echo ""
 

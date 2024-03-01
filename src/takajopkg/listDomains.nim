@@ -11,11 +11,7 @@ proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = fa
     echo "Domains ending with .lan, .LAN or .local are filtered out."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     echo "Extracting domain queries from Sysmon 22 events. Please wait."
     echo ""

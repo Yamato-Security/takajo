@@ -12,11 +12,7 @@ proc listHashes(level: string = "high", output: string, quiet: bool = false, tim
     echo "For example, -l=informational for a minimum level of informational, which will extract out all hashes."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     if level == "critical":
         echo "Scanning for process hashes with an alert level of critical"

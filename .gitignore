@@ -151,3 +151,6 @@ takajo-*
 *.txt
 output/*
 *.xlsx
+
+#Intelij IDEA
+.idea

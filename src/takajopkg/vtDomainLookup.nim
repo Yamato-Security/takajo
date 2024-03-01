@@ -60,7 +60,7 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
 
     let lines = readFile(domainList).splitLines()
 
-    echo "Loaded domains: ", len(lines)
+    echo "Loaded domains: ", intToStr(len(lines)).insertSep(',')
     echo "Rate limit per minute: ", rateLimit
     echo ""
 

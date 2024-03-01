@@ -9,11 +9,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
     echo "You can change the minimum level with -l, --level=."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     if level == "critical":
         echo "Scanning for processes with an alert level of critical"

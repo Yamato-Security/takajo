@@ -37,11 +37,7 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
     echo "This command will create a CSV timeline of partition diagnostic."
     echo ""
 
-    echo "Counting total lines. Please wait."
-    echo ""
     let totalLines = countLinesInTimeline(timeline)
-    echo "Total lines: ", totalLines
-    echo ""
 
     var
         bar: SuruBar = initSuruBar()
