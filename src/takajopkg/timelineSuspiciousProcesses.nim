@@ -224,7 +224,7 @@ proc timelineSuspiciousProcesses(level: string = "high", output: string = "", qu
         echo ""
         return
 
-    echo "Suspicious processes in Security 4688 process creation events: " & $suspicousProcessCount_Sec_4688
-    echo "Suspicious processes in Sysmon 1 process creation events: " & $suspicousProcessCount_Sysmon_1
+    echo "Suspicious processes in Security 4688 process creation events: " & intToStr(suspicousProcessCount_Sec_4688).insertSep(',')
+    echo "Suspicious processes in Sysmon 1 process creation events: " & intToStr(suspicousProcessCount_Sysmon_1).insertSep(',')
     echo ""
     outputElapsedTime(startTime)

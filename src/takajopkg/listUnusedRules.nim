@@ -28,8 +28,9 @@ proc listUnusedRules(columnName: string = "RuleFile", output: string = "", quiet
             inc numberOfUnusedRules
         let undetectedPercentage = (checkResult.len() / fileLists.len()) * 100
         outputStock.add("")
+        let numberOfUnusedRulesStr = intToStr(numberOfUnusedRules).insertSep(',')
         echo fmt"{ undetectedPercentage :.4}% of the yml rules were not used."
-        echo fmt"Number of unused rule files: {numberOfUnusedRules}"
+        echo fmt"Number of unused rule files: {numberOfUnusedRulesStr}"
         echo ""
     if output != "":
         let f = open(output, fmWrite)

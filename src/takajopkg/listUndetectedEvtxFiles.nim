@@ -31,8 +31,9 @@ proc listUndetectedEvtxFiles(columnName: system.string = "EvtxFile", evtxDir: st
             inc numberOfEvtxFiles
         outputStock.add("")
         let undetectedPercentage = (checkResult.len() / fileLists.len()) * 100
+        let numberOfEvtxFilesStr = intToStr(numberOfEvtxFiles).insertSep(',')
         echo fmt"{ undetectedPercentage :.4}% of the evtx files did not have any detections."
-        echo fmt"Number of evtx files not detected: {numberOfEvtxFiles}"
+        echo fmt"Number of evtx files not detected: {numberOfEvtxFilesStr}"
         echo ""
     if output != "":
         let f = open(output, fmWrite)
