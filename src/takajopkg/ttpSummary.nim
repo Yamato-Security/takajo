@@ -25,6 +25,7 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
 
     echo "Started the TTP Summary command."
     echo "This command outputs TTP summary."
+    echo ""
 
     let totalLines = countLinesInTimeline(timeline)
     let tac_no = {
