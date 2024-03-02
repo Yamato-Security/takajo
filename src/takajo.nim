@@ -33,6 +33,7 @@ include takajopkg/listUnusedRules
 include takajopkg/splitCsvTimeline
 include takajopkg/splitJsonTimeline
 include takajopkg/stackCmdlines
+include takajopkg/stackComputers
 include takajopkg/stackDNS
 include takajopkg/stackLogons
 include takajopkg/stackProcesses
@@ -63,6 +64,7 @@ when isMainModule:
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
     const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] -o cmdlines.csv\p"
+    const example_stack_computers = "  stack-computers -t ../hayabusa/timeline.jsonl [--level low] -o computers.csv\p"
     const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl [--level infomational]  -o dns.csv\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
     const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl [--level infomational] -o services.csv\p"
@@ -85,7 +87,7 @@ when isMainModule:
         examples & example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
-        example_stack_cmdlines & example_stack_dns & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks &
+        example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks &
         example_sysmon_process_tree &
         example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes & example_timeline_tasks &
         example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
@@ -184,6 +186,16 @@ when isMainModule:
                 "output": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
+            }
+        ],
+        [
+            stackComputers, cmdName = "stack-computers",
+            doc = "stack computers",
+            help = {
+                "level": "specify the minimum alert level (default: low)",
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             }
         ],
         [

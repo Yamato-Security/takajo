@@ -95,6 +95,15 @@ jobs:
       - name: run split-json-timeline
         run: cd takajo && ./takajo split-json-timeline -t timeline.jsonl
 
+      - name: run stack-computers
+        run: cd takajo && ./takajo stack-computers -t timeline.jsonl
+
+      - name: run stack-computers(-o)
+        run: cd takajo && ./takajo stack-computers -t timeline.jsonl -o computers.csv
+
+      - name: run stack-computers(-l)
+        run: cd takajo && ./takajo stack-computers -t timeline.jsonl -o computers.csv -l high
+
       - name: run stack-cmdlines
         run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl
 
