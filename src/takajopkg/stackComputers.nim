@@ -1,4 +1,4 @@
-proc stackComputers(level: string = "informational", output: string = "", quiet: bool = false, timeline: string) =
+proc stackComputers(level: string = "informational", sourceComputers: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("Computers", "the Computer field as well as show alert information", timeline)
@@ -17,7 +17,11 @@ proc stackComputers(level: string = "informational", output: string = "", quiet:
         let jsonLine:HayabusaJson = jsonLineOpt.get()
         let eventId = jsonLine.EventID
         let channel = jsonLine.Channel
-        let stackKey = jsonLine.Computer
+        var stackKey = jsonLine.Computer
+        if sourceComputers:
+            stackKey = getJsonValue(jsonLine.Details, @["SrcComp"])
+            if stackKey.len() == 0:
+                continue
         stackResult(stackKey, stack, level, jsonLine)
     bar.finish()
     outputResult(output, "Computer", stack, isStackComputer=true)
