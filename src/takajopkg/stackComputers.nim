@@ -20,7 +20,7 @@ proc stackComputers(level: string = "informational", sourceComputers: bool = fal
         var stackKey = jsonLine.Computer
         if sourceComputers:
             stackKey = getJsonValue(jsonLine.Details, @["SrcComp"])
-            if stackKey.len() == 0:
+            if stackKey.len() == 0 or stackKey == "-" or stackKey == "Unknown":
                 continue
         stackResult(stackKey, stack, level, jsonLine)
     bar.finish()
