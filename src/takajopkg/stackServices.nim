@@ -2,28 +2,12 @@ proc stackServices(level: string = "informational", ignoreSystem: bool = false, 
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("Services", "service names and paths from System 7045 and Security 4697 events", timeline)
-    var
-        bar: SuruBar = initSuruBar()
-        stack = initTable[string, StackRecord]()
-
-    bar[0].total = totalLines
-    bar.setup()
-    # Loop through JSON lines
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let eventId = jsonLine.EventID
-        let channel = jsonLine.Channel
-        if (eventId == 7045 and not ignoreSystem and channel == "Sys") or
-           (eventId == 4697 and not ignoreSecurity and channel == "Sec"):
-            let svc = jsonLine.Details["Svc"].getStr("N/A")
-            let path = jsonLine.Details["Path"].getStr("N/A")
-            let stackKey = svc & " -> " & path
-            stackResult(stackKey, stack, level, jsonLine, @[svc, path])
-    bar.finish()
+    let eventFilter = proc(x: HayabusaJson): bool = (x.EventID == 7045 and not ignoreSystem and x.Channel == "Sys") or (x.EventID == 4697 and not ignoreSecurity and x.Channel == "Sec")
+    let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
+        let svc = x.Details["Svc"].getStr("N/A")
+        let pat = x.Details["Path"].getStr("N/A")
+        let stackKey = svc & " -> " & pat
+        return (stackKey, @[svc, pat])
+    let stack = processJSONL(eventFilter, getStackKey, totalLines, timeline, level)
     outputResult(output, "Service", stack, @["ServiceName", "Path"])
     outputElapsedTime(startTime)

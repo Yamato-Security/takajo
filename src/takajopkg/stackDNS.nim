@@ -2,28 +2,13 @@ proc stackDNS(level: string = "informational", output: string = "", quiet: bool 
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("DNS", "DNS queries and responses from Sysmon 22 events", timeline)
-    var
-        bar: SuruBar = initSuruBar()
-        stack = initTable[string, StackRecord]()
-
-    bar[0].total = totalLines
-    bar.setup()
-    # Loop through JSON lines
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let eventId = jsonLine.EventID
-        let channel = jsonLine.Channel
-        if (eventId == 22 and channel == "Sysmon"):
-            let prog = jsonLine.Details["Proc"].getStr("N/A")
-            let query = jsonLine.Details["Query"].getStr("N/A")
-            let res = jsonLine.Details["Result"].getStr("N/A")
-            let stackKey = prog & " -> " & query & " -> " & res
-            stackResult(stackKey, stack, level, jsonLine, @[prog, query, res])
-    bar.finish()
+    let eventFilter = proc(x: HayabusaJson): bool = x.EventID == 22 and x.Channel == "Sysmon"
+    let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
+        let pro = x.Details["Proc"].getStr("N/A")
+        let que = x.Details["Query"].getStr("N/A")
+        let res = x.Details["Result"].getStr("N/A")
+        let stackKey = pro & "->" & que & "->" & res
+        return (stackKey, @[pro, que, res])
+    let stack = processJSONL(eventFilter, getStackKey, totalLines, timeline, level)
     outputResult(output, "DNS", stack, @["Image", "Query", "Result"])
     outputElapsedTime(startTime)

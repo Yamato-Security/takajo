@@ -2,25 +2,8 @@ proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSec
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("Processes", "executed processes from Sysmon 1 and Security 4688 events", timeline)
-    var
-        bar: SuruBar = initSuruBar()
-        stack = initTable[string, StackRecord]()
-    bar[0].total = totalLines
-    bar.setup()
-    # Loop through JSON lines
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let eventId = jsonLine.EventID
-        let channel = jsonLine.Channel
-        if (eventId == 1 and not ignoreSysmon and channel == "Sysmon") or
-           (eventId == 4688 and not ignoreSecurity and channel == "Sec"):
-            let stackKey = jsonLine.Details["Proc"].getStr("N/A")
-            stackResult(stackKey, stack, level, jsonLine)
-    bar.finish()
+    let eventFilter = proc(x: HayabusaJson): bool = (x.EventID == 1 and not ignoreSysmon and x.Channel == "Sysmon") or (x.EventID == 4688 and not ignoreSecurity and x.Channel == "Sec")
+    let getStackKey = proc(x: HayabusaJson): (string, seq[string]) = (x.Details["Proc"].getStr("N/A"), @[])
+    let stack = processJSONL(eventFilter, getStackKey, totalLines, timeline, level)
     outputResult(output, "Process", stack)
     outputElapsedTime(startTime)
