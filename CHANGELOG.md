@@ -4,7 +4,9 @@
 
 **New Features:**
 
-- `stack-computers` command: stack the `Computer` field as well as provide alert information. (#125) (@fukusuket)
+- `stack-computers` command: stack the `Computer` (default) or `SrcComp` fields as well as provide alert information. (#125) (@fukusuket)
+- `stack-ip-addresses` command: stack the `SrcIP` (default) or `TgtIP` fields as well as provide alert information. (#129) (@fukusuket)
+- `stack-users` command: stack the `TgtUser` (default) or `SrcUser` fields as well as provide alert information. (#130) (@fukusuket)
 
 **Enhancements:**
 
