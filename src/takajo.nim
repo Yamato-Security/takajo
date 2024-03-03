@@ -66,7 +66,7 @@ when isMainModule:
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
     const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] -o cmdlines.csv\p"
-    const example_stack_computers = " stack-computers -t ../hayabusa/timeline.jsonl [--level informational] [--sourceComputers] -o computers.csv\p"
+    const example_stack_computers = "  stack-computers -t ../hayabusa/timeline.jsonl [--level informational] [--sourceComputers] -o computers.csv\p"
     const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl [--level infomational]  -o dns.csv\p"
     const example_stack_ip_addresses = "  stack-ip-addresses -t ../hayabusa/timeline.jsonl [--level infomational] [--targetIpAddresses] -o ipAddresses.csv\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
