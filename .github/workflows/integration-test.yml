@@ -104,6 +104,9 @@ jobs:
       - name: run stack-computers(-l)
         run: cd takajo && ./takajo stack-computers -t timeline.jsonl -o computers.csv -l high
 
+      - name: run stack-computers(-s)
+        run: cd takajo && ./takajo stack-computers -t timeline.jsonl -o computers.csv -s
+
       - name: run stack-cmdlines
         run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl
 

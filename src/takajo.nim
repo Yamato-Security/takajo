@@ -64,7 +64,7 @@ when isMainModule:
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
     const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] -o cmdlines.csv\p"
-    const example_stack_computers = "  stack-computers -t ../hayabusa/timeline.jsonl [--level low] -o computers.csv\p"
+    const example_stack_computers = "  stack-computers -t ../hayabusa/timeline.jsonl [--level informational] [--sourceComputers] -o computers.csv\p"
     const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl [--level infomational]  -o dns.csv\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
     const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl [--level infomational] -o services.csv\p"
@@ -193,6 +193,7 @@ when isMainModule:
             doc = "stack computers",
             help = {
                 "level": "specify the minimum alert level (default: low)",
+                "sourceComputers" : "stack source computers instead of target computers",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
