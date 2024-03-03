@@ -35,7 +35,7 @@ include takajopkg/splitJsonTimeline
 include takajopkg/stackCmdlines
 include takajopkg/stackComputers
 include takajopkg/stackDNS
-include takajopkg/stackIpaddresses
+include takajopkg/stackIpAddresses
 include takajopkg/stackLogons
 include takajopkg/stackProcesses
 include takajopkg/stackServices
@@ -230,7 +230,7 @@ when isMainModule:
             }
         ],
         [
-            stackIpaddresses, cmdName = "stack-ip-addresses",
+            stackIpAddresses, cmdName = "stack-ip-addresses",
             doc = "stack ipaddresses",
             help = {
                 "level": "specify the minimum alert level (default: informational)",

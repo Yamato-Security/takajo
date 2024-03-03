@@ -1,4 +1,4 @@
-proc stackIpaddresses(level: string = "informational", targetIpAddresses: bool = false, output: string = "", quiet: bool = false, timeline: string) =
+proc stackIpAddresses(level: string = "informational", targetIpAddresses: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
     let totalLines = countJsonlAndStartMsg("IpAddresses", "the IpAddress field as well as show alert information", timeline)
