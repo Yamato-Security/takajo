@@ -231,7 +231,7 @@ when isMainModule:
         ],
         [
             stackIpaddresses, cmdName = "stack-ip-addresses",
-            doc = "",
+            doc = "stack ipaddresses",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
                 "targetIpAddresses" : "stack target IP addresses instead of source IP addresses",
@@ -295,7 +295,7 @@ when isMainModule:
         ],
         [
             stackUsers, cmdName = "stack-users",
-            doc = "",
+            doc = "stack users",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
                 "sourceUsers" : "stack source users instead of target users",
