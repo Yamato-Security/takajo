@@ -298,12 +298,16 @@ when isMainModule:
             doc = "stack users",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
-                "sourceUsers" : "stack source users instead of target users",
-                "filterComputerAccounts": "",
-                "filterSystemAccounts": "",
+                "sourceUsers" : "stack source users instead of target users (default: false)",
+                "filterComputerAccounts": "filter out computer accounts (default: true)",
+                "filterSystemAccounts": "filter out system accounts (default: true)",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
+            },
+            short = {
+                "filterComputerAccounts": 'c',
+                "filterSystemAccounts": 'f'
             }
         ],
         [
