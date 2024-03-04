@@ -73,7 +73,7 @@ when isMainModule:
     const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl [--level low] -o processes.csv\p"
     const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl [--level infomational] -o services.csv\p"
     const example_stack_tasks = "  stack-tasks -t ../hayabusa/timeline.jsonl [--level infomational] -o tasks.csv\p"
-    const example_stack_users = "  stack-users -t ../hayabusa/timeline.jsonl [--level infomational] [--sourceUsers] -o users.csv\p"
+    const example_stack_users = "  stack-users -t ../hayabusa/timeline.jsonl [--level infomational] [--sourceUsers] [--filterSystemAccounts] [--filterComputerAccounts] -o users.csv\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
@@ -299,6 +299,8 @@ when isMainModule:
             help = {
                 "level": "specify the minimum alert level (default: informational)",
                 "sourceUsers" : "stack source users instead of target users",
+                "filterComputerAccounts": "",
+                "filterSystemAccounts": "",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
