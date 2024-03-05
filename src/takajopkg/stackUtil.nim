@@ -128,7 +128,7 @@ proc processJSONL*(eventFilter: proc (x: HayabusaJson): bool,
         let jsonLine:HayabusaJson = jsonLineOpt.get()
         if eventFilter(jsonLine):
             let (stackKey, otherColumn) = getStackKey(jsonLine)
-            if stackKey.len() == 0 or stackKey == "-" or stackKey == "Unknown":
+            if stackKey.len() == 0 or stackKey == "-" or stackKey == "Unknown" or stackKey == "n/a":
                 continue
             stackResult(stackKey, stack, level, jsonLine, otherColumn)
     bar.finish()
