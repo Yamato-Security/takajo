@@ -15,7 +15,7 @@ const SYSTEM_ACCOUNTS = toHashSet([
 proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, output: string = "", quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let totalLines = countJsonlAndStartMsg("Users", "the User field as well as show alert information", timeline)
+    let totalLines = countJsonlAndStartMsg("Users", "the TgtUser (default) or SrcUser fields as well as show alert information", timeline)
     let eventFilter = proc(x: HayabusaJson): bool = true
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
         var stackKey = getJsonValue(x.Details, @["User"])
