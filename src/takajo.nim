@@ -8,6 +8,7 @@ import sets
 import sequtils
 import strformat
 import strutils
+import suru
 import tables
 import terminal
 import times
@@ -18,7 +19,6 @@ import std/enumerate
 import std/options
 import std/xmlparser
 import std/xmltree
-import suru
 import takajopkg/general
 import takajopkg/hayabusaJson
 import takajopkg/stackUtil
@@ -35,10 +35,12 @@ include takajopkg/splitJsonTimeline
 include takajopkg/stackCmdlines
 include takajopkg/stackComputers
 include takajopkg/stackDNS
+include takajopkg/stackIpAddresses
 include takajopkg/stackLogons
 include takajopkg/stackProcesses
 include takajopkg/stackServices
 include takajopkg/stackTasks
+include takajopkg/stackUsers
 include takajopkg/listHashes
 include takajopkg/sysmonProcessTree
 include takajopkg/timelineLogon
@@ -66,10 +68,12 @@ when isMainModule:
     const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] -o cmdlines.csv\p"
     const example_stack_computers = "  stack-computers -t ../hayabusa/timeline.jsonl [--level informational] [--sourceComputers] -o computers.csv\p"
     const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl [--level infomational]  -o dns.csv\p"
+    const example_stack_ip_addresses = "  stack-ip-addresses -t ../hayabusa/timeline.jsonl [--level infomational] [--targetIpAddresses] -o ipAddresses.csv\p"
     const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
+    const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl [--level low] -o processes.csv\p"
     const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl [--level infomational] -o services.csv\p"
     const example_stack_tasks = "  stack-tasks -t ../hayabusa/timeline.jsonl [--level infomational] -o tasks.csv\p"
-    const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl [--level low] -o processes.csv\p"
+    const example_stack_users = "  stack-users -t ../hayabusa/timeline.jsonl [--level infomational] [--sourceUsers] [--filterSystemAccounts] [--filterComputerAccounts] -o users.csv\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
     const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
@@ -87,7 +91,7 @@ when isMainModule:
         examples & example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
-        example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks &
+        example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_ip_addresses & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks & example_stack_users &
         example_sysmon_process_tree &
         example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes & example_timeline_tasks &
         example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
@@ -226,6 +230,20 @@ when isMainModule:
             }
         ],
         [
+            stackIpAddresses, cmdName = "stack-ip-addresses",
+            doc = "stack ipaddresses",
+            help = {
+                "level": "specify the minimum alert level (default: informational)",
+                "targetIpAddresses" : "stack target IP addresses instead of source IP addresses",
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any)",
+            },
+            short = {
+                "targetIpAddresses": 'a'
+            }
+        ],
+        [
             stackLogons, cmdName = "stack-logons",
             doc = "stack logons by target user, target computer, source IP address and source computer",
             help = {
@@ -273,6 +291,23 @@ when isMainModule:
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            }
+        ],
+        [
+            stackUsers, cmdName = "stack-users",
+            doc = "stack users",
+            help = {
+                "level": "specify the minimum alert level (default: informational)",
+                "sourceUsers" : "stack source users instead of target users (default: false)",
+                "filterComputerAccounts": "filter out computer accounts (default: true)",
+                "filterSystemAccounts": "filter out system accounts (default: true)",
+                "output": "save results to a CSV file",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any)",
+            },
+            short = {
+                "filterComputerAccounts": 'c',
+                "filterSystemAccounts": 'f'
             }
         ],
         [

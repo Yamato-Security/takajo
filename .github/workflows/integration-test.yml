@@ -122,6 +122,15 @@ jobs:
       - name: run stack-dns(-o)
         run: cd takajo && ./takajo stack-dns -t timeline.jsonl -o dns.csv
 
+      - name: run stack-ip-addresses
+        run: cd takajo && ./takajo stack-ip-addresses -t timeline.jsonl
+
+      - name: run stack-ip-addresses(-o)
+        run: cd takajo && ./takajo stack-ip-addresses -t timeline.jsonl -o ipAddresses.csv
+
+      - name: run stack-ip-addresses(-a)
+        run: cd takajo && ./takajo stack-ip-addresses -t timeline.jsonl -o ipAddresses.csv -a
+
       - name: run stack-logons
         run: cd takajo && ./takajo stack-logons -t timeline.jsonl
 
@@ -151,6 +160,15 @@ jobs:
 
       - name: run stack-tasks(-o)
         run: cd takajo && ./takajo stack-tasks -t timeline.jsonl -o tasks.csv
+
+      - name: run stack-users
+        run: cd takajo && ./takajo stack-users -t timeline.jsonl
+
+      - name: run stack-users(-o)
+        run: cd takajo && ./takajo stack-users -t timeline.jsonl -o users.csv
+
+      - name: run stack-users(-s)
+        run: cd takajo && ./takajo stack-users -t timeline.jsonl -o users.csv -s
 
       - name: run sysmon-process-tree
         run: cd takajo && ./takajo sysmon-process-tree -t timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00" -o process-tree.txt

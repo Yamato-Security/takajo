@@ -3,8 +3,10 @@ import json
 import nancy
 import takajoTerminal
 import hayabusaJson
+import suru
 import std/algorithm
 import std/enumerate
+import std/options
 import std/sequtils
 import std/strutils
 import std/tables
@@ -51,11 +53,11 @@ proc recordCmp(x, y: StackRecord): int =
   if result == 0:
       result = cmp(x.key, y.key)
 
-proc buildCSVRecord(x: StackRecord, isStackComputer:bool = false): seq[string] =
+proc buildCSVRecord(x: StackRecord, isMinColumns:bool = false): seq[string] =
   let levelsStr = toSeq(pairs(x.levels)).sorted(levelCmp).map(buildCountStr).join(" | ")
   let ruleTitlesStr = toSeq(pairs(x.ruleTitles)).sorted.map(buildCountStr).join(" | ")
   if x.otherColumn.len == 0:
-    if isStackComputer:
+    if isMinColumns:
         return @[intToStr(x.count), x.key, levelsStr, ruleTitlesStr]
     return @[intToStr(x.count), x.channel, x.eid, x.key, levelsStr, ruleTitlesStr]
   return concat(@[intToStr(x.count), x.channel, x.eid], x.otherColumn, @[levelsStr, ruleTitlesStr])
@@ -76,16 +78,16 @@ proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:st
     val.otherColumn = otherColumn
     stack[key] = val
 
-proc outputResult*(output:string, culumnName: string, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string](), isStackComputer:bool = false) =
+proc outputResult*(output:string, culumnName: string, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string](), isMinColumns:bool = false) =
     echo ""
     if stack.len == 0:
         echo "No results where found."
     else:
-        let stackRecords = toSeq(stack.values).sorted(recordCmp).map(proc(x: StackRecord): seq[string] = buildCSVRecord(x, isStackComputer))
+        let stackRecords = toSeq(stack.values).sorted(recordCmp).map(proc(x: StackRecord): seq[string] = buildCSVRecord(x, isMinColumns))
         var header = @["Count", "Channel", "EventID", culumnName, "Levels", "Alerts"]
         if otherHeader.len > 0:
             header = concat(@["Count", "Channel", "EventID"], otherHeader, @["Levels", "Alerts"])
-        if isStackComputer:
+        if isMinColumns:
             header = @["Count", culumnName, "Levels", "Alerts"]
         var table: TerminalTable
         table.add header
@@ -108,3 +110,26 @@ proc outputResult*(output:string, culumnName: string, stack: Table[string, Stack
         close(outputFile)
         echo ""
         echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+
+proc processJSONL*(eventFilter: proc (x: HayabusaJson): bool,
+                   getStackKey: proc (x: HayabusaJson): (string, seq[string]),
+                   totalLines:int, timeline:string, level:string): Table[string, StackRecord] =
+    var bar: SuruBar = initSuruBar()
+    var stack = initTable[string, StackRecord]()
+    bar[0].total = totalLines
+    bar.setup()
+    # Loop through JSON lines
+    for line in lines(timeline):
+        inc bar
+        bar.update(1000000000) # refresh every second
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+            continue
+        let jsonLine:HayabusaJson = jsonLineOpt.get()
+        if eventFilter(jsonLine):
+            let (stackKey, otherColumn) = getStackKey(jsonLine)
+            if stackKey.len() == 0 or stackKey == "-" or stackKey == "Unknown" or stackKey == "n/a":
+                continue
+            stackResult(stackKey, stack, level, jsonLine, otherColumn)
+    bar.finish()
+    return stack
