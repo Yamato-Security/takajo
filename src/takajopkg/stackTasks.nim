@@ -6,13 +6,13 @@ type
     ignoreSysmon:bool
     ignoreSecurity:bool
 
-method eventFilter*(self: StackTasksCmd, x: HayabusaJson):bool =
+method filter*(self: StackTasksCmd, x: HayabusaJson):bool =
     return x.EventID == 4698 and x.Channel == "Sec"
 
 proc decodeEntity*(txt: string): string =
    return txt.replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'")
 
-method eventProcess*(self: StackTasksCmd, x: HayabusaJson)=
+method analyze*(self: StackTasksCmd, x: HayabusaJson)=
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
         let user = x.Details["User"].getStr("N/A")
         let name = x.Details["Name"].getStr("N/A")

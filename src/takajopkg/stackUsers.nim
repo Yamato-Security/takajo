@@ -21,10 +21,10 @@ type
     filterComputerAccounts:bool
     filterSystemAccounts:bool
 
-method eventFilter*(self: StackUsersCmd, x: HayabusaJson):bool =
+method filter*(self: StackUsersCmd, x: HayabusaJson):bool =
     return true
 
-method eventProcess*(self: StackUsersCmd, x: HayabusaJson)=
+method analyze*(self: StackUsersCmd, x: HayabusaJson)=
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
         var stackKey = getJsonValue(x.Details, @["User"])
         if stackKey.len() == 0:

@@ -12,11 +12,11 @@ type
     msg*: string
     output*: string
 
-method eventFilter*(self: AbstractCmd, x: HayabusaJson):bool {.base.} =
-  raise newException(ValueError, "eventFilter is not implemented")
+method filter*(self: AbstractCmd, x: HayabusaJson):bool {.base.} =
+  raise newException(ValueError, "filterHayabusaJSON is not implemented")
 
-method eventProcess*(self: AbstractCmd, x: HayabusaJson){.base.}=
-  raise newException(ValueError, "eventProcess is not implemented")
+method analyze*(self: AbstractCmd, x: HayabusaJson) {.base.} =
+  raise newException(ValueError, "analyzeHayabusaJSON is not implemented")
 
 method resultOutput*(self: AbstractCmd) {.base.} =
   raise newException(ValueError, "resultOutput is not implemented")
@@ -40,8 +40,8 @@ proc analyzeJSONLFile*(self: AbstractCmd) =
         if jsonLineOpt.isNone:
             continue
         let jsonLine:HayabusaJson = jsonLineOpt.get()
-        if self.eventFilter(jsonLine):
-            self.eventProcess(jsonLine)
+        if self.filter(jsonLine):
+            self.analyze(jsonLine)
     if not skipProgressBar:
       bar.finish()
     self.resultOutput()
@@ -67,8 +67,8 @@ proc analyzeJSONLFileWithMultipleCmd*(baseCmd:AbstractCmd , cmds: seq[AbstractCm
             continue
         let jsonLine:HayabusaJson = jsonLineOpt.get()
         for cmd in cmds:
-            if cmd.eventFilter(jsonLine):
-                cmd.eventProcess(jsonLine)
+            if cmd.filter(jsonLine):
+                cmd.analyze(jsonLine)
     if not skipProgressBar:
       bar.finish()
 

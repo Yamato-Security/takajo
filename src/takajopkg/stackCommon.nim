@@ -22,23 +22,23 @@ type StackRecord* = ref object
     otherColumn = newSeq[string]()
 
 proc calcLevelOrder(x: StackRecord): int =
-  result = 0
-  if "crit" in x.levels:
-      result = LEVEL_ORDER["crit"]
-  elif "high" in x.levels:
-      result = LEVEL_ORDER["high"]
-  elif "med" in x.levels:
-      result = LEVEL_ORDER["med"]
-  elif "low" in x.levels:
-      result = LEVEL_ORDER["low"]
-  elif "info" in x.levels:
-      result = LEVEL_ORDER["info"]
+    result = 0
+    if "crit" in x.levels:
+        result = LEVEL_ORDER["crit"]
+    elif "high" in x.levels:
+        result = LEVEL_ORDER["high"]
+    elif "med" in x.levels:
+        result = LEVEL_ORDER["med"]
+    elif "low" in x.levels:
+        result = LEVEL_ORDER["low"]
+    elif "info" in x.levels:
+        result = LEVEL_ORDER["info"]
 
 proc levelCmp(x, y: (string, int)): int =
-  cmp(LEVEL_ORDER[x[0]], LEVEL_ORDER[y[0]]) * -1
+    cmp(LEVEL_ORDER[x[0]], LEVEL_ORDER[y[0]]) * -1
 
 proc buildCountStr(x:(string, int)): string =
-  x[0] & " (" & intToStr(x[1]) & ")"
+    x[0] & " (" & intToStr(x[1]) & ")"
 
 proc recordCmp(x, y: StackRecord): int =
   result = cmp(x.levelsOrder, y.levelsOrder) * -1
@@ -52,13 +52,13 @@ proc recordCmp(x, y: StackRecord): int =
       result = cmp(x.key, y.key)
 
 proc buildCSVRecord(x: StackRecord, isMinColumns:bool = false): seq[string] =
-  let levelsStr = toSeq(pairs(x.levels)).sorted(levelCmp).map(buildCountStr).join(" | ")
-  let ruleTitlesStr = toSeq(pairs(x.ruleTitles)).sorted.map(buildCountStr).join(" | ")
-  if x.otherColumn.len == 0:
-    if isMinColumns:
-        return @[intToStr(x.count), x.key, levelsStr, ruleTitlesStr]
-    return @[intToStr(x.count), x.channel, x.eid, x.key, levelsStr, ruleTitlesStr]
-  return concat(@[intToStr(x.count), x.channel, x.eid], x.otherColumn, @[levelsStr, ruleTitlesStr])
+    let levelsStr = toSeq(pairs(x.levels)).sorted(levelCmp).map(buildCountStr).join(" | ")
+    let ruleTitlesStr = toSeq(pairs(x.ruleTitles)).sorted.map(buildCountStr).join(" | ")
+    if x.otherColumn.len == 0:
+      if isMinColumns:
+          return @[intToStr(x.count), x.key, levelsStr, ruleTitlesStr]
+      return @[intToStr(x.count), x.channel, x.eid, x.key, levelsStr, ruleTitlesStr]
+    return concat(@[intToStr(x.count), x.channel, x.eid], x.otherColumn, @[levelsStr, ruleTitlesStr])
 
 proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:string, jsonLine:HayabusaJson, otherColumn:seq[string] = @[]) =
     if key.len() == 0 or key == "-" or key == "Unknown" or key == "n/a":

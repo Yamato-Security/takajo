@@ -6,10 +6,10 @@ type
     ignoreSystem:bool
     ignoreSecurity:bool
 
-method eventFilter*(self: StackServicesCmd, x: HayabusaJson):bool =
+method filter*(self: StackServicesCmd, x: HayabusaJson):bool =
     return (x.EventID == 7045 and not self.ignoreSystem and x.Channel == "Sys") or (x.EventID == 4697 and not self.ignoreSecurity and x.Channel == "Sec")
 
-method eventProcess*(self: StackServicesCmd, x: HayabusaJson)=
+method analyze*(self: StackServicesCmd, x: HayabusaJson)=
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
         let svc = x.Details["Svc"].getStr("N/A")
         let pat = x.Details["Path"].getStr("N/A")

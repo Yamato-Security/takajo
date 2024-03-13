@@ -5,12 +5,12 @@ type
     stack* = initTable[string, StackRecord]()
     targetIpAddresses:bool
 
-method eventFilter*(self: StackIpAddressesCmd, x: HayabusaJson):bool =
+method filter*(self: StackIpAddressesCmd, x: HayabusaJson):bool =
     let key = if self.targetIpAddresses: "TgtIP" else: "SrcIP"
     let ip = getJsonValue(x.Details, @[key])
     return ip != "127.0.0.1" and ip != "::1"
 
-method eventProcess*(self: StackIpAddressesCmd, x: HayabusaJson)=
+method analyze*(self: StackIpAddressesCmd, x: HayabusaJson)=
     let key = if self.targetIpAddresses: "TgtIP" else: "SrcIP"
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) = (getJsonValue(x.Details, @[key]), @[""])
     let (stackKey, otherColumn) = getStackKey(x)

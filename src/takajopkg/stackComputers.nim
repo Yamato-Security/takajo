@@ -5,10 +5,10 @@ type
     stack* = initTable[string, StackRecord]()
     sourceComputers:bool
 
-method eventFilter*(self: StackComputersCmd, x: HayabusaJson):bool =
+method filter*(self: StackComputersCmd, x: HayabusaJson):bool =
     return true
 
-method eventProcess*(self: StackComputersCmd, x: HayabusaJson)=
+method analyze*(self: StackComputersCmd, x: HayabusaJson)=
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
         var stackKey = x.Computer
         if self.sourceComputers:

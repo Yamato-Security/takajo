@@ -6,10 +6,10 @@ type
     ignoreSysmon:bool
     ignoreSecurity:bool
 
-method eventFilter*(self: StackProcessesCmd, x: HayabusaJson):bool =
+method filter*(self: StackProcessesCmd, x: HayabusaJson):bool =
     return (x.EventID == 1 and not self.ignoreSysmon and x.Channel == "Sysmon") or (x.EventID == 4688 and not self.ignoreSecurity and x.Channel == "Sec")
 
-method eventProcess*(self: StackProcessesCmd, x: HayabusaJson)=
+method analyze*(self: StackProcessesCmd, x: HayabusaJson)=
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) = (x.Details["Proc"].getStr("N/A"), @[""])
     let (stackKey, otherColumn) = getStackKey(x)
     stackResult(stackKey, self.stack, self.level, x)

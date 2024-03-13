@@ -4,10 +4,10 @@ type
     header* = @["Image", "Query", "Result"]
     stack* = initTable[string, StackRecord]()
 
-method eventFilter*(self: StackDNSCmd, x: HayabusaJson):bool =
+method filter*(self: StackDNSCmd, x: HayabusaJson):bool =
     return x.EventID == 22 and x.Channel == "Sysmon"
 
-method eventProcess*(self: StackDNSCmd, x: HayabusaJson)=
+method analyze*(self: StackDNSCmd, x: HayabusaJson)=
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
         let pro = x.Details["Proc"].getStr("N/A")
         let que = x.Details["Query"].getStr("N/A")
