@@ -1,8 +1,8 @@
 const TTPVisualizeMsg =
-    """
-    Started the TTP Visualize command.
-    This command extracts TTPs and creates a JSON file to visualize in MITRE ATT&CK Navigator.
-    """
+  """
+  Started the TTP Visualize command.
+  This command extracts TTPs and creates a JSON file to visualize in MITRE ATT&CK Navigator.
+  """
 
 type
   TTPVisualizeCmd* = ref object of AbstractCmd

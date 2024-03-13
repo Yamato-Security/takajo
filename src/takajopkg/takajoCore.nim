@@ -67,8 +67,11 @@ proc analyzeJSONLFileWithMultipleCmd*(baseCmd:AbstractCmd , cmds: seq[AbstractCm
             continue
         let jsonLine:HayabusaJson = jsonLineOpt.get()
         for cmd in cmds:
-            if cmd.filter(jsonLine):
-                cmd.analyze(jsonLine)
+            try:
+                if cmd.filter(jsonLine):
+                    cmd.analyze(jsonLine)
+            except CatchableError:
+                continue
     if not skipProgressBar:
       bar.finish()
 
