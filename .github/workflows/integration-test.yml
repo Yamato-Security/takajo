@@ -56,6 +56,9 @@ jobs:
       - name: run extract-scriptblocks
         run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl
 
+      - name: run extract-scriptblocks(-s)
+        run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl -s
+
       - name: run extract-scriptblocks(-o)
         run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl -o scriptblocks
 
@@ -68,11 +71,20 @@ jobs:
       - name: run list-domain(-s)
         run: cd takajo && ./takajo list-domains -t timeline.jsonl -o domains.txt -s
 
+      - name: run list-domain(-d/-w)
+        run: cd takajo && ./takajo list-domains -t timeline.jsonl -o domains.txt -d -w
+
       - name: run list-hashes(-o)
         run: cd takajo && ./takajo list-hashes -t timeline.jsonl -o case-1
 
+      - name: run list-hashes(-s)
+        run: cd takajo && ./takajo list-hashes -t timeline.jsonl -o case-1 -s
+
       - name: run list-ip-addresses(-o)
         run: cd takajo && ./takajo list-ip-addresses -t timeline.jsonl -o ipAddresses.txt
+
+      - name: run list-ip-addresses(-s)
+        run: cd takajo && ./takajo list-ip-addresses -t timeline.jsonl -o ipAddresses.txt -s
 
       - name: run list-ip-addresses(-i)
         run: cd takajo && ./takajo list-ip-addresses -t timeline.jsonl -o ipAddresses.txt -i=false
@@ -107,11 +119,17 @@ jobs:
       - name: run stack-computers(-s)
         run: cd takajo && ./takajo stack-computers -t timeline.jsonl -o computers.csv -s
 
+      - name: run stack-computers(-c)
+        run: cd takajo && ./takajo stack-computers -t timeline.jsonl -o computers.csv -c
+
       - name: run stack-cmdlines
         run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl
 
       - name: run stack-cmdlines(-o)
         run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl -o cmdlines.csv
+
+      - name: run stack-cmdlines(-s)
+        run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl -o cmdlines.csv -s
 
       - name: run stack-cmdlines(-l)
         run: cd takajo && ./takajo stack-cmdlines -t timeline.jsonl -o cmdlines.csv -l informational
@@ -122,6 +140,9 @@ jobs:
       - name: run stack-dns(-o)
         run: cd takajo && ./takajo stack-dns -t timeline.jsonl -o dns.csv
 
+      - name: run stack-dns(-s)
+        run: cd takajo && ./takajo stack-dns -t timeline.jsonl -o dns.csv -s
+
       - name: run stack-ip-addresses
         run: cd takajo && ./takajo stack-ip-addresses -t timeline.jsonl
 
@@ -130,6 +151,9 @@ jobs:
 
       - name: run stack-ip-addresses(-a)
         run: cd takajo && ./takajo stack-ip-addresses -t timeline.jsonl -o ipAddresses.csv -a
+
+      - name: run stack-ip-addresses(-s)
+        run: cd takajo && ./takajo stack-ip-addresses -t timeline.jsonl -o ipAddresses.csv -s
 
       - name: run stack-logons
         run: cd takajo && ./takajo stack-logons -t timeline.jsonl
@@ -140,11 +164,17 @@ jobs:
       - name: run stack-logons(-o)
         run: cd takajo && ./takajo stack-logons -t timeline.jsonl -o logon.csv
 
+      - name: run stack-logons(-s)
+        run: cd takajo && ./takajo stack-logons -t timeline.jsonl -o logon.csv -s
+
       - name: run stack-processes
         run: cd takajo && ./takajo stack-processes -t timeline.jsonl
 
       - name: run stack-processes(-o)
         run: cd takajo && ./takajo stack-processes -t timeline.jsonl -o processes.csv
+
+      - name: run stack-processes(-s)
+        run: cd takajo && ./takajo stack-processes -t timeline.jsonl -o processes.csv -s
 
       - name: run stack-processes(-l)
         run: cd takajo && ./takajo stack-processes -t timeline.jsonl -o processes.csv -l informational
@@ -155,11 +185,17 @@ jobs:
       - name: run stack-services(-o)
         run: cd takajo && ./takajo stack-services -t timeline.jsonl -o services.csv
 
+      - name: run stack-services(-s)
+        run: cd takajo && ./takajo stack-services -t timeline.jsonl -o services.csv -s
+
       - name: run stack-tasks
         run: cd takajo && ./takajo stack-tasks -t timeline.jsonl
 
       - name: run stack-tasks(-o)
         run: cd takajo && ./takajo stack-tasks -t timeline.jsonl -o tasks.csv
+
+      - name: run stack-tasks(-s)
+        run: cd takajo && ./takajo stack-tasks -t timeline.jsonl -o tasks.csv -s
 
       - name: run stack-users
         run: cd takajo && ./takajo stack-users -t timeline.jsonl
@@ -169,6 +205,9 @@ jobs:
 
       - name: run stack-users(-s)
         run: cd takajo && ./takajo stack-users -t timeline.jsonl -o users.csv -s
+
+      - name: run stack-users(-c)
+        run: cd takajo && ./takajo stack-users -t timeline.jsonl -o users.csv -c
 
       - name: run sysmon-process-tree
         run: cd takajo && ./takajo sysmon-process-tree -t timeline.jsonl -p "365ABB72-3D4A-5CEB-0000-0010FA93FD00" -o process-tree.txt
@@ -185,20 +224,38 @@ jobs:
       - name: run timeline-logon(-a)
         run: cd takajo && ./takajo timeline-logon -t timeline.jsonl -a -o logon-timeline.csv
 
+      - name: run timeline-logon(-s)
+        run: cd takajo && ./takajo timeline-logon -t timeline.jsonl -s -o logon-timeline.csv
+
       - name: run timeline-partition-diagnostic
         run: cd takajo && ./takajo timeline-partition-diagnostic -t timeline.jsonl -o partition-diagnostic-timeline.csv
+
+      - name: run timeline-partition-diagnostic(-s)
+        run: cd takajo && ./takajo timeline-partition-diagnostic -t timeline.jsonl -o partition-diagnostic-timeline.csv -s
 
       - name: run timeline-suspicious-process
         run: cd takajo && ./takajo timeline-suspicious-process -t timeline.jsonl -o suspicous-processes.csv
 
+      - name: run timeline-suspicious-process(-s)
+        run: cd takajo && ./takajo timeline-suspicious-process -t timeline.jsonl -o suspicous-processes.csv -s
+
       - name: run timeline-tasks
         run: cd takajo && ./takajo timeline-tasks -t timeline.jsonl -o task-timeline.csv
+
+      - name: run timeline-tasks(-s)
+        run: cd takajo && ./takajo timeline-tasks -t timeline.jsonl -o task-timeline.csv -s
 
       - name: run ttp-summary
         run: cd takajo && ./takajo ttp-summary -t timeline.jsonl -o ttp-summary.csv
 
+      - name: run ttp-summary(-s)
+        run: cd takajo && ./takajo ttp-summary -t timeline.jsonl -o ttp-summary.csv -s
+
       - name: run ttp-visualize
         run: cd takajo && ./takajo ttp-visualize -t timeline.jsonl
+
+      - name: run ttp-visualize(-s)
+        run: cd takajo && ./takajo ttp-visualize -t timeline.jsonl -s
 
       - name: run ttp-visualize-sigma
         run: cd takajo && ./takajo ttp-visualize-sigma -r ../hayabusa/tmp/rules
