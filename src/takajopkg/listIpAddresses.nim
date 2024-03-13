@@ -24,9 +24,10 @@ method analyze*(self: ListIpAddressesCmd, x: HayabusaJson) =
     var ipAddress = ""
     if self.inbound:
         ipAddress = getJsonValue(x.Details, @["SrcIP"])
+        self.ipHashSet.incl(ipAddress)
     if self.outbound:
         ipAddress = getJsonValue(x.Details, @["TgtIP"])
-    self.ipHashSet.incl(ipAddress)
+        self.ipHashSet.incl(ipAddress)
 
 method resultOutput*(self: ListIpAddressesCmd) =
     # Save results
