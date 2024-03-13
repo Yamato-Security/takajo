@@ -112,26 +112,3 @@ proc outputResult*(output:string, culumnName: string, stack: Table[string, Stack
         close(outputFile)
         echo ""
         echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
-
-proc processJSONL*(eventFilter: proc (x: HayabusaJson): bool,
-                   getStackKey: proc (x: HayabusaJson): (string, seq[string]),
-                   totalLines:int, timeline:string, level:string): Table[string, StackRecord] =
-    var bar: SuruBar = initSuruBar()
-    var stack = initTable[string, StackRecord]()
-    bar[0].total = totalLines
-    bar.setup()
-    # Loop through JSON lines
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        if eventFilter(jsonLine):
-            let (stackKey, otherColumn) = getStackKey(jsonLine)
-            if stackKey.len() == 0 or stackKey == "-" or stackKey == "Unknown" or stackKey == "n/a":
-                continue
-            stackResult(stackKey, stack, level, jsonLine, otherColumn)
-    bar.finish()
-    return stack
