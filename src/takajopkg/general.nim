@@ -367,7 +367,7 @@ proc checkArgs*(quiet: bool = false, timeline: string, level:string) =
 proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
     echo "Started the " & cmdName & " command"
     echo ""
-    echo "This command will stack " &  msg & "."
+    echo msg
     echo ""
 
     let totalLines = countLinesInTimeline(timeline)
