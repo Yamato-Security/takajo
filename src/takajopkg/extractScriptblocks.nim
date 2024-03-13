@@ -1,8 +1,4 @@
-const ExtractScriptBlocksMsg =
-  """
-  Started the Extract Scriptblock command.
-  This command will extract PowerShell Script Block.
-  """
+const ExtractScriptBlocksMsg = "This command will extract PowerShell Script Block."
 
 type Script = ref object
     firstTimestamp: string
