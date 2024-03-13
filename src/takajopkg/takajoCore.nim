@@ -13,7 +13,7 @@ type
     output*: string
 
 method filter*(self: AbstractCmd, x: HayabusaJson):bool {.base.} =
-  raise newException(ValueError, "filter(AbstractCmd) is not implemented")
+  return true
 
 method analyze*(self: AbstractCmd, x: HayabusaJson) {.base.} =
   raise newException(ValueError, "analyze(AbstractCmd) is not implemented")

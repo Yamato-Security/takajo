@@ -1,93 +1,72 @@
+const TTPSummaryMsg = "Started the TTP Summary command.\nThis command outputs TTP summary."
+
 proc readJsonFromFile(filename: string): JsonNode =
-  var
-    file: File
-    content: string
-  if file.open(filename):
-    content = file.readAll()
-    file.close()
-    result = parseJson(content)
+    var
+        file: File
+        content: string
+    if file.open(filename):
+        content = file.readAll()
+        file.close()
+        result = parseJson(content)
 
 proc compareArrays(a, b: array[5, string]): int =
-  for i in 0..<4:
-    if a[i] < b[i]:
-      return -1
-    elif a[i] > b[i]:
-      return 1
-  return 0
+    for i in 0..<4:
+        if a[i] < b[i]:
+            return -1
+        elif a[i] > b[i]:
+            return 1
+    return 0
 
-proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
-    checkArgs(quiet, timeline, "informational")
+type
+  TTPSummaryCmd* = ref object of AbstractCmd
+    seqOfResultsTables*: seq[array[5, string]]
+    attack*: JsonNode
+    tac_no* = {"Reconnaissance": "01. ",
+               "Resource Development": "02. ",
+               "Initial Access": "03. ",
+               "Execution": "04. ",
+               "Persistence": "05. ",
+               "Privilege Escalation": "06. ",
+               "Defense Evasion": "07. ",
+               "Credential Access": "08. ",
+               "Discovery": "09. ",
+               "Lateral Movement": "10. ",
+               "Collection": "11. ",
+               "Exfiltration": "12. ",
+               "Command and Control": "13. ",
+               "Impact": "14. "}.toTable
 
-    if not os.fileExists("mitre-attack.json"):
-        echo "The file '" & "mitre-attack.json" & "' does not exist. Please specify a valid file path."
-        quit(1)
+method analyze*(self: TTPSummaryCmd, x: HayabusaJson) =
+    try:
+        let com = x.Computer
+        for tag in x.MitreTags:
+            if tag notin self.attack:
+                continue
+            let res = self.attack[tag]
+            let dat = res["Tactic"].getStr()
+            let tac = self.tac_no[dat] & dat
+            let tec = res["Technique"].getStr()
+            let sub = res["Sub-Technique"].getStr()
+            let rul = x.RuleTitle
+            self.seqOfResultsTables.add([com, tac, tec, sub, rul])
+    except CatchableError:
+        discard
 
-    echo "Started the TTP Summary command."
-    echo "This command outputs TTP summary."
-    echo ""
-
-    let totalLines = countLinesInTimeline(timeline)
-    let tac_no = {
-                        "Reconnaissance": "01. ",
-                        "Resource Development": "02. ",
-                        "Initial Access": "03. ",
-                        "Execution": "04. ",
-                        "Persistence": "05. ",
-                        "Privilege Escalation": "06. ",
-                        "Defense Evasion": "07. ",
-                        "Credential Access": "08. ",
-                        "Discovery": "09. ",
-                        "Lateral Movement": "10. ",
-                        "Collection": "11. ",
-                        "Exfiltration": "12. ",
-                        "Command and Control": "13. ",
-                        "Impact": "14. "
-                    }.toTable
-    let attack = readJsonFromFile("mitre-attack.json")
-    var
-        bar: SuruBar = initSuruBar()
-        seqOfResultsTables: seq[array[5, string]]
-
-    bar[0].total = totalLines
-    bar.setup()
-
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        try:
-            let com = jsonLine.Computer
-            for tag in jsonLine.MitreTags:
-                if tag notin attack:
-                    continue
-                let res = attack[tag]
-                let dat = res["Tactic"].getStr()
-                let tac = tac_no[dat] & dat
-                let tec = res["Technique"].getStr()
-                let sub = res["Sub-Technique"].getStr()
-                let rul = jsonLine.RuleTitle
-                seqOfResultsTables.add([com, tac, tec, sub, rul])
-        except CatchableError:
-            continue
-    seqOfResultsTables.sort(compareArrays)
-    bar.finish()
+method resultOutput*(self: TTPSummaryCmd) =
+    self.seqOfResultsTables.sort(compareArrays)
     let header = ["Computer", "Tactic", "Technique", "Sub-Technique", "RuleTitle", "Count"]
     var prev = ["","","","",""]
     var count = 1
     var ruleStr = initHashSet[string]()
-    if output != "":
+    if self.output != "":
         # Open file to save results
-        var outputFile = open(output, fmWrite)
+        var outputFile = open(self.output, fmWrite)
 
         ## Write CSV header
         outputFile.write(header.join(",") & "\p")
 
         ## Write contents
-        for arr in seqOfResultsTables:
+        for arr in self.seqOfResultsTables:
             ruleStr.incl(arr[4])
             if arr[0..<4] == prev[0..<4]:
                 count += 1
@@ -101,14 +80,14 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
             ruleStr = initHashSet[string]()
             outputFile.write("\p")
         outputFile.close()
-        let fileSize = getFileSize(output)
+        let fileSize = getFileSize(self.output)
         echo ""
-        echo "Saved results to " & output & " (" & formatFileSize(fileSize) & ")"
+        echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
     else:
         echo ""
         var table: TerminalTable
         table.add header
-        for arr in seqOfResultsTables:
+        for arr in self.seqOfResultsTables:
             ruleStr.incl(arr[4])
             if arr[0..<4] == prev[0..<4]:
                 count += 1
@@ -118,9 +97,20 @@ proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
             count = 1
             ruleStr = initHashSet[string]()
         table.echoTableSepsWithStyled(seps = boxSeps)
-
     echo ""
-    if seqOfResultsTables.len == 0:
+    if self.seqOfResultsTables.len == 0:
         echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
-    outputElapsedTime(startTime)
+
+proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
+    checkArgs(quiet, timeline, "informational")
+    if not os.fileExists("mitre-attack.json"):
+        echo "The file '" & "mitre-attack.json" & "' does not exist. Please specify a valid file path."
+        quit(1)
+    let cmd = TTPSummaryCmd(
+                timeline: timeline,
+                output: output,
+                name:"TTP Summary",
+                msg: TTPSummaryMsg)
+    cmd.attack = readJsonFromFile("mitre-attack.json")
+    cmd.analyzeJSONLFile()
