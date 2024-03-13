@@ -138,6 +138,7 @@ proc extractScriptblocks(level: string = "low", output: string = "scriptblock-lo
     let cmd = ExtractScriptBlocksCmd(
                 timeline: timeline,
                 output: output,
+                level: level,
                 name:"Extract ScriptBlock",
                 msg: ExtractScriptBlocksMsg)
     cmd.totalLines = countLinesInTimeline(timeline, true)
