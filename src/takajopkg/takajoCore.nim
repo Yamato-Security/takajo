@@ -21,10 +21,6 @@ method eventProcess*(self: AbstractCmd, x: HayabusaJson){.base.}=
 method resultOutput*(self: AbstractCmd) {.base.} =
   raise newException(ValueError, "resultOutput is not implemented")
 
-proc analyzeJSONLLine*(self: AbstractCmd, x: HayabusaJson) =
-    if self.eventFilter(x):
-        self.eventProcess(x)
-
 proc analyzeJSONLFile*(self: AbstractCmd) =
     let startTime = epochTime()
     var bar: SuruBar
@@ -44,7 +40,8 @@ proc analyzeJSONLFile*(self: AbstractCmd) =
         if jsonLineOpt.isNone:
             continue
         let jsonLine:HayabusaJson = jsonLineOpt.get()
-        self.analyzeJSONLLine(jsonLine)
+        if self.eventFilter(x):
+            self.eventProcess(x)
     if not skipProgressBar:
       bar.finish()
     self.resultOutput()
