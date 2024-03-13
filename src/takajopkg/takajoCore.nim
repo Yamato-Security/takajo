@@ -40,8 +40,8 @@ proc analyzeJSONLFile*(self: AbstractCmd) =
         if jsonLineOpt.isNone:
             continue
         let jsonLine:HayabusaJson = jsonLineOpt.get()
-        if self.eventFilter(x):
-            self.eventProcess(x)
+        if self.eventFilter(jsonLine):
+            self.eventProcess(jsonLine)
     if not skipProgressBar:
       bar.finish()
     self.resultOutput()
