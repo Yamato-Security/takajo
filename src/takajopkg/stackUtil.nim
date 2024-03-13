@@ -63,6 +63,8 @@ proc buildCSVRecord(x: StackRecord, isMinColumns:bool = false): seq[string] =
   return concat(@[intToStr(x.count), x.channel, x.eid], x.otherColumn, @[levelsStr, ruleTitlesStr])
 
 proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:string, jsonLine:HayabusaJson, otherColumn:seq[string] = @[]) =
+    if key.len() == 0 or key == "-" or key == "Unknown" or key == "n/a":
+        return
     let level = jsonLine.Level
     if not isMinLevel(level, minLevel):
         return

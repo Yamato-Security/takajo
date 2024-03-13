@@ -22,6 +22,7 @@ import std/xmltree
 import takajopkg/general
 import takajopkg/hayabusaJson
 import takajopkg/stackUtil
+import takajopkg/takajoCore
 import takajopkg/takajoTerminal
 import takajopkg/ttpResult
 import takajopkg/vtResult
