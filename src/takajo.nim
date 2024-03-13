@@ -60,7 +60,8 @@ include takajopkg/automagic
 when isMainModule:
     clCfg.version = "2.5.0-dev"
     const examples = "Examples:\p"
-    const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] -o case-1\p"
+    # TODO automagicコマンドのプロトタイプ
+    # const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] -o case-1\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o domains.txt\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl [--skipProgressBar] -o case-1\p"
@@ -91,7 +92,10 @@ when isMainModule:
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
     clCfg.useMulti = "Version: 2.5.0 Dev Build\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
-        examples & example_automagic & example_extract_scriptblocks &
+        examples &
+        # TODO automagicコマンドのプロトタイプ
+        # example_automagic &
+        example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
         example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_ip_addresses & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks & example_stack_users &
@@ -103,17 +107,18 @@ when isMainModule:
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
     dispatchMulti(
-        [
-            autoMagic, cmdName = "automagic",
-            doc = "automatically executes as many commands as possible and output results to a new folder",
-            help = {
-                "level": "specify the minimum alert level (default: low)",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "output directory (default: scriptblock-logs)",
-                "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
-            }
-        ],
+        # TODO automagicコマンドのプロトタイプ
+        # [
+        #     autoMagic, cmdName = "automagic",
+        #     doc = "automatically executes as many commands as possible and output results to a new folder",
+        #     help = {
+        #         "level": "specify the minimum alert level (default: low)",
+        #         "skipProgressBar": "do not display the progress bar",
+        #         "output": "output directory (default: scriptblock-logs)",
+        #         "quiet": "do not display the launch banner",
+        #         "timeline": "Hayabusa JSONL timeline (profile: any)",
+        #     }
+        # ],
         [
             extractScriptblocks, cmdName = "extract-scriptblocks",
             doc = "extract and reassemble PowerShell EID 4104 script block logs",
