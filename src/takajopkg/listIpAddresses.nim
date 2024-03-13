@@ -12,22 +12,21 @@ type
       privateIp*: bool
 
 method filter*(self: ListIpAddressesCmd, x: HayabusaJson):bool =
-    var ipAddress = ""
-    if self.inbound:
-        ipAddress = getJsonValue(x.Details, @["SrcIP"])
-    if self.outbound:
-        ipAddress = getJsonValue(x.Details, @["TgtIP"])
-    return (not isPrivateIP(ipAddress) or self.privateIp) and
-            isMulticast(ipAddress) == false and isLoopback(ipAddress) == false and ipAddress != "Unknown" and ipAddress != "-"
+    return true
 
 method analyze*(self: ListIpAddressesCmd, x: HayabusaJson) =
-    var ipAddress = ""
     if self.inbound:
-        ipAddress = getJsonValue(x.Details, @["SrcIP"])
-        self.ipHashSet.incl(ipAddress)
+        let ipAddress = getJsonValue(x.Details, @["SrcIP"])
+        if (not isPrivateIP(ipAddress) or self.privateIp) and
+            not isMulticast(ipAddress) and not isLoopback(ipAddress) and ipAddress != "Unknown" and ipAddress != "-":
+            self.ipHashSet.incl(ipAddress)
+
+    # Search for events with a TgtIP field if outbound == true
     if self.outbound:
-        ipAddress = getJsonValue(x.Details, @["TgtIP"])
-        self.ipHashSet.incl(ipAddress)
+        let ipAddress = getJsonValue(x.Details, @["TgtIP"])
+        if (not isPrivateIP(ipAddress) or self.privateIp) and
+            not isMulticast(ipAddress) and not isLoopback(ipAddress) and ipAddress != "Unknown" and ipAddress != "-":
+            self.ipHashSet.incl(ipAddress)
 
 method resultOutput*(self: ListIpAddressesCmd) =
     # Save results
