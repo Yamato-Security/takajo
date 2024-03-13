@@ -22,8 +22,13 @@ method resultOutput*(self: StackServicesCmd)=
     outputResult(self.output, self.name, self.stack, self.header)
 
 proc stackServices(level: string = "informational", ignoreSystem: bool = false, ignoreSecurity: bool = false,output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let cmd = StackServicesCmd(level:level, timeline:timeline, output:output, name:"Services", msg:"service names and paths from System 7045 and Security 4697 events", ignoreSystem:ignoreSystem, ignoreSecurity:ignoreSecurity)
+    let cmd = StackServicesCmd(
+                level: level,
+                timeline: timeline,
+                output: output,
+                name: "Services",
+                msg: "service names and paths from System 7045 and Security 4697 events",
+                ignoreSystem: ignoreSystem,
+                ignoreSecurity: ignoreSecurity)
     cmd.analyzeJSONLFile()
-    outputElapsedTime(startTime)

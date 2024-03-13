@@ -20,8 +20,12 @@ method resultOutput*(self: StackIpAddressesCmd)=
     outputResult(self.output, self.name, self.stack, isMinColumns=true)
 
 proc stackIpAddresses(level: string = "informational", targetIpAddresses: bool = false, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let cmd = StackIpAddressesCmd(level:level, timeline:timeline, output:output, name:"IpAddresses", msg:"the SrcIP (default) or TgtIP fields as well as show alert information", targetIpAddresses:targetIpAddresses)
+    let cmd = StackIpAddressesCmd(
+                level: level,
+                timeline: timeline,
+                output: output,
+                name: "IpAddresses",
+                msg: "the SrcIP (default) or TgtIP fields as well as show alert information",
+                targetIpAddresses: targetIpAddresses)
     cmd.analyzeJSONLFile()
-    outputElapsedTime(startTime)

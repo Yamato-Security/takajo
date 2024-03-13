@@ -37,8 +37,13 @@ method resultOutput*(self: StackTasksCmd)=
     outputResult(self.output, self.name, self.stack, self.header)
 
 proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let cmd = StackTasksCmd(level:level, timeline:timeline, output:output, name:"Tasks", msg:"new scheduled tasks from Security 4698 events", ignoreSysmon:ignoreSysmon, ignoreSecurity:ignoreSecurity)
+    let cmd = StackTasksCmd(
+                level: level,
+                timeline: timeline,
+                output: output,
+                name: "Tasks",
+                msg: "new scheduled tasks from Security 4698 events",
+                ignoreSysmon: ignoreSysmon,
+                ignoreSecurity: ignoreSecurity)
     cmd.analyzeJSONLFile()
-    outputElapsedTime(startTime)

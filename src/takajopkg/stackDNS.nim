@@ -21,8 +21,11 @@ method resultOutput*(self: StackDNSCmd)=
     outputResult(self.output, self.name, self.stack, self.header)
 
 proc stackDNS(level: string = "informational", output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let cmd = StackDNSCmd(level:level, timeline:timeline, output:output, name:"DNS", msg:"DNS queries and responses from Sysmon 22 events")
+    let cmd = StackDNSCmd(
+                level: level,
+                timeline: timeline,
+                output: output,
+                name: "DNS",
+                msg: "DNS queries and responses from Sysmon 22 events")
     cmd.analyzeJSONLFile()
-    outputElapsedTime(startTime)

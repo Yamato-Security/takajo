@@ -18,8 +18,6 @@ method resultOutput*(self: StackProcessesCmd) =
     outputResult(self.output, self.name, self.stack)
 
 proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
     checkArgs(quiet, timeline, level)
     let cmd = StackProcessesCmd(level:level, timeline:timeline, output:output, name:"Processes", msg:"executed processes from Sysmon 1 and Security 4688 events", ignoreSysmon:ignoreSysmon, ignoreSecurity:ignoreSecurity)
     cmd.analyzeJSONLFile()
-    outputElapsedTime(startTime)

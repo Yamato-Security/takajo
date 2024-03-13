@@ -2,6 +2,7 @@ import general
 import hayabusaJson
 import std/options
 import suru
+import times
 
 type
   AbstractCmd* = ref object of RootObj
@@ -25,6 +26,7 @@ proc analyzeJSONLLine*(self: AbstractCmd, x: HayabusaJson) =
         self.eventProcess(x)
 
 proc analyzeJSONLFile*(self: AbstractCmd) =
+    let startTime = epochTime()
     var bar: SuruBar
     let skipProgressBar = self.skipProgressBar
     let timeline = self.timeline
@@ -46,3 +48,4 @@ proc analyzeJSONLFile*(self: AbstractCmd) =
     if not skipProgressBar:
       bar.finish()
     self.resultOutput()
+    outputElapsedTime(startTime)

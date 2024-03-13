@@ -3,10 +3,8 @@ import json
 import nancy
 import takajoTerminal
 import hayabusaJson
-import suru
 import std/algorithm
 import std/enumerate
-import std/options
 import std/sequtils
 import std/strutils
 import std/tables

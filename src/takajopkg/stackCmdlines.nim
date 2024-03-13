@@ -18,8 +18,13 @@ method resultOutput*(self: StackCmdlineCmd)=
     outputResult(self.output, self.name, self.stack)
 
 proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
     checkArgs(quiet, timeline, level)
-    let cmd = StackCmdlineCmd(level:level, timeline:timeline, output:output, name:"Cmdlines", msg:"executed command lines from Sysmon 1 and Security 4688 events", ignoreSysmon:ignoreSysmon, ignoreSecurity:ignoreSecurity)
+    let cmd = StackCmdlineCmd(
+                level: level,
+                timeline: timeline,
+                output: output,
+                name:"Cmdlines",
+                msg: "executed command lines from Sysmon 1 and Security 4688 events",
+                ignoreSysmon: ignoreSysmon,
+                ignoreSecurity: ignoreSecurity)
     cmd.analyzeJSONLFile()
-    outputElapsedTime(startTime)

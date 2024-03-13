@@ -21,8 +21,6 @@ method resultOutput*(self: StackComputersCmd)=
     outputResult(self.output, self.name, self.stack, isMinColumns=true)
 
 proc stackComputers(level: string = "informational", sourceComputers: bool = false, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
     checkArgs(quiet, timeline, level)
     let cmd = StackComputersCmd(level:level, timeline:timeline, output:output, name:"Computers", msg:"the Computer (default) or SrcComp fields as well as show alert information", sourceComputers:sourceComputers)
     cmd.analyzeJSONLFile()
-    outputElapsedTime(startTime)

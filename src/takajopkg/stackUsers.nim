@@ -45,8 +45,6 @@ method resultOutput*(self: StackUsersCmd) =
     outputResult(self.output, self.name, self.stack, self.header, isMinColumns=true)
 
 proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
     checkArgs(quiet, timeline, level)
     let cmd = StackUsersCmd(level:level, timeline:timeline, output:output, name:"Users", msg:"the TgtUser (default) or SrcUser fields as well as show alert information", sourceUsers:sourceUsers, filterSystemAccounts:filterSystemAccounts, filterComputerAccounts:filterComputerAccounts)
     cmd.analyzeJSONLFile()
-    outputElapsedTime(startTime)
