@@ -19,7 +19,7 @@ method analyze*(self: StackComputersCmd, x: HayabusaJson)=
     stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackComputersCmd)=
-    outputResult(self.output, self.name, self.stack, isMinColumns=true)
+    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, isMinColumns=true)
 
 proc stackComputers(level: string = "informational", sourceComputers: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
@@ -28,7 +28,7 @@ proc stackComputers(level: string = "informational", sourceComputers: bool = fal
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Computers",
+                name: "Stack Computers",
                 msg: StackComputerMsg,
                 sourceComputers: sourceComputers)
     cmd.analyzeJSONLFile()

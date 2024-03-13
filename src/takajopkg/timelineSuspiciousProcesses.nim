@@ -2,8 +2,7 @@ const TimelineSuspiciousProcessesMsg =
   """
 This command will create a CSV timeline of suspicious processes.
 The default minimum level of alerts is high.
-You can change the minimum level with -l, --level=.
-  """
+You can change the minimum level with -l, --level=."""
 
 type
   TimelineSuspiciousProcessesCmd* = ref object of AbstractCmd

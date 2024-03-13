@@ -16,7 +16,7 @@ method analyze*(self: StackCmdlineCmd, x: HayabusaJson) =
     stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackCmdlineCmd)=
-    outputResult(self.output, self.name, self.stack, isMinColumns=true)
+    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, isMinColumns=true)
 
 proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
@@ -25,7 +25,7 @@ proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecu
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"Cmdlines",
+                name:"Stack Cmdlines",
                 msg: StackCmdlineMsg,
                 ignoreSysmon: ignoreSysmon,
                 ignoreSecurity: ignoreSecurity)

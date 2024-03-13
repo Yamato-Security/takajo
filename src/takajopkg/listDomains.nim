@@ -4,8 +4,7 @@ const ListDomainsMsg =
   """
 Local queries to workstations are filtered out by default, but can be included with -w, --includeWorkstations.
 Sub-domains are also filtered out by default, but can be included with -s, --includeSubdomains.
-Domains ending with .lan, .LAN or .local are filtered out.
-  """
+Domains ending with .lan, .LAN or .local are filtered out."""
 
 type
   ListDomainsCmd* = ref object of AbstractCmd

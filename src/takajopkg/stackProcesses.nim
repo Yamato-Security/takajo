@@ -16,7 +16,7 @@ method analyze*(self: StackProcessesCmd, x: HayabusaJson)=
     stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackProcessesCmd) =
-    outputResult(self.output, self.name, self.stack, isMinColumns=true)
+    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, isMinColumns=true)
 
 proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
@@ -25,7 +25,7 @@ proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSec
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Processes",
+                name: "Stack Processes",
                 msg: StackProcessesMsg,
                 ignoreSysmon: ignoreSysmon,
                 ignoreSecurity: ignoreSecurity)
