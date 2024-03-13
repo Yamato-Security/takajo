@@ -75,29 +75,27 @@ method analyze*(self: ExtractScriptBlocksCmd, x: HayabusaJson) =
             path = jsonLine.ExtraFieldInfo.getOrDefault("Path").getStr()
         if path == "":
             path = "no-path"
-        var stackedRecords = self.stackedRecords
-        var summaryRecords = self.summaryRecords
-        if scriptBlockId in stackedRecords:
-            stackedRecords[scriptBlockId].levels.incl(eventLevel)
-            stackedRecords[scriptBlockId].ruleTitles.incl(ruleTitle)
-            stackedRecords[scriptBlockId].scriptBlocks.incl(scriptBlock)
+        if scriptBlockId in self.stackedRecords:
+            self.stackedRecords[scriptBlockId].levels.incl(eventLevel)
+            self.stackedRecords[scriptBlockId].ruleTitles.incl(ruleTitle)
+            self.stackedRecords[scriptBlockId].scriptBlocks.incl(scriptBlock)
         else:
-            stackedRecords[scriptBlockId] = Script(firstTimestamp: timestamp,
+            self.stackedRecords[scriptBlockId] = Script(firstTimestamp: timestamp,
                     computerName: computerName,
                     scriptBlockId: scriptBlockId,
                     scriptBlocks: toOrderedSet([scriptBlock]),
                     levels:toHashSet([eventLevel]), ruleTitles:toHashSet([ruleTitle]))
-        let scriptObj = stackedRecords[scriptBlockId]
+        let scriptObj = self.stackedRecords[scriptBlockId]
         if messageNumber == messageTotal:
-            if scriptBlockId in summaryRecords:
-                summaryRecords[scriptBlockId] = buildSummaryRecord(path, messageTotal, scriptObj)
+            if scriptBlockId in self.summaryRecords:
+                self.summaryRecords[scriptBlockId] = buildSummaryRecord(path, messageTotal, scriptObj)
                 # Already outputted
                 discard
             outputScriptText(self.output, timestamp, computerName, scriptObj)
-            summaryRecords[scriptBlockId] = buildSummaryRecord(path, messageTotal, scriptObj)
+            self.summaryRecords[scriptBlockId] = buildSummaryRecord(path, messageTotal, scriptObj)
         elif self.currentIndex + 1 == self.totalLines:
             outputScriptText(self.output, timestamp, computerName, scriptObj)
-            summaryRecords[scriptBlockId] = buildSummaryRecord(path, messageTotal, scriptObj)
+            self.summaryRecords[scriptBlockId] = buildSummaryRecord(path, messageTotal, scriptObj)
     except CatchableError:
         discard
 
