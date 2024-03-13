@@ -1,4 +1,4 @@
-const TTPSummaryMsg = "Started the TTP Summary command.\nThis command outputs TTP summary."
+const TTPSummaryMsg = "This command outputs TTP summary."
 
 proc readJsonFromFile(filename: string): JsonNode =
     var
