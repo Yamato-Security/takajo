@@ -176,6 +176,15 @@ jobs:
       - name: run timeline-logon
         run: cd takajo && ./takajo timeline-logon -t timeline.jsonl -o logon-timeline.csv
 
+      - name: run timeline-logon(-c)
+        run: cd takajo && ./takajo timeline-logon -t timeline.jsonl -c -o logon-timeline.csv
+
+      - name: run timeline-logon(-l)
+        run: cd takajo && ./takajo timeline-logon -t timeline.jsonl -l -o logon-timeline.csv
+
+      - name: run timeline-logon(-a)
+        run: cd takajo && ./takajo timeline-logon -t timeline.jsonl -a -o logon-timeline.csv
+
       - name: run timeline-partition-diagnostic
         run: cd takajo && ./takajo timeline-partition-diagnostic -t timeline.jsonl -o partition-diagnostic-timeline.csv
 
