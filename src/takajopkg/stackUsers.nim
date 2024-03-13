@@ -17,7 +17,6 @@ const StackUsersMsg = "This command will stack the TgtUser (default) or SrcUser 
 type
   StackUsersCmd* = ref object of AbstractCmd
     level* :string
-    header* = @[""]
     stack* = initTable[string, StackRecord]()
     sourceUsers:bool
     filterComputerAccounts:bool
@@ -44,7 +43,7 @@ method analyze*(self: StackUsersCmd, x: HayabusaJson)=
     stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackUsersCmd) =
-    outputResult(self.output, self.name, self.stack, self.header, isMinColumns=true)
+    outputResult(self.output, self.name, self.stack, isMinColumns=true)
 
 proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)

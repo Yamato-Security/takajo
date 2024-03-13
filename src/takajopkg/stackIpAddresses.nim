@@ -3,7 +3,6 @@ const StackIpAddressesMsg = "This command will stack the SrcIP (default) or TgtI
 type
   StackIpAddressesCmd* = ref object of AbstractCmd
     level* :string
-    header* = @[""]
     stack* = initTable[string, StackRecord]()
     targetIpAddresses:bool
 

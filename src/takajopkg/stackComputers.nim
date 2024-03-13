@@ -3,7 +3,6 @@ const StackComputerMsg = "This command will stack the Computer (default) or SrcC
 type
   StackComputersCmd* = ref object of AbstractCmd
     level* :string
-    header* = @[""]
     stack* = initTable[string, StackRecord]()
     sourceComputers:bool
 
