@@ -1,8 +1,4 @@
-const TimelinePartitionDiagnosticMsg =
-    """
-Started the Timeline partition diagnostic command
-This command will create a CSV timeline of partition diagnostic.
-    """
+const TimelinePartitionDiagnosticMsg = "This command will create a CSV timeline of partition diagnostic."
 
 type
   TimelinePartitionDiagnosticCmd* = ref object of AbstractCmd
