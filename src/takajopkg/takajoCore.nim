@@ -13,13 +13,13 @@ type
     output*: string
 
 method filter*(self: AbstractCmd, x: HayabusaJson):bool {.base.} =
-  raise newException(ValueError, "filterHayabusaJSON is not implemented")
+  raise newException(ValueError, "filter(AbstractCmd) is not implemented")
 
 method analyze*(self: AbstractCmd, x: HayabusaJson) {.base.} =
-  raise newException(ValueError, "analyzeHayabusaJSON is not implemented")
+  raise newException(ValueError, "analyze(AbstractCmd) is not implemented")
 
 method resultOutput*(self: AbstractCmd) {.base.} =
-  raise newException(ValueError, "resultOutput is not implemented")
+  raise newException(ValueError, "resultOutput(AbstractCmd) is not implemented")
 
 proc analyzeJSONLFile*(self: AbstractCmd) =
     let startTime = epochTime()
