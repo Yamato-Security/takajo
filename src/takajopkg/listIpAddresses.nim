@@ -1,67 +1,55 @@
-proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string, privateIp: bool = false,  quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
-    checkArgs(quiet, timeline, "informational")
+const ListIpAddressesMsg =
+    """
+    Inbound traffic is included by default but can be disabled with -i=false.
+    Outbound traffic is included by default but can be disabled with -O=false.
+    Private IP addresses are not included by default but can be enabled with -p.
+    """
 
-    # Error if both inbound and outbound are set to false as there is nothing to search for.
-    if inbound == false and outbound == false:
-        echo "You must enable inbound and/or outbound searching."
-        echo ""
-        return
+type
+  ListIpAddressesCmd* = ref object of AbstractCmd
+      ipHashSet* = initHashSet[string]()
+      inbound*: bool
+      outbound*: bool
+      privateIp*: bool
 
-    echo "Started the List IP Addresses command"
-    echo ""
-    echo "Inbound traffic is included by default but can be disabled with -i=false."
-    echo "Outbound traffic is included by default but can be disabled with -O=false."
-    echo "Private IP addresses are not included by default but can be enabled with -p."
-    echo ""
+method filter*(self: ListIpAddressesCmd, x: HayabusaJson):bool =
+    var ipAddress = ""
+    if self.inbound:
+        ipAddress = getJsonValue(x.Details, @["SrcIP"])
+    if self.outbound:
+        ipAddress = getJsonValue(x.Details, @["TgtIP"])
+    return (not isPrivateIP(ipAddress) or self.privateIp) and
+            isMulticast(ipAddress) == false and isLoopback(ipAddress) == false and ipAddress != "Unknown" and ipAddress != "-"
 
-    let totalLines = countLinesInTimeline(timeline)
+method analyze*(self: ListIpAddressesCmd, x: HayabusaJson) =
+    var ipAddress = ""
+    if self.inbound:
+        ipAddress = getJsonValue(x.Details, @["SrcIP"])
+    if self.outbound:
+        ipAddress = getJsonValue(x.Details, @["TgtIP"])
+    self.ipHashSet.incl(ipAddress)
 
-    echo "Extracting IP addresses from various logs. Please wait."
-    echo ""
-
-    var
-        ipAddress = ""
-        ipHashSet = initHashSet[string]()
-        bar: SuruBar = initSuruBar()
-
-    bar[0].total = totalLines
-    bar.setup()
-
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000)
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let eventId = jsonLine.EventID
-        let channel = jsonLine.Channel
-
-        # Search for events with a SrcIP field if inbound == true
-        if inbound == true:
-            ipAddress = getJsonValue(jsonLine.Details, @["SrcIP"])
-            if (not isPrivateIP(ipAddress) or privateIp) and
-                isMulticast(ipAddress) == false and isLoopback(ipAddress) == false and ipAddress != "Unknown" and ipAddress != "-":
-                ipHashSet.incl(ipAddress)
-
-        # Search for events with a TgtIP field if outbound == true
-        if outbound == true:
-                ipAddress = getJsonValue(jsonLine.Details, @["TgtIP"])
-                if (not isPrivateIP(ipAddress) or privateIp) and
-                    isMulticast(ipAddress) == false and isLoopback(ipAddress) == false and ipAddress != "Unknown" and ipAddress != "-":
-                    ipHashSet.incl(ipAddress)
-    bar.finish()
-
+method resultOutput*(self: ListIpAddressesCmd) =
     # Save results
-    var outputFile = open(output, fmWrite)
-    for ipAddress in ipHashSet:
+    var outputFile = open(self.output, fmWrite)
+    for ipAddress in self.ipHashSet:
         outputFile.write(ipAddress & "\p")
     let outputFileSize = getFileSize(outputFile)
     outputFile.close()
 
     echo ""
-    echo "IP Addresss: ", intToStr(len(ipHashSet)).insertSep(',')
-    echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+    echo "IP Addresss: ", intToStr(len(self.ipHashSet)).insertSep(',')
+    echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
-    outputElapsedTime(startTime)
+
+proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string, privateIp: bool = false,  quiet: bool = false, timeline: string) =
+    checkArgs(quiet, timeline, "informational")
+    let cmd = ListIpAddressesCmd(
+                timeline: timeline,
+                output: output,
+                name:"List IpAddresses",
+                msg: ListIpAddressesMsg,
+                inbound: inbound,
+                outbound: outbound,
+                privateIp: privateIp)
+    cmd.analyzeJSONLFile()
