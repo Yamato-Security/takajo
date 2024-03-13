@@ -1,3 +1,5 @@
+const StackIpAddressesMsg = "This command will stack the SrcIP (default) or TgtIP fields as well as show alert information."
+
 type
   StackIpAddressesCmd* = ref object of AbstractCmd
     level* :string
@@ -26,6 +28,6 @@ proc stackIpAddresses(level: string = "informational", targetIpAddresses: bool =
                 timeline: timeline,
                 output: output,
                 name: "IpAddresses",
-                msg: "the SrcIP (default) or TgtIP fields as well as show alert information",
+                msg: StackIpAddressesMsg,
                 targetIpAddresses: targetIpAddresses)
     cmd.analyzeJSONLFile()

@@ -1,3 +1,5 @@
+const StackCmdlineMsg = "This command will stack executed command lines from Sysmon 1 and Security 4688 events."
+
 type
   StackCmdlineCmd* = ref object of AbstractCmd
     level* :string
@@ -24,7 +26,7 @@ proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecu
                 timeline: timeline,
                 output: output,
                 name:"Cmdlines",
-                msg: "executed command lines from Sysmon 1 and Security 4688 events",
+                msg: StackCmdlineMsg,
                 ignoreSysmon: ignoreSysmon,
                 ignoreSecurity: ignoreSecurity)
     cmd.analyzeJSONLFile()

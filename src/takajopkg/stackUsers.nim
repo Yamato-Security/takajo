@@ -12,6 +12,8 @@ const SYSTEM_ACCOUNTS = toHashSet([
     "IIS APPPOOL\\DefaultAppPool"
 ])
 
+const StackUsersMsg = "This command will stack the TgtUser (default) or SrcUser fields as well as show alert information"
+
 type
   StackUsersCmd* = ref object of AbstractCmd
     level* :string
@@ -46,5 +48,13 @@ method resultOutput*(self: StackUsersCmd) =
 
 proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
-    let cmd = StackUsersCmd(level:level, timeline:timeline, output:output, name:"Users", msg:"the TgtUser (default) or SrcUser fields as well as show alert information", sourceUsers:sourceUsers, filterSystemAccounts:filterSystemAccounts, filterComputerAccounts:filterComputerAccounts)
+    let cmd = StackUsersCmd(
+                level: level,
+                timeline: timeline,
+                output: output,
+                name: "Users",
+                msg: StackUsersMsg,
+                sourceUsers: sourceUsers,
+                filterSystemAccounts: filterSystemAccounts,
+                filterComputerAccounts: filterComputerAccounts)
     cmd.analyzeJSONLFile()

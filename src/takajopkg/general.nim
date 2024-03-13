@@ -365,7 +365,7 @@ proc checkArgs*(quiet: bool = false, timeline: string, level:string) =
 
 
 proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
-    echo "Started the Stack " & cmdName & " command"
+    echo "Started the " & cmdName & " command"
     echo ""
     echo "This command will stack " &  msg & "."
     echo ""

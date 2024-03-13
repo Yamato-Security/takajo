@@ -1,3 +1,5 @@
+const StackServicesMsg = "This command will stack the service names and paths from System 7045 and Security 4697 events"
+
 type
   StackServicesCmd* = ref object of AbstractCmd
     level* :string
@@ -28,7 +30,7 @@ proc stackServices(level: string = "informational", ignoreSystem: bool = false, 
                 timeline: timeline,
                 output: output,
                 name: "Services",
-                msg: "service names and paths from System 7045 and Security 4697 events",
+                msg: StackServicesMsg,
                 ignoreSystem: ignoreSystem,
                 ignoreSecurity: ignoreSecurity)
     cmd.analyzeJSONLFile()

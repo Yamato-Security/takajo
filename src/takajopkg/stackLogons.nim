@@ -1,6 +1,7 @@
 # TODO
 # Output to stdout in tables (Target User, Target Computer, Logon Type, Source Computer)
 # Remove local logins
+const StackLogonsMsg = "This command will stack logons based on target user, target computer, source IP address and source computer from Security 4624 events.\nLocal source IP addresses are not included by default but can be enabled with -l, --localSrcIpAddresses."
 
 type
   StackLogonsCmd* = ref object of AbstractCmd
@@ -73,6 +74,6 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
                 timeline: timeline,
                 output: output,
                 name:"Logons",
-                msg: "logons based on target user, target computer, source IP address and source computer from Security 4624 events.\nLocal source IP addresses are not included by default but can be enabled with -l, --localSrcIpAddresses.",
+                msg: StackLogonsMsg,
                 localSrcIpAddresses: localSrcIpAddresses)
     cmd.analyzeJSONLFile()

@@ -1,3 +1,5 @@
+const StackTasksMsg = "This command will stack new scheduled tasks from Security 4698 events"
+
 type
   StackTasksCmd* = ref object of AbstractCmd
     level* :string
@@ -43,7 +45,7 @@ proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ign
                 timeline: timeline,
                 output: output,
                 name: "Tasks",
-                msg: "new scheduled tasks from Security 4698 events",
+                msg: StackTasksMsg,
                 ignoreSysmon: ignoreSysmon,
                 ignoreSecurity: ignoreSecurity)
     cmd.analyzeJSONLFile()

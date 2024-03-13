@@ -1,3 +1,5 @@
+const StackProcessesMsg = "This command will stack the executed processes from Sysmon 1 and Security 4688 events."
+
 type
   StackProcessesCmd* = ref object of AbstractCmd
     level* :string
@@ -19,5 +21,12 @@ method resultOutput*(self: StackProcessesCmd) =
 
 proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
-    let cmd = StackProcessesCmd(level:level, timeline:timeline, output:output, name:"Processes", msg:"executed processes from Sysmon 1 and Security 4688 events", ignoreSysmon:ignoreSysmon, ignoreSecurity:ignoreSecurity)
+    let cmd = StackProcessesCmd(
+                level: level,
+                timeline: timeline,
+                output: output,
+                name: "Processes",
+                msg: StackProcessesMsg,
+                ignoreSysmon: ignoreSysmon,
+                ignoreSecurity: ignoreSecurity)
     cmd.analyzeJSONLFile()

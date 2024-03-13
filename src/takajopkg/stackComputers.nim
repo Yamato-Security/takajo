@@ -1,3 +1,5 @@
+const StackComputerMsg = "This command will stack the Computer (default) or SrcComp fields as well as show alert information."
+
 type
   StackComputersCmd* = ref object of AbstractCmd
     level* :string
@@ -22,5 +24,11 @@ method resultOutput*(self: StackComputersCmd)=
 
 proc stackComputers(level: string = "informational", sourceComputers: bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
-    let cmd = StackComputersCmd(level:level, timeline:timeline, output:output, name:"Computers", msg:"the Computer (default) or SrcComp fields as well as show alert information", sourceComputers:sourceComputers)
+    let cmd = StackComputersCmd(
+                level: level,
+                timeline: timeline,
+                output: output,
+                name: "Computers",
+                msg: StackComputerMsg,
+                sourceComputers: sourceComputers)
     cmd.analyzeJSONLFile()

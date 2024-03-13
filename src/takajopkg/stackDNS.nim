@@ -1,3 +1,5 @@
+const StackDNSMsg = "This command will stack the DNS queries and responses from Sysmon 22 events."
+
 type
   StackDNSCmd* = ref object of AbstractCmd
     level* :string
@@ -22,10 +24,5 @@ method resultOutput*(self: StackDNSCmd)=
 
 proc stackDNS(level: string = "informational", output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
-    let cmd = StackDNSCmd(
-                level: level,
-                timeline: timeline,
-                output: output,
-                name: "DNS",
-                msg: "DNS queries and responses from Sysmon 22 events")
+    let cmd = StackDNSCmd(level: level, timeline: timeline, output: output, name: "DNS", msg: StackDNSMsg)
     cmd.analyzeJSONLFile()
