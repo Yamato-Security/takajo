@@ -17,6 +17,8 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, output: stri
 
     # extract-scriptblocks -t ../hayabusa/timeline.jsonl -l <level> -o case-1/scriptblock-logs/
     let cmd1 = ExtractScriptBlocksCmd(level: level, skipProgressBar: skipProgressBar, timeline: timeline, output: output & "/scriptblock-logs/")
+    if not dirExists(output & "/scriptblock-logs/"):
+        createDir(output & "/scriptblock-logs/")
 
     # list-domains -t ../hayabusa/timeline.jsonl -o case-1/ListDomains.txt
     let cmd2 = ListDomainsCmd(timeline: timeline, output: output & "/ListDomains.txt")
