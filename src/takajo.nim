@@ -60,30 +60,30 @@ when isMainModule:
     clCfg.version = "2.5.0-dev"
     const examples = "Examples:\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
-    const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl -o domains.txt\p"
-    const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl -o ipAddresses.txt\p"
+    const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o domains.txt\p"
+    const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl [--skipProgressBar] -o case-1\p"
+    const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ipAddresses.txt\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
-    const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] -o cmdlines.csv\p"
-    const example_stack_computers = "  stack-computers -t ../hayabusa/timeline.jsonl [--level informational] [--sourceComputers] -o computers.csv\p"
-    const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl [--level infomational]  -o dns.csv\p"
-    const example_stack_ip_addresses = "  stack-ip-addresses -t ../hayabusa/timeline.jsonl [--level infomational] [--targetIpAddresses] -o ipAddresses.csv\p"
-    const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl -o logons.csv\p"
-    const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl [--level low] -o processes.csv\p"
-    const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl [--level infomational] -o services.csv\p"
-    const example_stack_tasks = "  stack-tasks -t ../hayabusa/timeline.jsonl [--level infomational] -o tasks.csv\p"
-    const example_stack_users = "  stack-users -t ../hayabusa/timeline.jsonl [--level infomational] [--sourceUsers] [--filterSystemAccounts] [--filterComputerAccounts] -o users.csv\p"
-    const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl -o case-1\p"
+    const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] [--skipProgressBar] -o cmdlines.csv\p"
+    const example_stack_computers = "  stack-computers -t ../hayabusa/timeline.jsonl [--level informational] [--sourceComputers] [--skipProgressBar] -o computers.csv\p"
+    const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl [--level infomational] [--skipProgressBar] -o dns.csv\p"
+    const example_stack_ip_addresses = "  stack-ip-addresses -t ../hayabusa/timeline.jsonl [--level infomational] [--targetIpAddresses] [--skipProgressBar] -o ipAddresses.csv\p"
+    const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o logons.csv\p"
+    const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl [--level low] [--skipProgressBar] -o processes.csv\p"
+    const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl [--level infomational] [--skipProgressBar] -o services.csv\p"
+    const example_stack_tasks = "  stack-tasks -t ../hayabusa/timeline.jsonl [--level infomational] [--skipProgressBar] -o tasks.csv\p"
+    const example_stack_users = "  stack-users -t ../hayabusa/timeline.jsonl [--level infomational] [--sourceUsers] [--filterSystemAccounts] [--filterComputerAccounts] [--skipProgressBar] -o users.csv\p"
     const example_sysmon_process_tree = "  sysmon-process-tree -t ../hayabusa/timeline.jsonl -p <Process GUID> [-o process-tree.txt]\p"
-    const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl -o logon-timeline.csv\p"
-    const example_timeline_partition_diagnostic = "  timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partition-diagnostic-timeline.csv\p"
-    const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [-o suspicious-processes.csv]\p"
-    const example_timeline_tasks = "  timeline-tasks -t ../hayabusa/timeline.jsonl -o task-timeline.csv\p"
+    const example_timeline_logon = "  timeline-logon -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o logon-timeline.csv\p"
+    const example_timeline_partition_diagnostic = "  timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o partition-diagnostic-timeline.csv\p"
+    const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [--skipProgressBar] [-o suspicious-processes.csv]\p"
+    const example_timeline_tasks = "  timeline-tasks -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o task-timeline.csv\p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
-    const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl -o ttp-summary.csv\p"
-    const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl -o mitre-ttp-heatmap.json\p"
+    const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ttp-summary.csv\p"
+    const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o mitre-ttp-heatmap.json\p"
     const example_ttp_visualize_sigma = "  ttp-visualize-sigma -r ../hayabusa/rules -o sigma-rules-heatmap.json\p"
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
@@ -106,6 +106,7 @@ when isMainModule:
             doc = "extract and reassemble PowerShell EID 4104 script block logs",
             help = {
                 "level": "specify the minimum alert level (default: low)",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "output directory (default: scriptblock-logs)",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
@@ -117,12 +118,13 @@ when isMainModule:
             help = {
                 "includeSubdomains": "include subdomains",
                 "includeWorkstations": "include local workstation names",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a text file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             },
             short = {
-                "includeSubdomains": 's',
+                "includeSubdomains": 'd',
                 "includeWorkstations": 'w'
             }
         ],
@@ -131,6 +133,7 @@ when isMainModule:
             doc = "create a list of process hashes to be used with vt-hash-lookup",
             help = {
                 "level": "specify the minimum alert level",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "specify the base name to save results to text files (ex: -o case-1)",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -142,6 +145,7 @@ when isMainModule:
             help = {
                 "inbound": "include inbound traffic",
                 "outbound": "include outbound traffic",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a text file",
                 "privateIp": "include private IP addresses",
                 "quiet": "do not display the launch banner",
@@ -199,9 +203,13 @@ when isMainModule:
             help = {
                 "level": "specify the minimum alert level (default: low)",
                 "sourceComputers" : "stack source computers instead of target computers",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+            },
+            short = {
+                "sourceComputers": 'c'
             }
         ],
         [
@@ -211,6 +219,7 @@ when isMainModule:
                 "level": "specify the minimum alert level (default: low)",
                 "ignoreSysmon": "exclude Sysmon 1 events",
                 "ignoreSecurity": "exclude Security 4688 events",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -225,6 +234,7 @@ when isMainModule:
             doc = "stack DNS queries and responses",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -236,6 +246,7 @@ when isMainModule:
             help = {
                 "level": "specify the minimum alert level (default: informational)",
                 "targetIpAddresses" : "stack target IP addresses instead of source IP addresses",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
@@ -249,6 +260,7 @@ when isMainModule:
             doc = "stack logons by target user, target computer, source IP address and source computer",
             help = {
                 "localSrcIpAddresses": "include results when the source IP address is local",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -261,6 +273,7 @@ when isMainModule:
                 "level": "specify the minimum alert level (default: low)",
                 "ignoreSysmon": "exclude Sysmon 1 events",
                 "ignoreSecurity": "exclude Security 4688 events",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -275,6 +288,7 @@ when isMainModule:
             doc = "stack service names and paths",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -289,6 +303,7 @@ when isMainModule:
             doc = "stack new scheduled tasks",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -302,6 +317,7 @@ when isMainModule:
                 "sourceUsers" : "stack source users instead of target users (default: false)",
                 "filterComputerAccounts": "filter out computer accounts (default: true)",
                 "filterSystemAccounts": "filter out system accounts (default: true)",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
@@ -329,6 +345,7 @@ when isMainModule:
                 "output": "save results to a CSV file",
                 "outputAdminLogonEvents": "output admin logon events as separate entries",
                 "outputLogoffEvents": "output logoff events as separate entries",
+                "skipProgressBar": "do not display the progress bar",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
             },
@@ -341,6 +358,7 @@ when isMainModule:
             timelinePartitionDiagnostic, cmdName = "timeline-partition-diagnostic",
             doc = "create a CSV timeline of partition diagnostic events",
             help = {
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
@@ -351,6 +369,7 @@ when isMainModule:
             doc = "create a CSV timeline of suspicious processes",
             help = {
                 "level": "specify the minimum alert level",
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
@@ -360,6 +379,7 @@ when isMainModule:
             timelineTasks, cmdName = "timeline-tasks",
             doc = "create a CSV timeline of scheduled tasks",
             help = {
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",
@@ -369,6 +389,7 @@ when isMainModule:
             ttpSummary, cmdName = "ttp-summary",
             doc = "summarize tactics and techniques found in each computer",
             help = {
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a csv file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any verbose profile)",
@@ -378,6 +399,7 @@ when isMainModule:
             ttpVisualize, cmdName = "ttp-visualize",
             doc = "extract TTPs and create a JSON file to visualize in MITRE ATT&CK Navigator",
             help = {
+                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a json file",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any verbose profile)",

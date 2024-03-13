@@ -42,7 +42,7 @@ method resultOutput*(self: ListIpAddressesCmd) =
     echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
 
-proc listIpAddresses(inbound: bool = true, outbound: bool = true, output: string, privateIp: bool = false,  quiet: bool = false, timeline: string) =
+proc listIpAddresses(inbound: bool = true, outbound: bool = true, skipProgressBar:bool = false, output: string, privateIp: bool = false,  quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     let cmd = ListIpAddressesCmd(
                 timeline: timeline,

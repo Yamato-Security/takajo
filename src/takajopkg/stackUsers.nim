@@ -46,10 +46,11 @@ method analyze*(self: StackUsersCmd, x: HayabusaJson)=
 method resultOutput*(self: StackUsersCmd) =
     outputResult(self.output, self.name, self.stack, self.header, isMinColumns=true)
 
-proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, output: string = "", quiet: bool = false, timeline: string) =
+proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
     let cmd = StackUsersCmd(
                 level: level,
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name: "Users",

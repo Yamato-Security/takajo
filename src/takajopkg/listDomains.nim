@@ -39,9 +39,10 @@ method resultOutput*(self: ListDomainsCmd)=
     echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
 
-proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, output: string, quiet: bool = false, timeline: string) =
+proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, skipProgressBar:bool = false, output: string, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     let cmd = ListDomainsCmd(
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name:"List Domains",

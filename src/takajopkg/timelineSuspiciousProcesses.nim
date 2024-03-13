@@ -210,9 +210,10 @@ method resultOutput*(self: TimelineSuspiciousProcessesCmd)=
     echo "Suspicious processes in Sysmon 1 process creation events: " & intToStr(self.suspicousProcessCount_Sysmon_1).insertSep(',')
     echo ""
 
-proc timelineSuspiciousProcesses(level: string = "high", output: string = "", quiet: bool = false, timeline: string) =
+proc timelineSuspiciousProcesses(level: string = "high", skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     let cmd = TimelineSuspiciousProcessesCmd(
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 level: level,

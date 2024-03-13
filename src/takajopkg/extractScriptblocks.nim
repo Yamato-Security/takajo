@@ -129,16 +129,17 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
         echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"
 
 
-proc extractScriptblocks(level: string = "low", output: string = "scriptblock-logs", quiet: bool = false, timeline: string) =
+proc extractScriptblocks(level: string = "low", skipProgressBar:bool = false, output: string = "scriptblock-logs", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
     if not dirExists(output):
         echo "The directory '" & output & "' does not exist so will be created."
         createDir(output)
         echo ""
     let cmd = ExtractScriptBlocksCmd(
+                level: level,
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                level: level,
                 name:"Extract ScriptBlock",
                 msg: ExtractScriptBlocksMsg)
     cmd.totalLines = countLinesInTimeline(timeline, true)

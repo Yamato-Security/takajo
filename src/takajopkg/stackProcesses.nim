@@ -19,10 +19,11 @@ method analyze*(self: StackProcessesCmd, x: HayabusaJson)=
 method resultOutput*(self: StackProcessesCmd) =
     outputResult(self.output, self.name, self.stack)
 
-proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
+proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
     let cmd = StackProcessesCmd(
                 level: level,
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name: "Processes",

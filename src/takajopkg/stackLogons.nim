@@ -68,9 +68,10 @@ method resultOutput*(self: StackLogonsCmd) =
     echo "Unique logons: " & $self.uniqueLogons
     echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
 
-proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool = false, timeline: string) =
+proc stackLogons(localSrcIpAddresses = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     let cmd = StackLogonsCmd(
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name:"Logons",

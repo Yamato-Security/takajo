@@ -19,10 +19,11 @@ method analyze*(self: StackCmdlineCmd, x: HayabusaJson) =
 method resultOutput*(self: StackCmdlineCmd)=
     outputResult(self.output, self.name, self.stack)
 
-proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
+proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecurity: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
     let cmd = StackCmdlineCmd(
                 level: level,
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name:"Cmdlines",

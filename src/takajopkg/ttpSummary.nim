@@ -102,12 +102,13 @@ method resultOutput*(self: TTPSummaryCmd) =
         echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
 
-proc ttpSummary(output: string = "", quiet: bool = false, timeline: string) =
+proc ttpSummary(skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     if not os.fileExists("mitre-attack.json"):
         echo "The file '" & "mitre-attack.json" & "' does not exist. Please specify a valid file path."
         quit(1)
     let cmd = TTPSummaryCmd(
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name:"TTP Summary",

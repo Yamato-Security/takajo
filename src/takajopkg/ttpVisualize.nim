@@ -26,9 +26,10 @@ method analyze*(self: TTPVisualizeCmd, x: HayabusaJson) =
 method resultOutput*(self: TTPVisualizeCmd) =
     outputTTPResult(self.stackedMitreTags, self.stackedMitreTagsCount, self.output)
 
-proc ttpVisualize(output: string = "mitre-ttp-heatmap.json", quiet: bool = false, timeline: string) =
+proc ttpVisualize(skipProgressBar:bool = false, output: string = "mitre-ttp-heatmap.json", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     let cmd = TTPVisualizeCmd(
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name:"TTP Visualize",

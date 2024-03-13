@@ -23,10 +23,11 @@ method analyze*(self: StackServicesCmd, x: HayabusaJson)=
 method resultOutput*(self: StackServicesCmd)=
     outputResult(self.output, self.name, self.stack, self.header)
 
-proc stackServices(level: string = "informational", ignoreSystem: bool = false, ignoreSecurity: bool = false,output: string = "", quiet: bool = false, timeline: string) =
+proc stackServices(level: string = "informational", ignoreSystem: bool = false, ignoreSecurity: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
     let cmd = StackServicesCmd(
                 level: level,
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name: "Services",

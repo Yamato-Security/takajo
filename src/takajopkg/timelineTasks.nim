@@ -94,9 +94,10 @@ method resultOutput*(self: TimelineTasksCmd)=
     echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
     echo ""
 
-proc timelineTasks(output: string, outputLogoffEvents: bool = false, quiet: bool = false, timeline: string) =
+proc timelineTasks(skipProgressBar:bool = false, output: string, outputLogoffEvents: bool = false, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     let cmd = TimelineTasksCmd(
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name:"Timeline Tasks",

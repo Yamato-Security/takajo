@@ -91,9 +91,10 @@ method resultOutput*(self: TimelinePartitionDiagnosticCmd) =
         table.echoTableSepsWithStyled(seps = boxSeps)
         echo ""
 
-proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timeline: string) =
+proc timelinePartitionDiagnostic(skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     let cmd = TimelinePartitionDiagnosticCmd(
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name:"Timeline PatitionDiagnostc",

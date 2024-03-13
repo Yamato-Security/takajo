@@ -21,10 +21,11 @@ method analyze*(self: StackIpAddressesCmd, x: HayabusaJson)=
 method resultOutput*(self: StackIpAddressesCmd)=
     outputResult(self.output, self.name, self.stack, isMinColumns=true)
 
-proc stackIpAddresses(level: string = "informational", targetIpAddresses: bool = false, output: string = "", quiet: bool = false, timeline: string) =
+proc stackIpAddresses(level: string = "informational", targetIpAddresses: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
     let cmd = StackIpAddressesCmd(
                 level: level,
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
                 name: "IpAddresses",
