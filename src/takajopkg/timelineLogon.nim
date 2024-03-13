@@ -1,3 +1,13 @@
+const TimelineLogonMsg =
+    """
+    This command creates a CSV timeline of logon events.
+    Elapsed time for successful logons are calculated by default but can be disabled with -c=false.
+    Logoff events can be outputted on separate lines with -l, --outputLogoffEvents.
+    Admin logon events can be outputted on separate lines with -a, --outputAdminLogonEvents.
+    """
+
+
+
 proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, outputAdminLogonEvents: bool = false, quiet: bool = false, timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, "informational")

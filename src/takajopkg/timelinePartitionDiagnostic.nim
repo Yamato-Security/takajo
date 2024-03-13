@@ -1,3 +1,13 @@
+const TimelinePartitionDiagnosticMsg =
+    """
+    Started the Timeline partition diagnostic command
+    This command will create a CSV timeline of partition diagnostic.
+    """
+
+type
+  TimelinePartitionDiagnosticCmd* = ref object of AbstractCmd
+      seqOfResultsTables*: seq[Table[string, string]]
+
 proc changeByteOrder(vsnStr:string): string =
     var res: seq[string]
     for i, ch in vsnStr:
@@ -29,60 +39,35 @@ proc extractVSN(jsonLine: HayabusaJson) : array[4, string] =
     return res
 
 
-proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
-    checkArgs(quiet, timeline, "informational")
+method filter*(self: TimelinePartitionDiagnosticCmd, x: HayabusaJson):bool =
+    return x.EventId == 1006 and x.Channel == "MS-Win-Partition/Diagnostic"
 
-    echo "Started the Timeline partition diagnostic command"
-    echo "This command will create a CSV timeline of partition diagnostic."
-    echo ""
+method analyze*(self: TimelinePartitionDiagnosticCmd, x: HayabusaJson) =
+    var singleResultTable = initTable[string, string]()
+    singleResultTable["Timestamp"] = x.Timestamp
+    singleResultTable["Computer"] = x.Computer
+    singleResultTable["Manufacturer"] = x.Details["Manufacturer"].getStr()
+    singleResultTable["Model"] = x.Details["Model"].getStr()
+    singleResultTable["Revision"] = x.Details["Revision"].getStr()
+    singleResultTable["SerialNumber"] = x.Details["SerialNumber"].getStr()
+    for i, vsn in extractVSN(x):
+        var val = "n/a"
+        if vsn != "":
+            val = vsn
+        singleResultTable["VSN" & intToStr(i)] = val
+    self.seqOfResultsTables.add(singleResultTable)
 
-    let totalLines = countLinesInTimeline(timeline)
-
-    var
-        bar: SuruBar = initSuruBar()
-        seqOfResultsTables: seq[Table[string, string]]
-
-    bar[0].total = totalLines
-    bar.setup()
-
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let eventId = jsonLine.EventID
-        let channel = jsonLine.Channel
-
-        if eventId != 1006 or channel != "MS-Win-Partition/Diagnostic":
-            continue
-        var singleResultTable = initTable[string, string]()
-        singleResultTable["Timestamp"] = jsonLine.Timestamp
-        singleResultTable["Computer"] = jsonLine.Computer
-        singleResultTable["Manufacturer"] = jsonLine.Details["Manufacturer"].getStr()
-        singleResultTable["Model"] = jsonLine.Details["Model"].getStr()
-        singleResultTable["Revision"] = jsonLine.Details["Revision"].getStr()
-        singleResultTable["SerialNumber"] = jsonLine.Details["SerialNumber"].getStr()
-        for i, vsn in extractVSN(jsonLine):
-            var val = "n/a"
-            if vsn != "":
-                val = vsn
-            singleResultTable["VSN" & intToStr(i)] = val
-        seqOfResultsTables.add(singleResultTable)
-    bar.finish()
-
+method resultOutput*(self: TimelinePartitionDiagnosticCmd) =
     let header = ["Timestamp", "Computer", "Manufacturer", "Model", "Revision", "SerialNumber", "VSN0", "VSN1", "VSN2", "VSN3"]
-    if output != "":
+    if self.output != "":
         # Open file to save results
-        var outputFile = open(output, fmWrite)
+        var outputFile = open(self.output, fmWrite)
 
         ## Write CSV header
         outputFile.write(header.join(",") & "\p")
 
         ## Write contents
-        for table in seqOfResultsTables:
+        for table in self.seqOfResultsTables:
             for i, key in enumerate(header):
                 if table.hasKey(key):
                     if i < header.len() - 1:
@@ -93,16 +78,24 @@ proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timel
                     outputFile.write(",")
             outputFile.write("\p")
         outputFile.close()
-        let fileSize = getFileSize(output)
+        let fileSize = getFileSize(self.output)
         echo ""
-        echo "Saved results to " & output & " (" & formatFileSize(fileSize) & ")"
+        echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
         echo ""
     else:
         echo ""
         var table: TerminalTable
         table.add header
-        for t in seqOfResultsTables:
+        for t in self.seqOfResultsTables:
             table.add t[header[0]], t[header[1]], t[header[2]], t[header[3]], t[header[4]], t[header[5]], t[header[6]], t[header[7]], t[header[8]], t[header[9]]
         table.echoTableSepsWithStyled(seps = boxSeps)
         echo ""
-    outputElapsedTime(startTime)
+
+proc timelinePartitionDiagnostic(output: string = "", quiet: bool = false, timeline: string) =
+    checkArgs(quiet, timeline, "informational")
+    let cmd = TimelinePartitionDiagnosticCmd(
+                timeline: timeline,
+                output: output,
+                name:"Timeline PatitionDiagnostc",
+                msg: TimelinePartitionDiagnosticMsg)
+    cmd.analyzeJSONLFile()

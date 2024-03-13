@@ -1,3 +1,10 @@
+const TimelineTasksMsg = "This command creates a CSV timeline of scheduled task events."
+
+type
+  TimelineTasksCmd* = ref object of AbstractCmd
+      rowData* = newSeq[(OrderedTable[string, string], OrderedTable[string, string])]()
+      outputLogoffEvents: bool
+
 proc extractText(allXmlNodes:XmlNode, tag:string): string =
     let xmlNodes = allXmlNodes.findAll(tag)
     if len(xmlNodes) > 0:
@@ -15,104 +22,84 @@ proc walkXml(node:XmlNode, tagName: string, resuls: var OrderedTable[string, str
       else:
           walkXml(child, tag(node), resuls)
 
-proc timelineTasks(output: string, outputLogoffEvents: bool = false, quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
-    checkArgs(quiet, timeline, "informational")
+method filter*(self: TimelineTasksCmd, x: HayabusaJson):bool =
+    return x.EventId == 4698 and x.Channel == "Sec"
 
-    echo "Started the Timeline Tasks command"
-    echo ""
-    echo "This command creates a CSV timeline of scheduled task events."
-    echo ""
+method analyze*(self: TimelineTasksCmd, x: HayabusaJson) =
+      let ts = x.Timestamp
+      let taskName = x.Details["Name"].getStr("N/A")
+      let subjectUserName = x.Details["User"].getStr("N/A")
+      let subjectUserSid = x.ExtraFieldInfo["SubjectUserSid"].getStr("N/A")
+      let subjectDomainName = x.ExtraFieldInfo["SubjectDomainName"].getStr("N/A")
+      let subjectLogonId = x.Details["LID"].getStr("N/A")
+      let content = x.Details["Content"].getStr("N/A").replace("\\r\\n", "")
+      var basicTable = initOrderedTable[string, string]()
+      basicTable["Timestamp"] = ts
+      basicTable["TaskName"] = taskName
+      basicTable["User"] = subjectUserName
+      basicTable["SubjectUserSid"] = subjectUserSid
+      basicTable["SubjectDomainName"] = subjectDomainName
+      basicTable["SubjectLogonId"] = subjectLogonId
+      var detailedTable = initOrderedTable[string, string]()
+      try:
+          let rootNode = parseXml(content)
+          basicTable["Command"] = extractText(rootNode, "Command")
+          basicTable["Arguments"] = extractText(rootNode, "Arguments")
+          for tagName in ["Triggers", "Principal", "Settings", "RegistrationInfo"]:
+              for i, node in enumerate(rootNode.findAll(tagName)):
+                  if i == 0:
+                      walkXml(node, tagName , detailedTable)
+                  else:
+                      walkXml(node, tagName & "[" & intToStr(i) & "]", detailedTable)
+      except XmlError:
+          return
+      self.rowData.add((basicTable, detailedTable))
 
-    let totalLines = countLinesInTimeline(timeline)
-
-    echo "Creating a scheduled tasks timeline. Please wait."
-    echo ""
-
-    var
-        bar: SuruBar = initSuruBar()
-        rowData = newSeq[(OrderedTable[string, string], OrderedTable[string, string])]()
-
-    bar[0].total = totalLines
-    bar.setup()
-
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000)
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let eventId = jsonLine.EventID
-        let channel = jsonLine.Channel
-        if eventId == 4698 and channel == "Sec":
-            let ts = jsonLine.Timestamp
-            let taskName = jsonLine.Details["Name"].getStr("N/A")
-            let subjectUserName = jsonLine.Details["User"].getStr("N/A")
-            let subjectUserSid = jsonLine.ExtraFieldInfo["SubjectUserSid"].getStr("N/A")
-            let subjectDomainName = jsonLine.ExtraFieldInfo["SubjectDomainName"].getStr("N/A")
-            let subjectLogonId = jsonLine.Details["LID"].getStr("N/A")
-            let content = jsonLine.Details["Content"].getStr("N/A").replace("\\r\\n", "")
-            var basicTable = initOrderedTable[string, string]()
-            basicTable["Timestamp"] = ts
-            basicTable["TaskName"] = taskName
-            basicTable["User"] = subjectUserName
-            basicTable["SubjectUserSid"] = subjectUserSid
-            basicTable["SubjectDomainName"] = subjectDomainName
-            basicTable["SubjectLogonId"] = subjectLogonId
-            var detailedTable = initOrderedTable[string, string]()
-            try:
-                let rootNode = parseXml(content)
-                basicTable["Command"] = extractText(rootNode, "Command")
-                basicTable["Arguments"] = extractText(rootNode, "Arguments")
-                for tagName in ["Triggers", "Principal", "Settings", "RegistrationInfo"]:
-                    for i, node in enumerate(rootNode.findAll(tagName)):
-                        if i == 0:
-                            walkXml(node, tagName , detailedTable)
-                        else:
-                            walkXml(node, tagName & "[" & intToStr(i) & "]", detailedTable)
-            except XmlError:
-                continue
-            rowData.add((basicTable, detailedTable))
-
-    bar.finish()
-
-    if rowData.len == 0:
+method resultOutput*(self: TimelineTasksCmd)=
+    if self.rowData.len == 0:
         echo ""
         echo "No scheduled task events were found."
         echo ""
-    else:
-        var allDetailedKeys = initOrderedSet[string]()
-        for (_, detailedTable) in rowData:
-            for key in detailedTable.keys:
-                allDetailedKeys.incl(key)
-        let basicHeader = @["Timestamp", "TaskName", "User", "SubjectUserSid", "SubjectDomainName", "SubjectLogonId", "Command", "Arguments"]
-        let detailedHeader = toSeq(allDetailedKeys).sorted
+        return
+    var allDetailedKeys = initOrderedSet[string]()
+    for (_, detailedTable) in self.rowData:
+        for key in detailedTable.keys:
+            allDetailedKeys.incl(key)
+    let basicHeader = @["Timestamp", "TaskName", "User", "SubjectUserSid", "SubjectDomainName", "SubjectLogonId", "Command", "Arguments"]
+    let detailedHeader = toSeq(allDetailedKeys).sorted
 
-        # Save results
-        var outputFile = open(output, fmWrite)
+    # Save results
+    var outputFile = open(self.output, fmWrite)
 
-        ## Write CSV header
-        let header = concat(basicHeader, detailedHeader)
-        for h in header:
-            outputFile.write(h & ",")
+    ## Write CSV header
+    let header = concat(basicHeader, detailedHeader)
+    for h in header:
+        outputFile.write(h & ",")
+    outputFile.write("\p")
+
+    ## Write contents
+    for (basicTable, detailedTable) in self.rowData:
+        for i, columnName in enumerate(header):
+            if columnName in basicHeader:
+                outputFile.write(basicTable[columnName] & ",")
+            elif i > basicHeader.len - 1:
+                if columnName in detailedTable:
+                    outputFile.write(escapeCsvField(detailedTable[columnName]) & ",")
+                else:
+                    outputFile.write(",")
         outputFile.write("\p")
+    outputFile.close()
+    let fileSize = getFileSize(self.output)
+    echo ""
+    echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
+    echo ""
 
-        ## Write contents
-        for (basicTable, detailedTable) in rowData:
-            for i, columnName in enumerate(header):
-                if columnName in basicHeader:
-                    outputFile.write(basicTable[columnName] & ",")
-                elif i > basicHeader.len - 1:
-                    if columnName in detailedTable:
-                        outputFile.write(escapeCsvField(detailedTable[columnName]) & ",")
-                    else:
-                        outputFile.write(",")
-            outputFile.write("\p")
-        outputFile.close()
-        let fileSize = getFileSize(output)
-
-        echo ""
-        echo "Saved results to " & output & " (" & formatFileSize(fileSize) & ")"
-        echo ""
-        outputElapsedTime(startTime)
+proc timelineTasks(output: string, outputLogoffEvents: bool = false, quiet: bool = false, timeline: string) =
+    checkArgs(quiet, timeline, "informational")
+    let cmd = TimelineTasksCmd(
+                timeline: timeline,
+                output: output,
+                name:"Timeline Tasks",
+                msg: TimelineTasksMsg,
+                outputLogoffEvents: outputLogoffEvents)
+    cmd.analyzeJSONLFile()
