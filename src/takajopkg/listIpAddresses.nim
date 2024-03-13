@@ -1,8 +1,8 @@
 const ListIpAddressesMsg =
     """
-    Inbound traffic is included by default but can be disabled with -i=false.
-    Outbound traffic is included by default but can be disabled with -O=false.
-    Private IP addresses are not included by default but can be enabled with -p.
+Inbound traffic is included by default but can be disabled with -i=false.
+Outbound traffic is included by default but can be disabled with -O=false.
+Private IP addresses are not included by default but can be enabled with -p.
     """
 
 type

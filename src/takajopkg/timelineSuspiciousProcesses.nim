@@ -1,8 +1,8 @@
 const TimelineSuspiciousProcessesMsg =
   """
-  This command will create a CSV timeline of suspicious processes.
-  The default minimum level of alerts is high.
-  You can change the minimum level with -l, --level=.
+This command will create a CSV timeline of suspicious processes.
+The default minimum level of alerts is high.
+You can change the minimum level with -l, --level=.
   """
 
 type

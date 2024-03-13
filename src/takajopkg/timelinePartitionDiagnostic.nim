@@ -1,7 +1,7 @@
 const TimelinePartitionDiagnosticMsg =
     """
-    Started the Timeline partition diagnostic command
-    This command will create a CSV timeline of partition diagnostic.
+Started the Timeline partition diagnostic command
+This command will create a CSV timeline of partition diagnostic.
     """
 
 type

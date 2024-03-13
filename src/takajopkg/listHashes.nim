@@ -2,10 +2,10 @@
 # Get hashes from sysmon ID 7 (Image Loaded)
 const ListHashesMsg =
   """
-  This command will extract out unique MD5, SHA1, SHA256 and Import hashes from Sysmon 1 process creation events.
-  By default, a minimum level of high will be used to extract only hashes of processes with a high likelihood of being malicious.
-  You can change the minimum level of alerts with -l, --level (ex: -l low).
-  For example, -l=informational for a minimum level of informational, which will extract out all hashes.
+This command will extract out unique MD5, SHA1, SHA256 and Import hashes from Sysmon 1 process creation events.
+By default, a minimum level of high will be used to extract only hashes of processes with a high likelihood of being malicious.
+You can change the minimum level of alerts with -l, --level (ex: -l low).
+For example, -l=informational for a minimum level of informational, which will extract out all hashes.
   """
 
 type
