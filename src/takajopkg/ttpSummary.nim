@@ -4,7 +4,9 @@ proc readJsonFromFile(filename: string): JsonNode =
     var
         file: File
         content: string
-    if file.open(filename):
+    if not os.fileExists(filename):
+        result = parseJson("{}")
+    elif file.open(filename):
         content = file.readAll()
         file.close()
         result = parseJson(content)
