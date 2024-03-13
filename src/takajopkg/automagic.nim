@@ -1,6 +1,6 @@
 const AutoMagicMsg =
   """
-  Automatically executes as many commands as possible and output results to a new folder!
+Automatically executes as many commands as possible and output results to a new folder!
   """
 
 type
