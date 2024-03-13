@@ -89,6 +89,7 @@ method resultOutput*(self: ListHashesCmd) =
 proc listHashes(level: string = "high", skipProgressBar:bool = false, output: string, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
     let cmd = ListHashesCmd(
+                skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 level: level,
                 output: output,
