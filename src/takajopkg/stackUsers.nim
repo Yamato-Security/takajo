@@ -12,24 +12,49 @@ const SYSTEM_ACCOUNTS = toHashSet([
     "IIS APPPOOL\\DefaultAppPool"
 ])
 
-proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
-    checkArgs(quiet, timeline, level)
-    let totalLines = countJsonlAndStartMsg("Users", "the TgtUser (default) or SrcUser fields as well as show alert information", timeline)
-    let eventFilter = proc(x: HayabusaJson): bool = true
+const StackUsersMsg = "This command will stack the TgtUser (default) or SrcUser fields as well as show alert information"
+
+type
+  StackUsersCmd* = ref object of AbstractCmd
+    level* :string
+    stack* = initTable[string, StackRecord]()
+    sourceUsers:bool
+    filterComputerAccounts:bool
+    filterSystemAccounts:bool
+
+method filter*(self: StackUsersCmd, x: HayabusaJson):bool =
+    return true
+
+method analyze*(self: StackUsersCmd, x: HayabusaJson)=
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
         var stackKey = getJsonValue(x.Details, @["User"])
         if stackKey.len() == 0:
-            let key = if sourceUsers: "SrcUser" else: "TgtUser"
+            let key = if self.sourceUsers: "SrcUser" else: "TgtUser"
             stackKey = getJsonValue(x.Details, @[key])
-        if filterComputerAccounts and stackKey.endsWith("$"):
+        if self.filterComputerAccounts and stackKey.endsWith("$"):
             stackKey = ""
-        if filterSystemAccounts:
+        if self.filterSystemAccounts:
             for excludeAccount in SYSTEM_ACCOUNTS:
                 if cmpIgnoreCase(stackKey, excludeAccount) == 0:
                     stackKey = ""
                     continue
-        return (stackKey, @[])
-    let stack = processJSONL(eventFilter, getStackKey, totalLines, timeline, level)
-    outputResult(output, "User", stack, @[], isMinColumns=true)
-    outputElapsedTime(startTime)
+        return (stackKey, @[""])
+    let (stackKey, otherColumn) = getStackKey(x)
+    stackResult(stackKey, self.stack, self.level, x)
+
+method resultOutput*(self: StackUsersCmd) =
+    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, isMinColumns=true)
+
+proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
+    checkArgs(quiet, timeline, level)
+    let cmd = StackUsersCmd(
+                level: level,
+                skipProgressBar: skipProgressBar,
+                timeline: timeline,
+                output: output,
+                name: "Stack Users",
+                msg: StackUsersMsg,
+                sourceUsers: sourceUsers,
+                filterSystemAccounts: filterSystemAccounts,
+                filterComputerAccounts: filterComputerAccounts)
+    cmd.analyzeJSONLFile()

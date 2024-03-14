@@ -1,63 +1,35 @@
 # TODO
 # Output to stdout in tables (Target User, Target Computer, Logon Type, Source Computer)
 # Remove local logins
+const StackLogonsMsg = "This command will stack logons based on target user, target computer, source IP address and source computer from Security 4624 events.\nLocal source IP addresses are not included by default but can be enabled with -l, --localSrcIpAddresses."
 
-proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
-    checkArgs(quiet, timeline, "informational")
+type
+  StackLogonsCmd* = ref object of AbstractCmd
+      seqOfStrings*: seq[string]
+      uniqueLogons = 0
+      localSrcIpAddresses:bool
 
-    echo "Started the Stack Logons command"
-    echo ""
-    echo "This command will stack logons based on target user, target computer, source IP address and source computer from Security 4624 events."
-    echo "Local source IP addresses are not included by default but can be enabled with -l, --localSrcIpAddresses."
-    echo ""
+method filter*(self: StackLogonsCmd, x: HayabusaJson):bool =
+    return isEID_4624(x.RuleTitle)
 
-    let totalLines = countLinesInTimeline(timeline)
-    echo "Scanning the Hayabusa timeline. Please wait."
-    echo ""
+method analyze*(self: StackLogonsCmd, x: HayabusaJson) =
+    let
+      tgtUser = getJsonValue(x.Details, @["TgtUser"])
+      tgtComp = x.Computer
+      logonType = getJsonValue(x.Details, @["Type"])
+      srcIP = getJsonValue(x.Details, @["SrcIP"])
+      srcComp = getJsonValue(x.Details, @["SrcComp"])
 
-    var
-        EID_4624_count = 0
-        tgtUser, tgtComp, logonType, srcIP, srcComp = ""
-        seqOfStrings: seq[string]
-        bar: SuruBar = initSuruBar()
-        uniqueLogons = 0
-        outputFileSize: int64
+    if not self.localSrcIpAddresses and isLocalIP(srcIP):
+        discard
+    else:
+        self.seqOfStrings.add(tgtUser & "," & tgtComp & "," & logonType & "," & srcIP & "," & srcComp)
 
-    bar[0].total = totalLines
-    bar.setup()
-
-    # Loop through JSON lines
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let ruleTitle = jsonLine.RuleTitle
-
-        # EID 4624 Successful Logon
-        if isEID_4624(ruleTitle) == true:
-            inc EID_4624_count
-
-            tgtUser = getJsonValue(jsonLine.Details, @["TgtUser"])
-            tgtComp = jsonLine.Computer
-            logonType = getJsonValue(jsonLine.Details, @["Type"])
-            srcIP = getJsonValue(jsonLine.Details, @["SrcIP"])
-            srcComp = getJsonValue(jsonLine.Details, @["SrcComp"])
-
-            if not localSrcIpAddresses and isLocalIP(srcIP):
-                discard
-            else:
-                seqOfStrings.add(tgtUser & "," & tgtComp & "," & logonType & "," & srcIP & "," & srcComp)
-    bar.finish()
-    echo ""
-
+method resultOutput*(self: StackLogonsCmd) =
     var countsTable: Table[string, int] = initTable[string, int]()
 
     # Add a count for each time the unique string was found
-    for string in seqOfStrings:
+    for string in self.seqOfStrings:
         if not countsTable.hasKey(string):
             countsTable[string] = 0
         countsTable[string] += 1
@@ -71,28 +43,38 @@ proc stackLogons(localSrcIpAddresses = false, output: string = "", quiet: bool =
     seqOfPairs.sort(proc (x, y: (string, int)): int = y[1] - x[1])
 
     # Print results to screen
-    if output == "":
+    var outputFileSize = 0
+    if self.output == "":
         # Print the sorted counts with unique strings
         for (string, count) in seqOfPairs:
-            inc uniqueLogons
+            inc self.uniqueLogons
             var commaDelimitedStr = $count & "," & string
             commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
             echo commaDelimitedStr
     # Save to CSV file
     else:
-        let outputFile = open(output, fmWrite)
+        let outputFile = open(self.output, fmWrite)
         # Write headers
         writeLine(outputFile, "Count,TgtUser,TgtComp,LogonType,SrcIP,SrcComp")
 
         # Write results
         for (string, count) in seqOfPairs:
-            inc uniqueLogons
+            inc self.uniqueLogons
             writeLine(outputFile, $count & "," & string)
         outputFileSize = getFileSize(outputFile)
         close(outputFile)
 
     echo ""
-    echo "Unique logons: " & $uniqueLogons
-    echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
-    echo ""
-    outputElapsedTime(startTime)
+    echo "Unique logons: " & $self.uniqueLogons
+    echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
+
+proc stackLogons(localSrcIpAddresses = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
+    checkArgs(quiet, timeline, "informational")
+    let cmd = StackLogonsCmd(
+                skipProgressBar: skipProgressBar,
+                timeline: timeline,
+                output: output,
+                name:"Logons",
+                msg: StackLogonsMsg,
+                localSrcIpAddresses: localSrcIpAddresses)
+    cmd.analyzeJSONLFile()

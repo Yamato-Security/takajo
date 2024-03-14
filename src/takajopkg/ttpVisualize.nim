@@ -1,41 +1,33 @@
-proc ttpVisualize(output: string = "mitre-ttp-heatmap.json", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
+const TTPVisualizeMsg = "This command extracts TTPs and creates a JSON file to visualize in MITRE ATT&CK Navigator."
+
+type
+  TTPVisualizeCmd* = ref object of AbstractCmd
+    stackedMitreTags* = initTable[string, string]()
+    stackedMitreTagsCount* = initTable[string, int]()
+
+method analyze*(self: TTPVisualizeCmd, x: HayabusaJson) =
+    try:
+        for tag in x.MitreTags:
+            let techniqueID = tag
+            let ruleTitle = strip(x.RuleTitle)
+            if self.stackedMitreTags.hasKey(techniqueID) and ruleTitle notin self.stackedMitreTags[techniqueID]:
+                self.stackedMitreTags[techniqueID] = self.stackedMitreTags[techniqueID] & "," & ruleTitle
+                self.stackedMitreTagsCount[techniqueID] += 1
+            else:
+                self.stackedMitreTags[techniqueID] = ruleTitle
+                self.stackedMitreTagsCount[techniqueID] = 1
+    except CatchableError:
+        discard
+
+method resultOutput*(self: TTPVisualizeCmd) =
+    outputTTPResult(self.stackedMitreTags, self.stackedMitreTagsCount, self.output)
+
+proc ttpVisualize(skipProgressBar:bool = false, output: string = "mitre-ttp-heatmap.json", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
-
-    echo "Started the TTP Visualize command."
-    echo "This command extracts TTPs and creates a JSON file to visualize in MITRE ATT&CK Navigator."
-    echo ""
-
-    let totalLines = countLinesInTimeline(timeline)
-
-    var
-        bar: SuruBar = initSuruBar()
-        stackedMitreTags = initTable[string, string]()
-        stackedMitreTagsCount = initTable[string, int]()
-
-    bar[0].total = totalLines
-    bar.setup()
-
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        try:
-            for tag in jsonLine.MitreTags:
-                let techniqueID = tag
-                let ruleTitle = strip(jsonLine.RuleTitle)
-                if stackedMitreTags.hasKey(techniqueID) and ruleTitle notin stackedMitreTags[techniqueID]:
-                    stackedMitreTags[techniqueID] = stackedMitreTags[techniqueID] & "," & ruleTitle
-                    stackedMitreTagsCount[techniqueID] += 1
-                else:
-                    stackedMitreTags[techniqueID] = ruleTitle
-                    stackedMitreTagsCount[techniqueID] = 1
-        except CatchableError:
-            continue
-
-    bar.finish()
-    outputTTPResult(stackedMitreTags, stackedMitreTagsCount, output)
-    outputElapsedTime(startTime)
+    let cmd = TTPVisualizeCmd(
+                skipProgressBar: skipProgressBar,
+                timeline: timeline,
+                output: output,
+                name:"TTP Visualize",
+                msg: TTPVisualizeMsg)
+    cmd.analyzeJSONLFile()

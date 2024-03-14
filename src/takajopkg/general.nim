@@ -201,8 +201,9 @@ proc elevatedTokenIdToName*(elevatedTokenId: string): string =
         else: result = "Unknown - " & elevatedTokenId
     return result
 
-proc countLinesInTimeline*(filePath: string): int =
-    echo "Counting total lines. Please wait."
+proc countLinesInTimeline*(filePath: string, quiet:bool = false): int =
+    if not quiet:
+      echo "Counting total lines. Please wait."
     const BufferSize = 4 * 1024 * 1024  # 4 MiB
     var buffer = newString(BufferSize)
     var file = open(filePath)
@@ -217,8 +218,9 @@ proc countLinesInTimeline*(filePath: string): int =
                 inc(count)
     inc(count)
     file.close()
-    echo "Total lines: ", intToStr(count).insertSep(',')
-    echo ""
+    if not quiet:
+        echo "Total lines: ", intToStr(count).insertSep(',')
+        echo ""
     return count
 
 proc getYAMLpathes*(rulesDir: string): seq[string] =
@@ -365,9 +367,9 @@ proc checkArgs*(quiet: bool = false, timeline: string, level:string) =
 
 
 proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
-    echo "Started the Stack " & cmdName & " command"
+    echo "Started the " & cmdName & " command"
     echo ""
-    echo "This command will stack " &  msg & "."
+    echo msg
     echo ""
 
     let totalLines = countLinesInTimeline(timeline)

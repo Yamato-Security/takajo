@@ -1,63 +1,51 @@
 # TODO: List up domain info from DNS Server and Client events
 # Graceful error when no domains loaded
-proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, output: string, quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
-    checkArgs(quiet, timeline, "informational")
+const ListDomainsMsg =
+  """
+Local queries to workstations are filtered out by default, but can be included with -w, --includeWorkstations.
+Sub-domains are also filtered out by default, but can be included with -s, --includeSubdomains.
+Domains ending with .lan, .LAN or .local are filtered out."""
 
-    echo "Started the List Domains command"
-    echo ""
-    echo "Local queries to workstations are filtered out by default, but can be included with -w, --includeWorkstations."
-    echo "Sub-domains are also filtered out by default, but can be included with -s, --includeSubdomains."
-    echo "Domains ending with .lan, .LAN or .local are filtered out."
-    echo ""
+type
+  ListDomainsCmd* = ref object of AbstractCmd
+      domainHashSet* = initHashSet[string]()
+      includeSubdomains*: bool
+      includeWorkstations*: bool
 
-    let totalLines = countLinesInTimeline(timeline)
+method filter*(self: ListDomainsCmd, x: HayabusaJson):bool =
+    if not (x.Channel == "Sysmon" and x.EventId == 22):
+        return false
+    let domain = x.Details.extractStr("Query")
+    return self.includeWorkstations or (domain.contains('.') and domain != "." and not domain.endsWith(".lan") and
+      not domain.endsWith(".LAN") and not domain.endsWith(".local") and not isIpAddress(domain) and not domain.endsWith('.'))
 
-    echo "Extracting domain queries from Sysmon 22 events. Please wait."
-    echo ""
+method analyze*(self: ListDomainsCmd, x: HayabusaJson) =
+    var domain = x.Details.extractStr("Query")
+    if not self.includeSubdomains:
+        domain = extractDomain(domain)
+    self.domainHashSet.incl(domain)
 
-    var
-        domainHashSet = initHashSet[string]()
-        bar: SuruBar = initSuruBar()
-
-    bar[0].total = totalLines
-    bar.setup()
-
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000)
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let eventId = jsonLine.EventID
-        let channel = jsonLine.Channel
-        let details = jsonLine.Details
-        # Found a Sysmon 22 DNS Query event
-        if channel == "Sysmon" and eventId == 22:
-            var domain = details.extractStr("Query")
-
-            # If includeWorkstations is false, only add domain if it contains a period
-            # Filter out ".", "*.lan" and "*.LAN"
-            if includeWorkstations or (domain.contains('.') and domain != "." and not domain.endsWith(".lan") and not
-                domain.endsWith(".LAN") and not domain.endsWith(".local") and not isIpAddress(domain) and not domain.endsWith('.')):
-
-                # Do not include subdomains by default so strip the subdomains
-                if not includeSubdomains:
-                    domain = extractDomain(domain)
-                domainHashSet.incl(domain)
-
-    bar.finish()
-
+method resultOutput*(self: ListDomainsCmd)=
     # Save results
-    var outputFile = open(output, fmWrite)
-    for domain in domainHashSet:
+    var outputFile = open(self.output, fmWrite)
+    for domain in self.domainHashSet:
         outputFile.write(domain & "\p")
     let outputFileSize = getFileSize(outputFile)
     outputFile.close()
 
     echo ""
-    echo "Domains: ", intToStr(len(domainHashSet)).insertSep(',')
-    echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+    echo "Domains: ", intToStr(len(self.domainHashSet)).insertSep(',')
+    echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
     echo ""
-    outputElapsedTime(startTime)
+
+proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, skipProgressBar:bool = false, output: string, quiet: bool = false, timeline: string) =
+    checkArgs(quiet, timeline, "informational")
+    let cmd = ListDomainsCmd(
+                skipProgressBar: skipProgressBar,
+                timeline: timeline,
+                output: output,
+                name:"List Domains",
+                msg: ListDomainsMsg,
+                includeSubdomains: includeSubdomains,
+                includeWorkstations: includeWorkstations)
+    cmd.analyzeJSONLFile()

@@ -1,11 +1,20 @@
+const StackTasksMsg = "This command will stack new scheduled tasks from Security 4698 events"
+
+type
+  StackTasksCmd* = ref object of AbstractCmd
+    level* :string
+    header* = @["TaskName", "Command", "Arguments"]
+    stack* = initTable[string, StackRecord]()
+    ignoreSysmon:bool
+    ignoreSecurity:bool
+
+method filter*(self: StackTasksCmd, x: HayabusaJson):bool =
+    return x.EventID == 4698 and x.Channel == "Sec"
+
 proc decodeEntity*(txt: string): string =
    return txt.replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'")
 
-proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ignoreSecurity: bool = false, output: string = "", quiet: bool = false, timeline: string) =
-    let startTime = epochTime()
-    checkArgs(quiet, timeline, level)
-    let totalLines = countJsonlAndStartMsg("Tasks", "new scheduled tasks from Security 4698 events", timeline)
-    let eventFilter = proc(x: HayabusaJson): bool = x.EventID == 4698 and x.Channel == "Sec"
+method analyze*(self: StackTasksCmd, x: HayabusaJson)=
     let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
         let user = x.Details["User"].getStr("N/A")
         let name = x.Details["Name"].getStr("N/A")
@@ -23,6 +32,21 @@ proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ign
             args = args.replace("<Arguments>", "").replace("</Arguments>","")
         let stackKey = user & " -> "  & name & " -> " & decodeEntity(command & " " & args)
         return (stackKey, @[name, command, args])
-    let stack = processJSONL(eventFilter, getStackKey, totalLines, timeline, level)
-    outputResult(output, "Task", stack, @["TaskName", "Command", "Arguments"])
-    outputElapsedTime(startTime)
+    let (stackKey, otherColumn) = getStackKey(x)
+    stackResult(stackKey, self.stack, self.level, x, otherColumn=otherColumn)
+
+method resultOutput*(self: StackTasksCmd)=
+    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, self.header)
+
+proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ignoreSecurity: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
+    checkArgs(quiet, timeline, level)
+    let cmd = StackTasksCmd(
+                level: level,
+                skipProgressBar: skipProgressBar,
+                timeline: timeline,
+                output: output,
+                name: "Stack Tasks",
+                msg: StackTasksMsg,
+                ignoreSysmon: ignoreSysmon,
+                ignoreSecurity: ignoreSecurity)
+    cmd.analyzeJSONLFile()
