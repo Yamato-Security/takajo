@@ -1,6 +1,4 @@
-const AutoMagicMsg =
-  """
-Automatically executes as many commands as possible and output results to a new folder."""
+const AutoMagicMsg = "Automatically executes as many commands as possible and output results to a new folder."
 
 type
   AutoMagicCmd* = ref object of AbstractCmd
