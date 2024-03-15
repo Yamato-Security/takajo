@@ -20,7 +20,8 @@ method analyze*(self: TTPVisualizeCmd, x: HayabusaJson) =
         discard
 
 method resultOutput*(self: TTPVisualizeCmd) =
-    outputTTPResult(self.stackedMitreTags, self.stackedMitreTagsCount, self.output)
+    let name = "Hayabusa detection result heatmap"
+    outputTTPResult(self.stackedMitreTags, self.stackedMitreTagsCount, self.output, name)
 
 proc ttpVisualize(skipProgressBar:bool = false, output: string = "mitre-ttp-heatmap.json", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
