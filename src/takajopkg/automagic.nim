@@ -1,7 +1,6 @@
 const AutoMagicMsg =
   """
-Automatically executes as many commands as possible and output results to a new folder!
-  """
+Automatically executes as many commands as possible and output results to a new folder."""
 
 type
   AutoMagicCmd* = ref object of AbstractCmd
@@ -94,6 +93,8 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, output: stri
     let cmd25 = TTPVisualizeCmd(timeline:timeline, output:output & "/MitreTTP-Heatmap.json")
 
     # execute all command
-    let cmds = @[cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, cmd8, cmd9, cmd10, cmd11, cmd12, cmd13, cmd14, cmd15, cmd16, cmd17, cmd18, cmd19, cmd20, cmd21, cmd22, cmd23, cmd24, cmd25]
-    let baseCmd = AutoMagicCmd(level: level, skipProgressBar:skipProgressBar, output: output, timeline: timeline, name:"automagic",  msg:AutoMagicMsg)
-    analyzeJSONLFileWithMultipleCmd(baseCmd, cmds)
+    let cmds = @[cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, cmd8, cmd9, cmd10,
+                cmd11, cmd12, cmd13, cmd14, cmd15, cmd16, cmd17, cmd18, cmd19, cmd20,
+                cmd21, cmd22, cmd23, cmd24, cmd25]
+    let cmd = AutoMagicCmd(level: level, skipProgressBar:skipProgressBar, output: output, timeline: timeline, name:"automagic",  msg:AutoMagicMsg)
+    cmd.analyzeJSONLFile(cmds)

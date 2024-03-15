@@ -59,7 +59,6 @@ method resultOutput*(self: TimelineTasksCmd)=
     if self.rowData.len == 0:
         echo ""
         echo "No scheduled task events were found."
-        echo ""
         return
     var allDetailedKeys = initOrderedSet[string]()
     for (_, detailedTable) in self.rowData:
@@ -92,7 +91,6 @@ method resultOutput*(self: TimelineTasksCmd)=
     let fileSize = getFileSize(self.output)
     echo ""
     echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
-    echo ""
 
 proc timelineTasks(skipProgressBar:bool = false, output: string, outputLogoffEvents: bool = false, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")

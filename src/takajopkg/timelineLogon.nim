@@ -238,7 +238,6 @@ method resultOutput*(self: TimelineLogonCmd) =
     outputFile.close()
 
     echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
-    echo ""
 
 proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, outputAdminLogonEvents: bool = false, skipProgressBar:bool = false, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")

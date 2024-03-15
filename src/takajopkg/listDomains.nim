@@ -36,7 +36,6 @@ method resultOutput*(self: ListDomainsCmd)=
     echo ""
     echo "Domains: ", intToStr(len(self.domainHashSet)).insertSep(',')
     echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
-    echo ""
 
 proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, skipProgressBar:bool = false, output: string, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")

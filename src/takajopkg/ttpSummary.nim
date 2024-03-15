@@ -99,7 +99,7 @@ method resultOutput*(self: TTPSummaryCmd) =
             count = 1
             ruleStr = initHashSet[string]()
         table.echoTableSepsWithStyled(seps = boxSeps)
-    echo ""
+        echo ""
     if self.seqOfResultsTables.len == 0:
         echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"

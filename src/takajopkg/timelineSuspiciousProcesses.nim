@@ -197,17 +197,14 @@ method resultOutput*(self: TimelineSuspiciousProcessesCmd)=
 
         echo ""
         echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
-        echo ""
 
     if self.suspicousProcessCount_Sec_4688 == 0 and self.suspicousProcessCount_Sysmon_1 == 0:
         echo ""
         echo "No suspicous processes were found. There are either no malicious processes or you need to change the level."
-        echo ""
         return
-
+    echo ""
     echo "Suspicious processes in Security 4688 process creation events: " & intToStr(self.suspicousProcessCount_Sec_4688).insertSep(',')
     echo "Suspicious processes in Sysmon 1 process creation events: " & intToStr(self.suspicousProcessCount_Sysmon_1).insertSep(',')
-    echo ""
 
 proc timelineSuspiciousProcesses(level: string = "high", skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")

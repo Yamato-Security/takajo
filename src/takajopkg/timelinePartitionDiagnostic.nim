@@ -77,7 +77,6 @@ method resultOutput*(self: TimelinePartitionDiagnosticCmd) =
         let fileSize = getFileSize(self.output)
         echo ""
         echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
-        echo ""
     else:
         echo ""
         var table: TerminalTable

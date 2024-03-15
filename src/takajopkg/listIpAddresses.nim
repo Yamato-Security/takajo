@@ -39,7 +39,6 @@ method resultOutput*(self: ListIpAddressesCmd) =
     echo ""
     echo "IP Addresss: ", intToStr(len(self.ipHashSet)).insertSep(',')
     echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
-    echo ""
 
 proc listIpAddresses(inbound: bool = true, outbound: bool = true, skipProgressBar:bool = false, output: string, privateIp: bool = false,  quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")

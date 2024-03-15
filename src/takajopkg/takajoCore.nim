@@ -21,12 +21,14 @@ method analyze*(self: AbstractCmd, x: HayabusaJson) {.base.} =
 method resultOutput*(self: AbstractCmd) {.base.} =
   raise newException(ValueError, "resultOutput(AbstractCmd) is not implemented")
 
-proc analyzeJSONLFile*(self: AbstractCmd) =
+proc analyzeJSONLFile*(self: AbstractCmd, cmds: seq[AbstractCmd] = newSeq[AbstractCmd]()) =
     let startTime = epochTime()
     var bar: SuruBar
     let skipProgressBar = self.skipProgressBar
     let timeline = self.timeline
-
+    var commands = cmds
+    if commands.len() == 0:
+        commands = @[self]
     if not skipProgressBar:
         bar = initSuruBar()
         bar[0].total = countJsonlAndStartMsg(self.name, self.msg, timeline)
@@ -40,33 +42,7 @@ proc analyzeJSONLFile*(self: AbstractCmd) =
         if jsonLineOpt.isNone:
             continue
         let jsonLine:HayabusaJson = jsonLineOpt.get()
-        if self.filter(jsonLine):
-            self.analyze(jsonLine)
-    if not skipProgressBar:
-      bar.finish()
-    self.resultOutput()
-    outputElapsedTime(startTime)
-
-proc analyzeJSONLFileWithMultipleCmd*(baseCmd:AbstractCmd , cmds: seq[AbstractCmd]) =
-    let startTime = epochTime()
-    var bar: SuruBar
-    let skipProgressBar = baseCmd.skipProgressBar
-    let timeline = baseCmd.timeline
-
-    if not skipProgressBar:
-        bar = initSuruBar()
-        bar[0].total = countJsonlAndStartMsg(baseCmd.name, baseCmd.msg, timeline)
-        bar.setup()
-
-    for line in lines(timeline):
-        if not skipProgressBar:
-            inc bar
-            bar.update(1000000000)
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        for cmd in cmds:
+        for cmd in commands:
             try:
                 if cmd.filter(jsonLine):
                     cmd.analyze(jsonLine)
@@ -74,7 +50,6 @@ proc analyzeJSONLFileWithMultipleCmd*(baseCmd:AbstractCmd , cmds: seq[AbstractCm
                 continue
     if not skipProgressBar:
       bar.finish()
-
-    for cmd in cmds:
+    for cmd in commands:
         cmd.resultOutput()
     outputElapsedTime(startTime)

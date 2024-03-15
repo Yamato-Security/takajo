@@ -83,7 +83,6 @@ method resultOutput*(self: ListHashesCmd) =
     echo "SHA1: ", intToStr(self.sha1hashCount).insertSep(',')
     echo "SHA256: ", intToStr(self.sha256hashCount).insertSep(',')
     echo "Import: ", intToStr(self.impHashCount).insertSep(',')
-    echo ""
 
 proc listHashes(level: string = "high", skipProgressBar:bool = false, output: string, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
