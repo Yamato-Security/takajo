@@ -97,6 +97,7 @@ method analyze*(self: ExtractScriptBlocksCmd, x: HayabusaJson) =
 
 method resultOutput*(self: ExtractScriptBlocksCmd) =
     if self.summaryRecords.len == 0:
+        echo ""
         echo "No malicious powershell script block were found. There are either no malicious powershell script block or you need to change the level."
     else:
         let summaryFile = self.output & "/" & "summary.csv"
