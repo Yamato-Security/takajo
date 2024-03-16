@@ -120,7 +120,8 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
                     outputFile.write(escapeCsvField(cell) & "\p")
         let outputFileSize = getFileSize(outputFile)
         outputFile.close()
-        table.echoTableSepsWithStyled(seps = boxSeps)
+        if self.displayTable:
+            table.echoTableSepsWithStyled(seps = boxSeps)
         echo ""
         echo "The extracted PowerShell ScriptBlock is saved in the directory: " & self.output
         echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"

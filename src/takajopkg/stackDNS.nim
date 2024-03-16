@@ -20,7 +20,7 @@ method analyze*(self: StackDNSCmd, x: HayabusaJson)=
     stackResult(stackKey, self.stack, self.level, x, otherColumn)
 
 method resultOutput*(self: StackDNSCmd)=
-    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, self.header)
+    outputResult(self, self.stack, self.header)
 
 proc stackDNS(level: string = "informational", skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)

@@ -43,7 +43,7 @@ method analyze*(self: StackUsersCmd, x: HayabusaJson)=
     stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackUsersCmd) =
-    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, isMinColumns=true)
+    outputResult(self, self.stack, isMinColumns=true)
 
 proc stackUsers(level: string = "informational", sourceUsers: bool = false, filterComputerAccounts: bool = true, filterSystemAccounts: bool = true, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)

@@ -78,13 +78,14 @@ method resultOutput*(self: TimelinePartitionDiagnosticCmd) =
         echo ""
         echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
     else:
-        echo ""
         var table: TerminalTable
         table.add header
         for t in self.seqOfResultsTables:
             table.add t[header[0]], t[header[1]], t[header[2]], t[header[3]], t[header[4]], t[header[5]], t[header[6]], t[header[7]], t[header[8]], t[header[9]]
-        table.echoTableSepsWithStyled(seps = boxSeps)
-        echo ""
+        if self.displayTable:
+            echo ""
+            table.echoTableSepsWithStyled(seps = boxSeps)
+            echo ""
 
 proc timelinePartitionDiagnostic(skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")

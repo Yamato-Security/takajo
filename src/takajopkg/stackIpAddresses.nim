@@ -18,7 +18,7 @@ method analyze*(self: StackIpAddressesCmd, x: HayabusaJson)=
     stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackIpAddressesCmd)=
-    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, isMinColumns=true)
+    outputResult(self, self.stack, isMinColumns=true)
 
 proc stackIpAddresses(level: string = "informational", targetIpAddresses: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)

@@ -11,6 +11,7 @@ type
     name*: string
     msg*: string
     output*: string
+    displayTable*: bool = true
 
 method filter*(self: AbstractCmd, x: HayabusaJson):bool {.base.} =
   return true

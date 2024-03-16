@@ -1,6 +1,7 @@
 import general
 import json
 import nancy
+import takajoCore
 import takajoTerminal
 import hayabusaJson
 import std/algorithm
@@ -78,11 +79,12 @@ proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:st
     val.otherColumn = otherColumn
     stack[key] = val
 
-proc outputResult*(output:string, culumnName: string, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string](), isMinColumns:bool = false) =
-    echo ""
+proc outputResult*(cmd:AbstractCmd, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string](), isMinColumns:bool = false) =
     if stack.len == 0:
-        echo "No results where found."
+        echo ""
+        echo "No " & cmd.name & " results where found."
     else:
+        let culumnName = cmd.name.replace("Stack ", "")
         let stackRecords = toSeq(stack.values).sorted(recordCmp).map(proc(x: StackRecord): seq[string] = buildCSVRecord(x, isMinColumns))
         var header = @["Count", "Channel", "EventID", culumnName, "Levels", "Alerts"]
         if otherHeader.len > 0:
@@ -94,11 +96,12 @@ proc outputResult*(output:string, culumnName: string, stack: Table[string, Stack
         for row in stackRecords:
             let color = levelColor(row[^2])
             table.add map(row, proc(col: string): string = color col)
-        table.echoTableSepsWithStyled(seps = boxSeps)
-        echo ""
-        if output == "":
+        if cmd.displayTable:
+            table.echoTableSepsWithStyled(seps = boxSeps)
+            echo ""
+        if cmd.output == "":
             return
-        let outputFile = open(output, fmWrite)
+        let outputFile = open(cmd.output, fmWrite)
         writeLine(outputFile, header.join(","))
         for row in stackRecords:
             for i, col in enumerate(row):
@@ -109,4 +112,4 @@ proc outputResult*(output:string, culumnName: string, stack: Table[string, Stack
         let outputFileSize = getFileSize(outputFile)
         close(outputFile)
         echo ""
-        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+        echo "Saved file: " & cmd.output & " (" & formatFileSize(outputFileSize) & ")"

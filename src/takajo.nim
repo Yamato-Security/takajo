@@ -60,7 +60,7 @@ include takajopkg/automagic
 when isMainModule:
     clCfg.version = "2.5.0-dev"
     const examples = "Examples:\p"
-    const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] -o case-1\p"
+    const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o domains.txt\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl [--skipProgressBar] -o case-1\p"
@@ -111,6 +111,7 @@ when isMainModule:
             help = {
                 "level": "specify the minimum alert level (default: low)",
                 "skipProgressBar": "do not display the progress bar",
+                "displayTable": "display the result table",
                 "output": "output directory (default: scriptblock-logs)",
                 "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline (profile: any)",

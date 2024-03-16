@@ -36,7 +36,7 @@ method analyze*(self: StackTasksCmd, x: HayabusaJson)=
     stackResult(stackKey, self.stack, self.level, x, otherColumn=otherColumn)
 
 method resultOutput*(self: StackTasksCmd)=
-    outputResult(self.output, self.name.replace("Stack ", ""), self.stack, self.header)
+    outputResult(self, self.stack, self.header)
 
 proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ignoreSecurity: bool = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
