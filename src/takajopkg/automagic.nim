@@ -4,7 +4,7 @@ type
   AutoMagicCmd* = ref object of AbstractCmd
       level: string
 
-proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable:bool = true, output: string = "case-1", quiet: bool = false, timeline: string) =
+proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable:bool = false, output: string = "case-1", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
     if dirExists(output):
         echo "The directory '" & output & "' exists. Please specify a new folder name."
