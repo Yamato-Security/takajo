@@ -21,7 +21,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd2 = ListDomainsCmd(name:"list-domains", displayTable:displayTable, timeline: timeline, output: output & "/ListDomains.txt")
 
     # list-domains -t ../hayabusa/timeline.jsonl -d -w -o case-1/ListDomains-Detailed.txt
-    let cmd3 = ListDomainsCmd(name:"list-domains", options:"--includeSubdomains, --includeWorkstations", displayTable:displayTable, timeline:timeline, output:output & "/ListDomains-Detailed.txt", includeSubdomains:true, includeWorkstations:true)
+    let cmd3 = ListDomainsCmd(name:"list-domains(detailed)", options:"--includeSubdomains, --includeWorkstations", displayTable:displayTable, timeline:timeline, output:output & "/ListDomains-Detailed.txt", includeSubdomains:true, includeWorkstations:true)
 
     # list-hashes -t ../hayabusa/timeline.jsonl -l <level> -o case-1/hashes
     let cmd4 = ListHashesCmd(name:"list-hashes", displayTable:displayTable, timeline:timeline, level:level, output:output & "/hashes")
