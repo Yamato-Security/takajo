@@ -116,7 +116,7 @@ proc outputResult*(cmd:AbstractCmd, stack: Table[string, StackRecord], otherHead
         savedFiles = cmd.output & " (" & formatFileSize(outputFileSize) & ")"
         if culumnName == "dns":
             culumnName = "dns requests and replies"
-        results = "Unique " & culumnName & ": " & $stackRecords.len
+        results = "Unique " & culumnName & ": " & intToStr(stackRecords.len).insertSep(',')
         close(outputFile)
         if cmd.displayTable:
             echo ""
