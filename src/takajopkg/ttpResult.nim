@@ -12,7 +12,7 @@ type TTPResult* = ref object
 proc newTTPResult*(techniqueID: string, comment: string, score: int): TTPResult =
   result = TTPResult(techniqueID: techniqueID, comment: comment, score:score)
 
-proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCount:Table[string, int], output:string, displayTable:bool = true):string =
+proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCount:Table[string, int], output:string, displayTable:bool = true, name:string):string =
     var savedFiles = "n/a"
     if displayTable and stackedMitreTags.len == 0:
         echo ""
@@ -25,14 +25,14 @@ proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCo
             let score = toInt(round(stackedMitreTagsCount[techniqueID]/maxCount * 100))
             mitreTags.add(newTTPResult(techniqueID, ruleTitle, score))
         let jsonObj = %* {
-                            "name": "Hayabusa detection result heatmap",
+                            "name": name,
                             "versions": {
                                 "attack": "14",
                                 "navigator": "4.9.1",
                                 "layer": "4.5"
                             },
                             "domain": "enterprise-attack",
-                            "description": "Sigma rule heatmap",
+                            "description": name,
                             "techniques": mitreTags,
                             "gradient": {
                                 "colors": [

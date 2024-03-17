@@ -20,7 +20,7 @@ method analyze*(self: TTPVisualizeCmd, x: HayabusaJson) =
         discard
 
 method resultOutput*(self: TTPVisualizeCmd) =
-    let savedFiles = outputTTPResult(self.stackedMitreTags, self.stackedMitreTagsCount, self.output, false)
+    let savedFiles = outputTTPResult(self.stackedMitreTags, self.stackedMitreTagsCount, self.output, false, "Hayabusa detection result heatmap")
     self.cmdResult = CmdResult(results:"You can import this into ATT&CK Navigator", savedFiles:savedFiles)
 
 proc ttpVisualize(skipProgressBar:bool = false, output: string = "mitre-ttp-heatmap.json", quiet: bool = false, timeline: string) =
