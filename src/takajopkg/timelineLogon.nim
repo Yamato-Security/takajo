@@ -170,7 +170,7 @@ method resultOutput*(self: TimelineLogonCmd) =
     echo ""
     echo "Calculating logon elapsed time. Please wait."
     echo ""
-
+    let timeFormat = getTimeFormat(self.seqOfResultsTables)
     # Calculating the logon elapsed time (default)
     if self.calculateElapsedTime:
         for tableOfResults in self.seqOfResultsTables:
@@ -182,10 +182,10 @@ method resultOutput*(self: TimelineLogonCmd) =
                 if self.logoffEvents.hasKey(key):
                     logoffTime = self.logoffEvents[key]
                     tableOfResults[]["LogoffTime"] = logoffTime
-                    logonTime = logonTime[0 ..< logonTime.len - 7]
-                    logoffTime = logoffTime[0 ..< logofftime.len - 7]
-                    let parsedLogoffTime = parse(logoffTime, "yyyy-MM-dd HH:mm:ss'.'fff")
-                    let parsedLogonTime = parse(logonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
+                    logonTime = if logonTime.endsWith("Z"): logonTime.replace("Z","")  else: logonTime[0 ..< logonTime.len - 7]
+                    logoffTime = if logoffTime.endsWith("Z"): logoffTime.replace("Z","") else: logoffTime[0 ..< logofftime.len - 7]
+                    let parsedLogoffTime = parse(padString(logoffTime, '0', timeFormat), timeFormat)
+                    let parsedLogonTime = parse(padString(logonTime, '0', timeFormat), timeFormat)
                     let duration = parsedLogoffTime - parsedLogonTime
                     tableOfResults[]["ElapsedTime"] = formatDuration(duration)
                 else:
@@ -195,14 +195,14 @@ method resultOutput*(self: TimelineLogonCmd) =
     for tableOfResults in self.seqOfResultsTables:
         if tableOfResults["EventID"] == "4624":
             var logonTime = tableOfResults["Timestamp"]
-            logonTime = logonTime[0 ..< logonTime.len - 7] # Remove the timezone
+            logonTime = if logonTime.endsWith("Z"): logonTime.replace("Z","") else: logonTime[0 ..< logonTime.len - 7] # Remove the timezone
             #echo "4624 logon time: " & logonTime
             let key = tableOfResults["LID"] & ":" & tableOfResults["TargetComputer"] & ":" & tableOfResults["TargetUser"]
             if self.adminLogonEvents.hasKey(key):
                 var adminLogonTime = self.adminLogonEvents[key]
-                adminLogonTime = adminLogonTime[0 ..< adminLogonTime.len - 7] # Remove the timezone
-                let parsed_4624_logonTime = parse(logonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
-                let parsed_4672_logonTime = parse(adminLogonTime, "yyyy-MM-dd HH:mm:ss'.'fff")
+                adminLogonTime = if adminLogonTime.endsWith("Z"): adminLogonTime.replace("Z","")  else: adminLogonTime[0 ..< adminLogonTime.len - 7] # Remove the timezone
+                let parsed_4624_logonTime = parse(padString(logonTime, '0', timeFormat), timeFormat)
+                let parsed_4672_logonTime = parse(padString(adminLogonTime, '0', timeFormat), timeFormat)
                 let duration = parsed_4624_logonTime - parsed_4672_logonTime
                 # If the 4624 logon event and 4672 admin logon event are within 10 seconds then flag as an Admin Logon
                 if duration.inSeconds < 10:
