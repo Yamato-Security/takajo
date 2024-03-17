@@ -22,6 +22,7 @@ proc compareArrays(a, b: array[5, string]): int =
 type
   TTPSummaryCmd* = ref object of AbstractCmd
     seqOfResultsTables*: seq[array[5, string]]
+    techniqueIDs*:HashSet[string] = initHashSet[string]()
     attack*: JsonNode
     tac_no* = {"Reconnaissance": "01. ",
                "Resource Development": "02. ",
@@ -51,6 +52,7 @@ method analyze*(self: TTPSummaryCmd, x: HayabusaJson) =
             let sub = res["Sub-Technique"].getStr()
             let rul = x.RuleTitle
             self.seqOfResultsTables.add([com, tac, tec, sub, rul])
+            self.techniqueIDs.incl(tag)
     except CatchableError:
         discard
 
@@ -86,7 +88,7 @@ method resultOutput*(self: TTPSummaryCmd) =
         outputFile.close()
         let fileSize = getFileSize(self.output)
         savedFiles = self.output & " (" & formatFileSize(fileSize) & ")"
-        results = "TTPs: " & intToStr(self.seqOfResultsTables.len).insertSep(',')
+        results = "TTPs: " & intToStr(self.techniqueIDs.len).insertSep(',')
         if self.displayTable:
             echo ""
             echo "Saved results to " & savedFiles
