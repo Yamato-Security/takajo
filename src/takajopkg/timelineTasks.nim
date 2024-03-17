@@ -59,8 +59,9 @@ method resultOutput*(self: TimelineTasksCmd)=
     var savedFiles = "n/a"
     var results = "n/a"
     if self.rowData.len == 0:
-        echo ""
-        echo "No scheduled task events were found."
+        if self.displayTable:
+            echo ""
+            echo "No scheduled task events were found."
     else:
         var allDetailedKeys = initOrderedSet[string]()
         for (_, detailedTable) in self.rowData:
