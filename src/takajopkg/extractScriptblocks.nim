@@ -102,7 +102,7 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
         echo ""
         echo "No malicious powershell script block were found. There are either no malicious powershell script block or you need to change the level."
     else:
-        let summaryFile = self.output & "/" & "summary.csv"
+        let summaryFile = self.output & "/" & "Summary.csv"
         let header = ["Creation Time", "Computer Name", "Script ID", "Script Name", "Records", "Level", "Alerts"]
         var outputFile = open(summaryFile, fmWrite)
         var table: TerminalTable
