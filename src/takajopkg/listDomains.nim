@@ -33,11 +33,11 @@ method resultOutput*(self: ListDomainsCmd)=
     let outputFileSize = getFileSize(outputFile)
     outputFile.close()
     let savedFiles = self.output & " (" & formatFileSize(outputFileSize) & ")"
-    let results = "Domains: " & intToStr(len(self.domainHashSet))
+    let results = "Domains: " & intToStr(len(self.domainHashSet)).insertSep(',')
     if self.displayTable:
         echo ""
-        echo "Domains: ", intToStr(len(self.domainHashSet)).insertSep(',')
-        echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
+        echo results
+        echo "Saved file: " & savedFiles
     self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc listDomains(includeSubdomains: bool = false, includeWorkstations: bool = false, skipProgressBar:bool = false, output: string, quiet: bool = false, timeline: string) =
