@@ -129,7 +129,7 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
             echo ""
             echo "The extracted PowerShell ScriptBlock is saved in the directory: " & self.output
             echo "Saved summary file: " & savedFiles
-    self.cmdResult = CmdResult(results:results, savedFiles: self.output & "*.txt," & savedFiles)
+    self.cmdResult = CmdResult(results:results, savedFiles: self.output & "/*.txt," & savedFiles)
 
 
 proc extractScriptblocks(level: string = "low", skipProgressBar:bool = false, output: string = "scriptblock-logs", quiet: bool = false, timeline: string) =

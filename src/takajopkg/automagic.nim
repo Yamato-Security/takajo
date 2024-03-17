@@ -13,7 +13,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
         createDir(output)
 
     # extract-scriptblocks -t ../hayabusa/timeline.jsonl -l <level> -o case-1/scriptblock-logs/
-    let cmd1 = ExtractScriptBlocksCmd(name:"extract-scriptblocks", level: level, skipProgressBar: skipProgressBar, displayTable:displayTable, timeline: timeline, output: output & "/scriptblock-logs/")
+    let cmd1 = ExtractScriptBlocksCmd(name:"extract-scriptblocks", level: level, skipProgressBar: skipProgressBar, displayTable:displayTable, timeline: timeline, output: output & "/scriptblock-logs")
     if not dirExists(output & "/scriptblock-logs/"):
         createDir(output & "/scriptblock-logs/")
 
