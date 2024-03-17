@@ -15,7 +15,6 @@ type AbstractCmd* = ref object of RootObj
     timeline*: string = ""
     skipProgressBar*: bool
     name*: string = ""
-    options*: string = "(default)"
     msg*: string = ""
     output*: string = ""
     cmdResult*: CmdResult = CmdResult(results:"", savedFiles:"")

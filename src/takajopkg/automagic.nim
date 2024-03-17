@@ -21,7 +21,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd2 = ListDomainsCmd(name:"list-domains", displayTable:displayTable, timeline: timeline, output: output & "/ListDomains.txt")
 
     # list-domains -t ../hayabusa/timeline.jsonl -d -w -o case-1/ListDomains-Detailed.txt
-    let cmd3 = ListDomainsCmd(name:"list-domains(detailed)", options:"--includeSubdomains, --includeWorkstations", displayTable:displayTable, timeline:timeline, output:output & "/ListDomains-Detailed.txt", includeSubdomains:true, includeWorkstations:true)
+    let cmd3 = ListDomainsCmd(name:"list-domains(detailed)", displayTable:displayTable, timeline:timeline, output:output & "/ListDomains-Detailed.txt", includeSubdomains:true, includeWorkstations:true)
 
     # list-hashes -t ../hayabusa/timeline.jsonl -l <level> -o case-1/hashes
     let cmd4 = ListHashesCmd(name:"list-hashes", displayTable:displayTable, timeline:timeline, level:level, output:output & "/hashes")
@@ -36,7 +36,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd7 = StackComputersCmd(name: "stack-computers", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetComputers.csv")
 
     # stack-computers -t ../hayabusa/timeline.jsonl --level <level> --sourceComputers -o case-1/SourceComputers.csv
-    let cmd8 = StackComputersCmd(name: "stack-computers", options:"--sourceComputers", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceComputers.csv", sourceComputers:true)
+    let cmd8 = StackComputersCmd(name: "stack-computers", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceComputers.csv", sourceComputers:true)
 
     # stack-dns -t ../hayabusa/timeline.jsonl --level <level>  -o case-1/DNS.csv
     let cmd9 = StackDNSCmd(name:"stack-dns", level:level, displayTable:displayTable, timeline:timeline, output:output & "/DNS.csv")
@@ -45,7 +45,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd10 = StackIpAddressesCmd(name: "stack-ip-addresses(source)", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceIP-Addresses.csv")
 
     # stack-ip-addresses -t ../hayabusa/timeline.jsonl --level <level> --targetIpAddresses -o case-1/TargetIP-Addresses.csv
-    let cmd11 = StackIpAddressesCmd(name: "stack-ip-addresses(target)", options:"--targetIpAddresses", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetIP-Addresses.csv", targetIpAddresses:true)
+    let cmd11 = StackIpAddressesCmd(name: "stack-ip-addresses(target)", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetIP-Addresses.csv", targetIpAddresses:true)
 
     # stack-logons -t ../hayabusa/timeline.jsonl -o case-1/Logons.csv
     let cmd12 = StackLogonsCmd(name: "stack-logons", displayTable:displayTable, timeline:timeline, output:output & "/Logons.csv")
@@ -63,13 +63,13 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd16 = StackUsersCmd(name:"stack-users", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers.csv" , filterSystemAccounts:true, filterComputerAccounts:true)
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> --filterSystemAccounts=false --filterComputerAccounts=false -o case-1/TargetUsers-NoFiltering.csv
-    let cmd17 = StackUsersCmd(name:"stack-users(no filtering)", options:"--filterSystemAccounts=false --filterComputerAccounts=false", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers-NoFiltering.csv", filterSystemAccounts:false, filterComputerAccounts:false)
+    let cmd17 = StackUsersCmd(name:"stack-users(no filtering)", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers-NoFiltering.csv", filterSystemAccounts:false, filterComputerAccounts:false)
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> --sourceUsers -o users.csv
-    let cmd18 = StackUsersCmd(name:"stack-users", options:"--sourceUsers", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceUsers.csv", sourceUsers:true, filterSystemAccounts:true, filterComputerAccounts:true)
+    let cmd18 = StackUsersCmd(name:"stack-users", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceUsers.csv", sourceUsers:true, filterSystemAccounts:true, filterComputerAccounts:true)
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> --sourceUsers --filterSystemAccounts=false --filterComputerAccounts=false -o case-1/SourceUsers-NoFiltering.csv
-    let cmd19 = StackUsersCmd(name:"stack-users(no filtering)", options:"--sourceUsers --filterSystemAccounts=false --filterComputerAccounts=false", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceUsers-NoFiltering.csv", sourceUsers:true, filterSystemAccounts:false, filterComputerAccounts:false)
+    let cmd19 = StackUsersCmd(name:"stack-users(no filtering)", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceUsers-NoFiltering.csv", sourceUsers:true, filterSystemAccounts:false, filterComputerAccounts:false)
 
     # timeline-logon -t ../hayabusa/timeline.jsonl -o case-1/LogonTimeline.csv
     let cmd20 = TimelineLogonCmd(name:"timeline-logon", displayTable:displayTable, timeline:timeline, output:output & "/LogonTimeline.csv")
