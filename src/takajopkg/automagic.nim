@@ -72,7 +72,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd19 = StackUsersCmd(name:"stack-users(no filtering)", level:level, displayTable:displayTable, timeline:timeline, output:output & "/StackSourceUsers-NoFiltering.csv", sourceUsers:true, filterSystemAccounts:false, filterComputerAccounts:false)
 
     # timeline-logon -t ../hayabusa/timeline.jsonl -o case-1/LogonTimeline.csv
-    let cmd20 = TimelineLogonCmd(name:"timeline-logon", displayTable:displayTable, timeline:timeline, output:output & "/TimelineLogonTimeline.csv")
+    let cmd20 = TimelineLogonCmd(name:"timeline-logon", displayTable:displayTable, timeline:timeline, output:output & "/TimelineLogon.csv")
 
     # timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o case-1/PartitionDiagnosticTimeline.csv
     let cmd21 = TimelinePartitionDiagnosticCmd(name:"timeline-partition-diagnostic",displayTable:displayTable,  timeline:timeline, output:output & "/TimelinePartitionDiagnostic.csv")
