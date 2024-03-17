@@ -209,7 +209,6 @@ method resultOutput*(self: TimelineLogonCmd) =
                 if duration.inSeconds < 10:
                     tableOfResults[]["AdminLogon"] = "Yes"
     let results = "" &
-         "Found logon events:" &
          "EID 4624 (Successful Logon): " & intToStr(self.EID_4624_count).insertSep(',') & ", " &
          "EID 4625 (Failed Logon): " &  intToStr(self.EID_4625_count).insertSep(',') & ", " &
          "EID 4634 (Logoff): " &  intToStr(self.EID_4634_count).insertSep(',') & ", " &
