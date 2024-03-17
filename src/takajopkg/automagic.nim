@@ -63,7 +63,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd16 = StackUsersCmd(name:"stack-users", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers.csv")
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> --filterSystemAccounts=false --filterComputerAccounts=false -o case-1/TargetUsers-NoFiltering.csv
-    let cmd17 = StackUsersCmd(name:"stack-users(no filtering)", options:"--filterSystemAccounts=false --filterComputerAccounts=false", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers-NoFiltering.csv")
+    let cmd17 = StackUsersCmd(name:"stack-users(no filtering)", options:"--filterSystemAccounts=false --filterComputerAccounts=false", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers-NoFiltering.csv", filterSystemAccounts:false, filterComputerAccounts:false)
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> --sourceUsers -o users.csv
     let cmd18 = StackUsersCmd(name:"stack-users", options:"--sourceUsers", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceUsers.csv", sourceUsers:true)
