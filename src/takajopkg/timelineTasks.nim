@@ -92,7 +92,7 @@ method resultOutput*(self: TimelineTasksCmd)=
         outputFile.close()
         let fileSize = getFileSize(self.output)
         savedFiles = self.output & " (" & formatFileSize(fileSize) & ")"
-        results = "Events:" & intToStr(self.rowData.len).insertSep(',')
+        results = "Events: " & intToStr(self.rowData.len).insertSep(',')
         if self.displayTable:
             echo ""
             echo "Saved results to " & savedFiles

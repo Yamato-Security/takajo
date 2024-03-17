@@ -78,7 +78,7 @@ method resultOutput*(self: TimelinePartitionDiagnosticCmd) =
         outputFile.close()
         let fileSize = getFileSize(self.output)
         savedFiles = self.output & " (" & formatFileSize(fileSize) & ")"
-        results = "Events:" & intToStr(self.seqOfResultsTables.len).insertSep(',')
+        results = "Events: " & intToStr(self.seqOfResultsTables.len).insertSep(',')
         if self.displayTable:
             echo ""
             echo "Saved results to " & savedFiles
