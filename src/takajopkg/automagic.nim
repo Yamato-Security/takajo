@@ -60,13 +60,13 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd15 = StackTasksCmd(name:"stack-tasks", level:level, displayTable:displayTable, timeline:timeline, output:output & "/Tasks.csv")
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> -o case-1/TargetUsers.csv
-    let cmd16 = StackUsersCmd(name:"stack-users", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers.csv")
+    let cmd16 = StackUsersCmd(name:"stack-users", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers.csv" , filterSystemAccounts:true, filterComputerAccounts:true)
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> --filterSystemAccounts=false --filterComputerAccounts=false -o case-1/TargetUsers-NoFiltering.csv
     let cmd17 = StackUsersCmd(name:"stack-users(no filtering)", options:"--filterSystemAccounts=false --filterComputerAccounts=false", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TargetUsers-NoFiltering.csv", filterSystemAccounts:false, filterComputerAccounts:false)
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> --sourceUsers -o users.csv
-    let cmd18 = StackUsersCmd(name:"stack-users", options:"--sourceUsers", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceUsers.csv", sourceUsers:true)
+    let cmd18 = StackUsersCmd(name:"stack-users", options:"--sourceUsers", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceUsers.csv", sourceUsers:true, filterSystemAccounts:true, filterComputerAccounts:true)
 
     # stack-users -t ../hayabusa/timeline.jsonl --level <level> --sourceUsers --filterSystemAccounts=false --filterComputerAccounts=false -o case-1/SourceUsers-NoFiltering.csv
     let cmd19 = StackUsersCmd(name:"stack-users(no filtering)", options:"--sourceUsers --filterSystemAccounts=false --filterComputerAccounts=false", level:level, displayTable:displayTable, timeline:timeline, output:output & "/SourceUsers-NoFiltering.csv", sourceUsers:true, filterSystemAccounts:false, filterComputerAccounts:false)
