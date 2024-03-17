@@ -48,7 +48,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd11 = StackIpAddressesCmd(name: "stack-ip-addresses(target)", level:level, displayTable:displayTable, timeline:timeline, output:output & "/StackTargetIP-Addresses.csv", targetIpAddresses:true)
 
     # stack-logons -t ../hayabusa/timeline.jsonl -o case-1/Logons.csv
-    let cmd12 = StackLogonsCmd(name: "stack-logons", displayTable:displayTable, timeline:timeline, output:output & "/Logons.csv")
+    let cmd12 = StackLogonsCmd(name: "stack-logons", displayTable:displayTable, timeline:timeline, output:output & "/StackLogons.csv")
 
     # stack-processes -t ../hayabusa/timeline.jsonl --level <level> -o case-1/Processes.csv
     let cmd13 = StackProcessesCmd(name: "stack-processes", level:level, displayTable:displayTable, timeline:timeline, output:output & "/StackProcesses.csv")
