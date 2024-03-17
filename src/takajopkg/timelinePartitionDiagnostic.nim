@@ -54,6 +54,8 @@ method analyze*(self: TimelinePartitionDiagnosticCmd, x: HayabusaJson) =
     self.seqOfResultsTables.add(singleResultTable)
 
 method resultOutput*(self: TimelinePartitionDiagnosticCmd) =
+    var savedFiles = "n/a"
+    var results = "n/a"
     let header = ["Timestamp", "Computer", "Manufacturer", "Model", "Revision", "SerialNumber", "VSN0", "VSN1", "VSN2", "VSN3"]
     if self.output != "":
         # Open file to save results
@@ -75,8 +77,11 @@ method resultOutput*(self: TimelinePartitionDiagnosticCmd) =
             outputFile.write("\p")
         outputFile.close()
         let fileSize = getFileSize(self.output)
-        echo ""
-        echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
+        savedFiles = self.output & " (" & formatFileSize(fileSize) & ")"
+        results = "Events:" & intToStr(self.seqOfResultsTables.len).insertSep(',')
+        if self.displayTable:
+            echo ""
+            echo "Saved results to " & savedFiles
     else:
         var table: TerminalTable
         table.add header
@@ -86,6 +91,7 @@ method resultOutput*(self: TimelinePartitionDiagnosticCmd) =
             echo ""
             table.echoTableSepsWithStyled(seps = boxSeps)
             echo ""
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc timelinePartitionDiagnostic(skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
@@ -93,6 +99,6 @@ proc timelinePartitionDiagnostic(skipProgressBar:bool = false, output: string = 
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"Timeline PatitionDiagnostc",
+                name:"timeline-partition-diagnostic",
                 msg: TimelinePartitionDiagnosticMsg)
     cmd.analyzeJSONLFile()

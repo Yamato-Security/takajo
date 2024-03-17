@@ -96,6 +96,8 @@ method analyze*(self: ExtractScriptBlocksCmd, x: HayabusaJson) =
         discard
 
 method resultOutput*(self: ExtractScriptBlocksCmd) =
+    var savedFiles = "n/a"
+    var results = "n/a"
     if self.summaryRecords.len == 0:
         echo ""
         echo "No malicious powershell script block were found. There are either no malicious powershell script block or you need to change the level."
@@ -120,11 +122,14 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
                     outputFile.write(escapeCsvField(cell) & "\p")
         let outputFileSize = getFileSize(outputFile)
         outputFile.close()
+        savedFiles = summaryFile & " (" & formatFileSize(outputFileSize) & ")"
+        results = "PowerShell logs: " & intToStr(self.summaryRecords.len).insertSep(',')
         if self.displayTable:
             table.echoTableSepsWithStyled(seps = boxSeps)
-        echo ""
-        echo "The extracted PowerShell ScriptBlock is saved in the directory: " & self.output
-        echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"
+            echo ""
+            echo "The extracted PowerShell ScriptBlock is saved in the directory: " & self.output
+            echo "Saved summary file: " & savedFiles
+    self.cmdResult = CmdResult(results:results, savedFiles: self.output & "*.txt," & savedFiles)
 
 
 proc extractScriptblocks(level: string = "low", skipProgressBar:bool = false, output: string = "scriptblock-logs", quiet: bool = false, timeline: string) =
@@ -138,7 +143,7 @@ proc extractScriptblocks(level: string = "low", skipProgressBar:bool = false, ou
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"Extract ScriptBlock",
+                name:"extract-scriptblocks",
                 msg: ExtractScriptBlocksMsg)
     cmd.totalLines = countLinesInTimeline(timeline, true)
     cmd.analyzeJSONLFile()

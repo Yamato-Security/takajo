@@ -29,6 +29,6 @@ proc stackDNS(level: string = "informational", skipProgressBar:bool = false, out
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Stack DNS",
+                name: "stack-dns",
                 msg: StackDNSMsg)
     cmd.analyzeJSONLFile()

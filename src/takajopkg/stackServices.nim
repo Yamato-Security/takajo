@@ -30,7 +30,7 @@ proc stackServices(level: string = "informational", ignoreSystem: bool = false, 
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Stack Services",
+                name: "stack-services",
                 msg: StackServicesMsg,
                 ignoreSystem: ignoreSystem,
                 ignoreSecurity: ignoreSecurity)

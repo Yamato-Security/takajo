@@ -45,7 +45,7 @@ proc stackTasks(level: string = "informational", ignoreSysmon: bool = false, ign
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Stack Tasks",
+                name: "stack-tasks",
                 msg: StackTasksMsg,
                 ignoreSysmon: ignoreSysmon,
                 ignoreSecurity: ignoreSecurity)

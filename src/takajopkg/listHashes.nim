@@ -70,19 +70,31 @@ method resultOutput*(self: ListHashesCmd) =
         impHashOutputFile.write(hash & "\p")
     impHashOutputFile.close()
     let impHashFileSize = getFileSize(impHashOutputFilename)
-
-    echo ""
-    echo "Saved files:"
-    echo md5outputFilename & " (" & formatFileSize(md5FileSize) & ")"
-    echo sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")"
-    echo sha256outputFilename & " (" & formatFileSize(sha256FileSize) & ")"
-    echo impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ")"
-    echo ""
-    echo "Hashes:"
-    echo "MD5: ",  intToStr(self.md5hashCount).insertSep(',')
-    echo "SHA1: ", intToStr(self.sha1hashCount).insertSep(',')
-    echo "SHA256: ", intToStr(self.sha256hashCount).insertSep(',')
-    echo "Import: ", intToStr(self.impHashCount).insertSep(',')
+    let savedFiles = "" &
+        md5outputFilename & " (" & formatFileSize(md5FileSize) & "), " &
+        sha1outputFilename & " (" & formatFileSize(sha1FileSize) & "), " &
+        sha256outputFilename & " (" & formatFileSize(sha256FileSize) & "), " &
+        impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ") "
+    let results = "" &
+        "MD5: " &  intToStr(self.md5hashCount).insertSep(',') & ", " &
+        "SHA1: " & intToStr(self.sha1hashCount).insertSep(',') & ", " &
+        "SHA256: " & intToStr(self.sha256hashCount).insertSep(',') & ", " &
+        "Import: " & intToStr(self.impHashCount).insertSep(',')
+    if self.displayTable:
+        echo ""
+        echo "Saved files:"
+        echo md5outputFilename & " (" & formatFileSize(md5FileSize) & ")"
+        echo sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")"
+        echo sha256outputFilename & " (" & formatFileSize(sha256FileSize) & ")"
+        echo impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ")"
+        echo ""
+        echo "Hashes:"
+        echo "MD5: ",  intToStr(self.md5hashCount).insertSep(',')
+        echo "SHA1: ", intToStr(self.sha1hashCount).insertSep(',')
+        echo "SHA256: ", intToStr(self.sha256hashCount).insertSep(',')
+        echo "Import: ", intToStr(self.impHashCount).insertSep(',')
+        echo ""
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc listHashes(level: string = "high", skipProgressBar:bool = false, output: string, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
@@ -91,6 +103,6 @@ proc listHashes(level: string = "high", skipProgressBar:bool = false, output: st
                 timeline: timeline,
                 level: level,
                 output: output,
-                name:"List Hashes",
+                name:"list-hashes",
                 msg: ListHashesMsg)
     cmd.analyzeJSONLFile()

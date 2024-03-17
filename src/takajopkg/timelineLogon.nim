@@ -167,9 +167,10 @@ method analyze*(self: TimelineLogonCmd, x: HayabusaJson) =
             self.seqOfResultsTables.add(singleResultTable)
 
 method resultOutput*(self: TimelineLogonCmd) =
-    echo ""
-    echo "Calculating logon elapsed time. Please wait."
-    echo ""
+    if self.displayTable:
+        echo ""
+        echo "Calculating logon elapsed time. Please wait."
+        echo ""
     let timeFormat = getTimeFormat(self.seqOfResultsTables)
     # Calculating the logon elapsed time (default)
     if self.calculateElapsedTime:
@@ -207,15 +208,24 @@ method resultOutput*(self: TimelineLogonCmd) =
                 # If the 4624 logon event and 4672 admin logon event are within 10 seconds then flag as an Admin Logon
                 if duration.inSeconds < 10:
                     tableOfResults[]["AdminLogon"] = "Yes"
-
-    echo "Found logon events:"
-    echo "EID 4624 (Successful Logon): ", intToStr(self.EID_4624_count).insertSep(',')
-    echo "EID 4625 (Failed Logon): ", intToStr(self.EID_4625_count).insertSep(',')
-    echo "EID 4634 (Logoff): ", intToStr(self.EID_4634_count).insertSep(',')
-    echo "EID 4647 (User Initiated Logoff): ", intToStr(self.EID_4647_count).insertSep(',')
-    echo "EID 4648 (Explicit Logon): ", intToStr(self.EID_4648_count).insertSep(',')
-    echo "EID 4672 (Admin Logon): ", intToStr(self.EID_4672_count).insertSep(',')
-    echo ""
+    let results = "" &
+         "Found logon events:" &
+         "EID 4624 (Successful Logon): " & intToStr(self.EID_4624_count).insertSep(',') & ", " &
+         "EID 4625 (Failed Logon): " &  intToStr(self.EID_4625_count).insertSep(',') & ", " &
+         "EID 4634 (Logoff): " &  intToStr(self.EID_4634_count).insertSep(',') & ", " &
+         "EID 4647 (User Initiated Logoff): " &  intToStr(self.EID_4647_count).insertSep(',') & ", " &
+         "EID 4648 (Explicit Logon): " & intToStr(self.EID_4648_count).insertSep(',') & ", " &
+         "EID 4672 (Admin Logon): " & intToStr(self.EID_4672_count).insertSep(',')
+    if self.displayTable:
+        echo ""
+        echo "Found logon events:"
+        echo "EID 4624 (Successful Logon): ", intToStr(self.EID_4624_count).insertSep(',')
+        echo "EID 4625 (Failed Logon): ", intToStr(self.EID_4625_count).insertSep(',')
+        echo "EID 4634 (Logoff): ", intToStr(self.EID_4634_count).insertSep(',')
+        echo "EID 4647 (User Initiated Logoff): ", intToStr(self.EID_4647_count).insertSep(',')
+        echo "EID 4648 (Explicit Logon): ", intToStr(self.EID_4648_count).insertSep(',')
+        echo "EID 4672 (Admin Logon): ", intToStr(self.EID_4672_count).insertSep(',')
+        echo ""
 
     # Save results
     var outputFile = open(self.output, fmWrite)
@@ -236,8 +246,10 @@ method resultOutput*(self: TimelineLogonCmd) =
         outputFile.write("\p")
     let fileSize = getFileSize(self.output)
     outputFile.close()
-
-    echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
+    let savedFiles = self.output & " (" & formatFileSize(fileSize) & ")"
+    if self.displayTable:
+        echo "Saved results to " & savedFiles
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogoffEvents: bool = false, outputAdminLogonEvents: bool = false, skipProgressBar:bool = false, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
@@ -245,7 +257,7 @@ proc timelineLogon(calculateElapsedTime: bool = true, output: string, outputLogo
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"Timeline Logons",
+                name:"timeline-logon",
                 msg: TimelineLogonMsg,
                 calculateElapsedTime:calculateElapsedTime,
                 outputLogoffEvents: outputLogoffEvents,

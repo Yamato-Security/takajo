@@ -35,17 +35,20 @@ method resultOutput*(self: ListIpAddressesCmd) =
         outputFile.write(ipAddress & "\p")
     let outputFileSize = getFileSize(outputFile)
     outputFile.close()
-
-    echo ""
-    echo "IP Addresss: ", intToStr(len(self.ipHashSet)).insertSep(',')
-    echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
+    let savedFiles = self.output & " (" & formatFileSize(outputFileSize) & ")"
+    let results = "IP adddresses: " & intToStr(len(self.ipHashSet))
+    if self.displayTable:
+        echo ""
+        echo "IP Addresss: ", intToStr(len(self.ipHashSet)).insertSep(',')
+        echo "Saved file: " & savedFiles
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc listIpAddresses(inbound: bool = true, outbound: bool = true, skipProgressBar:bool = false, output: string, privateIp: bool = false,  quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     let cmd = ListIpAddressesCmd(
                 timeline: timeline,
                 output: output,
-                name:"List IpAddresses",
+                name:"list-ip-addresses",
                 msg: ListIpAddressesMsg,
                 inbound: inbound,
                 outbound: outbound,

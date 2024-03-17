@@ -25,7 +25,7 @@ proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false, ignoreSecu
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"Stack Cmdlines",
+                name:"stack-cmdlines",
                 msg: StackCmdlineMsg,
                 ignoreSysmon: ignoreSysmon,
                 ignoreSecurity: ignoreSecurity)

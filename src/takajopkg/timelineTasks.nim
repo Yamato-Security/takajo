@@ -56,41 +56,47 @@ method analyze*(self: TimelineTasksCmd, x: HayabusaJson) =
       self.rowData.add((basicTable, detailedTable))
 
 method resultOutput*(self: TimelineTasksCmd)=
+    var savedFiles = "n/a"
+    var results = "n/a"
     if self.rowData.len == 0:
         echo ""
         echo "No scheduled task events were found."
-        return
-    var allDetailedKeys = initOrderedSet[string]()
-    for (_, detailedTable) in self.rowData:
-        for key in detailedTable.keys:
-            allDetailedKeys.incl(key)
-    let basicHeader = @["Timestamp", "TaskName", "User", "SubjectUserSid", "SubjectDomainName", "SubjectLogonId", "Command", "Arguments"]
-    let detailedHeader = toSeq(allDetailedKeys).sorted
+    else:
+        var allDetailedKeys = initOrderedSet[string]()
+        for (_, detailedTable) in self.rowData:
+            for key in detailedTable.keys:
+                allDetailedKeys.incl(key)
+        let basicHeader = @["Timestamp", "TaskName", "User", "SubjectUserSid", "SubjectDomainName", "SubjectLogonId", "Command", "Arguments"]
+        let detailedHeader = toSeq(allDetailedKeys).sorted
 
-    # Save results
-    var outputFile = open(self.output, fmWrite)
+        # Save results
+        var outputFile = open(self.output, fmWrite)
 
-    ## Write CSV header
-    let header = concat(basicHeader, detailedHeader)
-    for h in header:
-        outputFile.write(h & ",")
-    outputFile.write("\p")
-
-    ## Write contents
-    for (basicTable, detailedTable) in self.rowData:
-        for i, columnName in enumerate(header):
-            if columnName in basicHeader:
-                outputFile.write(basicTable[columnName] & ",")
-            elif i > basicHeader.len - 1:
-                if columnName in detailedTable:
-                    outputFile.write(escapeCsvField(detailedTable[columnName]) & ",")
-                else:
-                    outputFile.write(",")
+        ## Write CSV header
+        let header = concat(basicHeader, detailedHeader)
+        for h in header:
+            outputFile.write(h & ",")
         outputFile.write("\p")
-    outputFile.close()
-    let fileSize = getFileSize(self.output)
-    echo ""
-    echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
+
+        ## Write contents
+        for (basicTable, detailedTable) in self.rowData:
+            for i, columnName in enumerate(header):
+                if columnName in basicHeader:
+                    outputFile.write(basicTable[columnName] & ",")
+                elif i > basicHeader.len - 1:
+                    if columnName in detailedTable:
+                        outputFile.write(escapeCsvField(detailedTable[columnName]) & ",")
+                    else:
+                        outputFile.write(",")
+            outputFile.write("\p")
+        outputFile.close()
+        let fileSize = getFileSize(self.output)
+        savedFiles = self.output & " (" & formatFileSize(fileSize) & ")"
+        results = "Events:" & intToStr(self.rowData.len).insertSep(',')
+        if self.displayTable:
+            echo ""
+            echo "Saved results to " & savedFiles
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc timelineTasks(skipProgressBar:bool = false, output: string, outputLogoffEvents: bool = false, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
@@ -98,7 +104,7 @@ proc timelineTasks(skipProgressBar:bool = false, output: string, outputLogoffEve
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"Timeline Tasks",
+                name:"timeline-tasks",
                 msg: TimelineTasksMsg,
                 outputLogoffEvents: outputLogoffEvents)
     cmd.analyzeJSONLFile()

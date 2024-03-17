@@ -80,11 +80,14 @@ proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:st
     stack[key] = val
 
 proc outputResult*(cmd:AbstractCmd, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string](), isMinColumns:bool = false) =
+    var results = "n/a"
+    var savedFiles = "n/a"
     if stack.len == 0:
-        echo ""
-        echo "No " & cmd.name & " results where found."
+        if cmd.displayTable:
+            echo ""
+            echo "No " & cmd.name & " results where found."
     else:
-        let culumnName = cmd.name.replace("Stack ", "")
+        var culumnName = cmd.name.replace("stack-", "")
         let stackRecords = toSeq(stack.values).sorted(recordCmp).map(proc(x: StackRecord): seq[string] = buildCSVRecord(x, isMinColumns))
         var header = @["Count", "Channel", "EventID", culumnName, "Levels", "Alerts"]
         if otherHeader.len > 0:
@@ -97,8 +100,8 @@ proc outputResult*(cmd:AbstractCmd, stack: Table[string, StackRecord], otherHead
             let color = levelColor(row[^2])
             table.add map(row, proc(col: string): string = color col)
         if cmd.displayTable:
-            table.echoTableSepsWithStyled(seps = boxSeps)
             echo ""
+            table.echoTableSepsWithStyled(seps = boxSeps)
         if cmd.output == "":
             return
         let outputFile = open(cmd.output, fmWrite)
@@ -110,6 +113,12 @@ proc outputResult*(cmd:AbstractCmd, stack: Table[string, StackRecord], otherHead
                 else:
                   outputFile.write(escapeCsvField(col) & "\p")
         let outputFileSize = getFileSize(outputFile)
+        savedFiles = cmd.output & " (" & formatFileSize(outputFileSize) & ")"
+        if culumnName == "dns":
+            culumnName = "dns requests and replies"
+        results = "Unique " & culumnName & ": " & $stackRecords.len
         close(outputFile)
-        echo ""
-        echo "Saved file: " & cmd.output & " (" & formatFileSize(outputFileSize) & ")"
+        if cmd.displayTable:
+            echo ""
+            echo "Saved file: " & savedFiles
+    cmd.cmdResult = CmdResult(results: results, savedFiles:savedFiles)

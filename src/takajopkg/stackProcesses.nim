@@ -25,7 +25,7 @@ proc stackProcesses(level: string = "low", ignoreSysmon: bool = false, ignoreSec
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Stack Processes",
+                name: "stack-processes",
                 msg: StackProcessesMsg,
                 ignoreSysmon: ignoreSysmon,
                 ignoreSecurity: ignoreSecurity)

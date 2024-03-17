@@ -52,7 +52,7 @@ proc stackUsers(level: string = "informational", sourceUsers: bool = false, filt
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Stack Users",
+                name: "stack-users",
                 msg: StackUsersMsg,
                 sourceUsers: sourceUsers,
                 filterSystemAccounts: filterSystemAccounts,

@@ -42,5 +42,5 @@ proc ttpVisualizeSigma(output: string = "mitre-attack-navigator.json", quiet: bo
                         stackedMitreTags[techniqueID] = ruleTitle
                         stackedMitreTagsCount[techniqueID] = 1
     bar.finish()
-    outputTTPResult(stackedMitreTags, stackedMitreTagsCount, output)
+    let x = outputTTPResult(stackedMitreTags, stackedMitreTagsCount, output)
     outputElapsedTime(startTime)

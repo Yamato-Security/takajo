@@ -1,16 +1,24 @@
 import general
 import hayabusaJson
+import nancy
+import takajoTerminal
+import std/enumerate
 import std/options
 import suru
 import times
 
-type
-  AbstractCmd* = ref object of RootObj
-    timeline*: string
+type CmdResult* = ref object
+    results*: string = ""
+    savedFiles*: string = ""
+
+type AbstractCmd* = ref object of RootObj
+    timeline*: string = ""
     skipProgressBar*: bool
-    name*: string
-    msg*: string
-    output*: string
+    name*: string = ""
+    options*: string = "(default)"
+    msg*: string = ""
+    output*: string = ""
+    cmdResult*: CmdResult = CmdResult(results:"", savedFiles:"")
     displayTable*: bool = true
 
 method filter*(self: AbstractCmd, x: HayabusaJson):bool {.base.} =
@@ -24,19 +32,19 @@ method resultOutput*(self: AbstractCmd) {.base.} =
 
 proc analyzeJSONLFile*(self: AbstractCmd, cmds: seq[AbstractCmd] = newSeq[AbstractCmd]()) =
     let startTime = epochTime()
-    var bar: SuruBar
-    let skipProgressBar = self.skipProgressBar
-    let timeline = self.timeline
     var commands = cmds
     if commands.len() == 0:
+        # automagic以外では、自身のオブジェクトだけを実行
         commands = @[self]
-    if not skipProgressBar:
+
+    var bar: SuruBar
+    if not self.skipProgressBar:
         bar = initSuruBar()
-        bar[0].total = countJsonlAndStartMsg(self.name, self.msg, timeline)
+        bar[0].total = countJsonlAndStartMsg(self.name, self.msg, self.timeline)
         bar.setup()
 
-    for line in lines(timeline):
-        if not skipProgressBar:
+    for line in lines(self.timeline):
+        if not self.skipProgressBar:
             inc bar
             bar.update(1000000000)
         let jsonLineOpt = parseLine(line)
@@ -49,8 +57,22 @@ proc analyzeJSONLFile*(self: AbstractCmd, cmds: seq[AbstractCmd] = newSeq[Abstra
                     cmd.analyze(jsonLine)
             except CatchableError:
                 continue
-    if not skipProgressBar:
+
+    if not self.skipProgressBar:
       bar.finish()
+
+    var resultSummaryTable:seq[CmdResult] = @[]
     for cmd in commands:
         cmd.resultOutput()
+        resultSummaryTable.add(cmd.cmdResult)
+
+    if resultSummaryTable.len > 1:
+        # automagicコマンドの時だけ、最後に全コマンドまとめたサマリを出力する
+        var table: TerminalTable
+        table.add @["Command", "Results", "Saved Files"]
+        for i, result in enumerate(resultSummaryTable):
+            table.add commands[i].name, result.results, result.savedFiles
+        echo ""
+        table.echoTableSepsWithStyled(seps = boxSeps)
+
     outputElapsedTime(startTime)

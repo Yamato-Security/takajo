@@ -28,7 +28,7 @@ proc stackComputers(level: string = "informational", sourceComputers: bool = fal
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Stack Computers",
+                name: "stack-computers",
                 msg: StackComputerMsg,
                 sourceComputers: sourceComputers)
     cmd.analyzeJSONLFile()

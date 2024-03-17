@@ -27,7 +27,7 @@ proc stackIpAddresses(level: string = "informational", targetIpAddresses: bool =
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name: "Stack IpAddresses",
+                name: "stack-ip-addresses",
                 msg: StackIpAddressesMsg,
                 targetIpAddresses: targetIpAddresses)
     cmd.analyzeJSONLFile()
