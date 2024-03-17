@@ -40,7 +40,7 @@ method analyze*(self: ListHashesCmd, x: HayabusaJson) =
 
 method resultOutput*(self: ListHashesCmd) =
     let output = self.output
-    let md5outputFilename = output & "-MD5-hashes.txt"
+    let md5outputFilename = output & "-MD5.txt"
     var md5outputFile = open(md5outputFilename, fmWrite)
     for hash in self.md5hashes:
         md5outputFile.write(hash & "\p")
@@ -48,7 +48,7 @@ method resultOutput*(self: ListHashesCmd) =
     let md5FileSize = getFileSize(md5outputFilename)
 
     # Save SHA1 results
-    let sha1outputFilename = self.output & "-SHA1-hashes.txt"
+    let sha1outputFilename = self.output & "-SHA1.txt"
     var sha1outputFile = open(sha1outputFilename, fmWrite)
     for hash in self.sha1hashes:
         sha1outputFile.write(hash & "\p")
@@ -56,7 +56,7 @@ method resultOutput*(self: ListHashesCmd) =
     let sha1FileSize = getFileSize(sha1outputFilename)
 
     # Save SHA256 results
-    let sha256outputFilename = output & "-SHA256-hashes.txt"
+    let sha256outputFilename = output & "-SHA256.txt"
     var sha256outputFile = open(sha256outputFilename, fmWrite)
     for hash in self.sha256hashes:
         sha256outputFile.write(hash & "\p")
