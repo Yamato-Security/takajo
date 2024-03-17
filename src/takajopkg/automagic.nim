@@ -75,7 +75,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd20 = TimelineLogonCmd(name:"timeline-logon", displayTable:displayTable, timeline:timeline, output:output & "/TimelineLogonTimeline.csv")
 
     # timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o case-1/PartitionDiagnosticTimeline.csv
-    let cmd21 = TimelinePartitionDiagnosticCmd(name:"timeline-partition-diagnostic",displayTable:displayTable,  timeline:timeline, output:output & "/TimelinePartitionDiagnosticTimeline.csv")
+    let cmd21 = TimelinePartitionDiagnosticCmd(name:"timeline-partition-diagnostic",displayTable:displayTable,  timeline:timeline, output:output & "/TimelinePartitionDiagnostic.csv")
 
     # timeline-suspicious-processes -t ../hayabusa/timeline.jsonl --level <level> -o case-1/SuspiciousProcesses.csv
     let cmd22 = TimelineSuspiciousProcessesCmd(name:"timeline-suspicious-processes", level:level, displayTable:displayTable, timeline:timeline, output:output & "/TimelineSuspiciousProcesses.csv")
@@ -84,7 +84,7 @@ proc autoMagic(level: string = "low", skipProgressBar:bool = false, displayTable
     let cmd23 = TimelineTasksCmd(name:"timeline-tasks", displayTable:displayTable, timeline:timeline, output:output & "/TimelineTask.csv")
 
     # ttp-summary -t ../hayabusa/timeline.jsonl -o case-1/TTP-Summary.csv
-    let cmd24 = TTPSummaryCmd(name:"ttp-summary", displayTable:displayTable, timeline:timeline, output:output & "/TTP-Summary.csv")
+    let cmd24 = TTPSummaryCmd(name:"ttp-summary", displayTable:displayTable, timeline:timeline, output:output & "/TTPSummary.csv")
     cmd24.attack = readJsonFromFile("mitre-attack.json")
 
     # ttp-visualize -t ../hayabusa/timeline.jsonl -o case-1/MitreTTP-Heatmap.json
