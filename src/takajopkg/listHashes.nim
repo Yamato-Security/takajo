@@ -76,9 +76,9 @@ method resultOutput*(self: ListHashesCmd) =
         sha256outputFilename & " (" & formatFileSize(sha256FileSize) & "), " &
         impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ") "
     let results = "" &
-        "MD5: " &  intToStr(self.md5hashCount).insertSep(',') & ", " &
-        "SHA1: " & intToStr(self.sha1hashCount).insertSep(',') & ", " &
-        "SHA256: " & intToStr(self.sha256hashCount).insertSep(',') & ", " &
+        "MD5: " &  intToStr(self.md5hashCount).insertSep(',') & ",                                         " &
+        "SHA1: " & intToStr(self.sha1hashCount).insertSep(',') & ",                                        " &
+        "SHA256: " & intToStr(self.sha256hashCount).insertSep(',') & ",                                    " &
         "Import: " & intToStr(self.impHashCount).insertSep(',')
     if self.displayTable:
         echo ""
