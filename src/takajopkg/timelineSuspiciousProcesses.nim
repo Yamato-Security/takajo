@@ -175,7 +175,9 @@ method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
             singleResultTable["Import Hash"] = hash_IMPHASH
             self.seqOfResultsTables.add(singleResultTable)
 
-method resultOutput*(self: TimelineSuspiciousProcessesCmd)=
+method resultOutput*(self: TimelineSuspiciousProcessesCmd) =
+    var savedFiles = "n/a"
+    var results = "n/a"
     if self.output != "" and (self.suspicousProcessCount_Sec_4688 > 0 or self.suspicousProcessCount_Sysmon_1 > 0): # Save results to CSV
         # Open file to save results
         let header = ["Timestamp", "Computer", "Type", "Level", "Rule", "RuleAuthor", "Cmdline", "Process", "PID", "User", "LID", "LGUID", "ProcessGUID", "ParentCmdline", "ParentPID", "ParentPGUID", "Description", "Product", "Company", "MD5 Hash", "SHA1 Hash", "SHA256 Hash", "Import Hash"]
@@ -194,20 +196,20 @@ method resultOutput*(self: TimelineSuspiciousProcessesCmd)=
             outputFile.write("\p")
         outputFile.close()
         let fileSize = getFileSize(self.output)
-
-        echo ""
-        echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
-        echo ""
-
-    if self.suspicousProcessCount_Sec_4688 == 0 and self.suspicousProcessCount_Sysmon_1 == 0:
-        echo ""
-        echo "No suspicous processes were found. There are either no malicious processes or you need to change the level."
-        echo ""
-        return
-
-    echo "Suspicious processes in Security 4688 process creation events: " & intToStr(self.suspicousProcessCount_Sec_4688).insertSep(',')
-    echo "Suspicious processes in Sysmon 1 process creation events: " & intToStr(self.suspicousProcessCount_Sysmon_1).insertSep(',')
-    echo ""
+        savedFiles = self.output & " (" & formatFileSize(fileSize) & ")"
+        results = "Events: " & intToStr(self.seqOfResultsTables.len).insertSep(',')
+        if self.displayTable:
+            echo ""
+            echo "Saved results to " & savedFiles
+    if self.displayTable:
+        if self.suspicousProcessCount_Sec_4688 == 0 and self.suspicousProcessCount_Sysmon_1 == 0:
+            echo ""
+            echo "No suspicous processes were found. There are either no malicious processes or you need to change the level."
+        else:
+            echo ""
+            echo "Suspicious processes in Security 4688 process creation events: " & intToStr(self.suspicousProcessCount_Sec_4688).insertSep(',')
+            echo "Suspicious processes in Sysmon 1 process creation events: " & intToStr(self.suspicousProcessCount_Sysmon_1).insertSep(',')
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc timelineSuspiciousProcesses(level: string = "high", skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
@@ -216,6 +218,6 @@ proc timelineSuspiciousProcesses(level: string = "high", skipProgressBar:bool = 
                 timeline: timeline,
                 output: output,
                 level: level,
-                name:"Timeline Suspicious Processes",
+                name:"timeline-suspicious-processes",
                 msg: TimelineSuspiciousProcessesMsg)
     cmd.analyzeJSONLFile()

@@ -12,9 +12,10 @@ type TTPResult* = ref object
 proc newTTPResult*(techniqueID: string, comment: string, score: int): TTPResult =
   result = TTPResult(techniqueID: techniqueID, comment: comment, score:score)
 
-proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCount:Table[string, int], output:string, name:string) =
-    echo ""
-    if stackedMitreTags.len == 0:
+proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCount:Table[string, int], output:string, displayTable:bool = true, name:string):string =
+    var savedFiles = "n/a"
+    if displayTable and stackedMitreTags.len == 0:
+        echo ""
         echo "No MITRE ATT&CK tags were found in the Hayabusa results."
         echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
     else:
@@ -55,5 +56,9 @@ proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCo
         let outputFile = open(output, FileMode.fmWrite)
         outputFile.write(jsonObj.pretty())
         let outputFileSize = getFileSize(outputFile)
+        savedFiles = output & " (" & formatFileSize(outputFileSize) & ")"
         outputFile.close()
-        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+        if displayTable:
+            echo ""
+            echo "Saved file: " & savedFiles
+        return savedFiles

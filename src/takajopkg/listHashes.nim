@@ -40,7 +40,7 @@ method analyze*(self: ListHashesCmd, x: HayabusaJson) =
 
 method resultOutput*(self: ListHashesCmd) =
     let output = self.output
-    let md5outputFilename = output & "-MD5-hashes.txt"
+    let md5outputFilename = output & "-MD5.txt"
     var md5outputFile = open(md5outputFilename, fmWrite)
     for hash in self.md5hashes:
         md5outputFile.write(hash & "\p")
@@ -48,7 +48,7 @@ method resultOutput*(self: ListHashesCmd) =
     let md5FileSize = getFileSize(md5outputFilename)
 
     # Save SHA1 results
-    let sha1outputFilename = self.output & "-SHA1-hashes.txt"
+    let sha1outputFilename = self.output & "-SHA1.txt"
     var sha1outputFile = open(sha1outputFilename, fmWrite)
     for hash in self.sha1hashes:
         sha1outputFile.write(hash & "\p")
@@ -56,7 +56,7 @@ method resultOutput*(self: ListHashesCmd) =
     let sha1FileSize = getFileSize(sha1outputFilename)
 
     # Save SHA256 results
-    let sha256outputFilename = output & "-SHA256-hashes.txt"
+    let sha256outputFilename = output & "-SHA256.txt"
     var sha256outputFile = open(sha256outputFilename, fmWrite)
     for hash in self.sha256hashes:
         sha256outputFile.write(hash & "\p")
@@ -70,20 +70,31 @@ method resultOutput*(self: ListHashesCmd) =
         impHashOutputFile.write(hash & "\p")
     impHashOutputFile.close()
     let impHashFileSize = getFileSize(impHashOutputFilename)
-
-    echo ""
-    echo "Saved files:"
-    echo md5outputFilename & " (" & formatFileSize(md5FileSize) & ")"
-    echo sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")"
-    echo sha256outputFilename & " (" & formatFileSize(sha256FileSize) & ")"
-    echo impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ")"
-    echo ""
-    echo "Hashes:"
-    echo "MD5: ",  intToStr(self.md5hashCount).insertSep(',')
-    echo "SHA1: ", intToStr(self.sha1hashCount).insertSep(',')
-    echo "SHA256: ", intToStr(self.sha256hashCount).insertSep(',')
-    echo "Import: ", intToStr(self.impHashCount).insertSep(',')
-    echo ""
+    let savedFiles = "" &
+        padString(md5outputFilename & " (" & formatFileSize(md5FileSize) & ")",' ', 80) &
+        padString(sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")",' ', 80) &
+        padString(sha256outputFilename & " (" & formatFileSize(sha256FileSize) & ")",' ', 80) &
+        padString(impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ")", ' ', 80)
+    let results = "" &
+        padString("MD5: " &  intToStr(self.md5hashCount).insertSep(','),' ', 80) &
+        padString("SHA1: " & intToStr(self.sha1hashCount).insertSep(','),' ', 80) &
+        padString("SHA256: " & intToStr(self.sha256hashCount).insertSep(','), ' ', 80) &
+        padString("Import: " & intToStr(self.impHashCount).insertSep(','), ' ', 80)
+    if self.displayTable:
+        echo ""
+        echo "Saved files:"
+        echo md5outputFilename & " (" & formatFileSize(md5FileSize) & ")"
+        echo sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")"
+        echo sha256outputFilename & " (" & formatFileSize(sha256FileSize) & ")"
+        echo impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ")"
+        echo ""
+        echo "Hashes:"
+        echo "MD5: ",  intToStr(self.md5hashCount).insertSep(',')
+        echo "SHA1: ", intToStr(self.sha1hashCount).insertSep(',')
+        echo "SHA256: ", intToStr(self.sha256hashCount).insertSep(',')
+        echo "Import: ", intToStr(self.impHashCount).insertSep(',')
+        echo ""
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc listHashes(level: string = "high", skipProgressBar:bool = false, output: string, quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, level)
@@ -92,6 +103,6 @@ proc listHashes(level: string = "high", skipProgressBar:bool = false, output: st
                 timeline: timeline,
                 level: level,
                 output: output,
-                name:"List Hashes",
+                name:"list-hashes",
                 msg: ListHashesMsg)
     cmd.analyzeJSONLFile()

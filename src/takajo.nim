@@ -60,8 +60,7 @@ include takajopkg/automagic
 when isMainModule:
     clCfg.version = "2.5.0-dev"
     const examples = "Examples:\p"
-    # TODO automagicコマンドのプロトタイプ
-    # const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] -o case-1\p"
+    const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o domains.txt\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl [--skipProgressBar] -o case-1\p"
@@ -93,8 +92,7 @@ when isMainModule:
 
     clCfg.useMulti = "Version: 2.5.0 Dev Build\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples &
-        # TODO automagicコマンドのプロトタイプ
-        # example_automagic &
+        example_automagic &
         example_extract_scriptblocks &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
@@ -107,18 +105,18 @@ when isMainModule:
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
     dispatchMulti(
-        # TODO automagicコマンドのプロトタイプ
-        # [
-        #     autoMagic, cmdName = "automagic",
-        #     doc = "automatically executes as many commands as possible and output results to a new folder",
-        #     help = {
-        #         "level": "specify the minimum alert level (default: low)",
-        #         "skipProgressBar": "do not display the progress bar",
-        #         "output": "output directory (default: scriptblock-logs)",
-        #         "quiet": "do not display the launch banner",
-        #         "timeline": "Hayabusa JSONL timeline (profile: any)",
-        #     }
-        # ],
+        [
+            autoMagic, cmdName = "automagic",
+            doc = "automatically executes as many commands as possible and output results to a new folder",
+            help = {
+                "level": "specify the minimum alert level (default: low)",
+                "skipProgressBar": "do not display the progress bar",
+                "displayTable": "display the result table",
+                "output": "output directory (default: scriptblock-logs)",
+                "quiet": "do not display the launch banner",
+                "timeline": "Hayabusa JSONL timeline (profile: any)",
+            }
+        ],
         [
             extractScriptblocks, cmdName = "extract-scriptblocks",
             doc = "extract and reassemble PowerShell EID 4104 script block logs",

@@ -22,6 +22,7 @@ proc compareArrays(a, b: array[5, string]): int =
 type
   TTPSummaryCmd* = ref object of AbstractCmd
     seqOfResultsTables*: seq[array[5, string]]
+    techniqueIDs*:HashSet[string] = initHashSet[string]()
     attack*: JsonNode
     tac_no* = {"Reconnaissance": "01. ",
                "Resource Development": "02. ",
@@ -51,11 +52,14 @@ method analyze*(self: TTPSummaryCmd, x: HayabusaJson) =
             let sub = res["Sub-Technique"].getStr()
             let rul = x.RuleTitle
             self.seqOfResultsTables.add([com, tac, tec, sub, rul])
+            self.techniqueIDs.incl(tag)
     except CatchableError:
         discard
 
 method resultOutput*(self: TTPSummaryCmd) =
     self.seqOfResultsTables.sort(compareArrays)
+    var savedFiles = "n/a"
+    var results = "n/a"
     let header = ["Computer", "Tactic", "Technique", "Sub-Technique", "RuleTitle", "Count"]
     var prev = ["","","","",""]
     var count = 1
@@ -83,8 +87,11 @@ method resultOutput*(self: TTPSummaryCmd) =
             outputFile.write("\p")
         outputFile.close()
         let fileSize = getFileSize(self.output)
-        echo ""
-        echo "Saved results to " & self.output & " (" & formatFileSize(fileSize) & ")"
+        savedFiles = self.output & " (" & formatFileSize(fileSize) & ")"
+        results = "TTPs: " & intToStr(self.techniqueIDs.len).insertSep(',')
+        if self.displayTable:
+            echo ""
+            echo "Saved results to " & savedFiles
     else:
         echo ""
         var table: TerminalTable
@@ -99,10 +106,12 @@ method resultOutput*(self: TTPSummaryCmd) =
             count = 1
             ruleStr = initHashSet[string]()
         table.echoTableSepsWithStyled(seps = boxSeps)
-    echo ""
-    if self.seqOfResultsTables.len == 0:
-        echo "No MITRE ATT&CK tags were found in the Hayabusa results."
-        echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
+        echo ""
+    if self.displayTable:
+        if self.seqOfResultsTables.len == 0:
+            echo "No MITRE ATT&CK tags were found in the Hayabusa results."
+            echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc ttpSummary(skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
@@ -113,7 +122,7 @@ proc ttpSummary(skipProgressBar:bool = false, output: string = "", quiet: bool =
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"TTP Summary",
+                name:"ttp-summary",
                 msg: TTPSummaryMsg)
     cmd.attack = readJsonFromFile("mitre-attack.json")
     cmd.analyzeJSONLFile()

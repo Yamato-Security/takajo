@@ -201,28 +201,6 @@ proc elevatedTokenIdToName*(elevatedTokenId: string): string =
         else: result = "Unknown - " & elevatedTokenId
     return result
 
-proc countLinesInTimeline*(filePath: string, quiet:bool = false): int =
-    if not quiet:
-      echo "Counting total lines. Please wait."
-    const BufferSize = 4 * 1024 * 1024  # 4 MiB
-    var buffer = newString(BufferSize)
-    var file = open(filePath)
-    var count = 0
-
-    while true:
-        let bytesRead = file.readChars(buffer.toOpenArray(0, BufferSize - 1))
-        if bytesRead == 0:
-            break
-        for i in 0 ..< bytesRead:
-            if buffer[i] == '\n':
-                inc(count)
-    inc(count)
-    file.close()
-    if not quiet:
-        echo "Total lines: ", intToStr(count).insertSep(',')
-        echo ""
-    return count
-
 proc getYAMLpathes*(rulesDir: string): seq[string] =
     var pathes:seq[string] = @[]
     for entry in walkDirRec(rulesDir):
@@ -250,6 +228,29 @@ proc formatFileSize*(fileSize: BiggestInt): string =
     else:
         fileSizeStr = $fileSize & " Bytes"
     return fileSizeStr
+
+proc countLinesInTimeline*(filePath: string, quiet:bool = false): int =
+    echo "File: " & filePath & " (" & formatFileSize(getFileSize(filePath)) & ")"
+    if not quiet:
+      echo "Counting total lines. Please wait."
+    const BufferSize = 4 * 1024 * 1024  # 4 MiB
+    var buffer = newString(BufferSize)
+    var file = open(filePath)
+    var count = 0
+
+    while true:
+        let bytesRead = file.readChars(buffer.toOpenArray(0, BufferSize - 1))
+        if bytesRead == 0:
+            break
+        for i in 0 ..< bytesRead:
+            if buffer[i] == '\n':
+                inc(count)
+    inc(count)
+    file.close()
+    if not quiet:
+        echo "Total lines: ", intToStr(count).insertSep(',')
+        echo ""
+    return count
 
 proc isMinLevel*(levelInLog: string, userSetLevel: string): bool =
     case userSetLevel
@@ -376,3 +377,42 @@ proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
     echo "Scanning the Hayabusa timeline. Please wait."
     echo ""
     return totalLines
+
+proc padString*(s: string, padChar: char, length: int): string =
+    if s.len > length:
+        return s[0..length]
+    let padding = repeat($padChar, length - len(s))
+    return s & padding
+
+proc padString*(s: string, padChar: char, format: string): string =
+    let s = s.replace(", ", ",")
+    let format = format.replace("'", "")
+    let length = format.len
+    if s.len > length:
+        return strip(s[0..length])
+    let padding = repeat($padChar, length - len(s))
+    return strip(s & padding)
+
+proc getTimeFormat*(ts:seq[TableRef[string, string]]): string =
+    if ts.len() == 0:
+        return ""
+    let t = ts[0]["Timestamp"]
+    let length = t.len()
+    if t.endsWith("Z"): # --ISO-8601
+        return "yyyy-MM-dd'T'HH:mm:ss'.'ffffff"
+    elif t.contains("AM") or t.contains("PM"): # --US-time
+         return "MM-dd-yyyy HH:mm:ss'.'fff tt"
+    elif t.contains(","): # --RFC-2822
+        return "ddd,d MMM yyyy HH:mm:ss"
+    elif t.count(' ') == 1: # --RFC-3339
+        return "yyyy-MM-dd HH:mm:ss'.'ffffff"
+    elif t[4] == '-' : # -UTC
+         return "yyyy-MM-dd HH:mm:ss'.'fff"
+    # --European-time/--US-military-timeは月以外のフォーマットは同じなので、パースエラーの有無でタイムフォーマットを判定
+    for s in ts:
+        try:
+            let timeFormat = "MM-dd-yyyy HH:mm:ss'.'fff"
+            let x = parse(padString(s["Timestamp"], '0', timeFormat), timeFormat)
+        except CatchableError:
+            return "dd-MM-yyyy HH:mm:ss'.'fff" # --European-time
+    return "MM-dd-yyyy HH:mm:ss'.'fff" # --US-military-time

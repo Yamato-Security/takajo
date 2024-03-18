@@ -63,10 +63,13 @@ method resultOutput*(self: StackLogonsCmd) =
             writeLine(outputFile, $count & "," & string)
         outputFileSize = getFileSize(outputFile)
         close(outputFile)
-
-    echo ""
-    echo "Unique logons: " & $self.uniqueLogons
-    echo "Saved file: " & self.output & " (" & formatFileSize(outputFileSize) & ")"
+    let results = "Unique logons: " & $self.uniqueLogons
+    let savedFiles = self.output & " (" & formatFileSize(outputFileSize) & ")"
+    if self.displayTable:
+        echo ""
+        echo results
+        echo "Saved file: " & savedFiles
+    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
 
 proc stackLogons(localSrcIpAddresses = false, skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
@@ -74,7 +77,7 @@ proc stackLogons(localSrcIpAddresses = false, skipProgressBar:bool = false, outp
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"Logons",
+                name:"stack-logons",
                 msg: StackLogonsMsg,
                 localSrcIpAddresses: localSrcIpAddresses)
     cmd.analyzeJSONLFile()

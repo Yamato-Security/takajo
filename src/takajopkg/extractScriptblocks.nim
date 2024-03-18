@@ -96,10 +96,13 @@ method analyze*(self: ExtractScriptBlocksCmd, x: HayabusaJson) =
         discard
 
 method resultOutput*(self: ExtractScriptBlocksCmd) =
+    var savedFiles = "n/a"
+    var results = "n/a"
     if self.summaryRecords.len == 0:
+        echo ""
         echo "No malicious powershell script block were found. There are either no malicious powershell script block or you need to change the level."
     else:
-        let summaryFile = self.output & "/" & "summary.csv"
+        let summaryFile = self.output & "/" & "Summary.csv"
         let header = ["Creation Time", "Computer Name", "Script ID", "Script Name", "Records", "Level", "Alerts"]
         var outputFile = open(summaryFile, fmWrite)
         var table: TerminalTable
@@ -119,10 +122,14 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
                     outputFile.write(escapeCsvField(cell) & "\p")
         let outputFileSize = getFileSize(outputFile)
         outputFile.close()
-        table.echoTableSepsWithStyled(seps = boxSeps)
-        echo ""
-        echo "The extracted PowerShell ScriptBlock is saved in the directory: " & self.output
-        echo "Saved summary file: " & summaryFile & " (" & formatFileSize(outputFileSize) & ")"
+        savedFiles = padString(summaryFile & " (" & formatFileSize(outputFileSize) & ")", ' ', 80)
+        results = "PowerShell logs: " & intToStr(self.summaryRecords.len).insertSep(',')
+        if self.displayTable:
+            table.echoTableSepsWithStyled(seps = boxSeps)
+            echo ""
+            echo "The extracted PowerShell ScriptBlock is saved in the directory: " & self.output
+            echo "Saved summary file: " & savedFiles
+    self.cmdResult = CmdResult(results:results, savedFiles:  savedFiles & self.output & "/*.txt")
 
 
 proc extractScriptblocks(level: string = "low", skipProgressBar:bool = false, output: string = "scriptblock-logs", quiet: bool = false, timeline: string) =
@@ -136,7 +143,7 @@ proc extractScriptblocks(level: string = "low", skipProgressBar:bool = false, ou
                 skipProgressBar: skipProgressBar,
                 timeline: timeline,
                 output: output,
-                name:"Extract ScriptBlock",
+                name:"extract-scriptblocks",
                 msg: ExtractScriptBlocksMsg)
     cmd.totalLines = countLinesInTimeline(timeline, true)
     cmd.analyzeJSONLFile()

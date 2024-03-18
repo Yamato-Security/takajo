@@ -1,6 +1,7 @@
 import general
 import json
 import nancy
+import takajoCore
 import takajoTerminal
 import hayabusaJson
 import std/algorithm
@@ -78,11 +79,15 @@ proc stackResult*(key:string, stack: var Table[string, StackRecord], minLevel:st
     val.otherColumn = otherColumn
     stack[key] = val
 
-proc outputResult*(output:string, culumnName: string, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string](), isMinColumns:bool = false) =
-    echo ""
+proc outputResult*(cmd:AbstractCmd, stack: Table[string, StackRecord], otherHeader:seq[string] = newSeq[string](), isMinColumns:bool = false) =
+    var results = "n/a"
+    var savedFiles = "n/a"
     if stack.len == 0:
-        echo "No results where found."
+        if cmd.displayTable:
+            echo ""
+            echo "No " & cmd.name & " results where found."
     else:
+        var culumnName = cmd.name.replace("stack-", "")
         let stackRecords = toSeq(stack.values).sorted(recordCmp).map(proc(x: StackRecord): seq[string] = buildCSVRecord(x, isMinColumns))
         var header = @["Count", "Channel", "EventID", culumnName, "Levels", "Alerts"]
         if otherHeader.len > 0:
@@ -94,11 +99,12 @@ proc outputResult*(output:string, culumnName: string, stack: Table[string, Stack
         for row in stackRecords:
             let color = levelColor(row[^2])
             table.add map(row, proc(col: string): string = color col)
-        table.echoTableSepsWithStyled(seps = boxSeps)
-        echo ""
-        if output == "":
+        if cmd.displayTable:
+            echo ""
+            table.echoTableSepsWithStyled(seps = boxSeps)
+        if cmd.output == "":
             return
-        let outputFile = open(output, fmWrite)
+        let outputFile = open(cmd.output, fmWrite)
         writeLine(outputFile, header.join(","))
         for row in stackRecords:
             for i, col in enumerate(row):
@@ -107,6 +113,12 @@ proc outputResult*(output:string, culumnName: string, stack: Table[string, Stack
                 else:
                   outputFile.write(escapeCsvField(col) & "\p")
         let outputFileSize = getFileSize(outputFile)
+        savedFiles = cmd.output & " (" & formatFileSize(outputFileSize) & ")"
+        if culumnName == "dns":
+            culumnName = "dns requests and replies"
+        results = "Unique " & culumnName & ": " & intToStr(stackRecords.len).insertSep(',')
         close(outputFile)
-        echo ""
-        echo "Saved file: " & output & " (" & formatFileSize(outputFileSize) & ")"
+        if cmd.displayTable:
+            echo ""
+            echo "Saved file: " & savedFiles
+    cmd.cmdResult = CmdResult(results: results, savedFiles:savedFiles)
