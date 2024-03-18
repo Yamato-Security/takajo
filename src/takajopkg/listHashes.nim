@@ -71,15 +71,15 @@ method resultOutput*(self: ListHashesCmd) =
     impHashOutputFile.close()
     let impHashFileSize = getFileSize(impHashOutputFilename)
     let savedFiles = "" &
-        md5outputFilename & " (" & formatFileSize(md5FileSize) & "), " &
-        sha1outputFilename & " (" & formatFileSize(sha1FileSize) & "), " &
-        sha256outputFilename & " (" & formatFileSize(sha256FileSize) & "), " &
-        impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ") "
+        padString(md5outputFilename & " (" & formatFileSize(md5FileSize) & ")",' ', 80) &
+        padString(sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")",' ', 80) &
+        padString(sha256outputFilename & " (" & formatFileSize(sha256FileSize) & ")",' ', 80) &
+        padString(impHashOutputFilename & " (" & formatFileSize(impHashFileSize) & ")", ' ', 80)
     let results = "" &
-        "MD5: " &  intToStr(self.md5hashCount).insertSep(',') & ",                                         " &
-        "SHA1: " & intToStr(self.sha1hashCount).insertSep(',') & ",                                        " &
-        "SHA256: " & intToStr(self.sha256hashCount).insertSep(',') & ",                                    " &
-        "Import: " & intToStr(self.impHashCount).insertSep(',')
+        padString("MD5: " &  intToStr(self.md5hashCount).insertSep(','),' ', 80) &
+        padString("SHA1: " & intToStr(self.sha1hashCount).insertSep(','),' ', 80) &
+        padString("SHA256: " & intToStr(self.sha256hashCount).insertSep(','), ' ', 80) &
+        padString("Import: " & intToStr(self.impHashCount).insertSep(','), ' ', 80)
     if self.displayTable:
         echo ""
         echo "Saved files:"

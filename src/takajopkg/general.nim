@@ -378,6 +378,12 @@ proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
     echo ""
     return totalLines
 
+proc padString*(s: string, padChar: char, length: int): string =
+    if s.len > length:
+        return s[0..length]
+    let padding = repeat($padChar, length - len(s))
+    return s & padding
+
 proc padString*(s: string, padChar: char, format: string): string =
     let s = s.replace(", ", ",")
     let format = format.replace("'", "")

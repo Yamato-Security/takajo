@@ -209,12 +209,12 @@ method resultOutput*(self: TimelineLogonCmd) =
                 if duration.inSeconds < 10:
                     tableOfResults[]["AdminLogon"] = "Yes"
     let results = "" &
-         "EID 4624 (Successful Logon): " & intToStr(self.EID_4624_count).insertSep(',') & ",                    " &
-         "EID 4625 (Failed Logon): " &  intToStr(self.EID_4625_count).insertSep(',') & ",                       " &
-         "EID 4634 (Logoff): " &  intToStr(self.EID_4634_count).insertSep(',') & ",                             " &
-         "EID 4647 (User Initiated Logoff): " &  intToStr(self.EID_4647_count).insertSep(',') & ",              " &
-         "EID 4648 (Explicit Logon): " & intToStr(self.EID_4648_count).insertSep(',') & ",                      " &
-         "EID 4672 (Admin Logon): " & intToStr(self.EID_4672_count).insertSep(',')
+         padString("EID 4624 (Successful Logon): " & intToStr(self.EID_4624_count).insertSep(','), ' ', 80) &
+         padString("EID 4625 (Failed Logon): " &  intToStr(self.EID_4625_count).insertSep(','), ' ', 80) &
+         padString("EID 4634 (Logoff): " &  intToStr(self.EID_4634_count).insertSep(','), ' ', 80) &
+         padString("EID 4647 (User Initiated Logoff): " &  intToStr(self.EID_4647_count).insertSep(','), ' ', 80) &
+         padString("EID 4648 (Explicit Logon): " & intToStr(self.EID_4648_count).insertSep(','), ' ', 80) &
+         padString("EID 4672 (Admin Logon): " & intToStr(self.EID_4672_count).insertSep(','), ' ', 80)
     if self.displayTable:
         echo ""
         echo "Found logon events:"

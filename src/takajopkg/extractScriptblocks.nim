@@ -122,14 +122,14 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
                     outputFile.write(escapeCsvField(cell) & "\p")
         let outputFileSize = getFileSize(outputFile)
         outputFile.close()
-        savedFiles = summaryFile & " (" & formatFileSize(outputFileSize) & ")"
+        savedFiles = padString(summaryFile & " (" & formatFileSize(outputFileSize) & ")", ' ', 80)
         results = "PowerShell logs: " & intToStr(self.summaryRecords.len).insertSep(',')
         if self.displayTable:
             table.echoTableSepsWithStyled(seps = boxSeps)
             echo ""
             echo "The extracted PowerShell ScriptBlock is saved in the directory: " & self.output
             echo "Saved summary file: " & savedFiles
-    self.cmdResult = CmdResult(results:results, savedFiles: self.output & "/*.txt,                                         " & savedFiles)
+    self.cmdResult = CmdResult(results:results, savedFiles:  savedFiles & self.output & "/*.txt")
 
 
 proc extractScriptblocks(level: string = "low", skipProgressBar:bool = false, output: string = "scriptblock-logs", quiet: bool = false, timeline: string) =
