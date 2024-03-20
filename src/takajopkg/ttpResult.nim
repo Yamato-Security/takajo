@@ -14,10 +14,12 @@ proc newTTPResult*(techniqueID: string, comment: string, score: int): TTPResult 
 
 proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCount:Table[string, int], output:string, displayTable:bool = true, name:string):string =
     var savedFiles = "n/a"
-    if displayTable and stackedMitreTags.len == 0:
-        echo ""
-        echo "No MITRE ATT&CK tags were found in the Hayabusa results."
-        echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
+    if stackedMitreTags.len == 0:
+        savedFiles = "No MITRE ATT&CK tags were found in the Hayabusa results."
+        if displayTable:
+            echo ""
+            echo savedFiles
+            echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
     else:
         var mitreTags = newSeq[TTPResult]()
         let maxCount = stackedMitreTagsCount.values.toSeq.max
@@ -61,4 +63,4 @@ proc outputTTPResult*(stackedMitreTags:Table[string, string], stackedMitreTagsCo
         if displayTable:
             echo ""
             echo "Saved file: " & savedFiles
-        return savedFiles
+    return savedFiles
