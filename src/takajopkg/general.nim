@@ -13,7 +13,8 @@ import takajoTerminal
 from std/streams import newFileStream
 
 
-proc getJsonValue*(jsonResponse: JsonNode, keys: seq[string], default: string = "Unknown"): string =
+proc getJsonValue*(jsonResponse: JsonNode, keys: seq[string],
+        default: string = "Unknown"): string =
     var value = jsonResponse
     for key in keys:
         if value.kind == JObject and value.hasKey(key):
@@ -21,11 +22,11 @@ proc getJsonValue*(jsonResponse: JsonNode, keys: seq[string], default: string = 
         else:
             return default
     if value.kind == JInt:
-        return $value.getInt()  # Convert to string
+        return $value.getInt() # Convert to string
     elif value.kind == JString:
         return value.getStr()
     else:
-        return default  # If it's neither a string nor an integer, return default
+        return default # If it's neither a string nor an integer, return default
 
 
 proc getJsonDate*(jsonResponse: JsonNode, keys: seq[string]): string =
@@ -52,12 +53,22 @@ proc getFileNameWithExt*(targetPath: string): string =
     file &= ext
     return file
 
-proc getTargetExtFileLists*(targetDirPath: string, targetExt: string): seq[string] =
+proc getTargetExtFileLists*(targetDirPath: string, targetExt: string,
+        fullPathOutput: bool): seq[string] =
     ## extract yml file name seq to specified directory path
     var r: seq[string] = @[]
+    if fileExists(targetDirPath):
+        if targetDirPath.endsWith(targetExt):
+            if fullPathOutput:
+                r.insert(targetDirPath)
+            else:
+                r.insert(getFileNameWithExt(targetDirPath))
     for f in walkDirRec(targetDirPath):
         if f.endsWith(targetExt):
-            r.insert(getFileNameWithExt(f))
+            if fullPathOutput:
+                r.insert(f)
+            else:
+                r.insert(getFileNameWithExt(f))
     # removed duplicated file name from seq
     r = deduplicate(r)
     if r.len() == 0:
@@ -65,7 +76,8 @@ proc getTargetExtFileLists*(targetDirPath: string, targetExt: string): seq[strin
     else:
         r
 
-proc getHayabusaCsvData*(csvPath: string, columnName: string): Tableref[string, seq[string]] =
+proc getHayabusaCsvData*(csvPath: string, columnName: string): Tableref[string,
+        seq[string]] =
     ## procedure for Hayabusa output csv read data.
 
     var s = newFileStream(csvPath, fmRead)
@@ -101,7 +113,8 @@ proc formatDuration*(d: Duration): string =
         minutes = d.inMinutes mod 60
         seconds = d.inSeconds mod 60
         milliseconds = d.inMilliseconds mod 1000
-    return $days & "d " & $hours & "h " & $minutes & "m " & $seconds & "s " & $milliseconds & "ms"
+    return $days & "d " & $hours & "h " & $minutes & "m " & $seconds & "s " &
+            $milliseconds & "ms"
 
 proc extractStr*(jsonObj: JsonNode, key: string): string =
     let value = jsonObj.hasKey(key)
@@ -202,7 +215,7 @@ proc elevatedTokenIdToName*(elevatedTokenId: string): string =
     return result
 
 proc getYAMLpathes*(rulesDir: string): seq[string] =
-    var pathes:seq[string] = @[]
+    var pathes: seq[string] = @[]
     for entry in walkDirRec(rulesDir):
         if entry.endsWith(".yml"):
             pathes.add(entry)
@@ -229,11 +242,11 @@ proc formatFileSize*(fileSize: BiggestInt): string =
         fileSizeStr = $fileSize & " Bytes"
     return fileSizeStr
 
-proc countLinesInTimeline*(filePath: string, quiet:bool = false): int =
+proc countLinesInTimeline*(filePath: string, quiet: bool = false): int =
     echo "File: " & filePath & " (" & formatFileSize(getFileSize(filePath)) & ")"
     if not quiet:
-      echo "Counting total lines. Please wait."
-    const BufferSize = 4 * 1024 * 1024  # 4 MiB
+        echo "Counting total lines. Please wait."
+    const BufferSize = 4 * 1024 * 1024 # 4 MiB
     var buffer = newString(BufferSize)
     var file = open(filePath)
     var count = 0
@@ -261,22 +274,24 @@ proc isMinLevel*(levelInLog: string, userSetLevel: string): bool =
         of "medium":
             return levelInLog == "crit" or levelInLog == "high" or levelInLog == "med"
         of "low":
-            return levelInLog == "crit" or levelInLog == "high" or levelInLog == "med" or levelInLog == "low"
+            return levelInLog == "crit" or levelInLog == "high" or levelInLog ==
+                    "med" or levelInLog == "low"
         of "informational":
-            return levelInLog == "crit" or levelInLog == "high" or levelInLog == "med" or levelInLog == "low" or levelInLog == "info"
+            return levelInLog == "crit" or levelInLog == "high" or levelInLog ==
+                    "med" or levelInLog == "low" or levelInLog == "info"
         else:
             return false
 
 proc isPrivateIP*(ip: string): bool =
-  let
-    ipv4Private = re"^(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(192\.168\.\d{1,3}\.\d{1,3})$|^(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
-    ipv4MappedIPv6Private = re"^::ffff:(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^::ffff:(192\.168\.\d{1,3}\.\d{1,3})$|^::ffff:(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^::ffff:(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
-    ipv6Private = re"^fd[0-9a-f]{2}:|^fe80:"
+    let
+        ipv4Private = re"^(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(192\.168\.\d{1,3}\.\d{1,3})$|^(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
+        ipv4MappedIPv6Private = re"^::ffff:(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^::ffff:(192\.168\.\d{1,3}\.\d{1,3})$|^::ffff:(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^::ffff:(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
+        ipv6Private = re"^fd[0-9a-f]{2}:|^fe80:"
 
-  if ip =~ ipv4Private or ip =~ ipv4MappedIPv6Private or ip =~ ipv6Private:
-    return true
-  else:
-    return false
+    if ip =~ ipv4Private or ip =~ ipv4MappedIPv6Private or ip =~ ipv6Private:
+        return true
+    else:
+        return false
 
 proc isMulticast*(address: string): bool =
     # Define regex for IPv4 multicast addresses
@@ -285,7 +300,8 @@ proc isMulticast*(address: string): bool =
     # Define regex for IPv6 multicast addresses
     let ipv6MulticastPattern = re"(?i)^ff[0-9a-f]{2}:"
     # check if the address matches either of the multicast patterns
-    if address.find(ipv4MulticastPattern) >= 0 or address.find(ipv6MulticastPattern) >= 0:
+    if address.find(ipv4MulticastPattern) >= 0 or address.find(
+            ipv6MulticastPattern) >= 0:
         return true
     return false
 
@@ -297,7 +313,8 @@ proc isLoopback*(address: string): bool =
     let ipv6LoopbackPattern = re"^(?:0*:)*?:?0*1$"
 
     # Check if the address matches either of the loopback patterns
-    if address.find(ipv4LoopbackPattern) >= 0 or address.find(ipv6LoopbackPattern) >= 0:
+    if address.find(ipv4LoopbackPattern) >= 0 or address.find(
+            ipv6LoopbackPattern) >= 0:
         return true
     return false
 
@@ -306,8 +323,10 @@ proc isIpAddress*(s: string): bool =
     return s.find(ipRegex) != -1
 
 proc extractDomain*(domain: string): string =
-    let doubleTLDs = ["co.jp", "co.uk", "com.au", "org.au", "net.au", "com.br", "net.br", "com.cn", "net.cn",
-        "com.mx", "net.mx", "ac.nz", "co.nz", "net.nz", "co.za", "net.za", "co.in", "net.in", "ac.uk", "gov.uk"]
+    let doubleTLDs = ["co.jp", "co.uk", "com.au", "org.au", "net.au", "com.br",
+        "net.br", "com.cn", "net.cn",
+        "com.mx", "net.mx", "ac.nz", "co.nz", "net.nz", "co.za", "net.za",
+        "co.in", "net.in", "ac.uk", "gov.uk"]
     let parts = domain.split('.')
     if parts.len >= 3:
         let lastTwo = parts[^2] & '.' & parts[^1]
@@ -318,27 +337,27 @@ proc extractDomain*(domain: string): string =
     return domain
 
 proc isLocalIP*(ip: string): bool =
-  return ip == "127.0.0.1" or ip == "-" or ip == "::1"
+    return ip == "127.0.0.1" or ip == "-" or ip == "::1"
 
-proc isJsonConvertible*(timeline: string) : bool =
-  var
-    file: File
-    firstLine: string
-    jsonLine: JsonNode
-  if file.open(timeline):
-    try:
-      firstLine = file.readLine()
-      jsonLine = parseJson(firstLine)
-      return true
-    except CatchableError:
-      echo "Failed to open '" & timeline & "' because it is not in JSONL format."
-      echo "Please specify a JSONL-formatted file that has been created with the Hayabusa json-timeline command and -L or --JSONL-output option."
-      echo ""
-      return false
-    finally:
-      close(file)
-  echo "Failed to open '" & timeline & "'. Please specify a valid file path.\p"
-  return false
+proc isJsonConvertible*(timeline: string): bool =
+    var
+        file: File
+        firstLine: string
+        jsonLine: JsonNode
+    if file.open(timeline):
+        try:
+            firstLine = file.readLine()
+            jsonLine = parseJson(firstLine)
+            return true
+        except CatchableError:
+            echo "Failed to open '" & timeline & "' because it is not in JSONL format."
+            echo "Please specify a JSONL-formatted file that has been created with the Hayabusa json-timeline command and -L or --JSONL-output option."
+            echo ""
+            return false
+        finally:
+            close(file)
+    echo "Failed to open '" & timeline & "'. Please specify a valid file path.\p"
+    return false
 
 proc outputElapsedTime*(startTime: float) =
     let endTime = epochTime()
@@ -347,27 +366,30 @@ proc outputElapsedTime*(startTime: float) =
     let minutes = (elapsedTime2 mod 3600) div 60
     let seconds = elapsedTime2 mod 60
     echo ""
-    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
+    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " &
+            $seconds & " seconds"
     echo ""
 
-proc checkArgs*(quiet: bool = false, timeline: string, level:string) =
+proc checkArgs*(quiet: bool = false, timeline: string, level: string) =
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    if not os.fileExists(timeline):
+    if not os.fileExists(timeline) or os.dirExists(timeline):
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
     if not isJsonConvertible(timeline):
         quit(1)
 
-    if level != "critical" and level != "high" and level != "medium" and level != "low" and level != "informational":
+    if level != "critical" and level != "high" and level != "medium" and
+            level != "low" and level != "informational":
         echo "You must specify a minimum level of critical, high, medium, low or informational. (default: low)"
         echo ""
         quit(1)
 
 
-proc countJsonlAndStartMsg*(cmdName:string, msg:string, timeline:string):int =
+proc countJsonlAndStartMsg*(cmdName: string, msg: string,
+        timeline: string): int =
     echo "Started the " & cmdName & " command"
     echo ""
     echo msg
@@ -393,7 +415,7 @@ proc padString*(s: string, padChar: char, format: string): string =
     let padding = repeat($padChar, length - len(s))
     return strip(s & padding)
 
-proc getTimeFormat*(ts:seq[TableRef[string, string]]): string =
+proc getTimeFormat*(ts: seq[TableRef[string, string]]): string =
     if ts.len() == 0:
         return ""
     let t = ts[0]["Timestamp"]
@@ -401,13 +423,13 @@ proc getTimeFormat*(ts:seq[TableRef[string, string]]): string =
     if t.endsWith("Z"): # --ISO-8601
         return "yyyy-MM-dd'T'HH:mm:ss'.'ffffff"
     elif t.contains("AM") or t.contains("PM"): # --US-time
-         return "MM-dd-yyyy HH:mm:ss'.'fff tt"
+        return "MM-dd-yyyy HH:mm:ss'.'fff tt"
     elif t.contains(","): # --RFC-2822
         return "ddd,d MMM yyyy HH:mm:ss"
     elif t.count(' ') == 1: # --RFC-3339
         return "yyyy-MM-dd HH:mm:ss'.'ffffff"
-    elif t[4] == '-' : # -UTC
-         return "yyyy-MM-dd HH:mm:ss'.'fff"
+    elif t[4] == '-': # -UTC
+        return "yyyy-MM-dd HH:mm:ss'.'fff"
     # --European-time/--US-military-timeは月以外のフォーマットは同じなので、パースエラーの有無でタイムフォーマットを判定
     for s in ts:
         try:

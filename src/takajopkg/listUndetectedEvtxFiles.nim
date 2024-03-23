@@ -1,4 +1,6 @@
-proc listUndetectedEvtxFiles(columnName: system.string = "EvtxFile", evtxDir: string, output: string = "", quiet: bool = false, timeline: string) =
+proc listUndetectedEvtxFiles(columnName: system.string = "EvtxFile",
+        evtxDir: string, output: string = "", quiet: bool = false,
+        timeline: string) =
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -8,7 +10,7 @@ proc listUndetectedEvtxFiles(columnName: system.string = "EvtxFile", evtxDir: st
         quit(1)
 
     let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
-    var fileLists: seq[string] = getTargetExtFileLists(evtxDir, ".evtx")
+    var fileLists: seq[string] = getTargetExtFileLists(evtxDir, ".evtx", false)
 
     var detectedPaths: seq[string] = csvData[columnName].map(getFileNameWithExt)
     detectedPaths = deduplicate(detectedPaths)
