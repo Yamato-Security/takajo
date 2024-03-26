@@ -374,7 +374,11 @@ proc checkArgs*(quiet: bool = false, timeline: string, level: string) =
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    if not os.fileExists(timeline) or os.dirExists(timeline):
+    let fileInfo = getFileInfo(timeline)
+    if ((fileInfo.kind == pcDir or fileInfo.kind == pcLinkToDir) and
+            not os.dirExists(timeline)) or ((fileInfo.kind ==
+            pcFile or fileInfo.kind == pcLinkToFile) and
+            not os.fileExists(timeline)):
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
