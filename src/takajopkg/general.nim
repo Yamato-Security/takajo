@@ -382,8 +382,10 @@ proc checkArgs*(quiet: bool = false, timeline: string, level: string) =
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
-    if not isJsonConvertible(timeline):
-        quit(1)
+    var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
+    for timelinePath in filePaths:
+        if not isJsonConvertible(timelinePath):
+            quit(1)
 
     if level != "critical" and level != "high" and level != "medium" and
             level != "low" and level != "informational":
