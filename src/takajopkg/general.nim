@@ -242,11 +242,12 @@ proc formatFileSize*(fileSize: BiggestInt): string =
         fileSizeStr = $fileSize & " Bytes"
     return fileSizeStr
 
-proc countLinesInTimeline*(filePath: string, quiet: bool = false): int =
+proc countLinesInTimeline*(filePath: string, quiet: bool = false,
+        ext: string = ".jsonl"): int =
     let fileInfo = getFileInfo(filePath)
     var filePaths = @[filePath]
     if (fileInfo.kind == pcDir or fileInfo.kind == pcLinkToDir):
-        filePaths = getTargetExtFileLists(filePath, ".jsonl", true)
+        filePaths = getTargetExtFileLists(filePath, ext, true)
     var count = 0
     if not quiet:
         echo "Counting total lines. Please wait."
@@ -376,7 +377,8 @@ proc outputElapsedTime*(startTime: float) =
             $seconds & " seconds"
     echo ""
 
-proc checkArgs*(quiet: bool = false, timeline: string, level: string) =
+proc checkArgs*(quiet: bool = false, timeline: string, level: string,
+        ext: string = ".jsonl") =
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
@@ -388,9 +390,9 @@ proc checkArgs*(quiet: bool = false, timeline: string, level: string) =
         echo "The file '" & timeline & "' does not exist. Please specify a valid file path."
         quit(1)
 
-    var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
+    var filePaths = getTargetExtFileLists(timeline, ext, true)
     for timelinePath in filePaths:
-        if not isJsonConvertible(timelinePath):
+        if ext == ".jsonl" and not isJsonConvertible(timelinePath):
             quit(1)
 
     if level != "critical" and level != "high" and level != "medium" and

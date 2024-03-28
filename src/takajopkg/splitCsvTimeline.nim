@@ -1,10 +1,7 @@
 proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output",
         quiet: bool = false, timeline: string) =
     let startTime = epochTime()
-    if not quiet:
-        styledEcho(fgGreen, outputLogo())
-
-    checkArgs(quiet, timeline, "informational")
+    checkArgs(quiet, timeline, "informational", ext = ".csv")
 
     echo "Started the Split CSV Timeline command"
     echo ""
@@ -15,7 +12,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output",
     var totalLines = 0
     var filePaths = getTargetExtFileLists(timeline, ".csv", true)
     for timelinePath in filePaths:
-        totalLines += countLinesInTimeline(timelinePath)
+        totalLines += countLinesInTimeline(timelinePath, quiet, ".csv")
 
 
     echo "Splitting the Hayabusa CSV timeline. Please wait."
