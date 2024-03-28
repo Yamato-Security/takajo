@@ -9,7 +9,7 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false,
     echo ""
 
     var totalLines = 0
-    var filePaths = getTargetExtFileLists(timeline, ".csv", true)
+    var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
     for timelinePath in filePaths:
         totalLines += countLinesInTimeline(timelinePath)
 
