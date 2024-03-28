@@ -67,7 +67,7 @@ method resultOutput*(self: TTPSummaryCmd) =
     var ruleStr = initHashSet[string]()
     if self.output != "":
         # Open file to save results
-        var outputFile = open(self.output, fmAppend)
+        var outputFile = open(self.output, fmWrite)
 
         ## Write CSV header
         outputFile.write(header.join(",") & "\p")

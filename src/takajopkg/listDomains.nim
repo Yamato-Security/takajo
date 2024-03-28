@@ -29,7 +29,7 @@ method analyze*(self: ListDomainsCmd, x: HayabusaJson) =
 
 method resultOutput*(self: ListDomainsCmd) =
   # Save results
-  var outputFile = open(self.output, fmAppend)
+  var outputFile = open(self.output, fmWrite)
   for domain in self.domainHashSet:
     outputFile.write(domain & "\p")
   let outputFileSize = getFileSize(outputFile)

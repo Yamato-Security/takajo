@@ -58,7 +58,7 @@ proc outputTTPResult*(stackedMitreTags: Table[string, string],
         "selectVisibleTechniques": false
     }
 
-    let outputFile = open(output, FileMode.fmAppend)
+    let outputFile = open(output, FileMode.fmWrite)
     outputFile.write(jsonObj.pretty())
     let outputFileSize = getFileSize(outputFile)
     savedFiles = output & " (" & formatFileSize(outputFileSize) & ")"

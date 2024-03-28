@@ -66,7 +66,7 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output",
             if not filesTable.hasKey(computerName):
                 let filename = output & "/" & computerName & "-HayabusaResults.csv"
                 filenameSequence.add(filename)
-                var outputFile = open(filename, fmAppend)
+                var outputFile = open(filename, fmWrite)
                 filesTable[computerName] = outputFile
                 outputFile.write(csvHeader)
                 outputFile.write("\p")

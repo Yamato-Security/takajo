@@ -243,26 +243,32 @@ proc formatFileSize*(fileSize: BiggestInt): string =
     return fileSizeStr
 
 proc countLinesInTimeline*(filePath: string, quiet: bool = false): int =
-    echo "File: " & filePath & " (" & formatFileSize(getFileSize(filePath)) & ")"
+    let fileInfo = getFileInfo(filePath)
+    var filePaths = @[filePath]
+    if (fileInfo.kind == pcDir or fileInfo.kind == pcLinkToDir):
+        filePaths = getTargetExtFileLists(filePath, ".jsonl", true)
+    var count = 0
     if not quiet:
         echo "Counting total lines. Please wait."
-    const BufferSize = 4 * 1024 * 1024 # 4 MiB
-    var buffer = newString(BufferSize)
-    var file = open(filePath)
-    var count = 0
+    for path in filePaths:
+        echo "File: " & path & " (" & formatFileSize(getFileSize(path)) & ")"
+        const BufferSize = 4 * 1024 * 1024 # 4 MiB
+        var buffer = newString(BufferSize)
+        var file = open(path)
 
-    while true:
-        let bytesRead = file.readChars(buffer.toOpenArray(0, BufferSize - 1))
-        if bytesRead == 0:
-            break
-        for i in 0 ..< bytesRead:
-            if buffer[i] == '\n':
-                inc(count)
-    inc(count)
-    file.close()
+        while true:
+            let bytesRead = file.readChars(buffer.toOpenArray(0, BufferSize - 1))
+            if bytesRead == 0:
+                break
+            for i in 0 ..< bytesRead:
+                if buffer[i] == '\n':
+                    inc(count)
+        inc(count)
+        file.close()
     if not quiet:
         echo "Total lines: ", intToStr(count).insertSep(',')
         echo ""
+
     return count
 
 proc isMinLevel*(levelInLog: string, userSetLevel: string): bool =

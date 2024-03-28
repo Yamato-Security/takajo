@@ -17,7 +17,7 @@ proc outputScriptText(output: string, timestamp: string, computerName: string,
     let date = timestamp.replace(":", "_").replace(" ", "_")
     let fileName = output & "/" & computerName & "-" & date & "-" &
             scriptObj.scriptBlockId & ".txt"
-    var outputFile = open(filename, fmAppend)
+    var outputFile = open(filename, fmWrite)
     outputFile.write(scriptText)
     flushFile(outputFile)
     close(outputFile)
@@ -110,7 +110,7 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
         let summaryFile = self.output & "/" & "Summary.csv"
         let header = ["Creation Time", "Computer Name", "Script ID",
                 "Script Name", "Records", "Level", "Alerts"]
-        var outputFile = open(summaryFile, fmAppend)
+        var outputFile = open(summaryFile, fmWrite)
         var table: TerminalTable
         table.add header
         for i, val in header:
@@ -159,5 +159,5 @@ proc extractScriptblocks(level: string = "low", skipProgressBar: bool = false,
                     output: output,
                     name: "extract-scriptblocks",
                     msg: ExtractScriptBlocksMsg)
-        cmd.totalLines = countLinesInTimeline(timeline, true)
+        cmd.totalLines += countLinesInTimeline(timelinePath, true)
         cmd.analyzeJSONLFile()

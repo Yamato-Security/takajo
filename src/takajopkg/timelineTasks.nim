@@ -74,7 +74,7 @@ method resultOutput*(self: TimelineTasksCmd) =
     let detailedHeader = toSeq(allDetailedKeys).sorted
 
     # Save results
-    var outputFile = open(self.output, fmAppend)
+    var outputFile = open(self.output, fmWrite)
 
     ## Write CSV header
     let header = concat(basicHeader, detailedHeader)
