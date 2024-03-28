@@ -1,4 +1,5 @@
-proc listUnusedRules(columnName: string = "RuleFile", output: string = "", quiet: bool = false, rulesDir: string, timeline: string) =
+proc listUnusedRules(columnName: string = "RuleFile", output: string = "",
+        quiet: bool = false, rulesDir: string, timeline: string) =
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
@@ -7,7 +8,7 @@ proc listUnusedRules(columnName: string = "RuleFile", output: string = "", quiet
         quit(1)
 
     let csvData: TableRef[string, seq[string]] = getHayabusaCsvData(timeline, columnName)
-    var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml")
+    var fileLists: seq[string] = getTargetExtFileLists(rulesDir, ".yml", false)
     var detectedPaths: seq[string] = csvData[columnName].map(getFileNameWithExt)
     detectedPaths = deduplicate(detectedPaths)
     var outputStock: seq[string] = @[]

@@ -38,4 +38,4 @@ test "csv file path import":
 
 test "check getYMLLists":
   let expect = @["1.yml"]
-  check getTargetExtFileLists("./tests", ".yml") == expect
+  check getTargetExtFileLists("./tests", ".yml", false) == expect

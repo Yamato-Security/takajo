@@ -52,10 +52,12 @@ proc moveProcessObjectToChild(mvSource: processObject,
     ## Procedure for moving a process object to a child process
     for i, childProc in target.children:
         let s = output.children.len
-        if childProc.processGUID == mvSource.parentProcessGUID and output.children.len - 1 >= i:
+        if childProc.processGUID == mvSource.parentProcessGUID and
+                output.children.len - 1 >= i:
             # Added to a separate table because assertion errors occur when the number of elements changes during iteration
             output.children[i].children.add(mvSource)
-            output.children[i].children = sorted(deduplicate(output.children[i].children), cmpTimeStamp)
+            output.children[i].children = sorted(deduplicate(output.children[
+                    i].children), cmpTimeStamp)
             return
         else:
             if output.children.len - 1 < i:
@@ -114,40 +116,41 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     var oldestProc: processObject
     var passGuid = initHashSet[string]()
     passGuid.incl(processGuid)
+    var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
+    for timelinePath in filePaths:
+        for line in lines(timelinePath):
+            let
+                jsonLine = parseJson(line)
+                timeStamp = jsonLine["Timestamp"].getStr("N/A")
+                channel = jsonLine["Channel"].getStr("N/A")
+                eventId = jsonLine["EventID"].getInt(0)
+                ruleTitle = jsonLine["RuleTitle"].getStr("N/A")
 
-    for line in lines(timeline):
-        let
-            jsonLine = parseJson(line)
-            timeStamp = jsonLine["Timestamp"].getStr("N/A")
-            channel = jsonLine["Channel"].getStr("N/A")
-            eventId = jsonLine["EventID"].getInt(0)
-            ruleTitle = jsonLine["RuleTitle"].getStr("N/A")
-
-        # Found a Sysmon 1 process creation event.
-        # This assumes info level events are enabled and there won't be more than one Sysmon 1 event for a process.
-        if channel == "Sysmon" and eventId == 1 and (ruleTitle == "Proc Exec" or
-                ruleTitle == "Proc Exec (Sysmon Alert)"):
-            if jsonLine["Details"]["PGUID"].getStr("N/A") in passGuid or
-                    jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
-                let obj = createProcessObj(jsonLine, false)
-                if procFoundCount == 0:
-                    let parentObj = createProcessObj(jsonLine, true)
-                    stockedProcObjTbl[parentObj.processGUID] = parentObj
-                    stockedProcObjTbl[parentObj.processGUID].children.add(obj)
-                    parentPGUIDTbl[parentObj.processGUID] = obj.processGUID
-                    oldestProc = parentObj
-                passGuid.incl(obj.processGUID)
-                passGuid.incl(obj.parentProcessGUID)
-                # Link child processes to their parents
-                stockedProcObjTbl[obj.processGUID] = obj
-                if obj.parentProcessGUID == processGUID:
-                    stockedProcObjTbl[processGUID].children.add(obj)
-                elif obj.parentProcessGUID in stockedProcObjTbl:
-                    stockedProcObjTbl[obj.parentProcessGUID].children.add(obj)
-                parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
-                inc procFoundCount
-            elif procFoundCount == 0:
-                parentsProcStocks.add(line)
+            # Found a Sysmon 1 process creation event.
+            # This assumes info level events are enabled and there won't be more than one Sysmon 1 event for a process.
+            if channel == "Sysmon" and eventId == 1 and (ruleTitle ==
+                    "Proc Exec" or ruleTitle == "Proc Exec (Sysmon Alert)"):
+                if jsonLine["Details"]["PGUID"].getStr("N/A") in passGuid or
+                        jsonLine["Details"]["ParentPGUID"].getStr("N/A") in passGuid:
+                    let obj = createProcessObj(jsonLine, false)
+                    if procFoundCount == 0:
+                        let parentObj = createProcessObj(jsonLine, true)
+                        stockedProcObjTbl[parentObj.processGUID] = parentObj
+                        stockedProcObjTbl[parentObj.processGUID].children.add(obj)
+                        parentPGUIDTbl[parentObj.processGUID] = obj.processGUID
+                        oldestProc = parentObj
+                    passGuid.incl(obj.processGUID)
+                    passGuid.incl(obj.parentProcessGUID)
+                    # Link child processes to their parents
+                    stockedProcObjTbl[obj.processGUID] = obj
+                    if obj.parentProcessGUID == processGUID:
+                        stockedProcObjTbl[processGUID].children.add(obj)
+                    elif obj.parentProcessGUID in stockedProcObjTbl:
+                        stockedProcObjTbl[obj.parentProcessGUID].children.add(obj)
+                    parentPGUIDTbl[obj.parentProcessGUID] = obj.processGUID
+                    inc procFoundCount
+                elif procFoundCount == 0:
+                    parentsProcStocks.add(line)
 
     if procFoundCount == 0:
         echo "The process was not found."
