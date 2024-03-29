@@ -114,7 +114,7 @@ when isMainModule:
                 "displayTable": "display the result table",
                 "output": "output directory (default: scriptblock-logs)",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
         [
@@ -125,7 +125,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "output directory (default: scriptblock-logs)",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
         [
@@ -137,7 +137,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a text file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
                 "includeSubdomains": 'd',
@@ -152,7 +152,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "specify the base name to save results to text files (ex: -o case-1)",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
         [
@@ -165,7 +165,7 @@ when isMainModule:
                 "output": "save results to a text file",
                 "privateIp": "include private IP addresses",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
                 "output": 'o',
@@ -210,7 +210,7 @@ when isMainModule:
             help = {
                 "output": "output directory (default: output)",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
         [
@@ -222,7 +222,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
                 "sourceComputers": 'c'
@@ -238,7 +238,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
                 "ignoreSysmon": 'y',
@@ -253,7 +253,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
         [
@@ -265,7 +265,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             },
             short = {
                 "targetIpAddresses": 'a'
@@ -279,7 +279,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
         [
@@ -292,7 +292,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },            
             short = {
                 "ignoreSysmon": 'y',
@@ -307,7 +307,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
                 "ignoreSystem": 'y',
@@ -322,7 +322,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
         [
@@ -336,7 +336,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             },
             short = {
                 "filterComputerAccounts": 'c',
@@ -350,7 +350,7 @@ when isMainModule:
                 "output": "save results to a text file",
                 "processGuid": "sysmon process GUID",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
         [
@@ -363,7 +363,7 @@ when isMainModule:
                 "outputLogoffEvents": "output logoff events as separate entries",
                 "skipProgressBar": "do not display the progress bar",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
                 "outputLogoffEvents": 'l',
@@ -377,7 +377,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
         [
@@ -388,7 +388,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any besides all-field-info*)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
         [
@@ -398,7 +398,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
         [
@@ -408,7 +408,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a csv file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any verbose profile)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
             }
         ],
         [
@@ -418,7 +418,7 @@ when isMainModule:
                 "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a json file",
                 "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline (profile: any verbose profile)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
             }
         ],
         [
