@@ -7,6 +7,7 @@
 - `stack-computers` command: stack the `Computer` (default) or `SrcComp` fields as well as provide alert information. (#125) (@fukusuket)
 - `stack-ip-addresses` command: stack the `SrcIP` (default) or `TgtIP` fields as well as provide alert information. (#129) (@fukusuket)
 - `stack-users` command: stack the `TgtUser` (default) or `SrcUser` fields as well as provide alert information. (#130) (@fukusuket)
+- You can now specify a directory of `.jsonl` files to scan. #133 (@hitenkoku)
 
 **Enhancements:**
 
