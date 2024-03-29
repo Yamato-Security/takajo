@@ -58,7 +58,7 @@ include takajopkg/automagic
 
 
 when isMainModule:
-    clCfg.version = "2.5.0-dev"
+    clCfg.version = "2.5.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
@@ -90,7 +90,7 @@ when isMainModule:
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
-    clCfg.useMulti = "Version: 2.5.0 Dev Build\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
+    clCfg.useMulti = "Version: 2.5.0 BSides Tokyo Release\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples &
         example_automagic &
         example_extract_scriptblocks &
@@ -109,11 +109,11 @@ when isMainModule:
             autoMagic, cmdName = "automagic",
             doc = "automatically executes as many commands as possible and output results to a new folder",
             help = {
-                "level": "specify the minimum alert level (default: low)",
-                "skipProgressBar": "do not display the progress bar",
-                "displayTable": "display the result table",
-                "output": "output directory (default: scriptblock-logs)",
-                "quiet": "do not display the launch banner",
+                "displayTable": "display the results table (default: false)",
+                "level": "specify the minimum alert level (default: informational)",
+                "output": "output directory (default: case-1)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
@@ -121,10 +121,10 @@ when isMainModule:
             extractScriptblocks, cmdName = "extract-scriptblocks",
             doc = "extract and reassemble PowerShell EID 4104 script block logs",
             help = {
-                "level": "specify the minimum alert level (default: low)",
-                "skipProgressBar": "do not display the progress bar",
+                "level": "specify the minimum alert level (default: informational)",
                 "output": "output directory (default: scriptblock-logs)",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
@@ -134,9 +134,9 @@ when isMainModule:
             help = {
                 "includeSubdomains": "include subdomains",
                 "includeWorkstations": "include local workstation names",
-                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a text file",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
@@ -149,9 +149,9 @@ when isMainModule:
             doc = "create a list of process hashes to be used with vt-hash-lookup",
             help = {
                 "level": "specify the minimum alert level",
-                "skipProgressBar": "do not display the progress bar",
                 "output": "specify the base name to save results to text files (ex: -o case-1)",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
@@ -161,10 +161,10 @@ when isMainModule:
             help = {
                 "inbound": "include inbound traffic",
                 "outbound": "include outbound traffic",
-                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a text file",
                 "privateIp": "include private IP addresses",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
@@ -179,7 +179,7 @@ when isMainModule:
                 "columnName": "specify a custom column header name",
                 "evtxDir": "directory of .evtx files you scanned with Hayabusa",
                 "output": "save the results to a text file (default: stdout)",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
                 "timeline": "Hayabusa CSV timeline (profile: any verbose profile)",
             }
         ],
@@ -189,7 +189,7 @@ when isMainModule:
             help = {
                 "columnName": "specify a custom column header name",
                 "output": "save the results to a text file (default: stdout)",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
                 "rulesDir": "Hayabusa rules directory",
                 "timeline": "Hayabusa CSV timeline (profile: any verbose profile)",
             }
@@ -200,7 +200,7 @@ when isMainModule:
             help = {
                 "makeMultiline": "output fields in multiple lines",
                 "output": "output directory (default: output)",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
                 "timeline": "Hayabusa non-multiline CSV timeline (profile: any)",
             }
         ],
@@ -209,35 +209,20 @@ when isMainModule:
             doc = "split up a large JSONL timeline into smaller ones based on the computer name",
             help = {
                 "output": "output directory (default: output)",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
-            }
-        ],
-        [
-            stackComputers, cmdName = "stack-computers",
-            doc = "stack computers",
-            help = {
-                "level": "specify the minimum alert level (default: low)",
-                "sourceComputers" : "stack source computers instead of target computers",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
-                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
-            },
-            short = {
-                "sourceComputers": 'c'
             }
         ],
         [
             stackCmdlines, cmdName = "stack-cmdlines",
             doc = "stack executed command lines",
             help = {
-                "level": "specify the minimum alert level (default: low)",
-                "ignoreSysmon": "exclude Sysmon 1 events",
-                "ignoreSecurity": "exclude Security 4688 events",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "level": "specify the minimum alert level (default: informational)",
+                "ignoreSecurity": "exclude Security 4688 events (default: false)",
+                "ignoreSysmon": "exclude Sysmon 1 events (default: false)",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
@@ -245,26 +230,41 @@ when isMainModule:
                 "ignoreSecurity": 'e'
             }
         ],
+        [
+            stackComputers, cmdName = "stack-computers",
+            doc = "stack computers",
+            help = {
+                "level": "specify the minimum alert level (default: informational)",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
+                "sourceComputers" : "stack source computers instead of target computers (default: false)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
+            },
+            short = {
+                "sourceComputers": 'c'
+            }
+        ],
         [            
             stackDNS, cmdName = "stack-dns",
             doc = "stack DNS queries and responses",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
         [
             stackIpAddresses, cmdName = "stack-ip-addresses",
-            doc = "stack ipaddresses",
+            doc = "stack the target IP addresses (TgtIP field) or source IP addresses (SrcIP field)",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "targetIpAddresses" : "stack target IP addresses instead of source IP addresses",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             },
             short = {
@@ -276,9 +276,9 @@ when isMainModule:
             doc = "stack logons by target user, target computer, source IP address and source computer",
             help = {
                 "localSrcIpAddresses": "include results when the source IP address is local",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
@@ -286,12 +286,12 @@ when isMainModule:
             stackProcesses, cmdName = "stack-processes",
             doc = "stack executed processes",
             help = {
-                "level": "specify the minimum alert level (default: low)",
-                "ignoreSysmon": "exclude Sysmon 1 events",
+                "level": "specify the minimum alert level (default: informational)",
                 "ignoreSecurity": "exclude Security 4688 events",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "ignoreSysmon": "exclude Sysmon 1 events",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },            
             short = {
@@ -301,12 +301,14 @@ when isMainModule:
         ],
         [
             stackServices, cmdName = "stack-services",
-            doc = "stack service names and paths",
+            doc = "stack service names and paths from System 7040 and Security 4697 events",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
+                "ignoreSecurity": "exclude Security 4697 events (default: false)",
+                "ignoreSystem": "exclude System 7040 events (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
@@ -316,26 +318,26 @@ when isMainModule:
         ],
         [
             stackTasks, cmdName = "stack-tasks",
-            doc = "stack new scheduled tasks",
+            doc = "stack new scheduled tasks from Security 4698 events and parse out XML task content",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
         [
             stackUsers, cmdName = "stack-users",
-            doc = "stack users",
+            doc = "stack target users (TgtUser field) or source users (SrcUser field)",
             help = {
                 "level": "specify the minimum alert level (default: informational)",
-                "sourceUsers" : "stack source users instead of target users (default: false)",
                 "filterComputerAccounts": "filter out computer accounts (default: true)",
                 "filterSystemAccounts": "filter out system accounts (default: true)",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
+                "sourceUsers" : "stack source users instead of target users (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             },
             short = {
@@ -349,7 +351,7 @@ when isMainModule:
             help = {
                 "output": "save results to a text file",
                 "processGuid": "sysmon process GUID",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
@@ -361,8 +363,8 @@ when isMainModule:
                 "output": "save results to a CSV file",
                 "outputAdminLogonEvents": "output admin logon events as separate entries",
                 "outputLogoffEvents": "output logoff events as separate entries",
-                "skipProgressBar": "do not display the progress bar",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             },
             short = {
@@ -374,9 +376,9 @@ when isMainModule:
             timelinePartitionDiagnostic, cmdName = "timeline-partition-diagnostic",
             doc = "create a CSV timeline of partition diagnostic events",
             help = {
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
@@ -385,9 +387,9 @@ when isMainModule:
             doc = "create a CSV timeline of suspicious processes",
             help = {
                 "level": "specify the minimum alert level",
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any besides all-field-info*)",
             }
         ],
@@ -395,9 +397,9 @@ when isMainModule:
             timelineTasks, cmdName = "timeline-tasks",
             doc = "create a CSV timeline of scheduled tasks",
             help = {
-                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a CSV file",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
             }
         ],
@@ -405,9 +407,9 @@ when isMainModule:
             ttpSummary, cmdName = "ttp-summary",
             doc = "summarize tactics and techniques found in each computer",
             help = {
-                "skipProgressBar": "do not display the progress bar",
-                "output": "save results to a csv file",
-                "quiet": "do not display the launch banner",
+                "output": "save results to a CSV file (default: stdout)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
             }
         ],
@@ -415,9 +417,9 @@ when isMainModule:
             ttpVisualize, cmdName = "ttp-visualize",
             doc = "extract TTPs and create a JSON file to visualize in MITRE ATT&CK Navigator",
             help = {
-                "skipProgressBar": "do not display the progress bar",
                 "output": "save results to a json file",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
             }
         ],
@@ -426,7 +428,7 @@ when isMainModule:
             doc = "extract TTPs from Sigma and create a JSON file to visualize in MITRE ATT&CK Navigator",
             help = {
                 "output": "save results to a json file",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
                 "rulesDir": "Sigma rules directory",
             }
         ],
@@ -437,9 +439,9 @@ when isMainModule:
                 "apiKey": "your VirusTotal API key",
                 "domainList": "a text file list of domains",
                 "jsonOutput": "save all responses to a JSON file",
-                "output": "save results to a CSV file",
+                "output": "save results to a CSV file (default: stdout)",
                 "rateLimit": "set the rate per minute for requests",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
             }
         ],
         [
@@ -451,7 +453,7 @@ when isMainModule:
                 "jsonOutput": "save all responses to a JSON file",
                 "output": "save results to a text file",
                 "rateLimit": "set the rate per minute for requests",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
             },
             short = {
                 "hashList": 'H'
@@ -464,9 +466,9 @@ when isMainModule:
                 "apiKey": "your VirusTotal API key",
                 "ipList": "a text file list of IP addresses",
                 "jsonOutput": "save all responses to a JSON file",
-                "output": "save results to a CSV file",
+                "output": "save results to a CSV file (default: stdout)",
                 "rateLimit": "set the rate per minute for requests",
-                "quiet": "do not display the launch banner",
+                "quiet": "do not display the launch banner (default: false)",
             }
         ]
     )

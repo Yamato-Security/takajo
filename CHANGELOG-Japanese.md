@@ -1,6 +1,6 @@
 # 変更点
 
-## 2.5.0 [xxxx/xx/xx]
+## 2.5.0 [2024/03/30] - BSides Tokyo Release
 
 **新機能:**
 

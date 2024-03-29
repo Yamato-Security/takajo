@@ -20,7 +20,7 @@ method analyze*(self: StackCmdlineCmd, x: HayabusaJson) =
 method resultOutput*(self: StackCmdlineCmd) =
   outputResult(self, self.stack, isMinColumns = true)
 
-proc stackCmdlines(level: string = "low", ignoreSysmon: bool = false,
+proc stackCmdlines(level: string = "informational", ignoreSysmon: bool = false,
     ignoreSecurity: bool = false, skipProgressBar: bool = false,
     output: string = "", quiet: bool = false, timeline: string) =
   checkArgs(quiet, timeline, level)

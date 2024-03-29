@@ -142,7 +142,7 @@ method resultOutput*(self: ExtractScriptBlocksCmd) =
             self.output & "/*.txt")
 
 
-proc extractScriptblocks(level: string = "low", skipProgressBar: bool = false,
+proc extractScriptblocks(level: string = "informational", skipProgressBar: bool = false,
         output: string = "scriptblock-logs", quiet: bool = false,
         timeline: string) =
     checkArgs(quiet, timeline, level)

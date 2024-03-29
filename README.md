@@ -41,6 +41,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Git cloning](#git-cloning)
   - [Advanced: Compiling From Source (Optional)](#advanced-compiling-from-source-optional)
 - [Command List](#command-list)
+  - [Automation Commands](#automation-commands)
   - [Extract Commands](#extract-commands)
   - [List Commands](#list-commands)
   - [Split Commands](#split-commands)
@@ -50,6 +51,9 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [TTP Commands](#ttp-commands)
   - [VirusTotal Commands](#virustotal-commands)
 - [Command Usage](#command-usage)
+- [Automation Commands](#automation-commands-1)
+    - [`automagic` command](#automagic-command)
+      - [`automagic` command examples](#automagic-command-examples)
   - [Extract Commands](#extract-commands-1)
     - [`extract-scriptblocks` command](#extract-scriptblocks-command)
       - [`extract-scriptblocks` command example](#extract-scriptblocks-command-example)
@@ -73,8 +77,12 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [Stack Commands](#stack-commands-1)
     - [`stack-cmdlines` command](#stack-cmdlines-command)
       - [`stack-cmdlines` command examples](#stack-cmdlines-command-examples)
+    - [`stack-computers` command](#stack-computers-command)
+      - [`stack-computers` command examples](#stack-computers-command-examples)
     - [`stack-dns` command](#stack-dns-command)
       - [`stack-dns` command examples](#stack-dns-command-examples)
+    - [`stack-ip-addresses` command](#stack-ip-addresses-command)
+      - [`stack-ip-addresses` command examples](#stack-ip-addresses-command-examples)
     - [`stack-logons` command](#stack-logons-command)
       - [`stack-logons` command examples](#stack-logons-command-examples)
     - [`stack-processes` command](#stack-processes-command)
@@ -83,6 +91,8 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
       - [`stack-services` command examples](#stack-services-command-examples)
     - [`stack-tasks` command](#stack-tasks-command)
       - [`stack-tasks` command examples](#stack-tasks-command-examples)
+    - [`stack-users` command](#stack-users-command)
+      - [`stack-users` command examples](#stack-users-command-examples)
   - [Sysmon Commands](#sysmon-commands-1)
     - [`sysmon-process-tree` command](#sysmon-process-tree-command)
       - [`sysmon-process-tree` command examples](#sysmon-process-tree-command-examples)
@@ -155,6 +165,9 @@ If you have Nim installed, you can compile from source with the following comman
 
 # Command List
 
+## Automation Commands
+* `automagic`: automatically executes as many commands as possible and output results to a new folder
+
 ## Extract Commands
 * `extract-scriptblocks`: extract and reassemble PowerShell EID 4104 script block logs
 
@@ -171,11 +184,14 @@ If you have Nim installed, you can compile from source with the following comman
 
 ## Stack Commands
 * `stack-cmdlines`: stack executed command lines
+* `stack-computers`: stack computers
 * `stack-dns`: stack DNS queries and responses
+* `stack-ip-addresses`: stack target IP addresses (`TgtIP` field) or source IP addresses (`SrcIP` field)
 * `stack-logons`: stack logons by target user, target computer, source IP address and source computer
 * `stack-processes`: stack executed processes
-* `stack-services`: stack new service names and processes
-* `stack-tasks`: stack new scheduled tasks
+* `stack-services`: stack service names and paths from `System 7040` and `Security 4697` events
+* `stack-tasks`: stack new scheduled tasks from `Security 4698` events and parse out XML task content
+* `stack-users`: stack target users (`TgtUser` field) or source users (`SrcUser` field)
 
 ## Sysmon Commands
 * `sysmon-process-tree`: output the process tree of a certain process
@@ -198,6 +214,51 @@ If you have Nim installed, you can compile from source with the following comman
 
 # Command Usage
 
+# Automation Commands
+
+### `automagic` command
+
+Automatically executes as many commands as possible and output results to a new folder
+
+> Note: You should use the `verbose` or `super-verbose` profile to utilize all commands.
+
+* Input: JSONL file or directory of JSONL files
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: A new folder with all of the results in different files
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory.
+
+Options:
+
+- `-d, --displayTable`: display the results table (default: `false`)
+- `-l, --level`: specify the minimum alert level (default: `low`)
+- `-o, --output`: output directory (default: `case-1`)
+- `-q, --quiet`: do not display the launch banner (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
+
+#### `automagic` command examples
+
+Prepare the JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+Run as many Takajo commands as possible and save results under the `case-1` folder:
+
+```
+takajo.exe automagic -t ../hayabusa/timeline.jsonl -o case-1
+```
+
+Run as many Takajo commands as possible on the `hayabusa-results` directory and save results under the `case-1` folder:
+
+```
+takajo.exe automagic -t ../hayabusa/hayabusa-results/ -o case-1
+```
+
+
 ## Extract Commands
 
 ### `extract-scriptblocks` command
@@ -212,13 +273,14 @@ Extracts and reassemles PowerShell EID 4104 script block logs.
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline file or directory
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory
 
 Options:
 
  - `-l, --level`: specify the minimum alert level (default: `low`)
  - `-o, --output`: output directory (default: `scriptblock-logs`)
  - `-q, --quiet`: do not display the launch banner (default: `false`)
+ - `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `extract-scriptblocks` command example
 
@@ -251,14 +313,15 @@ Currently it will only check queried domains in Sysmon EID 22 logs but will be u
 
 Required options:
 
-- `-o, --output <TXT-FILE>`: save results to a text file.
-- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline file or directory.
+ - `-o, --output <TXT-FILE>`: save results to a text file.
+ - `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory.
 
 Options:
 
-- `-s, --includeSubdomains`: include subdomains. (default: `false`)
-- `-w, --includeWorkstations`: include local workstation names. (default: `false`)
-- `-q, --quiet`: do not display logo. (default: `false`)
+ - `-s, --includeSubdomains`: include subdomains (default: `false`)
+ - `-w, --includeWorkstations`: include local workstation names (default: `false`)
+ - `-q, --quiet`: do not display logo (default: `false`)
+ - `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `list-domains` command examples
 
@@ -290,13 +353,14 @@ Create a list of process hashes to be used with vt-hash-lookup (input: JSONL, pr
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
-- `-o, --output <BASE-NAME>`: specify the base name to save the text results to.
+ - `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
+ - `-o, --output <BASE-NAME>`: specify the base name to save the text results to.
 
 Options:
 
-- `-l, --level`: specify the minimum level. (default: `high`)
-- `-q, --quiet`: do not display logo. (default: `false`)
+ - `-l, --level`: specify the minimum level. (default: `high`)
+ - `-q, --quiet`: do not display logo. (default: `false`)
+ - `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `list-hashes` command examples
 
@@ -325,15 +389,16 @@ It will extract the `TgtIP` fields for target IP addresses and `SrcIP` fields fo
 
 Required options:
 
-- `-o, --output <TXT-FILE>`: save results to a text file.
-- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline file or directory.
+ - `-o, --output <TXT-FILE>`: save results to a text file.
+ - `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory.
 
 Options:
 
-- `-i, --inbound`: include inbound traffic. (default: `true`)
-- `-O, --outbound`: include outbound traffic. (default: `true`)
-- `-p, --privateIp`: include private IP addresses (default: `false`)
-- `-q, --quiet`: do not display logo. (default: `false`)
+ - `-i, --inbound`: include inbound traffic. (default: `true`)
+ - `-O, --outbound`: include outbound traffic. (default: `true`)
+ - `-p, --privateIp`: include private IP addresses (default: `false`)
+ - `-q, --quiet`: do not display logo. (default: `false`)
+ - `-s, --skipProgressBar`: "do not display the progress bar (default: `false`)
 
 #### `list-ip-addresses` command examples
 
@@ -496,7 +561,7 @@ Split up a large JSONL timeline into smaller ones based on the computer name.
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline file or directory.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory.
 
 Options:
 
@@ -527,7 +592,7 @@ takajo.exe split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-jsonl
 
 ### `stack-cmdlines` command
 
-This command will stack executed command lines by extracting information from Sysmon 1 and Security 4688 events.
+This command will stack executed command lines by extracting information from `Sysmon 1` and `Security 4688` events.
 
 * Input: JSONL
 * Profile: Any besides `all-field-info` and `all-field-info-verbose`
@@ -535,15 +600,16 @@ This command will stack executed command lines by extracting information from Sy
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
-- `-l, --level`: specify the minimum alert level (default: `low`)
+- `-l, --level`: specify the minimum alert level (default: `informational`)
 - `-y, --ignoreSysmon`: exclude Sysmon 1 events (default: `false`)
 - `-e, --ignoreSecurity`: exclude Security 4688 events (default: `false`)
-- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 - `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `stack-cmdlines` command examples
 
@@ -559,6 +625,40 @@ Save to CSV:
 takajo.exe stack-cmdlines -t ../hayabusa/timeline.jsonl -o stack-cmdlines.csv
 ```
 
+### `stack-computers` command
+
+This command will stack computer hostnames according to the `Computer` field.
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
+
+Options:
+
+- `-l, --level`: specify the minimum alert level (default: `informational`)
+- `-c, --sourceComputers`: stack source computers instead of target computers (default: false)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
+- `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
+
+#### `stack-computers` command examples
+
+Output to terminal:
+
+```
+takajo.exe stack-computers -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe stack-computers -t ../hayabusa/timeline.jsonl -o stack-computers.csv
+```
+
 ### `stack-dns` command
 
 This command will stack DNS queries and responses from Sysmon 22 events.
@@ -569,13 +669,14 @@ This command will stack DNS queries and responses from Sysmon 22 events.
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
 - `-l, --level`: specify the minimum alert level (default: `informational`)
-- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 - `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `stack-dns` command examples
 
@@ -591,6 +692,40 @@ Save to CSV:
 takajo.exe stack-dns -t ../hayabusa/timeline.jsonl -o stack-dns.csv
 ```
 
+### `stack-ip-addresses` command
+
+This command will stack the target IP addresses (`TgtIP` field) or source IP addresses (`SrcIP` field).
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
+
+Options:
+
+- `-l, --level`: specify the minimum alert level (default: `informational`)
+- `-a, --targetIpAddresses`: stack target IP addresses instead of source IP addresses (default: `false`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
+- `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
+
+#### `stack-ip-addresses` command examples
+
+Output to terminal:
+
+```
+takajo.exe stack-ip-addresses -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe stack-ip-addresses -t ../hayabusa/timeline.jsonl -o stack-ip-addresses.csv
+```
+
 ### `stack-logons` command
 
 Creates a list logons according to `Target User`, `Target Computer`, `Logon Type`, `Source IP Address`, `Source Computer`.
@@ -602,13 +737,14 @@ Results are filtered out when the source IP address is a local IP address by def
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
 - `-l, --localSrcIpAddresses`: include results when the source IP address is local.
-- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 - `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `stack-logons` command examples
 
@@ -634,13 +770,16 @@ This command will stack executed processes from Sysmon 1 and Security 4688 event
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
 - `-l, --level`: specify the minimum alert level (default: `low`)
-- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-y, --ignoreSysmon`: exclude Sysmon 1 events (default: `false`)
+- `-e, --ignoreSecurity`: exclude Security 4688 events (default: `false`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 - `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `stack-processes` command examples
 
@@ -666,15 +805,16 @@ This command will stack service names and paths from System 7040 and Security 46
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
 - `-l, --level`: specify the minimum alert level (default: `informational`)
 - `-y, --ignoreSystem`: exclude System 7040 events (default: `false`)
 - `-e, --ignoreSecurity`: exclude Security 4697 events (default: `false`)
-- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 - `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `stack-services` command examples
 
@@ -700,13 +840,14 @@ This command will stack new scheduled tasks from Security 4698 events and parse 
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
 - `-l, --level`: specify the minimum alert level (default: `informational`)
-- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 - `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
 
 #### `stack-tasks` command examples
 
@@ -722,6 +863,42 @@ Save to CSV:
 takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl -o stack-tasks.csv
 ```
 
+### `stack-users` command
+
+This command will stack the target users (`TgtUser` field (default)) or source users (`SrcUser` field) in any event that has those fields as well as show alert information.
+
+* Input: JSONL
+* Profile: Any besides `all-field-info` and `all-field-info-verbose`
+* Output: Terminal or CSV file
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
+
+Options:
+
+- `-s, --sourceUsers`: stack source users instead of target users (default: false)
+- `-c, --filterComputerAccounts`: filter out computer accounts (default: true)
+- `-f, --filterSystemAccounts`: filter out system accounts (default: true)
+- `-l, --level`: specify the minimum alert level (default: `informational`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
+- `-q, --quiet`: do not display logo. (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
+
+#### `stack-users` command examples
+
+Output to terminal:
+
+```
+takajo.exe stack-users -t ../hayabusa/timeline.jsonl
+```
+
+Save to CSV:
+
+```
+takajo.exe stack-users -t ../hayabusa/timeline.jsonl -o stack-users.csv
+```
+
 ## Sysmon Commands
 
 ### `sysmon-process-tree` command
@@ -735,7 +912,7 @@ Output the process tree of a certain process, such as a suspicious or malicious 
 Required options:
 
 - `-p, --processGuid <Process GUID>`: sysmon process GUID
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
@@ -782,7 +959,7 @@ This makes it easier to detect lateral movement, password guessing/spraying, pri
 Required options:
 
 - `-o, --output <CSV-FILE>`: the CSV file to save the results to.
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
@@ -820,7 +997,7 @@ This process is based on the tool [Partition-4DiagnosticParser](https://github.c
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
@@ -851,12 +1028,12 @@ Create a CSV timeline of suspicious processes.
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
-- `-l, --level <LEVEL>`: specify the minimum alert level. (default: `high`)
-- `-o, --output <CSV-FILE>`: the CSV file to save the results to.
+- `-l, --level <LEVEL>`: specify the minimum alert level (default: `high`)
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `timeline-suspicious-processes` command examples
@@ -870,19 +1047,19 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w
 Search for processes that had an alert level of `high` or above and output results to screen:
 
 ```
-takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl
+takajo.exe timeline-suspicious-processes -t ../hayabusa/timeline.jsonl
 ```
 
 Search for processes that had an alert level of `low` or above and output results to screen:
 
 ```
-takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -l low
+takajo.exe timeline-suspicious-processes -t ../hayabusa/timeline.jsonl -l low
 ```
 
 Save the results to a CSV file:
 
 ```
-takajo.exe timeline-suspicious-process -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
+takajo.exe timeline-suspicious-processes -t ../hayabusa/timeline.jsonl -o suspicous-processes.csv
 ```
 
 #### `timeline-suspicious-processes` screenshot
@@ -899,7 +1076,7 @@ This command will stack new scheduled tasks from Security 4698 events and parse 
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
@@ -932,7 +1109,7 @@ This command summarize tactics and techniques found in each computer according t
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
@@ -973,7 +1150,7 @@ This command extracts TTPs and create a JSON file to visualize in [MITRE ATT&CK 
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 
@@ -1010,7 +1187,7 @@ This command extracts TTPs from Sigma and create a JSON file to visualize in [MI
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: JSONL timeline created by Hayabusa.
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
 
 Options:
 

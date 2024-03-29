@@ -20,7 +20,7 @@ method analyze*(self: StackProcessesCmd, x: HayabusaJson) =
 method resultOutput*(self: StackProcessesCmd) =
   outputResult(self, self.stack, isMinColumns = true)
 
-proc stackProcesses(level: string = "low", ignoreSysmon: bool = false,
+proc stackProcesses(level: string = "informational", ignoreSysmon: bool = false,
     ignoreSecurity: bool = false, skipProgressBar: bool = false,
     output: string = "", quiet: bool = false, timeline: string) =
   checkArgs(quiet, timeline, level)
