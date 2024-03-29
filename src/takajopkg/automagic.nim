@@ -4,7 +4,7 @@ type
   AutoMagicCmd* = ref object of AbstractCmd
     level: string
 
-proc autoMagic(level: string = "low", skipProgressBar: bool = false,
+proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
     displayTable: bool = false, output: string = "case-1", quiet: bool = false,
     timeline: string) =
   checkArgs(quiet, timeline, level)
