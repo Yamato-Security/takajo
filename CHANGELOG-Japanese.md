@@ -7,6 +7,7 @@
 - `stack-computers`コマンド: `Computer`(デフォルト)または`SrcComp`フィールドのスタック分析をしながら、アラート情報も提供する。(#125) (@fukusuket)
 - `stack-ip-addresses`コマンド: `SrcIP`(デフォルト)または`TgtIP`フィールドのスタック分析をしながら、アラート情報も提供する。(#129) (@fukusuket)
 - `stack-users`コマンド: `TgtUser`(デフォルト)または`SrcUser`フィールドのスタック分析をしながら、アラート情報も提供する。(#130) (@fukusuket)
+- スキャン時に複数の`.jsonl`ファイルが入っているディレクトリを指定できるようになった。 #133 (@hitenkoku)
 
 **改善:**
 

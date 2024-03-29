@@ -106,7 +106,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
       - [`ttp-visualize` command examples](#ttp-visualize-command-examples)
       - [`ttp-visualize` screenshot](#ttp-visualize-screenshot)
     - [`ttp-visualize-sigma` command](#ttp-visualize-sigma-command)
-      - [`ttp-visualize-simga` command examples](#ttp-visualize-sigma-command-examples)
+      - [`ttp-visualize-sigma` command examples](#ttp-visualize-sigma-command-examples)
   - [VirusTotal Commands](#virustotal-commands-1)
     - [`vt-domain-lookup` command](#vt-domain-lookup-command)
       - [`vt-domain-lookup` command examples](#vt-domain-lookup-command-examples)
@@ -212,7 +212,7 @@ Extracts and reassemles PowerShell EID 4104 script block logs.
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline
+- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline file or directory
 
 Options:
 
@@ -252,7 +252,7 @@ Currently it will only check queried domains in Sysmon EID 22 logs but will be u
 Required options:
 
 - `-o, --output <TXT-FILE>`: save results to a text file.
-- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline.
+- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline file or directory.
 
 Options:
 
@@ -326,7 +326,7 @@ It will extract the `TgtIP` fields for target IP addresses and `SrcIP` fields fo
 Required options:
 
 - `-o, --output <TXT-FILE>`: save results to a text file.
-- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline.
+- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline file or directory.
 
 Options:
 
@@ -496,7 +496,7 @@ Split up a large JSONL timeline into smaller ones based on the computer name.
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline.
+- `-t, --timeline <JSONL-FILE>`: Hayabusa JSONL timeline file or directory.
 
 Options:
 

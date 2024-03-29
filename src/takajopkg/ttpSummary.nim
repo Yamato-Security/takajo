@@ -20,24 +20,24 @@ proc compareArrays(a, b: array[5, string]): int =
     return 0
 
 type
-  TTPSummaryCmd* = ref object of AbstractCmd
-    seqOfResultsTables*: seq[array[5, string]]
-    techniqueIDs*:HashSet[string] = initHashSet[string]()
-    attack*: JsonNode
-    tac_no* = {"Reconnaissance": "01. ",
-               "Resource Development": "02. ",
-               "Initial Access": "03. ",
-               "Execution": "04. ",
-               "Persistence": "05. ",
-               "Privilege Escalation": "06. ",
-               "Defense Evasion": "07. ",
-               "Credential Access": "08. ",
-               "Discovery": "09. ",
-               "Lateral Movement": "10. ",
-               "Collection": "11. ",
-               "Exfiltration": "12. ",
-               "Command and Control": "13. ",
-               "Impact": "14. "}.toTable
+    TTPSummaryCmd* = ref object of AbstractCmd
+        seqOfResultsTables*: seq[array[5, string]]
+        techniqueIDs*: HashSet[string] = initHashSet[string]()
+        attack*: JsonNode
+        tac_no* = {"Reconnaissance": "01. ",
+                   "Resource Development": "02. ",
+                   "Initial Access": "03. ",
+                   "Execution": "04. ",
+                   "Persistence": "05. ",
+                   "Privilege Escalation": "06. ",
+                   "Defense Evasion": "07. ",
+                   "Credential Access": "08. ",
+                   "Discovery": "09. ",
+                   "Lateral Movement": "10. ",
+                   "Collection": "11. ",
+                   "Exfiltration": "12. ",
+                   "Command and Control": "13. ",
+                   "Impact": "14. "}.toTable
 
 method analyze*(self: TTPSummaryCmd, x: HayabusaJson) =
     try:
@@ -60,8 +60,9 @@ method resultOutput*(self: TTPSummaryCmd) =
     self.seqOfResultsTables.sort(compareArrays)
     var savedFiles = "n/a"
     var results = "n/a"
-    let header = ["Computer", "Tactic", "Technique", "Sub-Technique", "RuleTitle", "Count"]
-    var prev = ["","","","",""]
+    let header = ["Computer", "Tactic", "Technique", "Sub-Technique",
+            "RuleTitle", "Count"]
+    var prev = ["", "", "", "", ""]
     var count = 1
     var ruleStr = initHashSet[string]()
     if self.output != "":
@@ -101,7 +102,8 @@ method resultOutput*(self: TTPSummaryCmd) =
             if arr[0..<4] == prev[0..<4]:
                 count += 1
                 continue
-            table.add arr[0], arr[1], arr[2], arr[3], ruleStr.mapIt($it).join(", "), intToStr(count)
+            table.add arr[0], arr[1], arr[2], arr[3], ruleStr.mapIt($it).join(
+                    ", "), intToStr(count)
             prev = arr
             count = 1
             ruleStr = initHashSet[string]()
@@ -112,18 +114,21 @@ method resultOutput*(self: TTPSummaryCmd) =
         if self.displayTable:
             echo savedFiles
             echo "Please run your Hayabusa scan with a profile that includes the %MitreTags% field. (ex: -p verbose)"
-    self.cmdResult = CmdResult(results:results, savedFiles:savedFiles)
+    self.cmdResult = CmdResult(results: results, savedFiles: savedFiles)
 
-proc ttpSummary(skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
+proc ttpSummary(skipProgressBar: bool = false, output: string = "",
+        quiet: bool = false, timeline: string) =
     checkArgs(quiet, timeline, "informational")
     if not os.fileExists("mitre-attack.json"):
         echo "The file '" & "mitre-attack.json" & "' does not exist. Please specify a valid file path."
         quit(1)
-    let cmd = TTPSummaryCmd(
-                skipProgressBar: skipProgressBar,
-                timeline: timeline,
-                output: output,
-                name:"ttp-summary",
-                msg: TTPSummaryMsg)
-    cmd.attack = readJsonFromFile("mitre-attack.json")
-    cmd.analyzeJSONLFile()
+    var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
+    for timelinePath in filePaths:
+        let cmd = TTPSummaryCmd(
+                    skipProgressBar: skipProgressBar,
+                    timeline: timelinePath,
+                    output: output,
+                    name: "ttp-summary",
+                    msg: TTPSummaryMsg)
+        cmd.attack = readJsonFromFile("mitre-attack.json")
+        cmd.analyzeJSONLFile()

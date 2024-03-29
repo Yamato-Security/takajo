@@ -1,4 +1,5 @@
-proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline: string) =
+proc splitJsonTimeline(output: string = "output", quiet: bool = false,
+        timeline: string) =
     let startTime = epochTime()
     checkArgs(quiet, timeline, "informational")
 
@@ -7,7 +8,11 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
     echo "This command will split a large JSONL timeline into many multiple ones based on computer name."
     echo ""
 
-    let totalLines = countLinesInTimeline(timeline)
+    var totalLines = 0
+    var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
+    for timelinePath in filePaths:
+        totalLines += countLinesInTimeline(timelinePath)
+
     echo "Splitting the Hayabusa JSONL timeline. Please wait."
 
     if not dirExists(output):
@@ -17,7 +22,6 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
     echo ""
 
     var
-        inputFile = open(timeline, FileMode.fmRead)
         filenameSequence: seq[string] = @[]
         filesTable = initTable[string, File]()
         bar: SuruBar = initSuruBar()
@@ -25,34 +29,37 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false, timeline:
     bar[0].total = totalLines
     bar.setup()
 
-    for line in lines(timeline):
-        inc bar
-        bar.update(1000000000) # refresh every second
+    for timelinePath in filePaths:
+        var inputFile = open(timelinePath, FileMode.fmRead)
 
-        let jsonLineOpt = parseLine(line)
-        if jsonLineOpt.isNone:
-            continue
-        let jsonLine:HayabusaJson = jsonLineOpt.get()
-        let computerName = jsonLine.Computer
+        for line in lines(timeline):
+            inc bar
+            bar.update(1000000000) # refresh every second
 
-        if not filesTable.hasKey(computerName):
-            let filename = output & "/" & computerName & "-HayabusaResults.jsonl"
-            filenameSequence.add(filename)
-            var outputFile = open(filename, fmWrite)
-            filesTable[computerName] = outputFile
-            outputFile.write(line)
-            outputFile.write("\p")
-            flushFile(outputFile)
-        else:
-            var outputFile = filesTable[computerName]
-            outputFile.write(line)
-            outputFile.write("\p")
-            flushFile(outputFile)
-    bar.finish()
+            let jsonLineOpt = parseLine(line)
+            if jsonLineOpt.isNone:
+                continue
+            let jsonLine: HayabusaJson = jsonLineOpt.get()
+            let computerName = jsonLine.Computer
 
-    # Close all opened files
-    for file in filesTable.values:
-        close(file)
+            if not filesTable.hasKey(computerName):
+                let filename = output & "/" & computerName & "-HayabusaResults.jsonl"
+                filenameSequence.add(filename)
+                var outputFile = open(filename, fmWrite)
+                filesTable[computerName] = outputFile
+                outputFile.write(line)
+                outputFile.write("\p")
+                flushFile(outputFile)
+            else:
+                var outputFile = filesTable[computerName]
+                outputFile.write(line)
+                outputFile.write("\p")
+                flushFile(outputFile)
+        bar.finish()
+
+        # Close all opened files
+        for file in filesTable.values:
+            close(file)
 
     echo ""
     for fn in filenameSequence:

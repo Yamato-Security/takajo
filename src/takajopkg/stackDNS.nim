@@ -2,32 +2,35 @@ const StackDNSMsg = "This command will stack the DNS queries and responses from 
 
 type
   StackDNSCmd* = ref object of AbstractCmd
-    level* :string
+    level*: string
     header* = @["Image", "Query", "Result"]
     stack* = initTable[string, StackRecord]()
 
-method filter*(self: StackDNSCmd, x: HayabusaJson):bool =
-    return x.EventID == 22 and x.Channel == "Sysmon"
+method filter*(self: StackDNSCmd, x: HayabusaJson): bool =
+  return x.EventID == 22 and x.Channel == "Sysmon"
 
-method analyze*(self: StackDNSCmd, x: HayabusaJson)=
-    let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
-        let pro = x.Details["Proc"].getStr("N/A")
-        let que = x.Details["Query"].getStr("N/A")
-        let res = x.Details["Result"].getStr("N/A")
-        let stackKey = pro & "->" & que & "->" & res
-        return (stackKey, @[pro, que, res])
-    let (stackKey, otherColumn) = getStackKey(x)
-    stackResult(stackKey, self.stack, self.level, x, otherColumn)
+method analyze*(self: StackDNSCmd, x: HayabusaJson) =
+  let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
+    let pro = x.Details["Proc"].getStr("N/A")
+    let que = x.Details["Query"].getStr("N/A")
+    let res = x.Details["Result"].getStr("N/A")
+    let stackKey = pro & "->" & que & "->" & res
+    return (stackKey, @[pro, que, res])
+  let (stackKey, otherColumn) = getStackKey(x)
+  stackResult(stackKey, self.stack, self.level, x, otherColumn)
 
-method resultOutput*(self: StackDNSCmd)=
-    outputResult(self, self.stack, self.header)
+method resultOutput*(self: StackDNSCmd) =
+  outputResult(self, self.stack, self.header)
 
-proc stackDNS(level: string = "informational", skipProgressBar:bool = false, output: string = "", quiet: bool = false, timeline: string) =
-    checkArgs(quiet, timeline, level)
+proc stackDNS(level: string = "informational", skipProgressBar: bool = false,
+    output: string = "", quiet: bool = false, timeline: string) =
+  checkArgs(quiet, timeline, level)
+  var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
+  for timelinePath in filePaths:
     let cmd = StackDNSCmd(
                 level: level,
                 skipProgressBar: skipProgressBar,
-                timeline: timeline,
+                timeline: timelinePath,
                 output: output,
                 name: "stack-dns",
                 msg: StackDNSMsg)
