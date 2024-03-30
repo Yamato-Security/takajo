@@ -50,6 +50,9 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [TTP Commands](#ttp-commands)
   - [VirusTotalコマンド](#virustotalコマンド)
 - [コマンド使用方法](#コマンド使用方法)
+  - [Automationコマンド](#Automationコマンド)
+    - [`automagic`コマンド](#automagicコマンド)
+      - [`automagic`コマンドの使用例](#automagicコマンドの使用例)
   - [Extractコマンド](#extractコマンド-1)
     - [`extract-scriptblocks`コマンド](#extract-scriptblocksコマンド)
       - [`extract-scriptblocks`コマンドの使用例](#extract-scriptblocksコマンドの使用例)
@@ -205,6 +208,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 # コマンド使用方法
 
+## Automationコマンド
 ### `automagic`コマンド
 
 多くのコマンドを自動的に実行し、結果を新しいフォルダーに出力する
