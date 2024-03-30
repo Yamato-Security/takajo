@@ -850,7 +850,7 @@ CSVに保存する:
 takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl -o stack-tasks.csv
 ```
 
-### `stack-users`command
+### `stack-users`コマンド
 
 ターゲットユーザー (`TgtUser`フィールド(デフォルト)) またはソースユーザー (`SrcUser`フィールド) を含むイベントからユーザ名を集計し、加えて検知ルール名を出力する
 
@@ -872,7 +872,7 @@ takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl -o stack-tasks.csv
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 - `-s, --skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
 
-#### `stack-users`command examples
+#### `stack-users`コマンドの使用例
 
 ターミナルに出力する:
 
