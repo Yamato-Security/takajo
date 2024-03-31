@@ -50,6 +50,9 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [TTP Commands](#ttp-commands)
   - [VirusTotalコマンド](#virustotalコマンド)
 - [コマンド使用方法](#コマンド使用方法)
+  - [Automationコマンド](#Automationコマンド)
+    - [`automagic`コマンド](#automagicコマンド)
+      - [`automagic`コマンドの使用例](#automagicコマンドの使用例)
   - [Extractコマンド](#extractコマンド-1)
     - [`extract-scriptblocks`コマンド](#extract-scriptblocksコマンド)
       - [`extract-scriptblocks`コマンドの使用例](#extract-scriptblocksコマンドの使用例)
@@ -73,8 +76,12 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Stackコマンド](#stackコマンド-1)
     - [`stack-cmdlines`コマンド](#stack-cmdlinesコマンド)
       - [`stack-cmdlines`コマンドの使用例](#stack-cmdlinesコマンドの使用例)
+    - [`stack-computers`コマンド](#stack-computersコマンド)
+      - [`stack-computers`コマンドの使用例](#stack-computersコマンドの使用例)
     - [`stack-dns`コマンド](#stack-dnsコマンド)
       - [`stack-dns`コマンドの使用例](#stack-dnsコマンドの使用例)
+    - [`stack-ip-addresses`コマンド](#stack-ip-addressesコマンド)
+      - [`stack-ip-addresses`コマンドの使用例](#stack-ip-addressesコマンドの使用例)
     - [`stack-logons`コマンド](#stack-logonsコマンド)
       - [`stack-logons`コマンドの使用例](#stack-logonsコマンドの使用例)
     - [`stack-processes`コマンド](#stack-processesコマンド)
@@ -83,6 +90,8 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
       - [`stack-services`コマンドの使用例](#stack-servicessコマンドの使用例)
     - [`stack-tasks`コマンド](#stack-tasksコマンド)
       - [`stack-tasks`コマンドの使用例](#stack-tasksコマンドの使用例)
+    - [`stack-users`コマンド](#stack-usersコマンド)
+      - [`stack-users`コマンドの使用例](#stack-usersコマンドの使用例)
   - [Sysmonコマンド](#sysmonコマンド-1)
     - [`sysmon-process-tree`コマンド](#sysmon-process-treeコマンド)
       - [`sysmon-process-tree`コマンドの使用例](#sysmon-process-treeコマンドの使用例)
@@ -157,6 +166,9 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 # コマンド一覧
 
+## Automationコマンド
+* `automagic`: 多くのコマンドを自動的に実行し、結果を新しいフォルダーに出力する
+
 ## Extractコマンド
 * `extract-scriptblocks`: PowerShell EID 4104 スクリプトブロックログからPowerShellスクリプトを抽出して再構築する
 
@@ -174,10 +186,12 @@ Nimがインストールされている場合、以下のコマンドでソー�
 ## Stackコマンド
 * `stack-cmdlines`: 実行されたコマンドラインを集計する
 * `stack-dns`: DNSクエリとレスポンスを集計する
+* `stack-ip-addresses`: ターゲットIP(`TgtIP`フィールド) またはソースIP (`SrcIP`フィールド)を集計する
 * `stack-logons`: ユーザー名、コンピューター名、送信元IPアドレス、送信元コンピューター名など、項目ごとの上位ログオンを出力する
 * `stack-processes`: 実行されたプロセスを集計する
 * `stack-services`: 作成されたサービス名とプロセスを集計する
 * `stack-tasks`: 作成されたスケジュールタスクを集計する
+* `stack-users`: ターゲットユーザー(`TgtUser`フィールド) またはソースユーザー (`SrcUser`フィールド)を集計する
 
 ## Sysmonコマンド
 * `sysmon-process-tree`: プロセスツリーを出力する
@@ -200,6 +214,49 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 # コマンド使用方法
 
+## Automationコマンド
+### `automagic`コマンド
+
+多くのコマンドを自動的に実行し、結果を新しいフォルダーに出力する
+
+> 注意: すべてのコマンドを使用するには、`verbose`または`super-verbose`プロファイルを使用する必要があります。
+
+* 入力: JSONL
+* プロファイル: `all-field-info` と`all-field-info-verbose` 以外すべて
+* 出力: すべての結果ファイルが出力されたフォルダー
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
+
+任意オプション:
+
+- `-d, --displayTable`: テーブル結果をターミナルに出力する (default: `false`)
+- `-l, --level`: 最小のアラートレベルを指定 (デフォルト: `informational`)
+- `-o, --output`: 出力ディレクトリ (デフォルト: `case-1`)
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+- `-s, --skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
+
+#### `automagic`コマンドの使用例
+
+HayabusaでJSONLタイムラインを出力する:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+できるだけ多くのTakajoコマンドを実行し、結果を`case-1`フォルダーに保存:
+
+```
+takajo.exe automagic -t ../hayabusa/timeline.jsonl -o case-1
+```
+
+できるだけ多くのTakajoコマンドを`hayabusa-results`ディレクトリに対して実行し、結果を`case-1`フォルダに保存r:
+
+```
+takajo.exe automagic -t ../hayabusa/hayabusa-results/ -o case-1
+```
+
 ## Extractコマンド
 
 ### `extract-scriptblocks`コマンド
@@ -214,7 +271,7 @@ PowerShell EID 4104 スクリプトブロックログからPowerShellスクリ�
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムライン
 
 任意オプション:
 
@@ -254,7 +311,7 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 必須オプション:
 
 - `-o, --output <TXT-FILE>`: 結果を保存するテキストファイル
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -292,7 +349,7 @@ takajo.exe list-domains -t ../hayabusa/timeline.jsonl -o domains.txt -s
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 - `-o, --output <BASE-NAME>`: 結果を保存するベースファイル名
 
 任意オプション:
@@ -328,7 +385,7 @@ takajo.exe list-hashes -t ../hayabusa/timeline.jsonl -o case-1
 必須オプション:
 
 - `-o, --output <TXT-FILE>`: 結果を保存するテキストファイル
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -498,7 +555,7 @@ takajo.exe split-csv-timeline -t ../hayabusa/timeline.csv -m -o case-1-csv
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -537,7 +594,7 @@ Sysmon 1 と Security 4688 イベントから実行されたコマンドライ�
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -561,6 +618,40 @@ CSVに保存する:
 takajo.exe stack-cmdlines -t ../hayabusa/timeline.jsonl -o stack-cmdlines.csv
 ```
 
+### `stack-computers`コマンド
+
+Computerフィールドに従い、コンピュータ名を集計します。
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
+
+任意オプション:
+
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `infomational`)
+- `-c, --sourceComputers`: ターゲットコンピュータ名の代わりにソースコンピュータ名を集計する (デフォルト: false)
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+- `-s, --skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
+
+#### `stack-computers`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe stack-computers -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe stack-computers -t ../hayabusa/timeline.jsonl -o stack-computers.csv
+```
+
 ### `stack-dns`コマンド
 
 Sysmon 22 イベントからDNSクエリとレスポンスを抽出し、集計します。
@@ -571,7 +662,7 @@ Sysmon 22 イベントからDNSクエリとレスポンスを抽出し、集計�
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -593,6 +684,41 @@ CSVに保存する:
 takajo.exe stack-dns -t ../hayabusa/timeline.jsonl -o stack-dns.csv
 ```
 
+### `stack-ip-addresses`コマンド
+
+ターゲットIP (`TgtIP` field) またはソースIP (`SrcIP` field)を集計する
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
+
+任意オプション::
+
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `infomational`)
+- `-a, --targetIpAddresses`: ソースIPのかわりにターゲットIPを集計する (デフォルト: `false`)
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+- `-s, --skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
+
+#### `stack-ip-addresses`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe stack-ip-addresses -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe stack-ip-addresses -t ../hayabusa/timeline.jsonl -o stack-ip-addresses.csv
+```
+
+
 ### `stack-logons`コマンド
 
 `Target User`、`Target Computer`、`Logon Type`、`Source IP Address`、`Source Computer`によってログインのリストを作成します。
@@ -604,7 +730,7 @@ takajo.exe stack-dns -t ../hayabusa/timeline.jsonl -o stack-dns.csv
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -636,7 +762,7 @@ Sysmon 1 と Security 4688 イベントから実行されたプロセスを抽�
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -668,7 +794,7 @@ System 7040 と Security 4697 イベントからサービス名とパスを抽�
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -702,7 +828,7 @@ Security 4698 イベントから作成されたスケジュールタスクを抽
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -724,6 +850,42 @@ CSVに保存する:
 takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl -o stack-tasks.csv
 ```
 
+### `stack-users`コマンド
+
+ターゲットユーザー (`TgtUser`フィールド(デフォルト)) またはソースユーザー (`SrcUser`フィールド) を含むイベントからユーザ名を集計し、加えて検知ルール名を出力する
+
+* 入力: JSONL
+* プロファイル: `all-field-info`と`all-field-info-verbose`以外すべて
+* 出力: ターミナル または CSV
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
+
+任意オプション:
+
+- `-s, --sourceUsers`: ターゲットユーザーのかわりにソースユーザーを集計する (デフォルト: false)
+- `-c, --filterComputerAccounts`: コンピューターアカウントを除外する (デフォルト: true)
+- `-f, --filterSystemAccounts`: システムアカウントを除外する (デフォルト: true)
+- `-l, --level <LEVEL>`: 最小のアラートレベルを指定 (デフォルト: `infomational`)
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+- `-s, --skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
+
+#### `stack-users`コマンドの使用例
+
+ターミナルに出力する:
+
+```
+takajo.exe stack-users -t ../hayabusa/timeline.jsonl
+```
+
+CSVに保存する:
+
+```
+takajo.exe stack-users -t ../hayabusa/timeline.jsonl -o stack-users.csv
+```
+
 ## Sysmonコマンド
 
 ### `sysmon-process-tree`コマンド
@@ -738,7 +900,7 @@ takajo.exe stack-tasks -t ../hayabusa/timeline.jsonl -o stack-tasks.csv
 
 - `-o, --output <TXT-FILE>`: 結果を保存するテキストファイル
 - `-p, --processGuid <Process GUID>`: SysmonのプロセスGUID
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -784,7 +946,7 @@ takajo.exe sysmon-process-tree -t ../hayabusa/timeline.jsonl -p "365ABB72-3D4A-5
 必須オプション:
 
 - `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -822,7 +984,7 @@ partition diagnosticイベントのCSVタイムラインを作成します。Win
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -853,7 +1015,7 @@ takajo.exe timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o partit
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -901,7 +1063,7 @@ Security 4698 イベントからスケジュールタスク作成を抽出し、
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -934,7 +1096,7 @@ takajo.exe timeline-tasks -t ../hayabusa/timeline.jsonl -o timeline-tasks.csv
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -975,7 +1137,7 @@ TTPsを抽出し、[MITRE ATT&CK Navigator](https://mitre-attack.github.io/attac
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 
@@ -1012,7 +1174,7 @@ TTPsをSigmaルールから抽出し、[MITRE ATT&CK Navigator](https://mitre-at
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE>`: HayabusaのJSONLタイムライン
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
 
 任意オプション:
 

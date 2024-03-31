@@ -214,7 +214,7 @@ If you have Nim installed, you can compile from source with the following comman
 
 # Command Usage
 
-# Automation Commands
+## Automation Commands
 
 ### `automagic` command
 
