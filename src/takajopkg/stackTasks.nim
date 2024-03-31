@@ -9,7 +9,7 @@ type
     ignoreSecurity: bool
 
 method filter*(self: StackTasksCmd, x: HayabusaJson): bool =
-  return (x.EventID == 4698 and x.Channel == "Sec" and not self.ignoreSecurity) or not self.ignoreSysmon
+  return (x.EventID == 4698 and x.Channel == "Sec" and not self.ignoreSecurity) and not self.ignoreSysmon
 
 proc decodeEntity*(txt: string): string =
   return txt.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;",
