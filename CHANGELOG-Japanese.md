@@ -4,6 +4,7 @@
 
 **新機能:**
 
+- `automagic`コマンド: 可能な限り多くのコマンドを自動的に実行し、結果を新しいフォルダに出力する。(#132) (@fukusuket)
 - `stack-computers`コマンド: `Computer`(デフォルト)または`SrcComp`フィールドのスタック分析をしながら、アラート情報も提供する。(#125) (@fukusuket)
 - `stack-ip-addresses`コマンド: `SrcIP`(デフォルト)または`TgtIP`フィールドのスタック分析をしながら、アラート情報も提供する。(#129) (@fukusuket)
 - `stack-users`コマンド: `TgtUser`(デフォルト)または`SrcUser`フィールドのスタック分析をしながら、アラート情報も提供する。(#130) (@fukusuket)
