@@ -5,8 +5,6 @@ type
     level*: string
     header* = @["TaskName", "Command", "Arguments"]
     stack* = initTable[string, StackRecord]()
-    ignoreSysmon: bool
-    ignoreSecurity: bool
 
 method filter*(self: StackTasksCmd, x: HayabusaJson): bool =
   return x.EventID == 4698 and x.Channel == "Sec"
@@ -39,8 +37,7 @@ method analyze*(self: StackTasksCmd, x: HayabusaJson) =
 method resultOutput*(self: StackTasksCmd) =
   outputResult(self, self.stack, self.header)
 
-proc stackTasks(level: string = "informational", ignoreSysmon: bool = false,
-    ignoreSecurity: bool = false, skipProgressBar: bool = false,
+proc stackTasks(level: string = "informational", skipProgressBar: bool = false,
     output: string = "", quiet: bool = false, timeline: string) =
   checkArgs(quiet, timeline, level)
   var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
@@ -51,7 +48,5 @@ proc stackTasks(level: string = "informational", ignoreSysmon: bool = false,
                 timeline: timelinePath,
                 output: output,
                 name: "stack-tasks",
-                msg: StackTasksMsg,
-                ignoreSysmon: ignoreSysmon,
-                ignoreSecurity: ignoreSecurity)
+                msg: StackTasksMsg)
     cmd.analyzeJSONLFile()
