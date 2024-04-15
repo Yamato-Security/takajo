@@ -68,9 +68,13 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
     output: output & "/StackTargetIP-Addresses.csv",
     targetIpAddresses: true)
 
-  # stack-logons -t ../hayabusa/timeline.jsonl -o case-1/Logons.csv
-  let cmd12 = StackLogonsCmd(name: "stack-logons", displayTable: displayTable,
-    timeline: timeline, output: output & "/StackLogons.csv")
+  # stack-logons -t ../hayabusa/timeline.jsonl -o case-1/StackLogons.csv
+  let cmd12 = StackLogonsCmd(name: "stack-logons(successful)", displayTable: displayTable,
+    timeline: timeline, output: output & "/StackSuccessfulLogons.csv")
+
+  # stack-logons -t ../hayabusa/timeline.jsonl --failedLogons -o case-1/StackFailedLogons.csv
+  let cmd122 = StackLogonsCmd(name: "stack-logons(failed)", displayTable: displayTable,
+    timeline: timeline, output: output & "/StackFailedLogons.csv", failedLogons:true)
 
   # stack-processes -t ../hayabusa/timeline.jsonl --level <level> -o case-1/Processes.csv
   let cmd13 = StackProcessesCmd(name: "stack-processes", level: level,
@@ -137,7 +141,7 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
 
   # execute all command
   let cmds = @[cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, cmd8, cmd9, cmd10,
-        cmd11, cmd12, cmd13, cmd14, cmd15, cmd16, cmd17, cmd18, cmd19,
+        cmd11, cmd12, cmd122, cmd13, cmd14, cmd15, cmd16, cmd17, cmd18, cmd19,
         cmd20,
         cmd21, cmd22, cmd23, cmd24, cmd25]
   let cmd = AutoMagicCmd(level: level, skipProgressBar: skipProgressBar,
