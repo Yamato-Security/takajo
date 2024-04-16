@@ -1,5 +1,11 @@
 # 変更点
 
+## x.x.x [xxxx/xx/xx]
+
+**改善:**
+
+- `stack-logons`コマンドに`-f, --failedLogons`オプションを追加して、`automagic`コマンドで失敗したログイン集計を出力するようにした。 (#152) (@fukusuket)
+
 ## 2.5.0 [2024/03/30] - BSides Tokyo Release
 
 **新機能:**

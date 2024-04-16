@@ -58,7 +58,7 @@ include takajopkg/automagic
 
 
 when isMainModule:
-    clCfg.version = "2.5.0"
+    clCfg.version = "2.5.1-dev"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
@@ -73,7 +73,7 @@ when isMainModule:
     const example_stack_computers = "  stack-computers -t ../hayabusa/timeline.jsonl [--level informational] [--sourceComputers] [--skipProgressBar] -o computers.csv\p"
     const example_stack_dns = "  stack-dns -t ../hayabusa/timeline.jsonl [--level infomational] [--skipProgressBar] -o dns.csv\p"
     const example_stack_ip_addresses = "  stack-ip-addresses -t ../hayabusa/timeline.jsonl [--level infomational] [--targetIpAddresses] [--skipProgressBar] -o ipAddresses.csv\p"
-    const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o logons.csv\p"
+    const example_stack_logons = "  stack-logons -t ../hayabusa/timeline.jsonl [--skipProgressBar] [--failedLogons] -o logons.csv\p"
     const example_stack_processes = "  stack-processes -t ../hayabusa/timeline.jsonl [--level low] [--skipProgressBar] -o processes.csv\p"
     const example_stack_services  = "  stack-services -t ../hayabusa/timeline.jsonl [--level infomational] [--skipProgressBar] -o services.csv\p"
     const example_stack_tasks = "  stack-tasks -t ../hayabusa/timeline.jsonl [--level infomational] [--skipProgressBar] -o tasks.csv\p"
@@ -276,6 +276,7 @@ when isMainModule:
             doc = "stack logons by target user, target computer, source IP address and source computer",
             help = {
                 "localSrcIpAddresses": "include results when the source IP address is local",
+                "failedLogons": "stack failed logons instead of successful logons",
                 "output": "save results to a CSV file (default: stdout)",
                 "quiet": "do not display the launch banner (default: false)",
                 "skipProgressBar": "do not display the progress bar (default: false)",

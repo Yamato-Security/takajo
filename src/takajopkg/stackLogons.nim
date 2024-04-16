@@ -1,15 +1,18 @@
 # TODO
 # Output to stdout in tables (Target User, Target Computer, Logon Type, Source Computer)
 # Remove local logins
-const StackLogonsMsg = "This command will stack logons based on target user, target computer, source IP address and source computer from Security 4624 events.\nLocal source IP addresses are not included by default but can be enabled with -l, --localSrcIpAddresses."
+const StackLogonsMsg = "This command will stack logons based on target user, target computer, source IP address and source computer from Security 4624/4625 events.\nLocal source IP addresses are not included by default but can be enabled with -l, --localSrcIpAddresses."
 
 type
   StackLogonsCmd* = ref object of AbstractCmd
     seqOfStrings*: seq[string]
     uniqueLogons = 0
     localSrcIpAddresses: bool
+    failedLogons: bool
 
 method filter*(self: StackLogonsCmd, x: HayabusaJson): bool =
+  if self.failedLogons:
+      return isEID_4625(x.RuleTitle)
   return isEID_4624(x.RuleTitle)
 
 method analyze*(self: StackLogonsCmd, x: HayabusaJson) =
@@ -48,7 +51,7 @@ method resultOutput*(self: StackLogonsCmd) =
   if self.output == "":
     # Print the sorted counts with unique strings
     for (string, count) in seqOfPairs:
-      inc self.uniqueLogons
+      self.uniqueLogons += count
       var commaDelimitedStr = $count & "," & string
       commaDelimitedStr = replace(commaDelimitedStr, ",", " | ")
       echo commaDelimitedStr
@@ -60,7 +63,7 @@ method resultOutput*(self: StackLogonsCmd) =
 
     # Write results
     for (string, count) in seqOfPairs:
-      inc self.uniqueLogons
+      self.uniqueLogons += count
       writeLine(outputFile, $count & "," & string)
     outputFileSize = getFileSize(outputFile)
     close(outputFile)
@@ -72,7 +75,7 @@ method resultOutput*(self: StackLogonsCmd) =
     echo "Saved file: " & savedFiles
   self.cmdResult = CmdResult(results: results, savedFiles: savedFiles)
 
-proc stackLogons(localSrcIpAddresses = false, skipProgressBar: bool = false,
+proc stackLogons(localSrcIpAddresses = false, failedLogons = false, skipProgressBar: bool = false,
     output: string = "", quiet: bool = false, timeline: string) =
   checkArgs(quiet, timeline, "informational")
   var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
@@ -83,5 +86,6 @@ proc stackLogons(localSrcIpAddresses = false, skipProgressBar: bool = false,
                 output: output,
                 name: "stack-logons",
                 msg: StackLogonsMsg,
-                localSrcIpAddresses: localSrcIpAddresses)
+                localSrcIpAddresses: localSrcIpAddresses,
+                failedLogons: failedLogons)
     cmd.analyzeJSONLFile()
