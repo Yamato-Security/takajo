@@ -254,6 +254,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Obfuscated Files or Information"
     },
+    "T1027.013": {
+        "Sub-Technique": "Encrypted/Encoded File",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
     "T1029": {
         "Sub-Technique": "-",
         "Tactic": "Exfiltration",
@@ -581,6 +586,11 @@
     },
     "T1059.009": {
         "Sub-Technique": "Cloud API",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.010": {
+        "Sub-Technique": "AutoHotKey & AutoIT",
         "Tactic": "Execution",
         "Technique": "Command and Scripting Interpreter"
     },
@@ -1259,6 +1269,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "System Script Proxy Execution"
     },
+    "T1216.002": {
+        "Sub-Technique": "SyncAppvPublishingServer",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Script Proxy Execution"
+    },
     "T1217": {
         "Sub-Technique": "-",
         "Tactic": "Discovery",
@@ -1334,6 +1349,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "System Binary Proxy Execution"
     },
+    "T1218.015": {
+        "Sub-Technique": "Electron Applications",
+        "Tactic": "Defense Evasion",
+        "Technique": "System Binary Proxy Execution"
+    },
     "T1219": {
         "Sub-Technique": "-",
         "Tactic": "Command and Control",
@@ -1382,17 +1402,17 @@
     "T1484": {
         "Sub-Technique": "-",
         "Tactic": "Defense Evasion",
-        "Technique": "Domain Policy Modification"
+        "Technique": "Domain or Tenant Policy Modification"
     },
     "T1484.001": {
         "Sub-Technique": "Group Policy Modification",
         "Tactic": "Defense Evasion",
-        "Technique": "Domain Policy Modification"
+        "Technique": "Domain or Tenant Policy Modification"
     },
     "T1484.002": {
-        "Sub-Technique": "Domain Trust Modification",
+        "Sub-Technique": "Trust Modification",
         "Tactic": "Defense Evasion",
-        "Technique": "Domain Policy Modification"
+        "Technique": "Domain or Tenant Policy Modification"
     },
     "T1485": {
         "Sub-Technique": "-",
@@ -1649,6 +1669,11 @@
         "Tactic": "Privilege Escalation",
         "Technique": "Create or Modify System Process"
     },
+    "T1543.005": {
+        "Sub-Technique": "Container Service",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Create or Modify System Process"
+    },
     "T1546": {
         "Sub-Technique": "-",
         "Tactic": "Privilege Escalation",
@@ -1839,6 +1864,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Abuse Elevation Control Mechanism"
     },
+    "T1548.006": {
+        "Sub-Technique": "TCC Manipulation",
+        "Tactic": "Defense Evasion",
+        "Technique": "Abuse Elevation Control Mechanism"
+    },
     "T1550": {
         "Sub-Technique": "-",
         "Tactic": "Lateral Movement",
@@ -1947,7 +1977,7 @@
     "T1554": {
         "Sub-Technique": "-",
         "Tactic": "Persistence",
-        "Technique": "Compromise Client Software Binary"
+        "Technique": "Compromise Host Software Binary"
     },
     "T1555": {
         "Sub-Technique": "-",
@@ -2026,6 +2056,11 @@
     },
     "T1556.008": {
         "Sub-Technique": "Network Provider DLL",
+        "Tactic": "Credential Access",
+        "Technique": "Modify Authentication Process"
+    },
+    "T1556.009": {
+        "Sub-Technique": "Conditional Access Policies",
         "Tactic": "Credential Access",
         "Technique": "Modify Authentication Process"
     },
@@ -2264,6 +2299,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Hide Artifacts"
     },
+    "T1564.012": {
+        "Sub-Technique": "File/Path Exclusions",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
     "T1565": {
         "Sub-Technique": "-",
         "Tactic": "Impact",
@@ -2464,6 +2504,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Hijack Execution Flow"
     },
+    "T1574.014": {
+        "Sub-Technique": "AppDomainManager",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hijack Execution Flow"
+    },
     "T1578": {
         "Sub-Technique": "-",
         "Tactic": "Defense Evasion",
@@ -2584,6 +2629,11 @@
         "Tactic": "Resource Development",
         "Technique": "Compromise Infrastructure"
     },
+    "T1584.008": {
+        "Sub-Technique": "Network Devices",
+        "Tactic": "Resource Development",
+        "Technique": "Compromise Infrastructure"
+    },
     "T1585": {
         "Sub-Technique": "-",
         "Tactic": "Resource Development",
@@ -2681,6 +2731,11 @@
     },
     "T1588.006": {
         "Sub-Technique": "Vulnerabilities",
+        "Tactic": "Resource Development",
+        "Technique": "Obtain Capabilities"
+    },
+    "T1588.007": {
+        "Sub-Technique": "Artificial Intelligence",
         "Tactic": "Resource Development",
         "Technique": "Obtain Capabilities"
     },
@@ -3021,7 +3076,7 @@
     },
     "T1611": {
         "Sub-Technique": "-",
-        "Tactic": "Privilege Escalation",
+        "Tactic": "Defense Evasion",
         "Technique": "Escape to Host"
     },
     "T1612": {
@@ -3111,7 +3166,7 @@
     },
     "T1656": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Lateral Movement",
         "Technique": "Impersonation"
     },
     "T1657": {
@@ -3123,6 +3178,11 @@
         "Sub-Technique": "-",
         "Tactic": "Command and Control",
         "Technique": "Content Injection"
+    },
+    "T1665": {
+        "Sub-Technique": "-",
+        "Tactic": "Command and Control",
+        "Technique": "Hide Infrastructure"
     },
     "TA0001": {
         "Sub-Technique": "-",
