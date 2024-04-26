@@ -5,6 +5,7 @@
 **Enhancements:**
 
 - Added `-f, --failedLogons` to the `stack-logons` command and added stacked failed logon information to the `automagic` command output. (#152) (@fukusuket)
+- Updated MITRE ATT&CK to v15.0. (#155) (@fukusuket)
 
 ## 2.5.0 [2024/03/30] - BSides Tokyo Release
 

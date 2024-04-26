@@ -5,6 +5,7 @@
 **改善:**
 
 - `stack-logons`コマンドに`-f, --failedLogons`オプションを追加して、`automagic`コマンドで失敗したログイン集計を出力するようにした。 (#152) (@fukusuket)
+- MITRE ATT&CKをv15.0に更新した。 (#155) (@fukusuket)
 
 ## 2.5.0 [2024/03/30] - BSides Tokyo Release
 
