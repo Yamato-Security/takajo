@@ -7,6 +7,10 @@
 - Added `-f, --failedLogons` to the `stack-logons` command and added stacked failed logon information to the `automagic` command output. (#152) (@fukusuket)
 - Updated MITRE ATT&CK to v15.0. (#155) (@fukusuket)
 
+**Bug Fixes:**
+
+- Fixed a compile error on macOS due to https://github.com/treeform/puppy/issues/118 . (#158) (@YamatoSecurity)
+
 ## 2.5.0 [2024/03/30] - BSides Tokyo Release
 
 **New Features:**
