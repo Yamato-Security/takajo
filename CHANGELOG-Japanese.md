@@ -7,6 +7,10 @@
 - `stack-logons`コマンドに`-f, --failedLogons`オプションを追加して、`automagic`コマンドで失敗したログイン集計を出力するようにした。 (#152) (@fukusuket)
 - MITRE ATT&CKをv15.0に更新した。 (#155) (@fukusuket)
 
+**バグ修正:**
+
+- https://github.com/treeform/puppy/issues/118 によるmacOSでのコンパイルエラーを修正した。 (#158) (@YamatoSecurity)
+
 ## 2.5.0 [2024/03/30] - BSides Tokyo Release
 
 **新機能:**
