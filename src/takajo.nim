@@ -1,8 +1,8 @@
 import algorithm
 import cligen
+import httpclient
 import json
 import nancy
-import puppy
 import re
 import sets
 import sequtils

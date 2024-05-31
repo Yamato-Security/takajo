@@ -2,15 +2,15 @@
 
 var vtIpAddressChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
 
-proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders) {.thread.} =
-    let response = get("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, headers)
+proc queryIpAPI(client: HttpClient, ipAddress:string) {.thread.} =
+    let response = client.get("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
     var malicious = false
     singleResultTable["IP-Address"] = ipAddress
     singleResultTable["Link"] = "https://www.virustotal.com/gui/ip_addresses/" & ipAddress
-    singleResultTable["Response"] = intToStr(response.code)
-    if response.code == 200:
+    singleResultTable["Response"] = response.status
+    if response.status == "200":
         jsonResponse = parseJson(response.body)
 
         # Parse values that need epoch time to human readable time
@@ -80,17 +80,18 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
         bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
-        headers: httpheaders.HttpHeaders
+        headers = newHttpHeaders({"x-apikey": apiKey})
+        client = newHttpClient()
 
-    headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
+    client.headers = headers
     vtIpAddressChannel.open()
 
     for ipAddress in lines:
         inc bar
         bar.update(1000000000) # refresh every second
-        spawn queryIpAPI(ipAddress, headers) # run queries in parallel
+        spawn queryIpAPI(client, ipAddress) # run queries in parallel
 
         # Sleep to respect the rate limit.
         sleep(int(timePerRequest * 1000)) # Convert to milliseconds.

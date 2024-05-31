@@ -5,15 +5,15 @@
 
 var vtAPIDomainChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
 
-proc queryDomainAPI(domain:string, headers: httpheaders.HttpHeaders) {.thread.} =
-    let response = get("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain), headers)
+proc queryDomainAPI(client: HttpClient, domain:string) {.thread.} =
+    let response = client.get("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain))
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
     var malicious = false
     singleResultTable["Domain"] = domain
     singleResultTable["Link"] = "https://www.virustotal.com/gui/domain/" & domain
-    singleResultTable["Response"] = intToStr(response.code)
-    if response.code == 200:
+    singleResultTable["Response"] = response.status
+    if response.status == "200":
         jsonResponse = parseJson(response.body)
         # Parse values that need epoch time to human readable time
         singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
@@ -78,17 +78,18 @@ proc vtDomainLookup(apiKey: string, domainList: string, jsonOutput: string = "",
         bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
-        headers: httpheaders.HttpHeaders
+        headers = newHttpHeaders({"x-apikey": apiKey})
+        client = newHttpClient()
 
-    headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
+    client.headers = headers
     vtAPIDomainChannel.open()
 
     for domain in lines:
         inc bar
         bar.update(1000000000) # refresh every second
-        spawn queryDomainAPI(domain, headers) # run queries in parallel
+        spawn queryDomainAPI(client, domain) # run queries in parallel
 
         # Sleep to respect the rate limit.
         sleep(int(timePerRequest * 1000)) # Convert to milliseconds.

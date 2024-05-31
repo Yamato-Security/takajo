@@ -4,15 +4,15 @@
 
 var vtAPIHashChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
 
-proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders) {.thread.} =
-    let response = get("https://www.virustotal.com/api/v3/files/" & hash, headers)
+proc queryHashAPI(client: HttpClient, hash:string) {.thread.} =
+    let response = client.get("https://www.virustotal.com/api/v3/files/" & hash)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
     var malicious = false
     singleResultTable["Hash"] = hash
     singleResultTable["Link"] = "https://www.virustotal.com/gui/file/" & hash
-    singleResultTable["Response"] = intToStr(response.code)
-    if response.code == 200:
+    singleResultTable["Response"] = response.status
+    if response.status == "200":
         jsonResponse = parseJson(response.body)
         # Parse values that need epoch time to human readable time
         singleResultTable["CreationDate"] = getJsonDate(jsonResponse, @["data", "attributes", "creation_date"])
@@ -67,17 +67,18 @@ proc vtHashLookup(apiKey: string, hashList: string, jsonOutput: string = "", out
         bar: SuruBar = initSuruBar()
         seqOfResultsTables: seq[TableRef[string, string]]
         jsonResponses: seq[JsonNode]  # Declare sequence to store Json responses
-        headers: httpheaders.HttpHeaders
+        headers = newHttpHeaders({"x-apikey": apiKey})
+        client = newHttpClient()
 
-    headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
+    client.headers = headers
     vtAPIHashChannel.open()
 
     for hash in lines:
         inc bar
         bar.update(1000000000) # refresh every second
-        spawn queryHashAPI(hash, headers) # run queries in parallel
+        spawn queryHashAPI(client, hash) # run queries in parallel
 
         # Sleep to respect the rate limit.
         sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
