@@ -161,7 +161,7 @@ Nimがインストールされている場合、以下のコマンドでソー�
 
 ```
 > nimble update
-> nimble build -d:release --threads:on
+> nimble build -d:release -d:ssl --threads:on
 ```
 
 # コマンド一覧
