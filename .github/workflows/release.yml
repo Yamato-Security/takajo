@@ -28,12 +28,12 @@ jobs:
       - name: Build Takajo binary
         if: matrix.os != 'macos-12'
         run: |
-          nimble build -d:release --threads:on
+          nimble build -d:release -d:ssl --threads:on
 
       - name: Build Takajo binary for Intel Mac
         if: matrix.os == 'macos-12'
         run: |
-          nimble build -d:release --threads:on --os:macosx --cpu:amd64 
+          nimble build -d:release -d:ssl --threads:on --os:macosx --cpu:amd64 
 
       - name: Package and Zip - Windows
         if: matrix.os == 'windows-latest'
