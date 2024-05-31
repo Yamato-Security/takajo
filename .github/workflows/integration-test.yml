@@ -22,7 +22,7 @@ jobs:
         run: |
           cd takajo
           nimble update
-          nimble build -d:release --threads:on
+          nimble build -d:release -d:release --threads:on
           cd ../
 
       - name: clone hayabusa
