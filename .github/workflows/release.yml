@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest, macos-12]
+        os: [windows-latest, ubuntu-latest, ubuntu-20.04, macos-latest, macos-12]
 
     steps:
       - name: Checkout Repository
@@ -26,7 +26,7 @@ jobs:
           nimble update
 
       - name: Build Takajo binary
-        if: matrix.os != 'macos-12'
+        if: matrix.os == 'windows-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         run: |
           nimble build -d:release -d:ssl --threads:on
 
@@ -34,6 +34,11 @@ jobs:
         if: matrix.os == 'macos-12'
         run: |
           nimble build -d:release -d:ssl --threads:on --os:macosx --cpu:amd64 
+
+      - name: Build Takajo binary for musl
+        if: matrix.os == 'ubuntu-20.04'
+        run: |
+          sudo apt install musl-tools && sudo apt install musl-dev && nimble build -d:release -d:ssl --threads:on --gcc.exe:"musl-gcc" --gcc.linkerexe:"musl-gcc" --passL="-static"
 
       - name: Package and Zip - Windows
         if: matrix.os == 'windows-latest'
@@ -52,6 +57,7 @@ jobs:
           cp mitre-attack.json release-binaries/
           case ${{ matrix.os }} in
             'ubuntu-latest') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-linux.zip release-binaries/* ;;
+            'ubuntu-20.04') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-linux-musl.zip release-binaries/* ;;
             'macos-latest') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip release-binaries/* ;;
             'macos-12') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip release-binaries/* ;;
           esac

@@ -87,7 +87,6 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
     bar.setup()
     client.headers = headers
     vtIpAddressChannel.open()
-
     for ipAddress in lines:
         inc bar
         bar.update(1000000000) # refresh every second
