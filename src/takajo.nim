@@ -111,6 +111,7 @@ when isMainModule:
             help = {
                 "displayTable": "display the results table (default: false)",
                 "level": "specify the minimum alert level (default: informational)",
+                "low-memory-mode": "Scan with minimal memory usage by processing each command sequentially (default: false)",
                 "output": "output directory (default: case-1)",
                 "quiet": "do not display the launch banner (default: false)",
                 "skipProgressBar": "do not display the progress bar (default: false)",

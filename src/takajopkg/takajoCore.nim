@@ -82,3 +82,47 @@ proc analyzeJSONLFile*(self: AbstractCmd, cmds: seq[AbstractCmd] = newSeq[
     table.echoTableSepsWithStyled(seps = boxSeps)
 
   outputElapsedTime(startTime)
+
+
+proc analyzeJSONLFileLowMemory*(self: AbstractCmd, cmds: seq[AbstractCmd] = newSeq[
+    AbstractCmd]()) =
+  let startTime = epochTime()
+  var commands = cmds
+  var bar: SuruBar
+  if not self.skipProgressBar:
+    bar = initSuruBar()
+    bar[0].total = countJsonlAndStartMsg(self.name, self.msg, self.timeline) * cmds.len()
+    bar.setup()
+  var resultSummaryTable: seq[CmdResult] = @[]
+  let fileInfo = getFileInfo(self.timeline)
+  var filePaths = @[self.timeline]
+  if (fileInfo.kind == pcDir or fileInfo.kind == pcLinkToDir):
+    filePaths = getTargetExtFileLists(self.timeline, ".jsonl", true)
+  for cmd in commands:
+    for path in filePaths:
+      for line in lines(path):
+        if not self.skipProgressBar:
+          inc bar
+          bar.update(1000000000)
+        let jsonLineOpt = parseLine(line)
+        if jsonLineOpt.isNone:
+          continue
+        let jsonLine: HayabusaJson = jsonLineOpt.get()
+        try:
+          if cmd.filter(jsonLine):
+            cmd.analyze(jsonLine)
+        except CatchableError:
+          continue
+    cmd.resultOutput()
+    resultSummaryTable.add(cmd.cmdResult)
+  if not self.skipProgressBar:
+    bar.finish()
+
+  var table: TerminalTable
+  table.add @["Command", "Results", "Saved Files"]
+  for i, result in enumerate(resultSummaryTable):
+    table.add commands[i].name, result.results, result.savedFiles
+  echo ""
+  table.echoTableSepsWithStyled(seps = boxSeps)
+
+  outputElapsedTime(startTime)
