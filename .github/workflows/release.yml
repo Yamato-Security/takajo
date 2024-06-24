@@ -20,6 +20,8 @@ jobs:
 
       - name: Setup Nim
         uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: '2.0.4'
 
       - name: Update nimble libraries
         run: |
