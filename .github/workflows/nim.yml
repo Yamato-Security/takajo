@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: jiro4989/setup-nim-action@v1
         with:
-          nim-version: '2.x' # default is 'stable'
+          nim-version: '2.0.4' # default is 'stable'
       - name: Build check
         run: nimble build --threads:on -Y
       - name: Run tests
