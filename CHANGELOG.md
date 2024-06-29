@@ -1,6 +1,6 @@
 # Changes
 
-## x.x.x [xxxx/xx/xx]
+## 2.6.0 [xxxx/xx/xx]
 
 **Enhancements:**
 
@@ -10,6 +10,7 @@
 **Bug Fixes:**
 
 - Fixed a compile error on macOS due to https://github.com/treeform/puppy/issues/118 . (#158) (@YamatoSecurity)
+- Fixed a compile error when using nim 2.0.6. (#162) (@fukusuket)
 
 ## 2.5.0 [2024/03/30] - BSides Tokyo Release
 

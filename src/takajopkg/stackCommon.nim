@@ -18,8 +18,8 @@ type StackRecord* = ref object
     eid* = ""
     channel* = ""
     levelsOrder* = 0
-    levels*:CountTable = initCountTable[string]()
-    ruleTitles*:CountTable = initCountTable[string]()
+    levels*:CountTable[string] = initCountTable[string]()
+    ruleTitles*:CountTable[string] = initCountTable[string]()
     otherColumn = newSeq[string]()
 
 proc calcLevelOrder(x: StackRecord): int =

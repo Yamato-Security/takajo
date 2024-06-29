@@ -1,6 +1,6 @@
 # 変更点
 
-## x.x.x [xxxx/xx/xx]
+## 2.6.0 [xxxx/xx/xx]
 
 **改善:**
 
@@ -10,6 +10,7 @@
 **バグ修正:**
 
 - https://github.com/treeform/puppy/issues/118 によるmacOSでのコンパイルエラーを修正した。 (#158) (@YamatoSecurity)
+- Nim 2.0.6でのコンパイルエラーを修正した。 (#162) (@fukusuket)
 
 ## 2.5.0 [2024/03/30] - BSides Tokyo Release
 
