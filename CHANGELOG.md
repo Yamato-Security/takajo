@@ -11,6 +11,7 @@
 
 - Fixed a compile error on macOS due to https://github.com/treeform/puppy/issues/118 . (#158) (@YamatoSecurity)
 - Fixed a compile error when using nim 2.0.6. (#162) (@fukusuket)
+- Alert level information was not being shown in the `timeline-suspicious-processes` command. (#167) (@fukusuket)
 
 ## 2.5.0 [2024/03/30] - BSides Tokyo Release
 
