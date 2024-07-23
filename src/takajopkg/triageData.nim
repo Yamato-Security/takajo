@@ -135,10 +135,10 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
 
     # start analysis timeline
     # obtain datas from SQLite
-    let query = sql"""select rule_title, level, computer, min(timestamp) as start_date, max(timestamp) as end_date, count(*) as count
+    let query = sql"""select rule_title, rule_file, level, level_order, computer, min(timestamp) as start_date, max(timestamp) as end_date, count(*) as count
                         from timelines
                         group by rule_title, level, computer
-                        order by level_order, rule_title, computer
+                        order by level_order
                         """
 
     var alerts = db.getAllRows(query)
@@ -146,13 +146,13 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
     # close sqlite file
     db.close()
 
-    # データの整形
+    # data formatting
     type
         Computer = tuple[name: string, count: int, start_date: string, end_date: string]
-        Alert = tuple[title: string, count: int, computers: seq[Computer]]
-        Level = tuple[level: string, alerts: seq[Alert]]
+        Alert = tuple[title: string, rule_file: string, level: string, count: int, computers: seq[Computer]]
+        Level = tuple[level_order: int, alerts: seq[Alert]]
     
-    var levels = initTable[string, seq[Alert]]()
+    var levels = initTable[int, seq[Alert]]()
 
     proc findAlert(alerts: seq[Alert], rule_title: string): int =
         for i, alert in alerts:
@@ -160,40 +160,49 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
                 return i
         return -1
 
+    proc extractDate(ts: string): string =
+        let spacePos = ts.find(' ')
+        if spacePos != -1:
+            return ts[0..spacePos-1]
+        return ts
 
     for row in alerts:
         let rule_title = row[0]
-        let level = row[1]
-        let computer = row[2]
-        let start_date = row[3]
-        let end_date = row[4]
-        let count = row[5].parseInt
+        let rule_file = row[1]
+        let level = row[2]
+        let level_order = row[3].parseInt
+        let computer = row[4]
+        let start_date = extractDate(row[5])
+        let end_date = extractDate(row[6])
+        let count = row[7].parseInt
 
-        if not levels.hasKey(level):
-            levels[level] = @[]
+        if not levels.contains(level_order):
+            levels[level_order] = @[]
 
-        var alertIndex = findAlert(levels[level], rule_title)
+        var alertIndex = findAlert(levels[level_order], rule_title)
         if alertIndex == -1:
-            levels[level].add((rule_title, 0, @[]))
-            alertIndex = levels[level].len - 1
+            levels[level_order].add((rule_title, rule_file, level, 0, @[]))
+            alertIndex = levels[level_order].len - 1
 
-        levels[level][alertIndex].count += count
-        levels[level][alertIndex].computers.add((computer, count, start_date, end_date))
+        levels[level_order][alertIndex].count += count
+        levels[level_order][alertIndex].computers.add((computer, count, start_date, end_date))
+
+    let severity_order = @["info", "low", "med", "high", "critical"]
 
     #
     # create a side menu
     #
-    proc printSideMenu(levels: Table[string, seq[Alert]]): string =
+    proc printSideMenu(levels: Table[int, seq[Alert]]): string =
         var ret = ""
 
-        for level, alerts in pairs(levels):    
+        for level_order, alerts in pairs(levels):    
             var totalAlerts = 0
             for alert in alerts:
                 totalAlerts += alert.count
-            ret &= "<li><h3 class=\"font-semibold\">" & level & " alerts (" & totalAlerts.intToStr & ")</h3><ul>"
+            ret &= "<li><h3 class=\"font-semibold\">" & severity_order[level_order-1] & " alerts (" & totalAlerts.intToStr & ")</h3><ul>"
 
             for alert in alerts:
-                ret &= "<li class=\"font-semibold\">■" & alert.title & " (" & alert.count.intToStr & ")<ul>"
+                ret &= "<li class=\"font-semibold\"><a href=\"" & alert.rule_file & "\">■" & alert.title & " (" & alert.count.intToStr & ")</a><ul>"
             
                 for computer in alert.computers:
                     ret &= "<li style=\"border-bottom:3px;\"><a href=\"\" class=\"inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer.name & " (" & computer.count.intToStr & ") (" & computer.start_date & " ~ " & computer.end_date & ")</a><li>"
@@ -215,19 +224,19 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
             mostTotalDate: string
             mostTotalCount: int
 
-    var summaryData = initTable[string, SummaryInfo]()
+    var summaryData = initTable[int, SummaryInfo]()
 
-    # データを集計
-    proc collectSummaryData(levels: Table[string, seq[Alert]]) =
+    # data aggregation
+    proc collectSummaryData(levels: Table[int, seq[Alert]]) =
     
         var totalDetections = 0
         var uniqueDetections = 0
         var dateCounts = initTable[string, int]()
 
-        for level, alerts in pairs(levels):
+        for level_order, alerts in pairs(levels):
             var totalCount = 0
             var uniqueCount = alerts.len
-            var dateCounts = initTable[string, int]()  # 各レベルごとにリセット
+            var dateCounts = initTable[string, int]()
 
             for alert in alerts:
                 totalCount += alert.count
@@ -239,7 +248,6 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
                     else:
                         dateCounts[date] = computer.count
 
-            # 最大値を手動で取得
             var mostTotalDate = ""
             var mostTotalCount = -1
             for date, count in dateCounts.pairs:
@@ -247,7 +255,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
                     mostTotalDate = date
                     mostTotalCount = count
 
-            summaryData[level] = SummaryInfo(
+            summaryData[level_order] = SummaryInfo(
                 totalCount: totalCount,
                 totalPercent: float(totalCount) / float(totalDetections) * 100,
                 uniqueCount: uniqueCount,
@@ -259,42 +267,36 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
             totalDetections += totalCount
             uniqueDetections += uniqueCount
 
-        # 最後に全体のパーセンテージを再計算
-        for level, info in pairs(summaryData):
-            summaryData[level].totalPercent = float(info.totalCount) / float(totalDetections) * 100
-            summaryData[level].uniquePercent = float(info.uniqueCount) / float(uniqueDetections) * 100
+        for level_order, info in pairs(summaryData):
+            summaryData[level_order].totalPercent = float(info.totalCount) / float(totalDetections) * 100
+            summaryData[level_order].uniquePercent = float(info.uniqueCount) / float(uniqueDetections) * 100
 
     collectSummaryData(levels)
 
 
-    # データの出力
-    proc printSummaryData(data: Table[string, SummaryInfo]): string =
+    # create a summary
+    proc printSummaryData(data: Table[int, SummaryInfo]): string =
 
-        let order = @["critical", "high", "med", "low", "info"]
         var ret = "<h3 class=\"mb-1 font-semibold\">Total detections:</h3>"
-        echo "Total detections:"
-        
-        for level in order:
-            if data.hasKey(level):
-                let info = data[level]
-                echo "  ", level, ": ", info.totalCount, " (", info.totalPercent, "%)"
-                ret &= "<p>" & level & ": " & info.totalCount.intToStr & " (" & $info.totalPercent & "%)</p>"
+        # echo "Total detections:"
+        for level_order, alerts in pairs(levels):
+            let info = data[level_order]
+            # echo "  ", level, ": ", info.totalCount, " (", info.totalPercent, "%)"
+            ret &= "<p>" & severity_order[level_order-1] & ": " & info.totalCount.intToStr & " (" & $info.totalPercent & "%)</p>"
             
-        echo "Unique detections:"
+        # echo "Unique detections:"
         ret &= "<h3 style=\"margin-top:16px;\" class=\"mb-1 font-semibold\">Unique detections:</h3>"
-        for level in order:
-            if data.hasKey(level):
-                let info = data[level]
-                echo "  ", level, ": ", info.uniqueCount, " (", info.uniquePercent, "%)"
-                ret &= "<p>" & level & ": " & info.uniqueCount.intToStr & " (" & $info.uniquePercent & "%)</p>"
+        for level_order, alerts in pairs(levels):
+            let info = data[level_order]
+            # echo "  ", level, ": ", info.uniqueCount, " (", info.uniquePercent, "%)"
+            ret &= "<p>" & severity_order[level_order-1] & ": " & info.uniqueCount.intToStr & " (" & $info.uniquePercent & "%)</p>"
   
-        echo "Dates with most total detections:"
+        # echo "Dates with most total detections:"
         ret &= "<h3 style=\"margin-top:16px;\" class=\"mb-1 font-semibold\">Dates with most total detections:</h3>"
-        for level in order:
-            if data.hasKey(level):
-                let info = data[level]
-                echo "  ", level, ": ", info.mostTotalDate, " (", info.mostTotalCount, ")"
-                ret &= "<p>" & level & ": " & info.mostTotalDate & " (" & info.mostTotalCount.intToStr & ")</p>"
+        for level_order, alerts in pairs(levels):
+            let info = data[level_order]
+            # echo "  ", level, ": ", info.mostTotalDate, " (", info.mostTotalCount, ")"
+            ret &= "<p>" & severity_order[level_order-1] & ": " & info.mostTotalDate & " (" & info.mostTotalCount.intToStr & ")</p>"
 
         return ret
 
