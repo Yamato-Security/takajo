@@ -195,7 +195,12 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
     proc printSideMenu(levels: Table[int, seq[Alert]]): string =
         var ret = ""
 
-        for level_order, alerts in pairs(levels):    
+        for level_order, alerts in pairs(levels):
+            
+            # do not display info for sidebar
+            if level_order == 1: 
+                continue
+
             var totalAlerts = 0
             for alert in alerts:
                 totalAlerts += alert.count
@@ -303,7 +308,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
     let summaryHtml = printSummaryData(summaryData)
     
     # read template file
-    var f: File = open("./templates/index.html", FileMode.fmRead)
+    var f: File = open("./templates/index.template", FileMode.fmRead)
     
     var html = ""
     while f.endOfFile == false :
