@@ -57,17 +57,19 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
                     let rule_file = jsonObj["RuleFile"].getStr()
                     let evtx_file = jsonObj["EvtxFile"].getStr()
 
-                    var level_order = 0
+                    var level_order = -1
                     if level == "critical":
-                        level_order = 5
-                    elif level == "high":
                         level_order = 4
-                    elif level == "med":
+                    elif level == "high":
                         level_order = 3
-                    elif level == "low":
+                    elif level == "med":
                         level_order = 2
-                    elif level == "info":
+                    elif level == "low":
                         level_order = 1
+                    elif level == "info":
+                        level_order = 0
+                    else:
+                        continue # exclude
 
                     # extra params
                     var rule_author = ""
@@ -198,13 +200,13 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
         for level_order, alerts in pairs(levels):
             
             # do not display info for sidebar
-            if level_order == 1: 
+            if level_order == 0: 
                 continue
 
             var totalAlerts = 0
             for alert in alerts:
                 totalAlerts += alert.count
-            ret &= "<li><h3 class=\"font-semibold\">" & severity_order[level_order-1] & " alerts (" & totalAlerts.intToStr & ")</h3><ul>"
+            ret &= "<li><h3 class=\"font-semibold\">" & severity_order[level_order] & " alerts (" & totalAlerts.intToStr & ")</h3><ul>"
 
             for alert in alerts:
                 ret &= "<li class=\"font-semibold\"><a href=\"" & alert.rule_file & "\">■" & alert.title & " (" & alert.count.intToStr & ")</a><ul>"
@@ -287,21 +289,21 @@ proc triageData*(output: string, quiet: bool = false, timeline: string) =
         for level_order, alerts in pairs(levels):
             let info = data[level_order]
             # echo "  ", level, ": ", info.totalCount, " (", info.totalPercent, "%)"
-            ret &= "<p>" & severity_order[level_order-1] & ": " & info.totalCount.intToStr & " (" & $info.totalPercent & "%)</p>"
+            ret &= "<p>" & severity_order[level_order] & ": " & info.totalCount.intToStr & " (" & $info.totalPercent & "%)</p>"
             
         # echo "Unique detections:"
         ret &= "<h3 style=\"margin-top:16px;\" class=\"mb-1 font-semibold\">Unique detections:</h3>"
         for level_order, alerts in pairs(levels):
             let info = data[level_order]
             # echo "  ", level, ": ", info.uniqueCount, " (", info.uniquePercent, "%)"
-            ret &= "<p>" & severity_order[level_order-1] & ": " & info.uniqueCount.intToStr & " (" & $info.uniquePercent & "%)</p>"
+            ret &= "<p>" & severity_order[level_order] & ": " & info.uniqueCount.intToStr & " (" & $info.uniquePercent & "%)</p>"
   
         # echo "Dates with most total detections:"
         ret &= "<h3 style=\"margin-top:16px;\" class=\"mb-1 font-semibold\">Dates with most total detections:</h3>"
         for level_order, alerts in pairs(levels):
             let info = data[level_order]
             # echo "  ", level, ": ", info.mostTotalDate, " (", info.mostTotalCount, ")"
-            ret &= "<p>" & severity_order[level_order-1] & ": " & info.mostTotalDate & " (" & info.mostTotalCount.intToStr & ")</p>"
+            ret &= "<p>" & severity_order[level_order] & ": " & info.mostTotalDate & " (" & info.mostTotalCount.intToStr & ")</p>"
 
         return ret
 
