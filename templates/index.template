@@ -1,0 +1,271 @@
+<!doctype html>
+<!-- dir="rtl" for RTL support -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+    <title>Project</title>
+
+    <!-- Inter web font from bunny.net (GDPR compliant) -->
+    <link rel="preconnect" href="https://fonts.bunny.net" />
+    <link
+      href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS Play CDN (mainly for development/testing purposes) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+
+    <!-- Tailwind CSS v3 Configuration -->
+    <script>
+      const defaultTheme = tailwind.defaultTheme;
+      const colors = tailwind.colors;
+      const plugin = tailwind.plugin;
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", ...defaultTheme.fontFamily.sans],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Alpine.js -->
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <!-- Alpine.js (x-cloak - https://alpinejs.dev/directives/cloak) -->
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div x-data="{ mobileSidebarOpen: false, desktopSidebarOpen: true }">
+  <!-- Page Container -->
+  <div
+    id="page-container"
+    class="mx-auto flex min-h-screen w-full min-w-[320px] flex-col bg-white lg:ps-64"
+    x-bind:class="{ 'lg:ps-64': desktopSidebarOpen }"
+  >
+    <!-- Page Sidebar -->
+    <nav
+      id="page-sidebar"
+      class="fixed bottom-0 start-0 top-0 z-50 flex h-full w-80 flex-col overflow-auto bg-slate-100 transition-transform duration-500 ease-out lg:w-64 lg:translate-x-0"
+      x-bind:class="{
+        'ltr:-translate-x-full rtl:translate-x-full': !mobileSidebarOpen,
+        'translate-x-0': mobileSidebarOpen,
+        'ltr:lg:-translate-x-full rtl:lg:translate-x-full': !desktopSidebarOpen,
+        'ltr:lg:translate-x-0 rtl:lg:translate-x-0': desktopSidebarOpen,
+      }"
+      aria-label="Main Sidebar Navigation"
+      x-cloak
+    >
+      <!-- Sidebar Header -->
+      <div
+        class="flex h-20 w-full flex-none items-center justify-between px-8"
+      >
+        <!-- Brand -->
+        <a
+          href="javascript:void(0)"
+          class="inline-flex items-center gap-2 text-lg font-medium tracking-wide text-slate-800 transition hover:opacity-75 active:opacity-100"
+        >
+          <span>Takajo</span>
+        </a>
+        <!-- END Brand -->
+
+        <!-- Close Sidebar on Mobile -->
+        <div class="lg:hidden">
+          <button
+            type="button"
+            class="flex h-10 w-10 items-center justify-center text-slate-400 hover:text-slate-600 active:text-slate-400"
+            x-on:click="mobileSidebarOpen = false"
+          >
+            <svg
+              class="hi-solid hi-x -mx-1 inline-block h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+        <!-- END Close Sidebar on Mobile -->
+      </div>
+      <!-- END Sidebar Header -->
+
+      <!-- Main Navigation -->
+      <div>
+        <ul class="w-full grow space-y-1.5 px-8 py-4">
+          <li>
+            <h3 class="font-semibold"><a href="index.html">Summary</a></h3>
+          </li>
+          [%SIDE_MENU%]
+          <!--
+          <li>            
+            <hr>
+            <h3 class="font-semibold">Stack Analysis</h3>
+            <ul>
+              <li>
+                <a
+                  href="commandlines.html"
+                  class="inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900"
+                >
+                  <span>Command Lines</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="computers.html"
+                  class="inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900"
+                >
+                  <span>Computers</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900"
+                >
+                  <span>その他1</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          -->
+        </ul>
+      </div>
+      <!-- END Main Navigation -->
+    </nav>
+    <!-- Page Sidebar -->
+
+    <!-- Page Header -->
+    <header
+      id="page-header"
+      class="fixed end-0 start-0 top-0 z-30 flex h-20 flex-none items-center border-b border-slate-100 bg-white/90 backdrop-blur-sm"
+      x-bind:class="{ 'lg:ps-64': desktopSidebarOpen }"
+    >
+      <div
+        class="container mx-auto flex justify-between px-4 lg:px-8 xl:max-w-7xl"
+      >
+        <!-- Left Section -->
+        <div class="flex items-center">
+          <!-- Toggle Sidebar on Mobile -->
+          <div class="me-2 lg:hidden">
+            <button
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg border-slate-100 bg-slate-100 px-2.5 py-2 font-semibold leading-6 text-slate-800 hover:border-slate-200 hover:bg-slate-200 hover:text-slate-800 focus:outline-none focus:ring focus:ring-indigo-500/25 active:border-slate-100 active:bg-slate-100"
+              x-on:click="mobileSidebarOpen = true"
+            >
+              <svg
+                class="hi-solid hi-menu-alt-1 inline-block h-5 w-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+          <!-- END Toggle Sidebar on Mobile -->
+
+          <!-- Toggle Sidebar on Desktop -->
+          <div class="hidden lg:block">
+            <button
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg border-slate-100 bg-slate-100 px-2.5 py-2 font-semibold leading-6 text-slate-800 hover:border-slate-200 hover:bg-slate-200 hover:text-slate-800 focus:outline-none focus:ring focus:ring-indigo-500/25 active:border-slate-100 active:bg-slate-100"
+              x-on:click="desktopSidebarOpen = !desktopSidebarOpen"
+            >
+              <svg
+                class="hi-solid hi-menu-alt-1 inline-block h-5 w-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+          <!-- END Toggle Sidebar on Desktop -->
+        </div>
+        <!-- END Left Section -->
+
+        <!-- Middle Section -->
+        <div class="flex items-center gap-2 lg:hidden">
+          <!-- Brand -->
+          <a
+            href="javascript:void(0)"
+            class="inline-flex items-center gap-2 text-lg font-medium tracking-wide text-slate-800 transition hover:opacity-75 active:opacity-100"
+          >
+            <svg
+              class="hi-mini hi-cursor-arrow-ripple inline-block h-5 w-5 text-indigo-600"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M6.111 11.89A5.5 5.5 0 1115.501 8 .75.75 0 1017 8a7 7 0 10-11.95 4.95.75.75 0 001.06-1.06zm2.121-5.658a2.5 2.5 0 000 3.536.75.75 0 11-1.06 1.06A4 4 0 1114 8a.75.75 0 01-1.5 0 2.5 2.5 0 00-4.268-1.768zm2.534 1.279a.75.75 0 00-1.37.364l-.492 6.861a.75.75 0 001.204.65l1.043-.799.985 3.678a.75.75 0 001.45-.388l-.978-3.646 1.292.204a.75.75 0 00.74-1.16l-3.874-5.764z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+          <!-- END Brand -->
+        </div>
+        <!-- END Middle Section -->
+      </div>
+    </header>
+    <!-- END Page Header -->
+
+    <!-- Page Content -->
+    <main
+      id="page-content"
+      class="flex max-w-full flex-auto flex-col pt-20"
+    >
+      <!-- Page Section -->
+      <div class="container mx-auto space-y-10 px-4 py-8 lg:space-y-16 lg:px-8 lg:py-12 xl:max-w-7xl">
+        <!-- Leads -->
+        <!-- ここにはそれぞれのページとカテゴリの説明を書いていく -->
+        <div>
+          <h2 class="mb-1 text-2xl font-semibold">[%PAGE_TITLE%]</h2>
+          <h3 class="mb-8 text-sm font-medium text-slate-600">
+            <!--You have 10 new leads, let's get to work!-->
+          </h3>
+          <div class="min-w-full overflow-x-auto rounded">
+            [%CONTENT%]
+          </div>
+        </div>
+        <!-- END Leads -->
+      </div>
+      <!-- END Page Section -->
+    </main>
+    <!-- END Page Content -->
+
+  </div>
+  <!-- END Page Container -->
+</div>
+  </body>
+</html>
