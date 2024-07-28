@@ -13,7 +13,7 @@
       href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-
+    
     <!-- Tailwind CSS Play CDN (mainly for development/testing purposes) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
 
@@ -47,6 +47,8 @@
         display: none !important;
       }
     </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
   </head>
 
   <body>
@@ -310,6 +312,61 @@
                 </div>
               </a>
             </div>
+
+            <canvas id="chart" class="mt-10"></canvas>
+            <script>
+              let ctx = document.getElementById("chart");
+              let config = {
+                type: 'bar',
+                data: {
+                  labels: [[%DATE_STR%]],
+                  datasets: [{
+                    label: 'Critical',
+                    data: [[%CRITICAL_GRAPH%]],
+                    backgroundColor: '#db2777',
+                    borderColor: '#db2777',
+                  }, {
+                    label: 'High',
+                    data: [[%HIGH_GRAPH%]],
+                    backgroundColor: '#ea580c',
+                    borderColor: '#ea580c',
+                  }, {
+                    label: 'Medium',
+                    data: [[%MEDIUM_GRAPH%]],
+                    backgroundColor: '#9333ea',
+                    borderColor: '#9333ea',
+                  }, {
+                    label: 'Low',
+                    data: [[%LOW_GRAPH%]],
+                    backgroundColor: '#0284c7',
+                    borderColor: '#0284c7',
+                  }, {
+                    label: 'Info',
+                    data: [[%INFO_GRAPH%]],
+                    backgroundColor: '#16a34a',
+                    borderColor: '#16a34a',
+                  }],
+                },
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'hogehoge'
+                  }
+                },
+                responsive: true,
+                options: {
+                  scales: {
+                    x: {
+                      stacked: true,
+                    },
+                    y: {
+                      stacked: true
+                    }
+                  }
+                }
+              };
+              let chart = new Chart(ctx, config);
+            </script>
 
             <h3 class="mt-10 mb-1 text-1xl font-semibold">Detection Rule List</h3>
             [%CONTENT%]

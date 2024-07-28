@@ -264,7 +264,6 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     
         var totalDetections = 0
         var uniqueDetections = 0
-        var dateCounts = initTable[string, int]()
 
         for level_order, alerts in pairs(levels):
             var totalCount = 0
@@ -386,9 +385,9 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
                 # List of detected levels by date
                 let date = computer.start_date.split(" ")[0]  # only the date portion is acquired.
                 if not compSummary.detectionsByDate.hasKey(date):
-                    compSummary.detectionsByDate[date] = @[]
-                if not level_order in compSummary.detectionsByDate[date]:
-                    compSummary.detectionsByDate[date].add(level_order)
+                    compSummary.detectionsByDate[date] = @[0, 0, 0, 0, 0]
+                
+                compSummary.detectionsByDate[date][level_order] += computer.count
                 
                 # List of detected rules
                 if not ((alert.title, alert.rule_file, level_order) in compSummary.detectedRules):
@@ -399,8 +398,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
 
 
     for compName, summary in pairs(computerSummaries):
-        echo compName
-
+        
         # read template file
         var f: File = open("./templates/content.template", FileMode.fmRead)
     
@@ -418,11 +416,44 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         for level_order, count in pairs(summary.totalDetections):
             html = html.replace("[%" & severity_order[level_order].toUpper & "_NUM%]", count.intToStr)
 
-        echo "Detections by date:"
-        for date, levels in pairs(summary.detectionsByDate):
-            echo "  ", date, ": ", levels
-  
-        echo "Detected rules:"
+        proc parseDate(dateStr: string): DateTime =
+            result = parse(dateStr, "yyyy-MM-dd")
+
+        var items = toSeq(summary.detectionsByDate.pairs())
+        
+        let sortedDates = summary.detectionsByDate.keys.toSeq.map(proc(key: string): tuple[original: string, parsed: DateTime] = (key, parseDate(key))).sorted(proc(a, b: tuple[original: string, parsed: DateTime]): int = cmp(a.parsed, b.parsed))
+
+        proc splitDate(dateStr: string): (string, string, string) =
+            let parts = dateStr.split("-")
+            result = (parts[0], parts[1], parts[2])
+
+        # Display data in sorted order
+        let length = len(summary.detectionsByDate)
+        var date_html = ""
+        var datasets_html = @["", "", "", "", ""]
+        for i, date in sortedDates:
+            date_html &= "'" & date.original & "'"
+            datasets_html[0] &= $summary.detectionsByDate[date.original][0]
+            datasets_html[1] &= $summary.detectionsByDate[date.original][1]
+            datasets_html[2] &= $summary.detectionsByDate[date.original][2]
+            datasets_html[3] &= $summary.detectionsByDate[date.original][3]
+            datasets_html[4] &= $summary.detectionsByDate[date.original][4]
+
+            if i != length-1:
+                date_html &= ","
+                datasets_html[0] &= ","
+                datasets_html[1] &= ","
+                datasets_html[2] &= ","
+                datasets_html[3] &= ","
+                datasets_html[4] &= ","
+
+        html = html.replace("[%DATE_STR%]", date_html)
+        html = html.replace("[%CRITICAL_GRAPH%]", datasets_html[4])
+        html = html.replace("[%HIGH_GRAPH%]", datasets_html[3])
+        html = html.replace("[%MEDIUM_GRAPH%]", datasets_html[2])
+        html = html.replace("[%LOW_GRAPH%]", datasets_html[1])
+        html = html.replace("[%INFO_GRAPH%]", datasets_html[0])
+
         var temp_html = "<table class=\"min-w-full align-middle text-sm\">"
         temp_html &= "<thead><tr class=\"border-b-2 border-slate-100\">"
         temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Alert Title</th>"
