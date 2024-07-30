@@ -46,6 +46,32 @@
       [x-cloak] {
         display: none !important;
       }
+
+      #side-menu ul {
+        border-top:1px solid #999;
+        border-bottom:1px solid #f1f6fc;
+      }
+
+      #side-menu li {
+        border-bottom:1px solid #999;
+      }
+
+      #side-menu li:last-child {
+      }
+
+      #side-menu li a{
+        text-decoration:none;
+        display:block;
+        padding:5px 5px 5px 10px;
+        -moz-transition-property: all;
+        -moz-transition-duration: 0.2s;
+        -moz-transition-timing-function: linear;
+        -webkit-transition: all 0.2s linear 0;
+      }
+
+      #side-menu li a:hover{
+        color:#ff0099;
+      }
     </style>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
@@ -111,15 +137,14 @@
       <!-- END Sidebar Header -->
 
       <!-- Main Navigation -->
-      <div>
-        <ul class="w-full grow space-y-1.5 px-8 py-4">
+      <div id="side-menu">
+        <ul class="w-full grow space-y-1.5 px-8">
           <li>
             <h3 class="font-semibold"><a href="index.html">Summary</a></h3>
           </li>
           [%SIDE_MENU%]
           <!--
           <li>            
-            <hr>
             <h3 class="font-semibold">Stack Analysis</h3>
             <ul>
               <li>
@@ -250,7 +275,6 @@
       <!-- Page Section -->
       <div class="container mx-auto space-y-10 px-4 py-8 lg:space-y-16 lg:px-8 lg:py-12 xl:max-w-7xl">
         <!-- Leads -->
-        <!-- ここにはそれぞれのページとカテゴリの説明を書いていく -->
         <div>
           <h2 class="mb-1 text-2xl font-semibold">[%PAGE_TITLE%]</h2>
           <h3 class="mb-8 text-sm font-medium text-slate-600">

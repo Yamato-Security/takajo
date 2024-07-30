@@ -236,10 +236,10 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
                     if not rulepath_list.hasKey(alert.title):
                         rulepath_list[alert.title] = rule_filepath
 
-                ret &= "<li class=\"font-semibold\"><a href=\"" & rule_filepath & "\">■" & alert.title & " (" & alert.count.intToStr & ")</a><ul>"
+                ret &= "<li class=\"font-semibold\"><a style=\"font-size:10pt !important;\" href=\"" & rule_filepath & "\">■" & alert.title & " (" & alert.count.intToStr & ")</a><ul>"
             
                 for computer in alert.computers:
-                    ret &= "<li style=\"border-bottom:3px;\"><a href=\"./" & computer.name & ".html\" class=\"inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer.name & " (" & computer.count.intToStr & ") (" & computer.start_date & " ~ " & computer.end_date & ")</a><li>"
+                    ret &= "<li style=\"border-bottom:3px;\"><a style=\"font-size:10pt !important;\" href=\"./" & computer.name & ".html\" class=\"inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer.name & " (" & computer.count.intToStr & ") (" & computer.start_date & " ~ " & computer.end_date & ")</a><li>"
 
                 ret &= "</ul></li>"
             ret &= "</ul></li>"
@@ -307,26 +307,40 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
 
 
     # create a summary
-    proc printSummaryData(data: Table[int, SummaryInfo]): string =
+    proc printSummaryData(data: Table[int, SummaryInfo]): (string, string, string) =
 
-        var ret = "<h3 class=\"mb-1 font-semibold\">Total detections:</h3>"
+        var total_detections = ""
         for level_order, alerts in pairs(levels):
             let info = data[level_order]
-            ret &= "<p>" & severity_order[level_order] & ": " & info.totalCount.intToStr & " (" & $info.totalPercent & "%)</p>"
-            
-        ret &= "<h3 style=\"margin-top:16px;\" class=\"mb-1 font-semibold\">Unique detections:</h3>"
+            let tmp_total_percent = info.totalPercent.formatFloat(ffDecimal, 2)
+            total_detections &= "<tr class=\"border-b border-gray-100\">"
+            total_detections &= "<td class=\"p-3 font-medium\">" & severity_order[level_order] & "</td>"
+            total_detections &= "<td class=\"p-3 font-medium\">" & $info.totalCount & "</td>"
+            total_detections &= "<td class=\"p-3 font-medium\">" & $tmp_total_percent & "%</td>"
+            total_detections &= "</tr>"
+
+        var unique_detections = ""
         for level_order, alerts in pairs(levels):
             let info = data[level_order]
-            ret &= "<p>" & severity_order[level_order] & ": " & info.uniqueCount.intToStr & " (" & $info.uniquePercent & "%)</p>"
+            let tmp_unique_percent = info.uniquePercent.formatFloat(ffDecimal, 2)
+            unique_detections &= "<tr class=\"border-b border-gray-100\">"
+            unique_detections &= "<td class=\"p-3 font-medium\">" & severity_order[level_order] & "</td>"
+            unique_detections &= "<td class=\"p-3 font-medium\">" & $info.uniqueCount & "</td>"
+            unique_detections &= "<td class=\"p-3 font-medium\">" & $tmp_unique_percent & "%</td>"
+            unique_detections &= "</tr>"
   
-        ret &= "<h3 style=\"margin-top:16px;\" class=\"mb-1 font-semibold\">Dates with most total detections:</h3>"
+        var date_with_most_total_detections = ""
         for level_order, alerts in pairs(levels):
             let info = data[level_order]
-            ret &= "<p>" & severity_order[level_order] & ": " & info.mostTotalDate & " (" & info.mostTotalCount.intToStr & ")</p>"
+            date_with_most_total_detections &= "<tr class=\"border-b border-gray-100\">"
+            date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & severity_order[level_order] & "</td>"
+            date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & info.mostTotalDate & "</td>"
+            date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & $info.mostTotalCount & "</td>"
+            date_with_most_total_detections &= "</tr>"
 
-        return ret
+        return (total_detections, unique_detections, date_with_most_total_detections)
 
-    let summaryHtml = printSummaryData(summaryData)
+    let (total_detections, unique_detections, date_with_most_total_detections) = printSummaryData(summaryData)
     
     # read template file
     var f: File = open("./templates/index.template", FileMode.fmRead)
@@ -339,7 +353,9 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     # replace HTML
     html = html.replace("[%PAGE_TITLE%]", "Summary")
     html = html.replace("[%SIDE_MENU%]", sidemenu)
-    html = html.replace("[%CONTENT%]", summaryHtml)    
+    html = html.replace("[%TOTAL_DETECTIONS%]", total_detections)
+    html = html.replace("[%UNIQUE_DETECTIONS%]", unique_detections)
+    html = html.replace("[%DATE_WITH_MOST_TOTAL_DETECTIONS%]", date_with_most_total_detections)
     
 
     # output HTML

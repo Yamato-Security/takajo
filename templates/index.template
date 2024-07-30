@@ -46,6 +46,33 @@
       [x-cloak] {
         display: none !important;
       }
+
+      #side-menu ul {
+        border-top:1px solid #999;
+        border-bottom:1px solid #f1f6fc;
+      }
+
+      #side-menu li {
+        border-bottom:1px solid #999;
+      }
+
+      #side-menu li:last-child {
+      }
+
+      #side-menu li a{
+        text-decoration:none;
+        display:block;
+        padding:5px 5px 5px 10px;
+        -moz-transition-property: all;
+        -moz-transition-duration: 0.2s;
+        -moz-transition-timing-function: linear;
+        -webkit-transition: all 0.2s linear 0;
+      }
+
+      #side-menu li a:hover{
+        color:#ff0099;
+      }
+
     </style>
   </head>
 
@@ -109,8 +136,8 @@
       <!-- END Sidebar Header -->
 
       <!-- Main Navigation -->
-      <div>
-        <ul class="w-full grow space-y-1.5 px-8 py-4">
+      <div id="side-menu">
+        <ul class="w-full grow space-y-1.5 px-8">
           <li>
             <h3 class="font-semibold"><a href="index.html">Summary</a></h3>
           </li>
@@ -255,7 +282,67 @@
             <!--You have 10 new leads, let's get to work!-->
           </h3>
           <div class="min-w-full overflow-x-auto rounded">
-            [%CONTENT%]
+            <h3 class="mb-1 font-semibold">Total detections</h3>
+            <table class="min-w-full align-middle text-sm">
+              <thead>
+                <tr>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Severity
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Number of detections
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Detection rate
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                [%TOTAL_DETECTIONS%]
+              </tbody>
+            </table>
+
+
+            <h3 class="mt-10 mb-1 font-semibold">Unique detections</h3>
+            <table class="min-w-full align-middle text-sm">
+              <thead>
+                <tr>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Severity
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Number of detections
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Detection rate
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                [%UNIQUE_DETECTIONS%]
+              </tbody>
+            </table>
+
+
+            <h3 class="mt-10 mb-1 font-semibold">Dates with most total detections</h3>
+            <table class="min-w-full align-middle text-sm">
+              <thead>
+                <tr>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Severity
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Number of detections
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Detection rate
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                [%DATE_WITH_MOST_TOTAL_DETECTIONS%]
+              </tbody>
+            </table>
           </div>
         </div>
         <!-- END Leads -->
