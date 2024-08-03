@@ -16,6 +16,7 @@
     
     <!-- Tailwind CSS Play CDN (mainly for development/testing purposes) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Tailwind CSS v3 Configuration -->
     <script>
@@ -71,6 +72,19 @@
 
       #side-menu li a:hover{
         color:#ff0099;
+      }
+      
+      .submenu {
+          display: none;
+      }
+
+      .toggle-btn:hover {
+        color:#ff0099;
+        background-color: rgb(243 232 255 / var(--tw-bg-opacity));
+      }
+      
+      .toggle-btn .icon {
+        margin-right: 5px;
       }
     </style>
     
@@ -137,7 +151,7 @@
       <!-- END Sidebar Header -->
 
       <!-- Main Navigation -->
-      <div id="side-menu">
+      <div id="side-menu" class="mb-10">
         <ul class="w-full grow space-y-1.5 px-8">
           <li>
             <h3 class="font-semibold"><a href="index.html">Summary</a></h3>
@@ -406,5 +420,27 @@
   </div>
   <!-- END Page Container -->
 </div>
+
+<script>
+  window.addEventListener('load', function() {
+      const buttons = document.querySelectorAll('.toggle-btn');
+
+      buttons.forEach(button => {
+          button.addEventListener('click', function() {
+              const submenu = this.nextElementSibling;
+              const icon = this.querySelector('.icon');
+              if (submenu.style.display === 'block') {
+                  submenu.style.display = 'none';
+                  icon.classList.remove('fa-chevron-down');
+                  icon.classList.add('fa-chevron-right');
+              } else {
+                  submenu.style.display = 'block';
+                  icon.classList.remove('fa-chevron-right');
+                  icon.classList.add('fa-chevron-down');
+              }
+          });
+      });
+  });
+</script>
   </body>
 </html>

@@ -130,10 +130,11 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
                     echo "Invalid JSON line: ", line
 
         fileStream.close()
-
+        echo "Database file created"
     except:
         discard
     
+    echo "Create HTML..."
 
     # start analysis timeline
     # obtain datas from SQLite
@@ -152,7 +153,6 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     type
         Computer = tuple[name: string, count: int, start_date: string, end_date: string]
         Alert = tuple[title: string, rule_file: string, level: string, count: int, computers: seq[Computer]]
-        Level = tuple[level_order: int, alerts: seq[Alert]]
     
     var levels = initTable[int, seq[Alert]]()
 
@@ -193,19 +193,20 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     # obtain rule file path
     #  
     proc findRuleFileWithName(dir: string, fileName: string) :string =
-        var result = ""
+        
+        var foundPath = ""
         for entry in walkDir(dir):
             let path = os.lastPathPart(entry.path)
             
             if entry.kind == pcFile and path == fileName:
-                result = "../" & entry.path
+                foundPath = "../" & entry.path
                 break
             elif entry.kind == pcDir:
-                result = findRuleFileWithName(entry.path, fileName)
-                if result != "":
+                foundPath = findRuleFileWithName(entry.path, fileName)
+                if foundPath != "":
                     break
         
-        return result
+        return foundPath
 
     const severity_order = @["info", "low", "med", "high", "critical"]
     const severity_color = @["emerald", "blue", "purple", "amber", "pink"]
@@ -227,7 +228,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             var totalAlerts = 0
             for alert in alerts:
                 totalAlerts += alert.count
-            ret &= "<li><h3 class=\"font-semibold\">" & severity_order[level_order] & " alerts (" & totalAlerts.intToStr & ")</h3><ul>"
+            ret &= "<li><button class=\"toggle-btn\"><i class=\"icon fas fa-chevron-right\"></i>" & severity_order[level_order] & " alerts (" & totalAlerts.intToStr & ")</button><ul class=\"submenu\">"
 
             for alert in alerts:
                 var rule_file_path = ""
@@ -259,7 +260,9 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
 
     var summaryData = initTable[int, SummaryInfo]()
 
+    #
     # data aggregation
+    #
     proc collectSummaryData(levels: Table[int, seq[Alert]]) =
     
         var totalDetections = 0
@@ -305,8 +308,9 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
 
     collectSummaryData(levels)
 
-
+    #
     # create a summary
+    #
     proc printSummaryData(data: Table[int, SummaryInfo]): (string, string, string) =
 
         var total_detections = ""
@@ -314,7 +318,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             let info = data[level_order]
             let tmp_total_percent = info.totalPercent.formatFloat(ffDecimal, 2)
             total_detections &= "<tr class=\"border-b border-gray-100\">"
-            total_detections &= "<td class=\"p-3 font-medium\">" & severity_order[level_order] & "</td>"
+            total_detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[level_order] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[level_order] & "-800\">" & severity_order[level_order] & "</td>"
             total_detections &= "<td class=\"p-3 font-medium\">" & $info.totalCount & "</td>"
             total_detections &= "<td class=\"p-3 font-medium\">" & $tmp_total_percent & "%</td>"
             total_detections &= "</tr>"
@@ -324,7 +328,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             let info = data[level_order]
             let tmp_unique_percent = info.uniquePercent.formatFloat(ffDecimal, 2)
             unique_detections &= "<tr class=\"border-b border-gray-100\">"
-            unique_detections &= "<td class=\"p-3 font-medium\">" & severity_order[level_order] & "</td>"
+            unique_detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[level_order] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[level_order] & "-800\">" & severity_order[level_order] & "</td>"
             unique_detections &= "<td class=\"p-3 font-medium\">" & $info.uniqueCount & "</td>"
             unique_detections &= "<td class=\"p-3 font-medium\">" & $tmp_unique_percent & "%</td>"
             unique_detections &= "</tr>"
@@ -333,7 +337,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         for level_order, alerts in pairs(levels):
             let info = data[level_order]
             date_with_most_total_detections &= "<tr class=\"border-b border-gray-100\">"
-            date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & severity_order[level_order] & "</td>"
+            date_with_most_total_detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[level_order] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[level_order] & "-800\">" & severity_order[level_order] & "</td>"
             date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & info.mostTotalDate & "</td>"
             date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & $info.mostTotalCount & "</td>"
             date_with_most_total_detections &= "</tr>"
@@ -357,7 +361,6 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     html = html.replace("[%UNIQUE_DETECTIONS%]", unique_detections)
     html = html.replace("[%DATE_WITH_MOST_TOTAL_DETECTIONS%]", date_with_most_total_detections)
     
-
     # output HTML
     let output_path = "./output" 
     if not dirExists(output_path):
@@ -370,7 +373,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     write.writeLine(html)
     write.close()
 
-    ### each Computer output
+    # each Computer output
     type
         ComputerSummary = object
             totalDetections: Table[int, int]
@@ -439,29 +442,20 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         
         let sortedDates = summary.detectionsByDate.keys.toSeq.map(proc(key: string): tuple[original: string, parsed: DateTime] = (key, parseDate(key))).sorted(proc(a, b: tuple[original: string, parsed: DateTime]): int = cmp(a.parsed, b.parsed))
 
-        proc splitDate(dateStr: string): (string, string, string) =
-            let parts = dateStr.split("-")
-            result = (parts[0], parts[1], parts[2])
-
         # Display data in sorted order
         let length = len(summary.detectionsByDate)
         var date_html = ""
         var datasets_html = @["", "", "", "", ""]
         for i, date in sortedDates:
             date_html &= "'" & date.original & "'"
-            datasets_html[0] &= $summary.detectionsByDate[date.original][0]
-            datasets_html[1] &= $summary.detectionsByDate[date.original][1]
-            datasets_html[2] &= $summary.detectionsByDate[date.original][2]
-            datasets_html[3] &= $summary.detectionsByDate[date.original][3]
-            datasets_html[4] &= $summary.detectionsByDate[date.original][4]
+
+            for index in 0..4:
+                datasets_html[index] &= $summary.detectionsByDate[date.original][index]
 
             if i != length-1:
                 date_html &= ","
-                datasets_html[0] &= ","
-                datasets_html[1] &= ","
-                datasets_html[2] &= ","
-                datasets_html[3] &= ","
-                datasets_html[4] &= ","
+                for index in 0..4:
+                    datasets_html[index] &= ","
 
         html = html.replace("[%DATE_STR%]", date_html)
         html = html.replace("[%CRITICAL_GRAPH%]", datasets_html[4])
@@ -491,7 +485,6 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
                 rule_filepath = findRuleFileWithName(rulepath, rule[0])
                 rulepath_list[rule[0]] = rule_filepath
 
-            # let rule_filepath = rulepath_list[rule[0]]
             temp_html &= "<tr class=\"border-b border-gray-100\">"
             temp_html &= "<td class=\"p-3 font-medium\">" & rule[0] & "</td>"
             temp_html &= "<td><a href=\"" & rulefile_path & "\" class=\"text-indigo-500 hover:text-indigo-700\">" & rule[1] & "</a></td>"
@@ -503,4 +496,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         var write: File = open(output_path & "/" & compName & ".html", FileMode.fmWrite)
         write.writeLine(html)
         write.close()
+
+    echo "Create HTML completed!!"
+    echo "look at the \"./output/index.html\""
 
