@@ -84,7 +84,7 @@ when isMainModule:
     const example_timeline_partition_diagnostic = "  timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o partition-diagnostic-timeline.csv\p"
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [--skipProgressBar] [-o suspicious-processes.csv]\p"
     const example_timeline_tasks = "  timeline-tasks -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o task-timeline.csv\p"
-    const example_triage_data = "  triage-data -t ../hayabusa/timeline.jsonl -o triage-data.sqlite -r ../hayabusa/rules \p"
+    const example_triage_data = "  triage-data -t ../hayabusa/timeline.jsonl -o triage-data.sqlite -r ../hayabusa/rules [--clobber] [--skipProgressBar] \p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ttp-summary.csv\p"
     const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o mitre-ttp-heatmap.json\p"
@@ -414,6 +414,11 @@ when isMainModule:
                 "quiet": "do not display the launch banner (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
                 "rulepath": "hayabusa rules directory path",
+                "skipProgressBar": "do not display the progress bar (default: false)",
+                "clobber": "Overwrite SQLite file when saving (default false)",
+            },
+            short = {
+                "clobber": 'C'
             }
         ],
         [
