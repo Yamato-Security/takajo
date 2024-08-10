@@ -232,7 +232,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             let path = os.lastPathPart(entry.path)
             
             if entry.kind == pcFile and path == fileName:
-                foundPath = "../" & entry.path
+                foundPath = absolutePath(entry.path)
                 break
             elif entry.kind == pcDir:
                 foundPath = findRuleFileWithName(entry.path, fileName)
