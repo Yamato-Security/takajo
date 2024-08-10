@@ -5,13 +5,23 @@ import streams
 # timeline: Hayabusa JSONL timeline file or directory
 proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath: string = "") =
 
+    if fileExists(output):
+        echo output & " already exists"
+        return
+
     # create sqlite file or open exist database file.
     let db = open(output, "", "", "")
     try:
         echo "Database file opened"
 
+        try:
+            let dropTableSQL = sql"""DROP TABLE timelines"""
+            db.exec(dropTableSQL)
+        except:
+            discard
+
         # create timelines table
-        let createTableSQL = sql"""CREATE TABLE IF NOT EXISTS timelines (
+        let createTableSQL = sql"""CREATE TABLE timelines (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT,
             rule_title TEXT,
@@ -37,6 +47,15 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         if fileStream == nil:
             echo "Failed to open file: ", timeline
         
+        var bar: SuruBar
+        var skipProgressBar = false
+        if not skipProgressBar:
+            bar = initSuruBar()
+            bar[0].total = countJsonlAndStartMsg("triage-data", "", timeline)
+            bar.setup()
+
+        db.exec(sql"BEGIN")
+        var recordCount = 0
         while not fileStream.atEnd:
             let line = fileStream.readLine()
             if line.len > 0:
@@ -58,7 +77,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
                     let evtx_file = jsonObj["EvtxFile"].getStr()
 
                     var level_order = -1
-                    if level == "critical":
+                    if level == "crit":
                         level_order = 4
                     elif level == "high":
                         level_order = 3
@@ -125,14 +144,28 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
                                         
                     doAssert(bres)
                     finalize(stmt)
+                    recordCount += 1
+                    if not skipProgressBar:
+                        inc bar
+                        bar.update(1000000000)
+
+                    if recordCount %% 10000 == 0:
+                        db.exec(sql"COMMIT")
+                        db.exec(sql"BEGIN")
                     
                 except CatchableError:
                     echo "Invalid JSON line: ", line
 
+        db.exec(sql"COMMIT")
         fileStream.close()
-        echo "Database file created"
-    except:
+        if not skipProgressBar:
+            bar.finish()
+
+        echo "Database file created"        
+    except CatchableError as e:
+        echo "Error: Database file not created!!, ", e.msg
         discard
+        return
     
     echo "Create HTML..."
 
@@ -145,7 +178,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
                         """
 
     var alerts = db.getAllRows(query)
-    
+
     # close sqlite file
     db.close()
 
@@ -258,15 +291,14 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             mostTotalDate: string
             mostTotalCount: int
 
-    var summaryData = initTable[int, SummaryInfo]()
-
     #
     # data aggregation
     #
-    proc collectSummaryData(levels: Table[int, seq[Alert]]) =
+    proc collectSummaryData(levels: Table[int, seq[Alert]]): Table[int, SummaryInfo] =
     
         var totalDetections = 0
         var uniqueDetections = 0
+        var summaryData = initTable[int, SummaryInfo]()
 
         for level_order, alerts in pairs(levels):
             var totalCount = 0
@@ -306,7 +338,9 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             summaryData[level_order].totalPercent = float(info.totalCount) / float(totalDetections) * 100
             summaryData[level_order].uniquePercent = float(info.uniqueCount) / float(uniqueDetections) * 100
 
-    collectSummaryData(levels)
+        return summaryData
+
+    var summaryData = collectSummaryData(levels)
 
     #
     # create a summary
@@ -314,7 +348,10 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     proc printSummaryData(data: Table[int, SummaryInfo]): (string, string, string) =
 
         var total_detections = ""
-        for level_order, alerts in pairs(levels):
+        
+        for level_order in countdown(4, 0):
+            if not data.hasKey(level_order):
+                continue 
             let info = data[level_order]
             let tmp_total_percent = info.totalPercent.formatFloat(ffDecimal, 2)
             total_detections &= "<tr class=\"border-b border-gray-100\">"
@@ -324,7 +361,9 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             total_detections &= "</tr>"
 
         var unique_detections = ""
-        for level_order, alerts in pairs(levels):
+        for level_order in countdown(4, 0):
+            if not data.hasKey(level_order):
+                continue 
             let info = data[level_order]
             let tmp_unique_percent = info.uniquePercent.formatFloat(ffDecimal, 2)
             unique_detections &= "<tr class=\"border-b border-gray-100\">"
@@ -334,7 +373,9 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             unique_detections &= "</tr>"
   
         var date_with_most_total_detections = ""
-        for level_order, alerts in pairs(levels):
+        for level_order in countdown(4, 0):
+            if not data.hasKey(level_order):
+                continue 
             let info = data[level_order]
             date_with_most_total_detections &= "<tr class=\"border-b border-gray-100\">"
             date_with_most_total_detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[level_order] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[level_order] & "-800\">" & severity_order[level_order] & "</td>"
