@@ -3,9 +3,9 @@ import streams
 
 # output: save results to a SQLite database
 # timeline: Hayabusa JSONL timeline file or directory
-proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath: string = "") =
+proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, skipProgressBar: bool = false, ) =
 
-    if fileExists(output):
+    if fileExists(output) and clobber == false:
         echo output & " already exists"
         return
 
@@ -48,7 +48,6 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             echo "Failed to open file: ", timeline
         
         var bar: SuruBar
-        var skipProgressBar = false
         if not skipProgressBar:
             bar = initSuruBar()
             bar[0].total = countJsonlAndStartMsg("triage-data", "", timeline)
