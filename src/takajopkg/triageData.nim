@@ -170,7 +170,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
 
     # start analysis timeline
     # obtain datas from SQLite
-    let query = sql"""select rule_title, rule_file, level, level_order, computer, min(timestamp) as start_date, max(timestamp) as end_date, count(*) as count
+    var query = sql"""select rule_title, rule_file, level, level_order, computer, min(timestamp) as start_date, max(timestamp) as end_date, count(*) as count
                         from timelines
                         group by rule_title, level, computer
                         order by level_order
@@ -178,8 +178,19 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
 
     var alerts = db.getAllRows(query)
 
+
+    # obtain computer summary from SQLite
+    query = sql"""select computer, COUNT(*) AS count
+                        from timelines
+                        group by computer
+                        having COUNT(*) > 1
+                        order by count desc
+                        """
+    var computers = db.getAllRows(query)
+    
     # close sqlite file
     db.close()
+    
 
     # data formatting
     type
@@ -279,6 +290,15 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         return ret
 
     let sidemenu = printSideMenu(levels, rulepath, rulepath_list)
+
+    proc printSideMenuComputer(computers: seq[seq[string]]): string = 
+        var ret = ""
+        for computer in computers:
+            ret &= "<li><a style=\"font-size:10pt !important;\" href=\"./" & computer[0] & ".html\" class=\"inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer[0] & "(" & computer[1] & ")</a></li>"
+        
+        return ret
+
+    let sidemenucomputers = printSideMenuComputer(computers)
 
     # Data structure of Summary
     type
@@ -395,8 +415,9 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     f.close()
 
     # replace HTML
-    html = html.replace("[%PAGE_TITLE%]", "Summary")
+    html = html.replace("[%PAGE_TITLE%]", "Rule Summary")
     html = html.replace("[%SIDE_MENU%]", sidemenu)
+    html = html.replace("[%SIDE_MENU_COMPUTER%]", sidemenucomputers)
     html = html.replace("[%TOTAL_DETECTIONS%]", total_detections)
     html = html.replace("[%UNIQUE_DETECTIONS%]", unique_detections)
     html = html.replace("[%DATE_WITH_MOST_TOTAL_DETECTIONS%]", date_with_most_total_detections)
@@ -469,6 +490,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         # replace HTML
         html = html.replace("[%PAGE_TITLE%]", compName)
         html = html.replace("[%SIDE_MENU%]", sidemenu)
+        html = html.replace("[%SIDE_MENU_COMPUTER%]", sidemenucomputers)
     
         # html = html.replace("[%CONTENT%]", summaryHtml)
 

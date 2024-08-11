@@ -154,9 +154,19 @@
       <div id="side-menu" class="mb-10">
         <ul class="w-full grow space-y-1.5 px-8">
           <li>
-            <h3 class="font-semibold"><a href="index.html">Summary</a></h3>
+            <h3 class="font-semibold"><a href="index.html">Rule Summary</a></h3>
           </li>
           [%SIDE_MENU%]
+          <li>
+            <h3 class="font-semibold">Computer Summary</h3>
+          </li>
+          <li>
+            <button class="toggle-btn"><i class="icon fas fa-chevron-right"></i>computers</button>
+            <ul class="submenu">
+              [%SIDE_MENU_COMPUTER%]
+            </ul>
+          </li>
+          
           <!--
           <li>            
             <h3 class="font-semibold">Stack Analysis</h3>
