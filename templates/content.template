@@ -17,7 +17,7 @@
     <!-- Tailwind CSS Play CDN (mainly for development/testing purposes) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    
     <!-- Tailwind CSS v3 Configuration -->
     <script>
       const defaultTheme = tailwind.defaultTheme;
@@ -307,18 +307,18 @@
           <div class="min-w-full overflow-x-auto rounded">
 
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6 xl:grid-cols-5">
-              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-pink-50 transition hover:bg-pink-100 active:bg-pink-50">
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-red-50 transition active:bg-red-50">
                 <div class="flex grow items-center justify-between p-6">
                   <dl>
-                    <dt class="text-2xl font-bold text-pink-600">[%CRITICAL_NUM%]</dt>
-                    <dd class="text-sm font-medium text-pink-900">
+                    <dt class="text-2xl font-bold text-red-600">[%CRITICAL_NUM%]</dt>
+                    <dd class="text-sm font-medium text-red-900">
                       Critical
                     </dd>
                   </dl>
                 </div>
               </a>
 
-              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-orange-50 transition hover:bg-orange-100 active:bg-orange-50">
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-orange-50 transition active:bg-orange-50">
                 <div class="flex grow items-center justify-between p-6">
                   <dl>
                     <dt class="text-2xl font-bold text-orange-600">[%HIGH_NUM%]</dt>
@@ -329,31 +329,31 @@
                 </div>
               </a>
 
-              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-purple-50 transition hover:bg-purple-100 active:bg-purple-50">
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-yellow-50 transition active:bg-yellow-50">
                 <div class="flex grow items-center justify-between p-6">
                   <dl>
-                    <dt class="text-2xl font-bold text-purple-600">[%MED_NUM%]</dt>
-                    <dd class="text-sm font-medium text-purple-900">
+                    <dt class="text-2xl font-bold text-yellow-600">[%MED_NUM%]</dt>
+                    <dd class="text-sm font-medium text-yellow-900">
                       Medium
                     </dd>
                   </dl>
                 </div>
               </a>
               
-              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-sky-50 transition hover:bg-sky-100 active:bg-sky-50">
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-green-50 transition active:bg-green-50">
                 <div class="flex grow items-center justify-between p-6">
                   <dl>
-                    <dt class="text-2xl font-bold text-sky-600">[%LOW_NUM%]</dt>
-                    <dd class="text-sm font-medium text-sky-900">Low</dd>
+                    <dt class="text-2xl font-bold text-green-600">[%LOW_NUM%]</dt>
+                    <dd class="text-sm font-medium text-green-900">Low</dd>
                   </dl>
                 </div>
               </a>
 
-              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-green-50 transition hover:bg-green-100 active:bg-green-50">
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-sky-50 transition active:bg-sky-50">
                 <div class="flex grow items-center justify-between p-6">
                   <dl>
-                    <dt class="text-2xl font-bold text-green-600">[%INFO_NUM%]</dt>
-                    <dd class="text-sm font-medium text-green-900">
+                    <dt class="text-2xl font-bold text-sky-600">[%INFO_NUM%]</dt>
+                    <dd class="text-sm font-medium text-sky-900">
                       Information
                     </dd>
                   </dl>
@@ -371,8 +371,8 @@
                   datasets: [{
                     label: 'Critical',
                     data: [[%CRITICAL_GRAPH%]],
-                    backgroundColor: '#db2777',
-                    borderColor: '#db2777',
+                    backgroundColor: '#dc2626',
+                    borderColor: '#dc2626',
                   }, {
                     label: 'High',
                     data: [[%HIGH_GRAPH%]],
@@ -381,18 +381,18 @@
                   }, {
                     label: 'Medium',
                     data: [[%MEDIUM_GRAPH%]],
-                    backgroundColor: '#9333ea',
-                    borderColor: '#9333ea',
+                    backgroundColor: '#deb704',
+                    borderColor: '#deb704',
                   }, {
                     label: 'Low',
                     data: [[%LOW_GRAPH%]],
-                    backgroundColor: '#0284c7',
-                    borderColor: '#0284c7',
+                    backgroundColor: '#16a34a',
+                    borderColor: '#16a34a',
                   }, {
                     label: 'Info',
                     data: [[%INFO_GRAPH%]],
-                    backgroundColor: '#16a34a',
-                    borderColor: '#16a34a',
+                    backgroundColor: '#0284c7',
+                    borderColor: '#0284c7',
                   }],
                 },
                 plugins: {

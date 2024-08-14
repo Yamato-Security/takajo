@@ -252,7 +252,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         return foundPath
 
     const severity_order = @["info", "low", "med", "high", "critical"]
-    const severity_color = @["emerald", "blue", "purple", "amber", "pink"]
+    const severity_color = @["blue", "green", "yellow", "orange", "red"]
 
     var rulepath_list = initTable[string, string]()
 
