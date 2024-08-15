@@ -1,9 +1,14 @@
 import db_connector/db_sqlite
 import streams
 
+const TriageDataMsg = "This command will ouput an HTML report and create an SQLite file."
+
 # output: save results to a SQLite database
 # timeline: Hayabusa JSONL timeline file or directory
 proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, skipProgressBar: bool = false, ) =
+
+    if not quiet:
+        styledEcho(fgGreen, outputLogo())
 
     if fileExists(output) and clobber == false:
         echo output & " already exists"
@@ -12,8 +17,6 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     # create sqlite file or open exist database file.
     let db = open(output, "", "", "")
     try:
-        echo "Database file opened"
-
         try:
             let dropTableSQL = sql"""DROP TABLE timelines"""
             db.exec(dropTableSQL)
@@ -50,7 +53,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         var bar: SuruBar
         if not skipProgressBar:
             bar = initSuruBar()
-            bar[0].total = countJsonlAndStartMsg("triage-data", "", timeline)
+            bar[0].total = countJsonlAndStartMsg("triage-data", TriageDataMsg, timeline)
             bar.setup()
 
         db.exec(sql"BEGIN")
@@ -160,13 +163,14 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         if not skipProgressBar:
             bar.finish()
 
-        echo "Database file created"        
+        echo ""
+        echo "Database file created"
     except CatchableError as e:
         echo "Error: Database file not created!!, ", e.msg
         discard
         return
     
-    echo "Create HTML..."
+    echo "Creating HTML report..."
 
     # start analysis timeline
     # obtain datas from SQLite
@@ -429,7 +433,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             createDir(output_path)
         except OSError as e:
             echo "Failed to create directory: ", e.msg
-
+ 
     var write: File = open(output_path & "/index.html", FileMode.fmWrite)
     write.writeLine(html)
     write.close()
@@ -559,6 +563,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         write.writeLine(html)
         write.close()
 
-    echo "Create HTML completed!!"
-    echo "look at the \"./output/index.html\""
+    echo "HTML report completed!!"
+    echo ""
+    echo "Please open \"./output/index.html\""
 
