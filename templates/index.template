@@ -381,7 +381,6 @@
 <script>
   window.addEventListener('load', function() {
       const buttons = document.querySelectorAll('.toggle-btn');
-
       buttons.forEach(button => {
           button.addEventListener('click', function() {
               const submenu = this.nextElementSibling;
@@ -398,6 +397,17 @@
           });
       });
   });
+
+  document.querySelectorAll('a.sidemenu').forEach(function(element) {
+    element.addEventListener('click', function(event) {
+
+      event.preventDefault();
+      const dataClassValue = element.dataset.class;
+      const clickedPathname = new URL(event.currentTarget.href).pathname;
+      window.location.href = window.location.origin + clickedPathname + '#' + encodeURIComponent(dataClassValue);
+    });
+  });
+  
 </script>
 
   </body>

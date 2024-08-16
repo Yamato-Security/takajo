@@ -275,7 +275,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             var totalAlerts = 0
             for alert in alerts:
                 totalAlerts += alert.count
-            ret &= "<li><button class=\"toggle-btn\"><i class=\"icon fas fa-chevron-right\"></i>" & severity_order[level_order] & " alerts (" & totalAlerts.intToStr & ")</button><ul class=\"submenu\">"
+            ret &= "<li><button class=\"toggle-btn\" data-severity=\"" & severity_order[level_order] & "\" ><i class=\"icon fas fa-chevron-right\"></i>" & severity_order[level_order] & " alerts (" & totalAlerts.intToStr & ")</button><ul class=\"submenu\">"
 
             for alert in alerts:
                 var rule_file_path = ""
@@ -287,7 +287,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
                 ret &= "<li class=\"font-semibold\"><a style=\"font-size:10pt !important;\" href=\"" & rule_filepath & "\">■" & alert.title & " (" & alert.count.intToStr & ")</a><ul>"
             
                 for computer in alert.computers:
-                    ret &= "<li style=\"border-bottom:3px;\"><a style=\"font-size:10pt !important;\" href=\"./" & computer.name & ".html\" class=\"inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer.name & " (" & computer.count.intToStr & ") (" & computer.start_date & " ~ " & computer.end_date & ")</a><li>"
+                    ret &= "<li style=\"border-bottom:3px;\"><a data-class=\"" & severity_order[level_order] & "\" style=\"font-size:10pt !important;\" href=\"./" & computer.name & ".html\" class=\"sidemenu link inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer.name & " (" & computer.count.intToStr & ") (" & computer.start_date & " ~ " & computer.end_date & ")</a><li>"
 
                 ret &= "</ul></li>"
             ret &= "</ul></li>"
@@ -298,7 +298,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     proc printSideMenuComputer(computers: seq[seq[string]]): string = 
         var ret = ""
         for computer in computers:
-            ret &= "<li><a style=\"font-size:10pt !important;\" href=\"./" & computer[0] & ".html\" class=\"inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer[0] & "(" & computer[1] & ")</a></li>"
+            ret &= "<li><a data-class=\"computer\" style=\"font-size:10pt !important;\" href=\"./" & computer[0] & ".html\" class=\"sidemenu inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer[0] & "(" & computer[1] & ")</a></li>"
         
         return ret
 

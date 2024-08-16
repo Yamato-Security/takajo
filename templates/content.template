@@ -161,7 +161,7 @@
             <h3 class="font-semibold">Computer Summary</h3>
           </li>
           <li>
-            <button class="toggle-btn"><i class="icon fas fa-chevron-right"></i>computers</button>
+            <button class="toggle-btn" data-severity="computer"><i class="icon fas fa-chevron-right"></i>computers</button>
             <ul class="submenu">
               [%SIDE_MENU_COMPUTER%]
             </ul>
@@ -433,6 +433,9 @@
 
 <script>
   window.addEventListener('load', function() {
+
+      const hashValue = window.location.hash;
+      const severity = hashValue.substring(1);
       const buttons = document.querySelectorAll('.toggle-btn');
 
       buttons.forEach(button => {
@@ -449,8 +452,24 @@
                   icon.classList.add('fa-chevron-down');
               }
           });
+
+          if (button.dataset.severity == severity) {
+            button.click()
+          }
       });
   });
+
+  document.querySelectorAll('a.sidemenu').forEach(function(element) {
+    element.addEventListener('click', function(event) {
+
+      event.preventDefault();
+      const dataClassValue = element.dataset.class;
+      const clickedPathname = new URL(event.currentTarget.href).pathname;
+      window.location.href = window.location.origin + clickedPathname + '#' + encodeURIComponent(dataClassValue);
+      window.location.reload();
+    });
+  });
+  
 </script>
   </body>
 </html>
