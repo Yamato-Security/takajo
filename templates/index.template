@@ -7,16 +7,8 @@
 
     <title>Project</title>
 
-    <!-- Inter web font from bunny.net (GDPR compliant) -->
-    <link rel="preconnect" href="https://fonts.bunny.net" />
-    <link
-      href="https://fonts.bunny.net/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Tailwind CSS Play CDN (mainly for development/testing purposes) -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="tailwind.3.4.js"></script>
+    <link rel="stylesheet" href="./font-awesome.6.0.css">
 
     <!-- Tailwind CSS v3 Configuration -->
     <script>
@@ -37,10 +29,7 @@
     </script>
 
     <!-- Alpine.js -->
-    <script
-      defer
-      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
-    ></script>
+    <script defer src="./alpinejs.3.14.1.js"></script>
 
     <!-- Alpine.js (x-cloak - https://alpinejs.dev/directives/cloak) -->
     <style>
@@ -86,7 +75,16 @@
       .toggle-btn .icon {
         margin-right: 5px;
       }
-
+      #drag-handle {
+        width: 10px;
+        background-color: #ccc;
+        height: 100%;
+        cursor: ew-resize;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 100;
+      }
     </style>
   </head>
 
@@ -111,6 +109,7 @@
       aria-label="Main Sidebar Navigation"
       x-cloak
     >
+      <div id="drag-handle"></div>
       <!-- Sidebar Header -->
       <div
         class="flex h-20 w-full flex-none items-center justify-between px-8"
@@ -396,6 +395,29 @@
               }
           });
       });
+
+
+      const sidebar = document.getElementById('page-sidebar');
+      const originalSideWidth = sidebar.clientWidth;
+      const dragHandle = document.getElementById('drag-handle');
+
+      dragHandle.addEventListener('mousedown', function(e) {
+        document.addEventListener('mousemove', resizeSidebar);
+        document.addEventListener('mouseup', stopResizing);
+      });
+
+      function resizeSidebar(e) {
+        const newWidth = e.clientX;
+        document.getElementById('page-sidebar').style.width = `${newWidth}px`;
+        const new_content_width = e.clientX - originalSideWidth;
+        document.getElementById('page-content').style.paddingLeft = `${new_content_width}px`;
+      }
+
+      function stopResizing() {
+        document.removeEventListener('mousemove', resizeSidebar);
+        document.removeEventListener('mouseup', stopResizing);
+      }
+
   });
 
   document.querySelectorAll('a.sidemenu').forEach(function(element) {
@@ -409,6 +431,7 @@
   });
   
 </script>
+
 
   </body>
 </html>

@@ -3,6 +3,26 @@ import streams
 
 const TriageDataMsg = "This command will ouput an HTML report and create an SQLite file."
 
+import os, strutils
+
+proc copyDirectory(src: string, dest: string) =
+    if not dirExists(src):
+        return
+
+    if not dirExists(dest):
+        createDir(dest)
+
+    for entry in walkDir(src):
+        let path = os.lastPathPart(entry.path)
+        let destPath = joinPath(dest, path)
+
+        if entry.kind == pcFile:
+            copyFile(entry.path, destPath)
+        elif entry.kind == pcDir:
+            createDir(destPath)
+            
+
+
 # output: save results to a SQLite database
 # timeline: Hayabusa JSONL timeline file or directory
 proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, skipProgressBar: bool = false, ) =
@@ -563,6 +583,22 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         write.writeLine(html)
         write.close()
 
+    var sourceFile = "./templates/alpinejs.3.14.1.js"
+    var destinationFile = "./output/alpinejs.3.14.1.js"
+    copyFile(sourceFile, destinationFile)
+
+    sourceFile = "./templates/tailwind.3.4.js"
+    destinationFile = "./output/tailwind.3.4.js"
+    copyFile(sourceFile, destinationFile)
+
+    sourceFile = "./templates/font-awesome.6.0.css"
+    destinationFile = "./output/font-awesome.6.0.css"
+    copyFile(sourceFile, destinationFile)
+
+    let sourceDir = "./templates/webfonts"
+    let destinationDir = "./output/webfonts"
+    copyDirectory(sourceDir, destinationDir)
+    
     echo "HTML report completed!!"
     echo ""
     echo "Please open \"./output/index.html\""
