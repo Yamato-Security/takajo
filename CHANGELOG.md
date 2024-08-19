@@ -1,6 +1,10 @@
 # Changes
 
-## 2.6.0 [xxxx/xx/xx]
+## 2.6.0 [2024/08/23] HITCON Release
+
+**New Features:**
+
+- New `triage-data` command to create a HTML summary report. (#165) (@nishikawaakira)
 
 **Enhancements:**
 

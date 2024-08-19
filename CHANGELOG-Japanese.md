@@ -1,6 +1,10 @@
 # 変更点
 
-## 2.6.0 [xxxx/xx/xx]
+## 2.6.0 [2024/08/23] HITCON Release
+
+**新機能:**
+
+HTMLレポートを作成するための新しい`triage-data`コマンド。(#165) (@nishikawaakira)
 
 **改善:**
 
