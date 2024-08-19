@@ -415,7 +415,7 @@ when isMainModule:
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
                 "rulepath": "hayabusa rules directory path",
                 "skipProgressBar": "do not display the progress bar (default: false)",
-                "clobber": "Overwrite SQLite file when saving (default false)",
+                "clobber": "overwrite the SQLite file when saving (default false)",
             },
             short = {
                 "clobber": 'C'

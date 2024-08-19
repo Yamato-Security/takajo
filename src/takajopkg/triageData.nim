@@ -31,7 +31,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         styledEcho(fgGreen, outputLogo())
 
     if fileExists(output) and clobber == false:
-        echo output & " already exists"
+        echo output & " already exists. Please add the -C, --clobber option to overwrite the file."
         return
 
     # create sqlite file or open exist database file.
@@ -184,13 +184,13 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
             bar.finish()
 
         echo ""
-        echo "Database file created"
+        echo "Database file created."
     except CatchableError as e:
-        echo "Error: Database file not created!!, ", e.msg
+        echo "Error: Database file not created!, ", e.msg
         discard
         return
     
-    echo "Creating HTML report..."
+    echo "Creating HTML report. Please wait.\p"
 
     # start analysis timeline
     # obtain datas from SQLite
@@ -599,7 +599,8 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
     let destinationDir = "./output/webfonts"
     copyDirectory(sourceDir, destinationDir)
     
-    echo "HTML report completed!!"
+    echo "HTML report completed."
     echo ""
     echo "Please open \"./output/index.html\""
+    echo ""
 
