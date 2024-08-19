@@ -154,3 +154,6 @@ output/*
 
 #Intelij IDEA
 .idea
+
+#SQLite files
+*.sqlite
