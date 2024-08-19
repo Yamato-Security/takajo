@@ -1,7 +1,7 @@
 import db_connector/db_sqlite
 import streams
 
-const TriageDataMsg = "This command will ouput an HTML report and create an SQLite file."
+const HtmlReportMsg = "This command will ouput an HTML report and create an SQLite file."
 
 import os, strutils
 
@@ -25,7 +25,7 @@ proc copyDirectory(src: string, dest: string) =
 
 # output: save results to a SQLite database
 # timeline: Hayabusa JSONL timeline file or directory
-proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, skipProgressBar: bool = false, ) =
+proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, skipProgressBar: bool = false, ) =
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -73,7 +73,7 @@ proc triageData*(output: string, quiet: bool = false, timeline: string, rulepath
         var bar: SuruBar
         if not skipProgressBar:
             bar = initSuruBar()
-            bar[0].total = countJsonlAndStartMsg("triage-data", TriageDataMsg, timeline)
+            bar[0].total = countJsonlAndStartMsg("html-report", HtmlReportMsg, timeline)
             bar.setup()
 
         db.exec(sql"BEGIN")

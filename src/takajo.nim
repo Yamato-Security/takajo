@@ -31,6 +31,7 @@ include takajopkg/listDomains
 include takajopkg/listIpAddresses
 include takajopkg/listUndetectedEvtxFiles
 include takajopkg/listUnusedRules
+include takajopkg/htmlReport
 include takajopkg/splitCsvTimeline
 include takajopkg/splitJsonTimeline
 include takajopkg/stackCmdlines
@@ -48,7 +49,6 @@ include takajopkg/timelineLogon
 include takajopkg/timelinePartitionDiagnostic
 include takajopkg/timelineSuspiciousProcesses
 include takajopkg/timelineTasks
-include takajopkg/triageData
 include takajopkg/ttpSummary
 include takajopkg/ttpVisualize
 include takajopkg/ttpVisualizeSigma
@@ -59,7 +59,7 @@ include takajopkg/automagic
 
 
 when isMainModule:
-    clCfg.version = "2.6.0-dev"
+    clCfg.version = "2.6.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
@@ -84,7 +84,7 @@ when isMainModule:
     const example_timeline_partition_diagnostic = "  timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o partition-diagnostic-timeline.csv\p"
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [--skipProgressBar] [-o suspicious-processes.csv]\p"
     const example_timeline_tasks = "  timeline-tasks -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o task-timeline.csv\p"
-    const example_triage_data = "  triage-data -t ../hayabusa/timeline.jsonl -o triage-data.sqlite -r ../hayabusa/rules [--clobber] [--skipProgressBar] \p"
+    const example_html_report = "  html-report -t ../hayabusa/timeline.jsonl -o html-report.sqlite -r ../hayabusa/rules [--clobber] [--skipProgressBar] \p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ttp-summary.csv\p"
     const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o mitre-ttp-heatmap.json\p"
@@ -92,15 +92,15 @@ when isMainModule:
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
-    clCfg.useMulti = "Version: 2.6.0 Dev Build\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
+    clCfg.useMulti = "Version: 2.6.0 HITCON Release\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples &
         example_automagic &
-        example_extract_scriptblocks &
+        example_extract_scriptblocks & example_html_report &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
         example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_ip_addresses & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks & example_stack_users &
         example_sysmon_process_tree &
-        example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes & example_timeline_tasks & example_triage_data &
+        example_timeline_logon & example_timeline_partition_diagnostic & example_timeline_suspicious_processes & example_timeline_tasks &
         example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
@@ -128,6 +128,21 @@ when isMainModule:
                 "quiet": "do not display the launch banner (default: false)",
                 "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
+            }
+        ],
+        [
+            htmlReport, cmdName = "html-report",
+            doc = "Create HTML report summaries for all the rules and computers",
+            help = {
+                "output": "save results to a SQLite database",
+                "quiet": "do not display the launch banner (default: false)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
+                "rulepath": "hayabusa rules directory path",
+                "skipProgressBar": "do not display the progress bar (default: false)",
+                "clobber": "overwrite the SQLite file when saving (default false)",
+            },
+            short = {
+                "clobber": 'C'
             }
         ],
         [
@@ -404,21 +419,6 @@ when isMainModule:
                 "quiet": "do not display the launch banner (default: false)",
                 "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
-            }
-        ],
-        [
-            triageData, cmdName = "triage-data",
-            doc = "triage data and save results to a SQLite database",
-            help = {
-                "output": "save results to a SQLite database",
-                "quiet": "do not display the launch banner (default: false)",
-                "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
-                "rulepath": "hayabusa rules directory path",
-                "skipProgressBar": "do not display the progress bar (default: false)",
-                "clobber": "overwrite the SQLite file when saving (default false)",
-            },
-            short = {
-                "clobber": 'C'
             }
         ],
         [

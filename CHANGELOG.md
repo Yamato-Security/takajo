@@ -4,7 +4,7 @@
 
 **New Features:**
 
-- New `triage-data` command to create a HTML summary report. (#165) (@nishikawaakira)
+- New `html-report` command to create a HTML summary report. (#165) (@nishikawaakira)
 
 **Enhancements:**
 

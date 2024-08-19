@@ -4,7 +4,7 @@
 
 **新機能:**
 
-HTMLレポートを作成するための新しい`triage-data`コマンド。(#165) (@nishikawaakira)
+HTMLレポートを作成するための新しい`html-report`コマンド。(#165) (@nishikawaakira)
 
 **改善:**
 
