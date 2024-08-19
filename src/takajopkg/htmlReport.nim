@@ -23,19 +23,20 @@ proc copyDirectory(src: string, dest: string) =
             
 
 
-# output: save results to a SQLite database
+# output: HTML reports directory name
+# sqliteoutput: save results to a SQLite database
 # timeline: Hayabusa JSONL timeline file or directory
-proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, skipProgressBar: bool = false, ) =
+proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, sqliteoutput: string = "html-report.sqlite", skipProgressBar: bool = false, ) =
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    if fileExists(output) and clobber == false:
-        echo output & " already exists. Please add the -C, --clobber option to overwrite the file."
+    if fileExists(sqliteoutput) and clobber == false:
+        echo sqliteoutput & " already exists. Please add the -C, --clobber option to overwrite the file."
         return
 
     # create sqlite file or open exist database file.
-    let db = open(output, "", "", "")
+    let db = open(sqliteoutput, "", "", "")
     try:
         try:
             let dropTableSQL = sql"""DROP TABLE timelines"""
@@ -447,12 +448,13 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     html = html.replace("[%DATE_WITH_MOST_TOTAL_DETECTIONS%]", date_with_most_total_detections)
     
     # output HTML
-    let output_path = "./output" 
+    let output_path = "./" & output 
     if not dirExists(output_path):
         try:
             createDir(output_path)
         except OSError as e:
             echo "Failed to create directory: ", e.msg
+            return
  
     var write: File = open(output_path & "/index.html", FileMode.fmWrite)
     write.writeLine(html)
@@ -584,23 +586,23 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         write.close()
 
     var sourceFile = "./templates/alpinejs.3.14.1.js"
-    var destinationFile = "./output/alpinejs.3.14.1.js"
+    var destinationFile = "./" & output & "/alpinejs.3.14.1.js"
     copyFile(sourceFile, destinationFile)
 
     sourceFile = "./templates/tailwind.3.4.js"
-    destinationFile = "./output/tailwind.3.4.js"
+    destinationFile = "./" & output & "/tailwind.3.4.js"
     copyFile(sourceFile, destinationFile)
 
     sourceFile = "./templates/font-awesome.6.0.css"
-    destinationFile = "./output/font-awesome.6.0.css"
+    destinationFile = "./" & output & "/font-awesome.6.0.css"
     copyFile(sourceFile, destinationFile)
 
     let sourceDir = "./templates/webfonts"
-    let destinationDir = "./output/webfonts"
+    let destinationDir = "./" & output & "/webfonts"
     copyDirectory(sourceDir, destinationDir)
     
     echo "HTML report completed."
     echo ""
-    echo "Please open \"./output/index.html\""
+    echo "Please open \"./" & output & "/index.html\""
     echo ""
 
