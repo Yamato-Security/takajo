@@ -251,6 +251,7 @@ proc countLinesInTimeline*(filePath: string, quiet: bool = false,
     var count = 0
     if not quiet:
         echo "Counting total lines. Please wait."
+        echo ""
     for path in filePaths:
         echo "File: " & path & " (" & formatFileSize(getFileSize(path)) & ")"
         const BufferSize = 4 * 1024 * 1024 # 4 MiB
