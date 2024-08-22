@@ -87,15 +87,24 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                     # write to sqlite
                     #
 
-                    # common parameters
                     let jsonObj = parseJson(line)
+
+                    # parameter check
+                    if "RuleFile" notin jsonObj or "EvtxFile" notin jsonObj:
+                        bar.finish()
+                        echo ""
+                        echo "Takajo needs information that is not included in the JSONL results."
+                        echo "Please re-run Hayabusa with \"-p verbose\" or \"-p super-verbose\" profiles."
+                        return
+
+                    # common parameters
                     let timestamp = jsonObj["Timestamp"].getStr()
                     let rule_title = jsonObj["RuleTitle"].getStr()
                     let level = jsonObj["Level"].getStr()
                     let computer = jsonObj["Computer"].getStr()
                     let channel = jsonObj["Channel"].getStr()
                     let event_id = jsonObj["EventID"].getInt()
-                    let record_id = jsonObj["RecordID"].getInt()
+                    let record_id = jsonObj["RecordID"].getStr()
                     let rule_file = jsonObj["RuleFile"].getStr()
                     let evtx_file = jsonObj["EvtxFile"].getStr()
 
@@ -176,8 +185,8 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         db.exec(sql"COMMIT")
                         db.exec(sql"BEGIN")
                     
-                except CatchableError:
-                    echo "Invalid JSON line: ", line
+                except CatchableError as e:
+                    echo "Invalid JSON line: ", e.msg
 
         db.exec(sql"COMMIT")
         fileStream.close()
