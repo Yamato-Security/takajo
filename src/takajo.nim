@@ -132,7 +132,7 @@ when isMainModule:
         ],
         [
             htmlReport, cmdName = "html-report",
-            doc = "Create HTML report summaries for all the rules and computers",
+            doc = "create HTML summary reports for rules and computers with detections",
             help = {
                 "output": "html report directory name",
                 "quiet": "do not display the launch banner (default: false)",
@@ -140,7 +140,7 @@ when isMainModule:
                 "rulepath": "hayabusa rules directory path",
                 "sqliteoutput": "save results to a SQLite database (default: html-report.sqlite)",
                 "skipProgressBar": "do not display the progress bar (default: false)",
-                "clobber": "overwrite the SQLite file when saving (default false)",
+                "clobber": "overwrite the SQLite file when saving (default: false)",
             },
             short = {
                 "clobber": 'C',

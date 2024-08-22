@@ -43,6 +43,7 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 - [Command List](#command-list)
   - [Automation Commands](#automation-commands)
   - [Extract Commands](#extract-commands)
+  - [HTML Commands](#html-commands)
   - [List Commands](#list-commands)
   - [Split Commands](#split-commands)
   - [Stack Commands](#stack-commands)
@@ -51,13 +52,20 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
   - [TTP Commands](#ttp-commands)
   - [VirusTotal Commands](#virustotal-commands)
 - [Command Usage](#command-usage)
-- [Automation Commands](#automation-commands-1)
+  - [Automation Commands](#automation-commands-1)
     - [`automagic` command](#automagic-command)
       - [`automagic` command examples](#automagic-command-examples)
   - [Extract Commands](#extract-commands-1)
     - [`extract-scriptblocks` command](#extract-scriptblocks-command)
       - [`extract-scriptblocks` command example](#extract-scriptblocks-command-example)
       - [`extract-scriptblocks` screenshot](#extract-scriptblocks-screenshot)
+  - [HTML Commands](#html-commands-1)
+    - [`html-report` command](#html-report-command)
+      - [`html-report` command example](#html-report-command-example)
+      - [`html-report` screenshots](#html-report-screenshots)
+        - [Rule Summary](#rule-summary)
+        - [Computer Summary](#computer-summary)
+        - [Rule List](#rule-list)
   - [List Commands](#list-commands-1)
     - [`list-domains` command](#list-domains-command)
       - [`list-domains` command examples](#list-domains-command-examples)
@@ -140,11 +148,14 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
 - Visualize TTPs with heatmaps in MITRE ATT&CK Navigator.
 - Stacking command lines, DNS requests, logons, processes, services, tasks, etc...
 - Timelines for logons, USB usage, suspicious processes, tasks, etc...
+- HTML summary reports
 - Many more!
 
 # Downloads
 
 Please download the latest stable version of Takajo with compiled binaries or compile the source code from the [Releases](https://github.com/Yamato-Security/takajo/releases) page.
+
+> Note: we provide release binaries for 64-bit Windows and Intel and Arm-based macOS but not Linux because it is difficult to provide MUSL binaries for Linux at the moment.
 
 ## Git cloning
 
@@ -156,7 +167,8 @@ You can git clone the repository with the following command and compile binary f
 
 ## Advanced: Compiling From Source (Optional)
 
-If you have Nim installed, you can compile from source with the following command:
+First, install Nim with [choosenim](https://github.com/nim-lang/choosenim).
+Then you can compile from source with the following command:
 
 ```
 > nimble update
@@ -170,6 +182,9 @@ If you have Nim installed, you can compile from source with the following comman
 
 ## Extract Commands
 * `extract-scriptblocks`: extract and reassemble PowerShell EID 4104 script block logs
+
+## HTML Commands
+* `html-report`: create HTML summary reports for rules and computers with detections
 
 ## List Commands
 * `list-domains`: create a list of unique domains to be used with `vt-domain-lookup`
@@ -299,6 +314,64 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 #### `extract-scriptblocks` screenshot
 
 ![extract-scriptblocks](screenshots/extract-scriptblocks.png)
+
+## HTML Commands
+
+### `html-report` command
+
+Create HTML summary reports for rules and computers with detections.
+This command first creates an indexed SQLite database file in order to perform fast lookups on the data needed to create the summary reports.
+
+* Input: JSONL
+* Profile: Any verbose profile
+* Output: Individual HTML summary reports based on computer name as well as an `index.html` main page
+
+Required options:
+
+- `-o, --output`: html report directory name
+- `-r, --rulepath`: path to the Hayabusa rules directory
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory
+
+Options:
+
+- `-C, --clobber`: overwrite the SQLite file when saving (default: `false`)
+- `-q, --quiet`: do not display the launch banner (default: `false`)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
+- `-s, --sqliteoutput`: save results to a SQLite database (default: `html-report.sqlite`)
+
+#### `html-report` command example
+
+Prepare the JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+or
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p super-verbose
+```
+
+Create the HTML summary reports:
+
+```
+takajo.exe html-report -t ../hayabusa/hayabusa-results.jsonl -o htmlreport -r ../hayabusa/rules
+```
+
+#### `html-report` screenshots
+
+##### Rule Summary
+
+![html-report-rule-summary](screenshots/html-report-1-rule-summary.png)
+
+##### Computer Summary
+
+![html-report-computer-summary](screenshots/html-report-2-computer-summary.png)
+
+##### Rule List
+
+![html-report-rule-list](screenshots/html-report-3-rule-list.png)
 
 ## List Commands
 
