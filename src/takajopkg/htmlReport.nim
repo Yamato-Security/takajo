@@ -186,7 +186,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         db.exec(sql"BEGIN")
                     
                 except CatchableError as e:
-                    echo "Invalid JSON line: ", e.msg
+                    echo "Invalid JSON line: ", line
 
         db.exec(sql"COMMIT")
         fileStream.close()
