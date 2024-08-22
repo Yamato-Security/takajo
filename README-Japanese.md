@@ -351,7 +351,7 @@ hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
 hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p super-verbose
 ```
 
-HTMLサマリリポートを作成する:
+HTMLサマリレポートを作成する:
 
 ```
 takajo.exe html-report -t ../hayabusa/hayabusa-results.jsonl -o htmlreport -r ../hayabusa/rules
