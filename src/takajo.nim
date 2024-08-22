@@ -132,7 +132,7 @@ when isMainModule:
         ],
         [
             htmlReport, cmdName = "html-report",
-            doc = "create HTML summary reports for all the rules and computers with detections",
+            doc = "create HTML summary reports for rules and computers with detections",
             help = {
                 "output": "html report directory name",
                 "quiet": "do not display the launch banner (default: false)",
