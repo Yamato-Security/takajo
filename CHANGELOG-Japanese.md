@@ -1,5 +1,11 @@
 # 変更点
 
+## 2.7.0 [2024/10/21] SecTor Release
+
+**バグ修正:**
+
+- Hayabusaのデフォルトプロファイルを使用した場合、`Invalid JSON line`というエラーが表示され、失敗していた。 (#169) (@nishikawaakira)
+
 ## 2.6.0 [2024/08/23] HITCON Release
 
 **新機能:**
