@@ -15,6 +15,9 @@
     <a href="https://www.seccon.jp/2022/seccon_workshop/windows.html"><img src="https://img.shields.io/badge/SECCON-2023-blue"></a>
     <a href="https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/"><img src="https://img.shields.io/badge/SANS%20DFIR%20Summit-2023-blue"></a>
     <a href="https://bsides.tokyo/2024/"><img src="https://img.shields.io/badge/BSides%20Tokyo-2024-blue"></a>
+    <a href="https://www.hacker.or.jp/hack-fes-2024/"><img src="https://img.shields.io/badge/Hack%20Fes.-2024-blue"></a>
+    <a href="https://hitcon.org/2024/CMT/"><img src="https://img.shields.io/badge/HITCON-2024-blue"></a>
+    <a href="https://www.blackhat.com/sector/2024/briefings/schedule/index.html#performing-dfir-and-threat-hunting-with-yamato-security-oss-tools-and-community-driven-knowledge-41347"><img src="https://img.shields.io/badge/SecTor-2024-blue"></a>
     <a href=""><img src="https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg" /></a>
     <a href="https://twitter.com/SecurityYamato"><img src="https://img.shields.io/twitter/follow/SecurityYamato?style=social"/></a>
 </p>
@@ -41,6 +44,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [Gitクローン](#gitクローン)
   - [アドバンス: ソースコードからのコンパイル（任意）](#アドバンス-ソースコードからのコンパイル任意)
 - [コマンド一覧](#コマンド一覧)
+  - [Automationコマンド](#automationコマンド)
   - [Extractコマンド](#extractコマンド)
   - [Listコマンド](#listコマンド)
   - [Splitコマンド](#splitコマンド)
@@ -50,7 +54,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
   - [TTP Commands](#ttp-commands)
   - [VirusTotalコマンド](#virustotalコマンド)
 - [コマンド使用方法](#コマンド使用方法)
-  - [Automationコマンド](#Automationコマンド)
+  - [Automationコマンド](#automationコマンド-1)
     - [`automagic`コマンド](#automagicコマンド)
       - [`automagic`コマンドの使用例](#automagicコマンドの使用例)
   - [Extractコマンド](#extractコマンド-1)
@@ -87,7 +91,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
     - [`stack-processes`コマンド](#stack-processesコマンド)
       - [`stack-processes`コマンドの使用例](#stack-processesコマンドの使用例)
     - [`stack-services`コマンド](#stack-servicesコマンド)
-      - [`stack-services`コマンドの使用例](#stack-servicessコマンドの使用例)
+      - [`stack-services`コマンドの使用例](#stack-servicesコマンドの使用例)
     - [`stack-tasks`コマンド](#stack-tasksコマンド)
       - [`stack-tasks`コマンドの使用例](#stack-tasksコマンドの使用例)
     - [`stack-users`コマンド](#stack-usersコマンド)
@@ -111,11 +115,11 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
     - [`ttp-summary`コマンド](#ttp-summaryコマンド)
       - [`ttp-summary`コマンドの使用例](#ttp-summaryコマンドの使用例)
       - [`ttp-summary`スクリーンショット](#ttp-summaryスクリーンショット)
-    - [`ttp-visualize`コマンド](#ttp-visualizeコマンド)
+    - [`ttp-visualize-sigma`コマンド](#ttp-visualize-sigmaコマンド)
       - [`ttp-visualize`コマンドの使用例](#ttp-visualizeコマンドの使用例)
       - [`ttp-visualize`スクリーンショット](#ttp-visualizeスクリーンショット)
-    - [`ttp-visualize-sigma`コマンド](#ttp-visualize-sigmaコマンド)
-      - [`ttp-visualize-simga`コマンドの使用例](#ttp-visualize-sigmaコマンドの使用例)
+    - [`ttp-visualize-sigma`コマンド](#ttp-visualize-sigmaコマンド-1)
+      - [`ttp-visualize-sigma`コマンドの使用例](#ttp-visualize-sigmaコマンドの使用例)
   - [VirusTotalコマンド](#virustotalコマンド-1)
     - [`vt-domain-lookup`コマンド](#vt-domain-lookupコマンド)
       - [`vt-domain-lookup`コマンドの使用例](#vt-domain-lookupコマンドの使用例)
