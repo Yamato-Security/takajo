@@ -9,6 +9,9 @@ jobs:
     steps:
       - name: setup Nim
         uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: '2.x' # default is 'stable'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: clone takajo
         uses: actions/checkout@v4
