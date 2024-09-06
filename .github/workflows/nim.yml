@@ -26,10 +26,11 @@ jobs:
             }
     runs-on: ${{ matrix.info.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: jiro4989/setup-nim-action@v1
+      - uses: actions/checkout@v4
+      - uses: jiro4989/setup-nim-action@v2
         with:
           nim-version: '2.x' # default is 'stable'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build check
         run: nimble build --threads:on -Y
       - name: Run tests
