@@ -297,14 +297,13 @@
       <!-- Page Section -->
       <div class="container mx-auto space-y-10 px-4 py-8 lg:space-y-16 lg:px-8 lg:py-12 xl:max-w-7xl">
         <!-- Leads -->
-        <!-- ここにはそれぞれのページとカテゴリの説明を書いていく -->
         <div>
           <h2 class="mb-1 text-2xl font-semibold">[%PAGE_TITLE%]</h2>
           <h3 class="mb-8 text-sm font-medium text-slate-600">
             <!--You have 10 new leads, let's get to work!-->
           </h3>
           <div class="min-w-full overflow-x-auto rounded">
-            <h3 class="mb-1 font-semibold">Total detections</h3>
+            <h3 class="mb-1 font-semibold">Detections</h3>
             <table class="min-w-full align-middle text-sm">
               <thead>
                 <tr>
@@ -312,39 +311,17 @@
                     Severity
                   </th>
                   <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Number of detections
+                    Total Detections
                   </th>
                   <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Detection rate
+                    Unique Detections
                   </th>
                 </tr>
               </thead>
               <tbody>
-                [%TOTAL_DETECTIONS%]
+                [%DETECTIONS%]
               </tbody>
             </table>
-
-
-            <h3 class="mt-10 mb-1 font-semibold">Unique detections</h3>
-            <table class="min-w-full align-middle text-sm">
-              <thead>
-                <tr>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Severity
-                  </th>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Number of detections
-                  </th>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Detection rate
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                [%UNIQUE_DETECTIONS%]
-              </tbody>
-            </table>
-
 
             <h3 class="mt-10 mb-1 font-semibold">Dates with most total detections</h3>
             <table class="min-w-full align-middle text-sm">

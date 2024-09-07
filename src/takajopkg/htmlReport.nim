@@ -398,33 +398,22 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     #
     # create a summary
     #
-    proc printSummaryData(data: Table[int, SummaryInfo]): (string, string, string) =
+    proc printSummaryData(data: Table[int, SummaryInfo]): (string, string) =
 
-        var total_detections = ""
+        var detections = ""
         
         for level_order in countdown(4, 0):
             if not data.hasKey(level_order):
                 continue 
             let info = data[level_order]
             let tmp_total_percent = info.totalPercent.formatFloat(ffDecimal, 2)
-            total_detections &= "<tr class=\"border-b border-gray-100\">"
-            total_detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[level_order] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[level_order] & "-800\">" & severity_order[level_order] & "</td>"
-            total_detections &= "<td class=\"p-3 font-medium\">" & $info.totalCount & "</td>"
-            total_detections &= "<td class=\"p-3 font-medium\">" & $tmp_total_percent & "%</td>"
-            total_detections &= "</tr>"
-
-        var unique_detections = ""
-        for level_order in countdown(4, 0):
-            if not data.hasKey(level_order):
-                continue 
-            let info = data[level_order]
             let tmp_unique_percent = info.uniquePercent.formatFloat(ffDecimal, 2)
-            unique_detections &= "<tr class=\"border-b border-gray-100\">"
-            unique_detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[level_order] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[level_order] & "-800\">" & severity_order[level_order] & "</td>"
-            unique_detections &= "<td class=\"p-3 font-medium\">" & $info.uniqueCount & "</td>"
-            unique_detections &= "<td class=\"p-3 font-medium\">" & $tmp_unique_percent & "%</td>"
-            unique_detections &= "</tr>"
-  
+            detections &= "<tr class=\"border-b border-gray-100\">"
+            detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[level_order] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[level_order] & "-800\">" & severity_order[level_order] & "</td>"
+            detections &= "<td class=\"p-3 font-medium\">" & $info.totalCount & " / " & $tmp_total_percent & "%</td>"
+            detections &= "<td class=\"p-3 font-medium\">" & $info.uniqueCount & " / " & $tmp_unique_percent & "%</td>"
+            detections &= "</tr>"
+
         var date_with_most_total_detections = ""
         for level_order in countdown(4, 0):
             if not data.hasKey(level_order):
@@ -436,9 +425,9 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
             date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & $info.mostTotalCount & "</td>"
             date_with_most_total_detections &= "</tr>"
 
-        return (total_detections, unique_detections, date_with_most_total_detections)
+        return (detections, date_with_most_total_detections)
 
-    let (total_detections, unique_detections, date_with_most_total_detections) = printSummaryData(summaryData)
+    let (detections, date_with_most_total_detections) = printSummaryData(summaryData)
     
     # read template file
     var f: File = open("./templates/index.template", FileMode.fmRead)
@@ -452,8 +441,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     html = html.replace("[%PAGE_TITLE%]", "Rule Summary")
     html = html.replace("[%SIDE_MENU%]", sidemenu)
     html = html.replace("[%SIDE_MENU_COMPUTER%]", sidemenucomputers)
-    html = html.replace("[%TOTAL_DETECTIONS%]", total_detections)
-    html = html.replace("[%UNIQUE_DETECTIONS%]", unique_detections)
+    html = html.replace("[%DETECTIONS%]", detections)
     html = html.replace("[%DATE_WITH_MOST_TOTAL_DETECTIONS%]", date_with_most_total_detections)
     
     # output HTML
@@ -612,6 +600,6 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     
     echo "HTML report completed."
     echo ""
-    echo "Please open \"./" & output & "/index.html\""
+    echo "Please open \"" & output & "/index.html\""
     echo ""
 
