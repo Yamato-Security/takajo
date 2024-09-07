@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 
-    <title>Project</title>
+    <title>Computer Summary</title>
 
     <script src="tailwind.3.4.js"></script>
     <link rel="stylesheet" href="./font-awesome.6.0.css">
@@ -303,45 +303,35 @@
             <!--You have 10 new leads, let's get to work!-->
           </h3>
           <div class="min-w-full overflow-x-auto rounded">
-            <h3 class="mb-1 font-semibold">Detections</h3>
+            <h3 class="mb-1 font-semibold">Computers</h3>
             <table class="min-w-full align-middle text-sm">
               <thead>
                 <tr>
                   <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Severity
+                    Computer
                   </th>
                   <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Total Detections
+                    Critical Alerts
                   </th>
                   <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Unique Detections
+                    High Alerts
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Medium Alerts
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Low Alerts
+                  </th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
+                    Informational Alerts
                   </th>
                 </tr>
               </thead>
               <tbody>
-                [%DETECTIONS%]
+                [%COMPUTERS%]
               </tbody>
             </table>
 
-            <h3 class="mt-10 mb-1 font-semibold">Dates with most total detections</h3>
-            <table class="min-w-full align-middle text-sm">
-              <thead>
-                <tr>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Severity
-                  </th>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Number of detections
-                  </th>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">
-                    Detection rate
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                [%DATE_WITH_MOST_TOTAL_DETECTIONS%]
-              </tbody>
-            </table>
           </div>
         </div>
         <!-- END Leads -->

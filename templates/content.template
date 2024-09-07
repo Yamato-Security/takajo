@@ -158,7 +158,7 @@
           </li>
           [%SIDE_MENU%]
           <li>
-            <h3 class="font-semibold">Computer Summary</h3>
+            <h3 class="font-semibold"><a href="computer_summary.html">Computer Summary</a></h3>
           </li>
           <li>
             <button class="toggle-btn" data-severity="computer"><i class="icon fas fa-chevron-right"></i>computers</button>
