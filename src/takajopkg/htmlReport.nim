@@ -232,7 +232,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                     SUM(CASE WHEN level = 'info' THEN 1 ELSE 0 END) AS informational_count
                     FROM timelines
                     GROUP BY computer
-                    ORDER BY critical_count DESC
+                    ORDER BY critical_count DESC, high_count DESC, medium_count DESC, low_count DESC, informational_count DESC
                     """
     let computer_counts = db.getAllRows(query)
     
