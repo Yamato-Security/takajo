@@ -2,6 +2,11 @@
 
 ## 2.7.0 [2024/10/21] SecTor Release
 
+**改善:**
+
+- HTMLレポートのRule SummaryページのTotal DetectionsとUnique Detectionsの検出サマリが1つの表に統合された。(#182) (@nishikawaakira)
+- HTMLレポートにComputer Summaryページが追加された。 (#183) (@nishikawaakira)
+
 **バグ修正:**
 
 - Hayabusaのデフォルトプロファイルを使用した場合、`Invalid JSON line`というエラーが表示され、失敗していた。 (#169) (@nishikawaakira)

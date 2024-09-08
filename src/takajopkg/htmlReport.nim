@@ -213,7 +213,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     var alerts = db.getAllRows(query)
 
 
-    # obtain computer summary from SQLite
+    # obtain computer summary
     query = sql"""select computer, COUNT(*) AS count
                         from timelines
                         group by computer
@@ -221,8 +221,24 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         order by count desc
                         """
     var computers = db.getAllRows(query)
+
+    # obtain computer severities
+    query = sql"""SELECT
+                    computer,
+                    SUM(CASE WHEN level = 'crit' THEN 1 ELSE 0 END) AS critical_count,
+                    SUM(CASE WHEN level = 'high' THEN 1 ELSE 0 END) AS high_count,
+                    SUM(CASE WHEN level = 'med' THEN 1 ELSE 0 END) AS medium_count,
+                    SUM(CASE WHEN level = 'low' THEN 1 ELSE 0 END) AS low_count,
+                    SUM(CASE WHEN level = 'info' THEN 1 ELSE 0 END) AS informational_count
+                    FROM timelines
+                    GROUP BY computer
+                    ORDER BY critical_count DESC, high_count DESC, medium_count DESC, low_count DESC, informational_count DESC
+                    """
+    let computer_counts = db.getAllRows(query)
     
+    #
     # close sqlite file
+    #
     db.close()
     
 
@@ -581,6 +597,40 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         var write: File = open(output_path & "/" & compName & ".html", FileMode.fmWrite)
         write.writeLine(html)
         write.close()
+
+    #
+    # create commputer summary
+    #
+    var computer_summary_html = ""
+    for computer in computer_counts:
+        computer_summary_html &= "<tr class=\"border-b border-gray-100\">"
+        computer_summary_html &= "<td class=\"p-3 font-medium\">" & computer[0] & "</td>"
+        computer_summary_html &= "<td class=\"p-3 font-medium\">" & computer[1] & "</td>"
+        computer_summary_html &= "<td class=\"p-3 font-medium\">" & computer[2] & "</td>"
+        computer_summary_html &= "<td class=\"p-3 font-medium\">" & computer[3] & "</td>"
+        computer_summary_html &= "<td class=\"p-3 font-medium\">" & computer[4] & "</td>"
+        computer_summary_html &= "<td class=\"p-3 font-medium\">" & computer[5] & "</td>"
+        computer_summary_html &= "</tr>"
+
+    # read commputer summary template file
+    f = open("./templates/computer_summary.template", FileMode.fmRead)
+
+    html = ""
+    while f.endOfFile == false :
+        html &= f.readLine()
+    f.close()
+
+    html = html.replace("[%PAGE_TITLE%]", "Computer Summary")
+    html = html.replace("[%SIDE_MENU%]", sidemenu)
+    html = html.replace("[%SIDE_MENU_COMPUTER%]", sidemenucomputers)
+    html = html.replace("[%COMPUTERS%]", computer_summary_html)
+    write = open(output_path & "/computer_summary.html", FileMode.fmWrite)
+    write.writeLine(html)
+    write.close()
+
+    #
+    # copy template file
+    #
 
     var sourceFile = "./templates/alpinejs.3.14.1.js"
     var destinationFile = "./" & output & "/alpinejs.3.14.1.js"
