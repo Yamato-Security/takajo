@@ -2,6 +2,11 @@
 
 ## 2.7.0 [2024/10/21] SecTor Release
 
+**Enhancements:**
+
+- Detection summary for Total Detections and Unique Detections in the Rule Summary page of the HTML report has been consolidated into one table. (#182) (@nishikawaakira)
+- Computer summary page was added to the HTML report. (#183) (@nishikawaakira)
+
 **Bug Fixes:**
 
 - `Invalid JSON line` errors would display with the default Hayabusa profile. (#169) (@nishikawaakira)
