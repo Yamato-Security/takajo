@@ -85,10 +85,25 @@ jobs:
           mv ./README.pdf ./README-${{ github.event.inputs.release_ver }}-English.pdf
           mv ./README-Japanese.pdf ./README-${{ github.event.inputs.release_ver }}-Japanese.pdf
 
+      - name: Set Artifact Name
+        id: set_artifact_name
+        shell: bash
+        run: |
+          case "${{ matrix.os }}" in
+            'windows-latest')
+              echo "::set-output name=artifact_name::takajo-${{ github.event.inputs.release_ver }}-win-intel.zip" ;;
+            'ubuntu-latest')
+              echo "::set-output name=artifact_name::takajo-${{ github.event.inputs.release_ver }}-linux-intel.zip" ;;
+            'macos-latest')
+              echo "::set-output name=artifact_name::takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip" ;;
+            'macos-12')
+              echo "::set-output name=artifact_name::takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip" ;;
+          esac
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-binaries-${{ matrix.os }}
+          name: ${{ steps.set_artifact_name.outputs.artifact_name }}
           path: |
             **/*.zip
             ./*.pdf
