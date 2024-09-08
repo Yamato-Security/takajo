@@ -45,7 +45,9 @@ jobs:
           Copy-Item -Path takajo.exe -Destination release-binaries/
           Copy-Item -Path mitre-attack.json -Destination release-binaries/
           Copy-Item -Path pcre64.dll -Destination release-binaries/
-          Compress-Archive -Path release-binaries/* -DestinationPath release-binaries/takajo-${{ github.event.inputs.release_ver }}-win.zip -Force
+          Copy-Item -Path templates -Destination release-binaries/ -Recurse
+          mv release-binaries takajo-${{ github.event.inputs.release_ver }}-win
+          Compress-Archive -Path takajo-${{ github.event.inputs.release_ver }}-win/* -DestinationPath takajo-${{ github.event.inputs.release_ver }}-win.zip -Force
 
       - name: Package and Zip - Unix
         if: matrix.os != 'windows-latest'
@@ -53,12 +55,18 @@ jobs:
           mkdir -p release-binaries
           cp takajo release-binaries/
           cp mitre-attack.json release-binaries/
+          cp -r templates release-binaries/
           case ${{ matrix.os }} in
-            'ubuntu-latest') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-linux.zip release-binaries/* ;;
-            'macos-latest') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip release-binaries/* ;;
-            'macos-12') zip -j release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip release-binaries/* ;;
+            'ubuntu-latest')
+                mv release-binaries takajo-${{ github.event.inputs.release_ver }}-linux
+                zip -r takajo-${{ github.event.inputs.release_ver }}-linux.zip takajo-${{ github.event.inputs.release_ver }}-linux/* ;;
+            'macos-latest')
+                mv release-binaries takajo-${{ github.event.inputs.release_ver }}-mac-arm
+                zip -r takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip takajo-${{ github.event.inputs.release_ver }}-mac-arm/* ;;
+            'macos-12')
+                mv release-binaries takajo-${{ github.event.inputs.release_ver }}-mac-intel
+                zip -r takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip takajo-${{ github.event.inputs.release_ver }}-mac-intel/* ;;
           esac
-
       - name: Setup node
         if: matrix.os == 'macos-latest'
         uses: actions/setup-node@v4
@@ -78,5 +86,5 @@ jobs:
         with:
           name: release-binaries-${{ matrix.os }}
           path: |
-            release-binaries/*.zip
+            **/*.zip
             ./*.pdf
