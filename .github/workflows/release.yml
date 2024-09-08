@@ -91,13 +91,13 @@ jobs:
         run: |
           case "${{ matrix.os }}" in
             'windows-latest')
-              echo "::set-output name=artifact_name::takajo-${{ github.event.inputs.release_ver }}-win-intel.zip" ;;
+              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-win-intel.zip" >> $GITHUB_OUTPUT
             'ubuntu-latest')
-              echo "::set-output name=artifact_name::takajo-${{ github.event.inputs.release_ver }}-linux-intel.zip" ;;
+              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-linux-intel.zip" >> $GITHUB_OUTPUT
             'macos-latest')
-              echo "::set-output name=artifact_name::takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip" ;;
+              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip" >> $GITHUB_OUTPUT
             'macos-12')
-              echo "::set-output name=artifact_name::takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip" ;;
+              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip" >> $GITHUB_OUTPUT
           esac
 
       - name: Upload Artifact
