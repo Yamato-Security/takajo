@@ -6,7 +6,9 @@ on:
       release_ver:
         required: true
         default: "2.x.x"
-
+      branch_or_tag:
+        required: true
+        default: "main"
 jobs:
   release:
     runs-on: ${{ matrix.os }}
@@ -17,6 +19,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch_or_tag }}
 
       - name: Setup Nim
         uses: jiro4989/setup-nim-action@v2
