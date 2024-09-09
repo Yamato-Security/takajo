@@ -47,11 +47,12 @@ jobs:
         run: |
           mkdir -p release-binaries
           Copy-Item -Path takajo.exe -Destination release-binaries/
+          mv release-binaries/takajo.exe release-binaries/takajo-${{ github.event.inputs.release_ver }}-win-x64.exe
           Copy-Item -Path mitre-attack.json -Destination release-binaries/
           Copy-Item -Path pcre64.dll -Destination release-binaries/
           Copy-Item -Path templates -Destination release-binaries/ -Recurse
-          mv release-binaries takajo-${{ github.event.inputs.release_ver }}-win
-          Compress-Archive -Path takajo-${{ github.event.inputs.release_ver }}-win/* -DestinationPath takajo-${{ github.event.inputs.release_ver }}-win.zip -Force
+          mv release-binaries takajo-${{ github.event.inputs.release_ver }}-win-x64
+          Compress-Archive -Path takajo-${{ github.event.inputs.release_ver }}-win-x64/* -DestinationPath takajo-${{ github.event.inputs.release_ver }}-win-x64.zip -Force
 
       - name: Package and Zip - Unix
         if: matrix.os != 'windows-latest'
@@ -63,12 +64,15 @@ jobs:
           case ${{ matrix.os }} in
             'ubuntu-latest')
                 mv release-binaries takajo-${{ github.event.inputs.release_ver }}-linux
+                mv takajo-${{ github.event.inputs.release_ver }}-linux/takajo takajo-${{ github.event.inputs.release_ver }}-linux/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu
                 zip -r takajo-${{ github.event.inputs.release_ver }}-linux.zip takajo-${{ github.event.inputs.release_ver }}-linux/* ;;
             'macos-latest')
                 mv release-binaries takajo-${{ github.event.inputs.release_ver }}-mac-arm
+                mv takajo-${{ github.event.inputs.release_ver }}-mac-arm/takajo takajo-${{ github.event.inputs.release_ver }}-mac-arm/takajo-${{ github.event.inputs.release_ver }}-mac-aarch64
                 zip -r takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip takajo-${{ github.event.inputs.release_ver }}-mac-arm/* ;;
             'macos-12')
                 mv release-binaries takajo-${{ github.event.inputs.release_ver }}-mac-intel
+                mv takajo-${{ github.event.inputs.release_ver }}-mac-intel/takajo takajo-${{ github.event.inputs.release_ver }}-mac-intel/takajo-${{ github.event.inputs.release_ver }}-mac-x64
                 zip -r takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip takajo-${{ github.event.inputs.release_ver }}-mac-intel/* ;;
           esac
       - name: Setup node
@@ -77,6 +81,28 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set Artifact Name
+        id: set_artifact_name
+        shell: bash
+        run: |
+          case "${{ matrix.os }}" in
+            'windows-latest')
+              echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-win-x64" >> $GITHUB_OUTPUT ;;
+            'ubuntu-latest')
+              echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-linux-intel" >> $GITHUB_OUTPUT ;;
+            'macos-latest')
+              echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-mac-arm" >> $GITHUB_OUTPUT ;;
+            'macos-12')
+              echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-mac-intel" >> $GITHUB_OUTPUT ;;
+          esac
+
+      - name: Upload Zip Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.set_artifact_name.outputs.artifact_name }}
+          path: |
+            **/*.zip
+
       - name: Create PDF
         if: matrix.os == 'macos-latest'
         run: |
@@ -84,26 +110,13 @@ jobs:
           md-to-pdf ./*.md --md-file-encoding utf-8
           mv ./README.pdf ./README-${{ github.event.inputs.release_ver }}-English.pdf
           mv ./README-Japanese.pdf ./README-${{ github.event.inputs.release_ver }}-Japanese.pdf
+          mv ./CHANGELOG.pdf ./CHANGELOG-${{ github.event.inputs.release_ver }}-English.pdf
+          mv ./CHANGELOG-Japanese.pdf ./CHANGELOG-${{ github.event.inputs.release_ver }}-Japanese.pdf
 
-      - name: Set Artifact Name
-        id: set_artifact_name
-        shell: bash
-        run: |
-          case "${{ matrix.os }}" in
-            'windows-latest')
-              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-win-intel" >> $GITHUB_OUTPUT ;;
-            'ubuntu-latest')
-              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-linux-intel" >> $GITHUB_OUTPUT ;;
-            'macos-latest')
-              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-mac-arm" >> $GITHUB_OUTPUT ;;
-            'macos-12')
-              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-mac-intel" >> $GITHUB_OUTPUT ;;
-          esac
-
-      - name: Upload Artifact
+      - name: Upload Document Artifacts
+        if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.set_artifact_name.outputs.artifact_name }}
+          name: documents
           path: |
-            **/*.zip
             ./*.pdf
