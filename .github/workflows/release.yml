@@ -67,11 +67,6 @@ jobs:
             'macos-12')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-x64 ;;
           esac
-      - name: Setup node
-        if: matrix.os == 'macos-latest'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
 
       - name: Set Artifact Name
         id: set_artifact_name
@@ -94,6 +89,12 @@ jobs:
           name: ${{ steps.set_artifact_name.outputs.artifact_name }}
           path: |
             release-binaries/*
+
+      - name: Setup node
+        if: matrix.os == 'macos-latest'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
       - name: Create PDF
         if: matrix.os == 'macos-latest'
