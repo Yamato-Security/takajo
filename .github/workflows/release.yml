@@ -91,13 +91,13 @@ jobs:
         run: |
           case "${{ matrix.os }}" in
             'windows-latest')
-              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-win-intel" >> $GITHUB_OUTPUT
+              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-win-intel" >> $GITHUB_OUTPUT ;;
             'ubuntu-latest')
-              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-linux-intel" >> $GITHUB_OUTPUT
+              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-linux-intel" >> $GITHUB_OUTPUT ;;
             'macos-latest')
-              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-mac-arm" >> $GITHUB_OUTPUT
+              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-mac-arm" >> $GITHUB_OUTPUT ;;
             'macos-12')
-              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-mac-intel" >> $GITHUB_OUTPUT
+              echo "{artifact_name}=takajo-${{ github.event.inputs.release_ver }}-mac-intel" >> $GITHUB_OUTPUT ;;
           esac
 
       - name: Upload Artifact
