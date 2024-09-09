@@ -65,15 +65,12 @@ jobs:
             'ubuntu-latest')
                 mv release-binaries takajo-${{ github.event.inputs.release_ver }}-linux
                 mv takajo-${{ github.event.inputs.release_ver }}-linux/takajo takajo-${{ github.event.inputs.release_ver }}-linux/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu
-                zip -r takajo-${{ github.event.inputs.release_ver }}-linux.zip takajo-${{ github.event.inputs.release_ver }}-linux/* ;;
             'macos-latest')
                 mv release-binaries takajo-${{ github.event.inputs.release_ver }}-mac-arm
                 mv takajo-${{ github.event.inputs.release_ver }}-mac-arm/takajo takajo-${{ github.event.inputs.release_ver }}-mac-arm/takajo-${{ github.event.inputs.release_ver }}-mac-aarch64
-                zip -r takajo-${{ github.event.inputs.release_ver }}-mac-arm.zip takajo-${{ github.event.inputs.release_ver }}-mac-arm/* ;;
             'macos-12')
                 mv release-binaries takajo-${{ github.event.inputs.release_ver }}-mac-intel
                 mv takajo-${{ github.event.inputs.release_ver }}-mac-intel/takajo takajo-${{ github.event.inputs.release_ver }}-mac-intel/takajo-${{ github.event.inputs.release_ver }}-mac-x64
-                zip -r takajo-${{ github.event.inputs.release_ver }}-mac-intel.zip takajo-${{ github.event.inputs.release_ver }}-mac-intel/* ;;
           esac
       - name: Setup node
         if: matrix.os == 'macos-latest'
@@ -101,7 +98,7 @@ jobs:
         with:
           name: ${{ steps.set_artifact_name.outputs.artifact_name }}
           path: |
-            **/*.zip
+            **/*
 
       - name: Create PDF
         if: matrix.os == 'macos-latest'
