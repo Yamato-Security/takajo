@@ -6,6 +6,7 @@
 
 - HTMLレポートのRule SummaryページのTotal DetectionsとUnique Detectionsの検出サマリが1つの表に統合された。(#182) (@nishikawaakira)
 - HTMLレポートにComputer Summaryページが追加された。 (#183) (@nishikawaakira)
+- Rule Summaryページに検出されたアラート一覧を追加した。(#175) (@nishikawaakira)
 
 **バグ修正:**
 
