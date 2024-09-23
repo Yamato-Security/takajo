@@ -20,7 +20,6 @@ proc copyDirectory(src: string, dest: string) =
             copyFile(entry.path, destPath)
         elif entry.kind == pcDir:
             createDir(destPath)
-            
 
 
 # output: HTML reports directory name
@@ -446,22 +445,24 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     let (detections, date_with_most_total_detections) = printSummaryData(summaryData)
     
     # Rule Summary
-    proc printDetectionRuleList(levels: Table[int, seq[Alert]], rulepath: string, rulepath_list: var Table[string, string]): string = 
+    #proc printDetectionRuleList(levels: Table[int, seq[Alert]], rulepath: string, rulepath_list: var Table[string, string]): string = 
+    proc printDetectionRuleList(levels: seq[(int, seq[Alert])], rulepath: string, rulepath_list: var Table[string, string]): string = 
         var ret = ""
+        const severity_order = @["Information", "Low", "Medium", "High", "Critical"]
 
-        for level_order, alerts in pairs(levels):
-            
+        for index, alert_list in levels.pairs():
+            var tmp_alerts = alert_list[1]
+            proc compareCount(a, b: Alert): int =
+                return cmp(b.count, a.count)
+            tmp_alerts.sort(compareCount)
+
+            let level_order = alert_list[0]
             ret &= "<h3 class=\"mt-10 mb-1 font-semibold\">" & severity_order[level_order] & " Alerts:</h3>"
             ret &= "<table class=\"min-w-full align-middle text-sm\"><thead><tr>"
             ret &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Count</th>"
             ret &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Rule Name</th>"
             ret &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Computers</th>"
             ret &= "</tr></thead><tbody>"
-
-            var tmp_alerts = alerts
-            proc compareCount(a, b: Alert): int =
-                return cmp(b.count, a.count)
-            tmp_alerts.sort(compareCount)
 
             for alert in tmp_alerts:
                 var rule_file_path = ""
@@ -475,13 +476,17 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                 ret &= "<td class=\"p-3 font-medium\"><a style=\"font-size:10pt !important;\" href=\"" & rule_filepath & "\">" & alert.title & "</a></td>"
                 ret &= "<td class=\"p-3 font-medium\">"
                 for computer in alert.computers:
-                    ret &= "<a data-class=\"" & severity_order[level_order] & "\" style=\"font-size:10pt !important;\" href=\"./" & computer.name & ".html\" class=\"hover:bg-indigo-100 hover:text-indigo-900\">" & computer.name & " (" & computer.count.intToStr & ") (" & computer.start_date & " ~ " & computer.end_date & ")</a>&nbsp;"
+                    ret &= "<a data-class=\"" & severity_order[level_order] & "\" style=\"font-size:10pt !important;\" href=\"./" & computer.name & ".html\" class=\"hover:bg-indigo-100 hover:text-indigo-900\">" & computer.name & " (" & computer.count.intToStr & ") (" & computer.start_date & " ~ " & computer.end_date & ")</a><br>"
                 ret &= "</td></tr>"
             ret &= "</tbody></table>"
+
         return ret
 
-    let detection_rule_list = printDetectionRuleList(levels, rulepath, rulepath_list)
+    proc levelCompare(a, b: (int, seq[Alert])): int =
+        cmp(b[0], a[0])
 
+    let sortedLevels = levels.pairs().toSeq.sorted(levelCompare)
+    let detection_rule_list = printDetectionRuleList(sortedLevels, rulepath, rulepath_list)
 
     # read template file
     var f: File = open("./templates/index.template", FileMode.fmRead)
@@ -612,9 +617,9 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         temp_html &= "</tr></thead><tbody>"
         
         # sort by severity order
-        proc compare(a, b: (string, string, int)): int =
+        proc severityCompare(a, b: (string, string, int)): int =
             cmp(a[2], b[2])
-        let detectedRules = summary.detectedRules.sorted(compare, Descending)
+        let detectedRules = summary.detectedRules.sorted(severityCompare, Descending)
         
         for rule in detectedRules:
             var rule_filepath = ""
