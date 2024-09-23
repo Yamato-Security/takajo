@@ -6,6 +6,7 @@
 
 - Detection summary for Total Detections and Unique Detections in the Rule Summary page of the HTML report has been consolidated into one table. (#182) (@nishikawaakira)
 - Computer summary page was added to the HTML report. (#183) (@nishikawaakira)
+- Added a list of detected alerts to the Rule Summary page. (#175) (@nishikawaakira)
 
 **Bug Fixes:**
 

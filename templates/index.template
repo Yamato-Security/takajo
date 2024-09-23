@@ -342,6 +342,10 @@
                 [%DATE_WITH_MOST_TOTAL_DETECTIONS%]
               </tbody>
             </table>
+
+
+            [%DETECTION_RULE_LIST%]
+
           </div>
         </div>
         <!-- END Leads -->
