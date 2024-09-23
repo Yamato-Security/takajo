@@ -457,7 +457,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
             tmp_alerts.sort(compareCount)
 
             let level_order = alert_list[0]
-            ret &= "<h3 class=\"mt-10 mb-1 font-semibold\">" & severity_order[level_order] & " Alerts:</h3>"
+            ret &= "<h3 class=\"mt-10 mb-1 font-semibold\">" & severity_order[level_order] & " alerts:</h3>"
             ret &= "<table class=\"min-w-full align-middle text-sm\"><thead><tr>"
             ret &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Count</th>"
             ret &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Rule Name</th>"
