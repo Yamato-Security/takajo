@@ -7,10 +7,12 @@
 - Detection summary for Total Detections and Unique Detections in the Rule Summary page of the HTML report has been consolidated into one table. (#182) (@nishikawaakira)
 - Computer summary page was added to the HTML report. (#183) (@nishikawaakira)
 - Added a list of detected alerts to the Rule Summary page. (#175) (@nishikawaakira)
+- Detection Rule List lists more detailed information. (#176) (@nishikawaakira)
 
 **Bug Fixes:**
 
 - `Invalid JSON line` errors would display with the default Hayabusa profile. (#169) (@nishikawaakira)
+- Graphs were being aggregated to the first date for each rule. (#191) (@nishikawaakira)
 
 ## 2.6.0 [2024/08/23] HITCON Release
 
