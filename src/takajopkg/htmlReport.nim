@@ -208,9 +208,8 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         group by rule_title, level, computer
                         order by level_order
                         """
-
     var alerts = db.getAllRows(query)
-
+    
 
     # obtain computer summary
     query = sql"""select computer, COUNT(*) AS count
@@ -235,12 +234,6 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                     """
     let computer_counts = db.getAllRows(query)
     
-    #
-    # close sqlite file
-    #
-    db.close()
-    
-
     # data formatting
     type
         Computer = tuple[name: string, count: int, start_date: string, end_date: string]
@@ -445,7 +438,6 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     let (detections, date_with_most_total_detections) = printSummaryData(summaryData)
     
     # Rule Summary
-    #proc printDetectionRuleList(levels: Table[int, seq[Alert]], rulepath: string, rulepath_list: var Table[string, string]): string = 
     proc printDetectionRuleList(levels: seq[(int, seq[Alert])], rulepath: string, rulepath_list: var Table[string, string]): string = 
         var ret = ""
         const severity_order = @["Information", "Low", "Medium", "High", "Critical"]
@@ -522,7 +514,8 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         ComputerSummary = object
             totalDetections: Table[int, int]
             detectionsByDate: Table[string, seq[int]]
-            detectedRules: seq[(string, string, int)]
+            #detectedRules: seq[(string, string, int)]
+            detectedRules: seq[(string, int, int, string, string)]
 
     var computerSummaries = initTable[string, ComputerSummary]()
     
@@ -553,8 +546,8 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                 compSummary.detectionsByDate[date][level_order] += computer.count
                 
                 # List of detected rules
-                if not ((alert.title, alert.rule_file, level_order) in compSummary.detectedRules):
-                    compSummary.detectedRules.add((alert.title, alert.rule_file, level_order))
+                if not ((alert.title, level_order, alert.count, computer.start_date, computer.end_date) in compSummary.detectedRules):
+                    compSummary.detectedRules.add((alert.title, level_order, alert.count, computer.start_date, computer.end_date))
 
                 computerSummaries[compName] = compSummary
 
@@ -580,28 +573,43 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         for level_order, count in pairs(summary.totalDetections):
             html = html.replace("[%" & severity_order[level_order].toUpper & "_NUM%]", count.intToStr)
 
-        proc parseDate(dateStr: string): DateTime =
-            result = parse(dateStr, "yyyy-MM-dd")
 
-        var items = toSeq(summary.detectionsByDate.pairs())
+        # obtain datas from SQLite
+        query = sql"""select level, level_order, DATE(timestamp) as date, count(*) as count
+                        from timelines
+                        where computer = ?
+                        group by date, level_order
+                        order by date, level_order
+                        """
+        var computer_alerts = db.getAllRows(query, compName)
         
-        let sortedDates = summary.detectionsByDate.keys.toSeq.map(proc(key: string): tuple[original: string, parsed: DateTime] = (key, parseDate(key))).sorted(proc(a, b: tuple[original: string, parsed: DateTime]): int = cmp(a.parsed, b.parsed))
-
         # Display data in sorted order
-        let length = len(summary.detectionsByDate)
+        type
+            SeverityTable = Table[int, string]
+            DateTable = Table[string, SeverityTable]
+        var date_table: DateTable = initTable[string, SeverityTable]()
         var date_html = ""
         var datasets_html = @["", "", "", "", ""]
-        for i, date in sortedDates:
-            date_html &= "'" & date.original & "'"
 
+        for i, alert in computer_alerts:
+            var severityTable = date_table.getOrDefault(alert[2], initTable[int, string]())
             for index in 0..4:
-                datasets_html[index] &= $summary.detectionsByDate[date.original][index]
+                severityTable[index] = "0"
+            severityTable[parseInt(alert[1])] = alert[3]
+            date_table[alert[2]] = severityTable    
+        
+        let date_list = date_table.keys.toSeq.sorted()
+        for date in date_list:
+            for index in 0..4:
+                datasets_html[index] &= date_table[date][index] & ","
+                 
+            date_html &= "'" & date & "'," 
+        date_html = date_html[0..^2]
 
-            if i != length-1:
-                date_html &= ","
-                for index in 0..4:
-                    datasets_html[index] &= ","
-
+        for index in 0..4:
+            if datasets_html[index].endsWith(","):
+                datasets_html[index] = datasets_html[index][0..^2]
+        
         html = html.replace("[%DATE_STR%]", date_html)
         html = html.replace("[%CRITICAL_GRAPH%]", datasets_html[4])
         html = html.replace("[%HIGH_GRAPH%]", datasets_html[3])
@@ -612,13 +620,18 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         var temp_html = "<table class=\"min-w-full align-middle text-sm\">"
         temp_html &= "<thead><tr class=\"border-b-2 border-slate-100\">"
         temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Alert Title</th>"
-        temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Rule Path</th>"
-        temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">severity</th>"
+        temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Severity</th>"
+        temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Count</th>"
+        temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">First Date</th>"
+        temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Last Date</th>"
         temp_html &= "</tr></thead><tbody>"
         
         # sort by severity order
-        proc severityCompare(a, b: (string, string, int)): int =
-            cmp(a[2], b[2])
+        proc severityCompare(a, b: (string, int, int, string, string)): int =
+            let firstComparison = cmp(a[1], b[1])
+            if firstComparison != 0:
+                return firstComparison
+            return cmp(a[2], b[2])
         let detectedRules = summary.detectedRules.sorted(severityCompare, Descending)
         
         for rule in detectedRules:
@@ -631,9 +644,11 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                 rulepath_list[rule[0]] = rule_filepath
 
             temp_html &= "<tr class=\"border-b border-gray-100\">"
-            temp_html &= "<td class=\"p-3 font-medium\">" & rule[0] & "</td>"
-            temp_html &= "<td><a href=\"" & rulefile_path & "\" class=\"text-indigo-500 hover:text-indigo-700\">" & rule[1] & "</a></td>"
-            temp_html &= "<td><div class=\"inline-block rounded-full bg-" & severity_color[rule[2]] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[rule[2]] & "-800\">" & severity_order[rule[2]] & "</td>"
+            temp_html &= "<td class=\"p-3 font-medium\"><a href=\"" & rulefile_path & "\" class=\"text-indigo-500 hover:text-indigo-700\">" & rule[0] & "</a></td>"
+            temp_html &= "<td><div class=\"inline-block rounded-full bg-" & severity_color[rule[1]] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[rule[1]] & "-800\">" & severity_order[rule[1]] & "</td>"
+            temp_html &= "<td>" & intToStr(rule[2]) & "</td>"
+            temp_html &= "<td>" & rule[3] & "</td>"
+            temp_html &= "<td>" & rule[4] & "</td>"
             temp_html &= "</tr>"
         temp_html &= "</tbody></table>"
         html = html.replace("[%CONTENT%]", temp_html)
@@ -641,6 +656,12 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         var write: File = open(output_path & "/" & compName & ".html", FileMode.fmWrite)
         write.writeLine(html)
         write.close()
+
+
+    #
+    # close sqlite file
+    #
+    db.close()
 
     #
     # create commputer summary
@@ -696,4 +717,5 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     echo ""
     echo "Please open \"" & output & "/index.html\""
     echo ""
+
 

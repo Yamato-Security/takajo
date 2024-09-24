@@ -7,10 +7,12 @@
 - HTMLレポートのRule SummaryページのTotal DetectionsとUnique Detectionsの検出サマリが1つの表に統合された。(#182) (@nishikawaakira)
 - HTMLレポートにComputer Summaryページが追加された。 (#183) (@nishikawaakira)
 - Rule Summaryページに検出されたアラート一覧を追加した。(#175) (@nishikawaakira)
+- Detection Rule Listにもっと詳細な情報を追加した。 (#176) (@nishikawaakira)
 
 **バグ修正:**
 
 - Hayabusaのデフォルトプロファイルを使用した場合、`Invalid JSON line`というエラーが表示され、失敗していた。 (#169) (@nishikawaakira)
+- グラフは各ルールの最初の日付まで集計されていた。 (#191) (@nishikawaakira)
 
 ## 2.6.0 [2024/08/23] HITCON Release
 
