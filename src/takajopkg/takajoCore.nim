@@ -61,7 +61,8 @@ proc analyzeJSONLFile*(self: AbstractCmd, cmds: seq[AbstractCmd] = newSeq[
         try:
           if cmd.filter(jsonLine):
             cmd.analyze(jsonLine)
-        except CatchableError:
+        except CatchableError as e:
+          echo "An error occurred: ", e.msg
           continue
 
   if not self.skipProgressBar:
