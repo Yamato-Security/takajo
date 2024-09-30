@@ -48,6 +48,8 @@ method analyze*(self: ExtractCredentialsCmd, x: HayabusaJson) =
   singleResultTable["Event"] = x.Channel & "-" & $(x.EventID)
   let cmd = x.Details["Cmdline"].getStr()
   let (user, pass) = extractUserPass(cmd)
+  if user == "" and pass == "":
+    return # skip if no user or password found
   singleResultTable["User"] = user
   singleResultTable["Password"] = pass
   singleResultTable["API Key"] = "N/A"
