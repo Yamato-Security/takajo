@@ -52,14 +52,13 @@ method analyze*(self: ExtractCredentialsCmd, x: HayabusaJson) =
     return # skip if no user or password found
   singleResultTable["User"] = user
   singleResultTable["Password"] = pass
-  singleResultTable["API Key"] = "N/A"
   singleResultTable["Cmdline"] = cmd
   self.seqOfResultsTables.add(singleResultTable)
 
 method resultOutput*(self: ExtractCredentialsCmd) =
   var savedFiles = "n/a"
   var results = "n/a"
-  let header = ["Timestamp", "Computer", "Event", "User", "Password", "API Key", "Cmdline"]
+  let header = ["Timestamp", "Computer", "Event", "User", "Password", "Cmdline"]
   if self.output != "":
     # Open file to save results
     var outputFile = open(self.output, fmWrite)
@@ -89,7 +88,7 @@ method resultOutput*(self: ExtractCredentialsCmd) =
     var table: TerminalTable
     table.add header
     for t in self.seqOfResultsTables:
-      table.add t[header[0]], t[header[1]], t[header[2]], t[header[3]], t[header[4]], t[header[5]], t[header[6]]
+      table.add t[header[0]], t[header[1]], t[header[2]], t[header[3]], t[header[4]], t[header[5]]
     if self.displayTable:
       echo ""
       table.echoTableSepsWithStyled(seps = boxSeps)
