@@ -123,7 +123,7 @@ when isMainModule:
         ],
         [
             extractCredentials, cmdName = "extract-credentials",
-            doc = "extract credentials from the timeline",
+            doc = "extract plaintext credentials from the command-line auditing",
             help = {
                 "output": "save results to a csv file",
                 "quiet": "do not display the launch banner (default: false)",

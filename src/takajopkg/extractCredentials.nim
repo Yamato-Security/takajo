@@ -1,5 +1,5 @@
 const ExtractCredentialsMsg =
-  """This command extracts credentials from command lines in Sysmon and Security event logs."""
+  """This command extracts plaintext credentials from command-lines in Sysmon 1 and Security 4688 event logs."""
 
 type
   ExtractCredentialsCmd* = ref object of AbstractCmd
