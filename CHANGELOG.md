@@ -2,6 +2,10 @@
 
 ## 2.7.0 [2024/10/21] SecTor Release
 
+**New Features:**
+
+`extract-credentials` command: extract out plaintext credentials from the command line information in Security 4688 and Sysmon 1 events. Ex: `wmic`, `schtasks`, `net user`, `psexec` usage. (#192) (@fukusuket)
+
 **Enhancements:**
 
 - Detection summary for Total Detections and Unique Detections in the Rule Summary page of the HTML report has been consolidated into one table. (#182) (@nishikawaakira)
