@@ -26,6 +26,7 @@ import takajopkg/takajoCore
 import takajopkg/takajoTerminal
 import takajopkg/ttpResult
 import takajopkg/vtResult
+include takajopkg/extractCredentials
 include takajopkg/extractScriptblocks
 include takajopkg/listDomains
 include takajopkg/listIpAddresses
@@ -62,7 +63,8 @@ when isMainModule:
     clCfg.version = "2.7.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
-    const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low] -o scriptblock-logs\p"
+    const example_extract_credentials = "  extract-credentials -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o credentials.csv\p"
+    const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low]  [--skipProgressBar] -o scriptblock-logs\p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o domains.txt\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl [--skipProgressBar] -o case-1\p"
     const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ipAddresses.txt\p"
@@ -95,7 +97,7 @@ when isMainModule:
     clCfg.useMulti = "Version: 2.7.0 Dev Build\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples &
         example_automagic &
-        example_extract_scriptblocks & example_html_report &
+        example_extract_credentials & example_extract_scriptblocks & example_html_report &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
         example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_ip_addresses & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks & example_stack_users &
@@ -114,6 +116,16 @@ when isMainModule:
                 "displayTable": "display the results table (default: false)",
                 "level": "specify the minimum alert level (default: informational)",
                 "output": "output directory (default: case-1)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
+            }
+        ],
+        [
+            extractCredentials, cmdName = "extract-credentials",
+            doc = "extract plaintext credentials from the command-line auditing",
+            help = {
+                "output": "save results to a csv file",
                 "quiet": "do not display the launch banner (default: false)",
                 "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",

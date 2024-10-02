@@ -2,6 +2,10 @@
 
 ## 2.7.0 [2024/10/21] SecTor Release
 
+**新機能:**
+
+- `extract-credentials`コマンド: セキュリティ4688とSysmon 1イベントのコマンドライン情報から平文の認証情報を取り出す。例: `wmic`、`schtasks`、`net user`、`psexec`の使用。 (#192) (@fukusuket)
+
 **改善:**
 
 - HTMLレポートのRule SummaryページのTotal DetectionsとUnique Detectionsの検出サマリが1つの表に統合された。(#182) (@nishikawaakira)
