@@ -57,6 +57,7 @@ include takajopkg/vtDomainLookup
 include takajopkg/vtIpLookup
 include takajopkg/vtHashLookup
 include takajopkg/automagic
+include takajopkg/web/startServer
 
 
 when isMainModule:
@@ -87,6 +88,7 @@ when isMainModule:
     const example_timeline_suspicious_processes = "  timeline-suspicious-processes -t ../hayabusa/timeline.jsonl [--level medium] [--skipProgressBar] [-o suspicious-processes.csv]\p"
     const example_timeline_tasks = "  timeline-tasks -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o task-timeline.csv\p"
     const example_html_report = "  html-report -t ../hayabusa/timeline.jsonl -o ./output -r ../hayabusa/rules [--sqlite-output] [--clobber] [--skipProgressBar] \p"
+    const example_start_server = "  start-server -s ./takajo/sqlite.db -r ../hayabusa/rules -p 8089 \p"
     const example_vt_domain_lookup = "  vt-domain-lookup  -a <API-KEY> --domainList domains.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_ttp_summary = "  ttp-summary -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ttp-summary.csv\p"
     const example_ttp_visualize = "  ttp-visualize -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o mitre-ttp-heatmap.json\p"
@@ -159,6 +161,21 @@ when isMainModule:
                 "sqlite-output": 's',
                 "output": 'o'
             }
+        ],
+        [
+            startServer, cmdName = "start-server",
+            doc = "start server",
+            help = {
+                "sqlite": "Takajo htmlReport sqlite database",
+                "rulepath": "hayabusa rules directory path",
+                "port": "web server port number"
+            }
+            ,
+            short = {
+                "sqlite": 's',
+                "rulepath": 'r',
+                "port": 'p',
+            }            
         ],
         [
             listDomains, cmdName = "list-domains",
