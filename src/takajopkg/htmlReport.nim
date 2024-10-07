@@ -204,6 +204,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     # start analysis timeline
     # obtain datas from SQLite
     var query = sql"""select rule_title, rule_file, level, level_order, computer, min(timestamp) as start_date, max(timestamp) as end_date, count(*) as count
+    
                         from timelines
                         group by rule_title, level, computer
                         order by level_order
@@ -575,7 +576,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
 
         # obtain datas from SQLite
-        query = sql"""select level, level_order, DATE(timestamp) as date, count(*) as count
+        query = sql"""select level, level_order, date(datetime(timestamp, 'localtime')) AS date, count(*) as count
                         from timelines
                         where computer = ?
                         group by date, level_order
