@@ -2,7 +2,6 @@ import json
 import prologue
 import db_connector/db_sqlite
 import strutils
-import times
 
 proc getDBPath(ctx: Context) : string =
     let settings = getOrDefault(ctx.gScope.settings, "prologue")

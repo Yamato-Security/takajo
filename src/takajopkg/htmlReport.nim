@@ -1,7 +1,7 @@
 import db_connector/db_sqlite
 import streams
 
-const HtmlReportMsg = "This command will create HTML summary reports for rules and computers with detections"
+const HtmlReportMsg = "This command will create static HTML summary reports for rules and computers with detections"
 
 import os, strutils
 

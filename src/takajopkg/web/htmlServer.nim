@@ -1,5 +1,4 @@
 import prologue
-import prologue/middlewares/staticfile
 import urls
 
 #
@@ -24,7 +23,7 @@ proc initialServer(port: int) =
 #
 # Server Settings
 # 
-proc startServer*(sqlite: string, port: int = 8089) =
+proc htmlServer*(sqlite: string, port: int = 8089) =
     
     if fileExists(sqlite) == false:
         echo "Not found sqlite file: " & sqlite
