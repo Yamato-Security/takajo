@@ -24,7 +24,7 @@ proc initialServer(port: int) =
 #
 # Server Settings
 # 
-proc startServer*(sqlite: string, rulepath: string, port: int = 8089) =
+proc startServer*(sqlite: string, port: int = 8089) =
     
     if fileExists(sqlite) == false:
         echo "Not found sqlite file: " & sqlite
