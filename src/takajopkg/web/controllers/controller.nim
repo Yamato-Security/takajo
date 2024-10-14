@@ -4,7 +4,7 @@ import ./computers
 #import ../views/views
 
 proc index*(ctx: Context) {.async.} =
-  await ctx.staticFileResponse("index.html", "src/takajopkg/web/static")
+  await ctx.staticFileResponse("index.htm", "src/takajopkg/web/static")
 
 #
 # Computer Page
@@ -12,13 +12,13 @@ proc index*(ctx: Context) {.async.} =
 proc computer*(ctx: Context) {.async.} =
   let computer = ctx.request.queryParams.getOrDefault("computer", "")
   
-  await ctx.staticFileResponse("content.html", "src/takajopkg/web/static")
+  await ctx.staticFileResponse("content.htm", "src/takajopkg/web/static")
 
 #
 # Computer Summary Page
 #
 proc computer_summary*(ctx: Context) {.async.} =
-  await ctx.staticFileResponse("computer_summary.html", "src/takajopkg/web/static")
+  await ctx.staticFileResponse("computer_summary.htm", "src/takajopkg/web/static")
 
 
 proc commonjs*(ctx: Context) {.async.} = 

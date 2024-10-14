@@ -1,0 +1,612 @@
+<!doctype html>
+<!-- dir="rtl" for RTL support -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+    <title>Project</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://use.fontawesome.com/releases/v6.2.0/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="/js/common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- Tailwind CSS v3 Configuration -->
+    <script>
+      const defaultTheme = tailwind.defaultTheme;
+      const colors = tailwind.colors;
+      const plugin = tailwind.plugin;
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", ...defaultTheme.fontFamily.sans],
+            },
+          },
+        },
+      };
+
+      let url = new URL(window.location.href);
+      let params = url.searchParams;
+      let computer = params.get('computer')
+      let labels = []
+      let chart
+      let pastdays = false;
+      const severity_summary = {
+        info: 0,
+        low: 0,
+        med: 0,
+        high: 0,
+        crit: 0
+      };
+      let graph = {
+        info: [],
+        low: [],
+        med: [],
+        high: [],
+        crit: []
+      };
+      
+      async function runAll() {
+          await get_rules();
+          await sidemenu();
+          getComputerData();
+      }
+
+      addEventListener("load", (event) => {
+        document.getElementById("page_title").textContent = computer;
+        flatpickr('.flatpickr-input');
+        runAll()
+      });
+      
+      function formatDate(timestamp) {
+        return timestamp.split(" ")[0];
+      }
+
+      function getComputerData() {
+        let first_date = document.getElementById("first_date").value;
+        let last_date = document.getElementById("last_date").value;
+        let api_endpoint = apiUrl + `computer?computer=${computer}&start_date=${first_date}&end_date=${last_date}`;
+        if (pastdays == true) {
+          api_endpoint += "&pastdays=true";
+        } 
+
+        fetch(api_endpoint)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response is incorrect');
+            }
+            return response.json();
+          })
+          .then(data => {
+
+            // console.log(JSON.stringify(data, null, 2));
+            // Severity Summary
+            document.getElementById("critical_num").innerText = data.computer_counts[0];
+            document.getElementById("high_num").innerText = data.computer_counts[1];
+            document.getElementById("medium_num").innerText = data.computer_counts[2];
+            document.getElementById("low_num").innerText = data.computer_counts[3];
+            document.getElementById("info_num").innerText = data.computer_counts[4];
+
+            // Graph
+            labels = [...new Set(data.graph_data.map(item => item[2]))];
+            severity_types.forEach(severity => {
+              graph[severity] = labels.map(d => {
+                const entry = data.graph_data.find(item => item[2] === d && item[0] === severity);
+                return entry ? entry[3] : 0;
+              });
+            });
+            let ctx = document.getElementById("chart");
+            // 既存のチャートがある場合は破棄
+            if (chart) {
+              chart.destroy();
+            }
+
+            let config = {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Critical',
+                  data: graph["crit"],
+                  backgroundColor: '#dc2626',
+                  borderColor: '#dc2626',
+                }, {
+                  label: 'High',
+                  data: graph["high"],
+                  backgroundColor: '#ea580c',
+                  borderColor: '#ea580c',
+                }, {
+                  label: 'Medium',
+                  data: graph["med"],
+                  backgroundColor: '#deb704',
+                  borderColor: '#deb704',
+                }, {
+                  label: 'Low',
+                  data: graph["low"],
+                  backgroundColor: '#16a34a',
+                  borderColor: '#16a34a',
+                }, {
+                  label: 'Info',
+                  data: graph["info"],
+                  backgroundColor: '#0284c7',
+                  borderColor: '#0284c7',
+                }],
+              },
+              plugins: {
+                title: {
+                  display: true,
+                  text: computer
+                }
+              },
+              responsive: true,
+              options: {
+                scales: {
+                  x: {
+                    stacked: true,
+                  },
+                  y: {
+                    stacked: true
+                  }
+                }
+              }
+            };
+            chart = new Chart(ctx, config);
+
+            // Detection Rule List
+            const alerts = data.alerts.sort((a, b) => {
+              const severityComparison = b[3] - a[3];
+              if (severityComparison !== 0) {
+                return severityComparison;
+              }
+              return b[7] - a[7];
+            });
+            const tbody = document.getElementById("detection-rule-list-body")
+            tbody.innerHTML = ""
+            alerts.forEach(alert => {
+              const row = document.createElement("tr");
+
+              // Alert Title
+              const titleCell = document.createElement("td");
+              const titleCellA = document.createElement("a");
+              titleCellA.textContent = alert[0];
+              titleCellA.classList.add("link"); 
+              titleCellA.target = "_blank";
+              global_rules.forEach(rule => {
+                  if (rule[0] == alert[0]) {
+                      titleCellA.href = rule[1];
+                      return;
+                  }
+              });
+              titleCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
+              titleCell.appendChild(titleCellA);
+              row.appendChild(titleCell);
+
+              // Severity
+              const severityCell = document.createElement("td");
+              const severityDev = document.createElement("div");
+              severityDev.classList.add("inline-block", "rounded-full", "bg-" + severity_color[alert[2]] + "-100", "px-2", "py-1", "text-xs", "font-semibold", "leading-4", "text-" + severity_color[alert[2]] + "-800");
+              severityDev.textContent = severity_message[alert[2]];
+              severityCell.append(severityDev)
+              row.appendChild(severityCell);
+
+              // Count
+              const countCell = document.createElement("td");
+              countCell.textContent = alert[7];
+              countCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
+              row.appendChild(countCell);
+
+              // First Date
+              const firstDateCell = document.createElement("td");
+              firstDateCell.textContent = formatDate(alert[5]);
+              firstDateCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
+              row.appendChild(firstDateCell);
+
+              // Last Date
+              const lastDateCell = document.createElement("td");
+              lastDateCell.textContent = formatDate(alert[6]);
+              lastDateCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
+              row.appendChild(lastDateCell);
+
+              // 行を <tbody> に追加
+              tbody.appendChild(row);
+            });
+
+          })
+          .catch(error => {
+            console.log(error.message)
+            // document.getElementById('output').textContent = `An error has occurred.: ${error.message}`;
+          });
+      }
+
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+
+    <!-- Alpine.js (x-cloak - https://alpinejs.dev/directives/cloak) -->
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+
+      #side-menu ul {
+        border-top:1px solid #999;
+        border-bottom:1px solid #f1f6fc;
+      }
+
+      #side-menu li {
+        border-bottom:1px solid #999;
+      }
+
+      #side-menu li:last-child {
+      }
+
+      #side-menu li a{
+        text-decoration:none;
+        display:block;
+        padding:5px 5px 5px 10px;
+        -moz-transition-property: all;
+        -moz-transition-duration: 0.2s;
+        -moz-transition-timing-function: linear;
+        -webkit-transition: all 0.2s linear 0;
+      }
+
+      #side-menu li a:hover{
+        color:#ff0099;
+      }
+      
+      .link {
+        color:#ff0099;
+      }
+
+      .submenu {
+          display: none;
+      }
+
+      .toggle-btn:hover {
+        color:#ff0099;
+        background-color: rgb(243 232 255 / var(--tw-bg-opacity));
+      }
+      
+      .toggle-btn .icon {
+        margin-right: 5px;
+      }
+      #drag-handle {
+        width: 10px;
+        background-color: #ccc;
+        height: 100%;
+        cursor: ew-resize;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 100;
+      }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  </head>
+
+  <body>
+    <div x-data="{ mobileSidebarOpen: false, desktopSidebarOpen: true }">
+  <!-- Page Container -->
+  <div
+    id="page-container"
+    class="mx-auto flex min-h-screen w-full min-w-[320px] flex-col bg-white lg:ps-64"
+    x-bind:class="{ 'lg:ps-64': desktopSidebarOpen }"
+  >
+    <!-- Page Sidebar -->
+    <nav
+      id="page-sidebar"
+      class="fixed bottom-0 start-0 top-0 z-50 flex h-full w-80 flex-col overflow-auto bg-slate-100 transition-transform duration-500 ease-out lg:w-64 lg:translate-x-0"
+      x-bind:class="{
+        'ltr:-translate-x-full rtl:translate-x-full': !mobileSidebarOpen,
+        'translate-x-0': mobileSidebarOpen,
+        'ltr:lg:-translate-x-full rtl:lg:translate-x-full': !desktopSidebarOpen,
+        'ltr:lg:translate-x-0 rtl:lg:translate-x-0': desktopSidebarOpen,
+      }"
+      aria-label="Main Sidebar Navigation"
+      x-cloak
+    >
+      <div id="drag-handle"></div>
+      <!-- Sidebar Header -->
+      <div
+        class="flex h-20 w-full flex-none items-center justify-between px-8"
+      >
+        <!-- Brand -->
+        <a
+          href="javascript:void(0)"
+          class="inline-flex items-center gap-2 text-lg font-medium tracking-wide text-slate-800 transition hover:opacity-75 active:opacity-100"
+        >
+          <span>Takajo</span>
+        </a>
+        <!-- END Brand -->
+
+        <!-- Close Sidebar on Mobile -->
+        <div class="lg:hidden">
+          <button
+            type="button"
+            class="flex h-10 w-10 items-center justify-center text-slate-400 hover:text-slate-600 active:text-slate-400"
+            x-on:click="mobileSidebarOpen = false"
+          >
+            <svg
+              class="hi-solid hi-x -mx-1 inline-block h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+        <!-- END Close Sidebar on Mobile -->
+      </div>
+      <!-- END Sidebar Header -->
+
+      <!-- Main Navigation -->
+      <div id="side-menu" class="mb-10">
+        <ul class="w-full grow space-y-1.5 px-8" id="sidemenu-ul">
+          <!--
+          <li>
+            <h3 class="font-semibold">Computer Summary</h3>
+          </li>
+          <li>
+            <button class="toggle-btn" data-severity="computer"><i class="icon fas fa-chevron-right"></i>computers</button>
+            <ul class="submenu">
+              [%SIDE_MENU_COMPUTER%]
+            </ul>
+          </li>
+          -->
+        </ul>
+      </div>
+      <!-- END Main Navigation -->
+    </nav>
+    <!-- Page Sidebar -->
+
+    <!-- Page Header -->
+    <header
+      id="page-header"
+      class="fixed end-0 start-0 top-0 z-30 flex h-20 flex-none items-center border-b border-slate-100 bg-white/90 backdrop-blur-sm"
+      x-bind:class="{ 'lg:ps-64': desktopSidebarOpen }"
+    >
+      <div
+        class="container mx-auto flex justify-between px-4 lg:px-8 xl:max-w-7xl"
+      >
+        <!-- Left Section -->
+        <div class="flex items-center">
+          <!-- Toggle Sidebar on Mobile -->
+          <div class="me-2 lg:hidden">
+            <button
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg border-slate-100 bg-slate-100 px-2.5 py-2 font-semibold leading-6 text-slate-800 hover:border-slate-200 hover:bg-slate-200 hover:text-slate-800 focus:outline-none focus:ring focus:ring-indigo-500/25 active:border-slate-100 active:bg-slate-100"
+              x-on:click="mobileSidebarOpen = true"
+            >
+              <svg
+                class="hi-solid hi-menu-alt-1 inline-block h-5 w-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+          <!-- END Toggle Sidebar on Mobile -->
+
+          <!-- Toggle Sidebar on Desktop -->
+          <div class="hidden lg:block">
+            <button
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg border-slate-100 bg-slate-100 px-2.5 py-2 font-semibold leading-6 text-slate-800 hover:border-slate-200 hover:bg-slate-200 hover:text-slate-800 focus:outline-none focus:ring focus:ring-indigo-500/25 active:border-slate-100 active:bg-slate-100"
+              x-on:click="desktopSidebarOpen = !desktopSidebarOpen"
+            >
+              <svg
+                class="hi-solid hi-menu-alt-1 inline-block h-5 w-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+          <!-- END Toggle Sidebar on Desktop -->
+        </div>
+        <!-- END Left Section -->
+
+        <!-- Middle Section -->
+        <div class="flex items-center gap-2 lg:hidden">
+          <!-- Brand -->
+          <a
+            href="javascript:void(0)"
+            class="inline-flex items-center gap-2 text-lg font-medium tracking-wide text-slate-800 transition hover:opacity-75 active:opacity-100"
+          >
+            <svg
+              class="hi-mini hi-cursor-arrow-ripple inline-block h-5 w-5 text-indigo-600"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M6.111 11.89A5.5 5.5 0 1115.501 8 .75.75 0 1017 8a7 7 0 10-11.95 4.95.75.75 0 001.06-1.06zm2.121-5.658a2.5 2.5 0 000 3.536.75.75 0 11-1.06 1.06A4 4 0 1114 8a.75.75 0 01-1.5 0 2.5 2.5 0 00-4.268-1.768zm2.534 1.279a.75.75 0 00-1.37.364l-.492 6.861a.75.75 0 001.204.65l1.043-.799.985 3.678a.75.75 0 001.45-.388l-.978-3.646 1.292.204a.75.75 0 00.74-1.16l-3.874-5.764z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+          <!-- END Brand -->
+        </div>
+        <!-- END Middle Section -->
+      </div>
+    </header>
+    <!-- END Page Header -->
+
+    <!-- Page Content -->
+    <main
+      id="page-content"
+      class="flex max-w-full flex-auto flex-col pt-20"
+    >
+      <!-- Page Section -->
+      <div class="container mx-auto space-y-10 px-4 py-8 lg:space-y-16 lg:px-8 lg:py-12 xl:max-w-7xl">
+        <!-- Leads -->
+        <div>
+          <h2 class="mb-1 text-2xl font-semibold" id="page_title"></h2>
+          <h3 class="mb-8 text-sm font-medium text-slate-600">
+            <!--You have 10 new leads, let's get to work!-->
+          </h3>
+          <div class="min-w-full overflow-x-auto rounded">
+
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6 xl:grid-cols-5">
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-red-50 transition active:bg-red-50">
+                <div class="flex grow items-center justify-between p-6">
+                  <dl>
+                    <dt class="text-2xl font-bold text-red-600" id="critical_num"></dt>
+                    <dd class="text-sm font-medium text-red-900">
+                      Critical
+                    </dd>
+                  </dl>
+                </div>
+              </a>
+
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-orange-50 transition active:bg-orange-50">
+                <div class="flex grow items-center justify-between p-6">
+                  <dl>
+                    <dt class="text-2xl font-bold text-orange-600" id="high_num"></dt>
+                    <dd class="text-sm font-medium text-orange-900">
+                      High
+                    </dd>
+                  </dl>
+                </div>
+              </a>
+
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-yellow-50 transition active:bg-yellow-50">
+                <div class="flex grow items-center justify-between p-6">
+                  <dl>
+                    <dt class="text-2xl font-bold text-yellow-600" id="medium_num"></dt>
+                    <dd class="text-sm font-medium text-yellow-900">
+                      Medium
+                    </dd>
+                  </dl>
+                </div>
+              </a>
+              
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-green-50 transition active:bg-green-50">
+                <div class="flex grow items-center justify-between p-6">
+                  <dl>
+                    <dt class="text-2xl font-bold text-green-600" id="low_num"></dt>
+                    <dd class="text-sm font-medium text-green-900">Low</dd>
+                  </dl>
+                </div>
+              </a>
+
+              <a href="javascript:void(0)" class="group flex flex-col overflow-hidden rounded-2xl bg-sky-50 transition active:bg-sky-50">
+                <div class="flex grow items-center justify-between p-6">
+                  <dl>
+                    <dt class="text-2xl font-bold text-sky-600" id="info_num"></dt>
+                    <dd class="text-sm font-medium text-sky-900">
+                      Information
+                    </dd>
+                  </dl>
+                </div>
+              </a>
+            </div>
+
+            <div class="mt-10">
+              <input type="text" name="first_date" id="first_date" value="" placeholder="from date" class="flatpickr-input rounded-lg border border-zinc-200 py-2 pe-3 ps-10 leading-6 placeholder-zinc-500"> 
+              ~ 
+              <input type="text" name="last_date" id="last_date" value="" placeholder="to date" class="flatpickr-input rounded-lg border border-zinc-200 py-2 pe-3 ps-10 leading-6 placeholder-zinc-500">
+              <button id="fetchData" class="button relative h-10 overflow-hidden rounded-md border border-neutral-200 bg-transparent px-6 text-neutral-950 before:absolute before:bottom-0 before:left-0 before:block before:h-full before:w-full before:-translate-x-full before:bg-neutral-100 before:transition-transform hover:before:translate-x-0"><span class="relative">Search</span></button>
+              &nbsp;
+              <button role="link" id="pastdays-btn" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100">past30days</button>
+            </div>
+            <script>
+              document.getElementById('fetchData').addEventListener('click', () => {
+                pastdays = false;
+                getComputerData();
+              });
+
+              document.getElementById("pastdays-btn").addEventListener('click', () => {
+                pastdays = true;
+                getComputerData();
+              })
+
+            </script>
+
+            <canvas id="chart" class="mt-10"></canvas>
+
+            <h3 class="mt-10 mb-1 text-1xl font-semibold">Detection Rule List</h3>
+            <table class="min-w-full align-middle text-sm">
+              <thead>
+                <tr class="border-b-2 border-slate-100">
+                    <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">Alert Title</th>
+                    <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">Severity</th>
+                    <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">Count</th>
+                    <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">First Date</th>
+                    <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">Last Date</th>
+                </tr>
+              </thead>
+              <tbody id="detection-rule-list-body">
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+        <!-- END Leads -->
+      </div>
+      <!-- END Page Section -->
+    </main>
+    <!-- END Page Content -->
+
+  </div>
+  <!-- END Page Container -->
+</div>
+
+<script>
+  window.addEventListener('load', function() {
+
+      const hashValue = window.location.hash;
+      const severity = hashValue.substring(1);
+      const buttons = document.querySelectorAll('.toggle-btn');
+
+      buttons.forEach(button => {
+          button.addEventListener('click', function() {
+              const submenu = this.nextElementSibling;
+              const icon = this.querySelector('.icon');
+              if (submenu.style.display === 'block') {
+                  submenu.style.display = 'none';
+                  icon.classList.remove('fa-chevron-down');
+                  icon.classList.add('fa-chevron-right');
+              } else {
+                  submenu.style.display = 'block';
+                  icon.classList.remove('fa-chevron-right');
+                  icon.classList.add('fa-chevron-down');
+              }
+          });
+
+          if (button.dataset.severity == severity) {
+            button.click()
+          }
+      });
+
+  });
+  
+</script>
+  </body>
+</html>
