@@ -1374,7 +1374,7 @@ takajo.exe vt-ip-lookup -a <API-KEY> -i ipAddresses.txt -o vt-ip-lookup.csv -r 1
 
 ## ライセンス
 
-Takajōは[GPLv3ライセンス](https://www.gnu.org/licenses/gpl-3.0.en.html)で公開されています。
+Takajōは[AGPLv3ライセンス](https://gpl.mhatta.org/agpl.ja.html)で公開されています。
 
 ## Twitter
 

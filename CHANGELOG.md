@@ -1,10 +1,11 @@
 # Changes
 
-## 2.7.0 [2024/10/21] SecTor Release
+## 2.7.0 [2024/10/24] SecTor Release
 
 **New Features:**
 
 `extract-credentials` command: extract out plaintext credentials from the command line information in Security 4688 and Sysmon 1 events. Ex: `wmic`, `schtasks`, `net user`, `psexec` usage. (#192) (@fukusuket)
+`html-server` command: create a dynamic server to view the HTML summary reports. (@nishikawaakira)
 
 **Enhancements:**
 
@@ -17,6 +18,10 @@
 
 - `Invalid JSON line` errors would display with the default Hayabusa profile. (#169) (@nishikawaakira)
 - Graphs were being aggregated to the first date for each rule. (#191) (@nishikawaakira)
+
+**Other:**
+
+- License is changed from GPL-3.0 to AGPL-3.0. (@yamatosecurity)
 
 ## 2.6.0 [2024/08/23] HITCON Release
 
