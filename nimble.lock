@@ -1,0 +1,226 @@
+{
+  "version": 2,
+  "packages": {
+    "ansiparse": {
+      "version": "0.4.0",
+      "vcsRevision": "4f97d31792ccc2b76d77cdea7683e7b73d5ff6f6",
+      "url": "https://github.com/PMunch/ansiparse",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "49411d0e4b4e90df4020386b6f14be8c54809a63"
+      }
+    },
+    "cligen": {
+      "version": "1.7.6",
+      "vcsRevision": "54f1da5d63cf7e116625e2392e85ae54c2b70719",
+      "url": "https://github.com/c-blake/cligen.git",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "853785ddace4ee4f3c6c21bdf7f5e9ff0358eb3f"
+      }
+    },
+    "cookiejar": {
+      "version": "0.3.0",
+      "vcsRevision": "aa96ca83a7c154f08803c7715f054d77f2d623cf",
+      "url": "https://github.com/planety/cookiejar",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "41001886ccf9670f67bc511ae48ea07e7c95c25b"
+      }
+    },
+    "db_connector": {
+      "version": "0.1.0",
+      "vcsRevision": "70d2ab3ff9907cb5b1d863bfb333a0ced5ee1596",
+      "url": "https://github.com/nim-lang/db_connector",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "d68319e3785fa937f0465ea915e942b61b6b5442"
+      }
+    },
+    "wepoll": {
+      "version": "0.1.0",
+      "vcsRevision": "c49c3280130bb724f1601b1d42f5b7deabad3198",
+      "url": "https://github.com/ringabout/wepoll",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "6a38977b5ca3949d853caa81be56dc65f463309e"
+      }
+    },
+    "ioselectors": {
+      "version": "0.1.8",
+      "vcsRevision": "6fcdbf3fddeb239885cd8bce15a0ab63c00647c0",
+      "url": "https://github.com/ringabout/ioselectors",
+      "downloadMethod": "git",
+      "dependencies": [
+        "wepoll"
+      ],
+      "checksums": {
+        "sha1": "762d1951145184bf95a3ac57d94cf9537a372955"
+      }
+    },
+    "httpx": {
+      "version": "0.3.7",
+      "vcsRevision": "9fab2c3c387e39ecf27129d390ff635eab9d10a3",
+      "url": "https://github.com/ringabout/httpx",
+      "downloadMethod": "git",
+      "dependencies": [
+        "ioselectors"
+      ],
+      "checksums": {
+        "sha1": "6e0fc3133fbd20530d53ab2792e93d3151387b10"
+      }
+    },
+    "jsony": {
+      "version": "1.1.5",
+      "vcsRevision": "ea811bec7fa50f5abd3088ba94cda74285e93f18",
+      "url": "https://github.com/treeform/jsony",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "6aeb83e7481ca8686396a568096054bc668294df"
+      }
+    },
+    "libcurl": {
+      "version": "1.0.0",
+      "vcsRevision": "23f3d90e60d7a233b5eb27fb13e57fd198c73697",
+      "url": "https://github.com/Araq/libcurl",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "177d7007155096f9091126f81e7dda0032bffe9d"
+      }
+    },
+    "logue": {
+      "version": "0.2.4",
+      "vcsRevision": "fdad43b69bc4517a3595d1a28e86161e8cfca614",
+      "url": "https://github.com/planety/logue",
+      "downloadMethod": "git",
+      "dependencies": [
+        "cligen"
+      ],
+      "checksums": {
+        "sha1": "05b38d9fadb06c1cd7b25d9e18e39d443b799093"
+      }
+    },
+    "nancy": {
+      "version": "0.1.1",
+      "vcsRevision": "9918716a563f64d740df6a02db42662781e94fc8",
+      "url": "https://github.com/PMunch/nancy",
+      "downloadMethod": "git",
+      "dependencies": [
+        "ansiparse"
+      ],
+      "checksums": {
+        "sha1": "626d5a8937046ed31841d8af728e98013c476768"
+      }
+    },
+    "nimcrypto": {
+      "version": "0.6.2",
+      "vcsRevision": "dc07e3058c6904eef965394493b6ea99aa2adefc",
+      "url": "https://github.com/cheatfate/nimcrypto",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "8e3e42530f54c8c312942a89640b7e0f687f33a5"
+      }
+    },
+    "unicodedb": {
+      "version": "0.13.0",
+      "vcsRevision": "15c5e25e2a49a924bc97647481ff50125bba2c76",
+      "url": "https://github.com/nitely/nim-unicodedb",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "5c5fc0c8a83d270aca74fe41d33158e9042bb91a"
+      }
+    },
+    "regex": {
+      "version": "0.25.0",
+      "vcsRevision": "cb8b7bfdcdc2272aadf92153c668acd3c901bd6b",
+      "url": "https://github.com/nitely/nim-regex",
+      "downloadMethod": "git",
+      "dependencies": [
+        "unicodedb"
+      ],
+      "checksums": {
+        "sha1": "cb2e24397c051e55ad5b72b3c0d4f270a90084df"
+      }
+    },
+    "prologue": {
+      "version": "0.6.6",
+      "vcsRevision": "81c8c1d7c7f4947c28eeeac55648f6edd1be37f1",
+      "url": "https://github.com/planety/Prologue",
+      "downloadMethod": "git",
+      "dependencies": [
+        "regex",
+        "nimcrypto",
+        "cookiejar",
+        "httpx",
+        "logue"
+      ],
+      "checksums": {
+        "sha1": "433777a19c0bf630753006f0646c5a6dbbfd4b74"
+      }
+    },
+    "zippy": {
+      "version": "0.10.10",
+      "vcsRevision": "a3fd6f0458ffdd7cbbd416be99f2ca80a7852d82",
+      "url": "https://github.com/guzba/zippy",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "f32aa1f7795b1ff0d890ad165cd56091bf6f32d0"
+      }
+    },
+    "webby": {
+      "version": "0.1.9",
+      "vcsRevision": "bd30e9213d9469ce720b4868bad229c475bc79c7",
+      "url": "https://github.com/treeform/webby/",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "42dde0474686b78b226d47b1be1adfced85a0c10"
+      }
+    },
+    "puppy": {
+      "version": "2.1.1",
+      "vcsRevision": "5c57e11367327c3f288a003ce1e829696d5e6f25",
+      "url": "https://github.com/treeform/puppy",
+      "downloadMethod": "git",
+      "dependencies": [
+        "libcurl",
+        "zippy",
+        "webby"
+      ],
+      "checksums": {
+        "sha1": "d8e83930f7192993c03e662a9ac12412c3068ec5"
+      }
+    },
+    "suru": {
+      "version": "0.3.1",
+      "vcsRevision": "f6f1e607c585b2bc2f71309996643f0555ff6349",
+      "url": "https://github.com/de-odex/suru",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "06ecd8dfb1294b5469d919c83e14db111c1346be"
+      }
+    },
+    "termstyle": {
+      "version": "0.1.0",
+      "vcsRevision": "eefd9f17071df2b8c13e18537cd799acd7f41501",
+      "url": "https://github.com/PMunch/termstyle",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "4641c9f9e587d5cf04ccd3ce0bf1ef0263a16299"
+      }
+    }
+  },
+  "tasks": {}
+}
