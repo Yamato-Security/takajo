@@ -1,8 +1,6 @@
 # TODO: add SAN array info
 
-var vtIpAddressChannel: Channel[VirusTotalResult] # channel for receiving parallel query results
-
-proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders) {.thread.} =
+proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders, results: ptr seq[VirusTotalResult]; L: ptr TicketLock) =
     let response = get("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, headers)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
@@ -37,8 +35,8 @@ proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders) {.thread.} =
         singleResultTable["SSL-Issuer"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "O"])
         singleResultTable["SSL-IssuerCountry"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "issuer", "C"])
         singleResultTable["SSL-CommonName"] = getJsonValue(jsonResponse, @["data", "attributes", "last_https_certificate", "subject", "CN"])
-
-    vtIpAddressChannel.send(VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse,))
+    withLock L[]:
+          results[].add VirusTotalResult(resTable:singleResultTable, resJson:jsonResponse)
 
 
 proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output: string, rateLimit: int = 4, quiet: bool = false) =
@@ -60,9 +58,15 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
     echo "Loading IP addresses. Please wait."
     echo ""
 
-    let lines = readFile(ipList).splitLines()
+    let file = open(ipList)
 
-    echo "Loaded IP addresses: ", intToStr(len(lines)).insertSep(',')
+    # Read each line into a sequence.
+    var lines = newSeq[string]()
+    for line in file.lines:
+        lines.add(line)
+    file.close()
+
+    echo "Loaded IP addresses: ", len(lines)
     echo "Rate limit per minute: ", rateLimit
     echo ""
 
@@ -85,33 +89,79 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
     headers["x-apikey"] = apiKey
     bar[0].total = len(lines)
     bar.setup()
-    vtIpAddressChannel.open()
+    var m = createMaster()
+    var results = newSeq[VirusTotalResult]()
+    var L = initTicketLock() # protects `results`
+    m.awaitAll:
+      for ipAddress in lines:
+          inc bar
+          bar.update(1000000000) # refresh every second
+          m.spawn queryIpAPI(ipAddress, headers, addr results, addr L) # run queries in parallel
+          # Sleep to respect the rate limit.
+          sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
 
-    for ipAddress in lines:
-        inc bar
-        bar.update(1000000000) # refresh every second
-        spawn queryIpAPI(ipAddress, headers) # run queries in parallel
-
-        # Sleep to respect the rate limit.
-        sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
-
-    for ipAddress in lines:
-        let vtResult: VirusTotalResult = vtIpAddressChannel.recv() # get results of queries executed in parallel
-        seqOfResultsTables.add(vtResult.resTable)
-        jsonResponses.add(vtResult.resJson)
-        if vtResult.resTable["Response"] == "200" and parseInt(vtResult.resTable["MaliciousCount"]) > 0:
+    for r in results:
+        seqOfResultsTables.add(r.resTable)
+        jsonResponses.add(r.resJson)
+        if r.resTable["Response"] == "200" and parseInt(r.resTable["MaliciousCount"]) > 0:
           totalMaliciousIpAddressCount += 1
 
-    sync()
-    vtIpAddressChannel.close()
     bar.finish()
 
     echo ""
     echo "Finished querying IP addresses. " & intToStr(totalMaliciousIpAddressCount) & " Malicious IP addresses found."
     echo ""
-    outputVtQueryResult(seqOfResultsTables, "IP-Address")
-    let header = @["Response", "IP-Address", "SSL-CommonName", "SSL-IssuerCountry", "LastAnalysisDate", "LastModifiedDate", "LastHTTPSCertDate", "LastWhoisDate", "MaliciousCount", "HarmlessCount",
-        "SuspiciousCount", "UndetectedCount", "CommunityVotesHarmless", "CommunityVotesMalicious", "Reputation", "RegionalInternetRegistry",
-        "Network", "Country", "AS-Owner", "SSL-ValidAfter", "SSL-ValidUntil", "SSL-Issuer", "WhoisInfo", "Link"]
-    outputVtCmdResult(output, header, seqOfResultsTables, jsonOutput, jsonResponses)
-    outputElapsedTime(startTime)
+    for table in seqOfResultsTables:
+        if table["Response"] == "200":
+            if parseInt(table["MaliciousCount"]) > 0:
+                echo "Found malicious IP address: " & table["IP-Address"] & " (Malicious count: " & table["MaliciousCount"] & ")"
+        elif table["Response"] == "404":
+            echo "IP address not found: ", table["IP-Address"]
+        else:
+            echo "Unknown error: ", table["Response"], " - " & table["IP-Address"]
+
+    # If saving to a file
+    if output != "":
+        var outputFile = open(output, fmWrite)
+        let header = ["Response", "IP-Address", "SSL-CommonName", "SSL-IssuerCountry", "LastAnalysisDate", "LastModifiedDate", "LastHTTPSCertDate", "LastWhoisDate", "MaliciousCount", "HarmlessCount",
+            "SuspiciousCount", "UndetectedCount", "CommunityVotesHarmless", "CommunityVotesMalicious", "Reputation", "RegionalInternetRegistry",
+            "Network", "Country", "AS-Owner", "SSL-ValidAfter", "SSL-ValidUntil", "SSL-Issuer", "WhoisInfo", "Link"]
+
+        ## Write CSV header
+        for h in header:
+            outputFile.write(h & ",")
+        outputFile.write("\p")
+
+        ## Write contents
+        for table in seqOfResultsTables:
+            for key in header:
+                if table.hasKey(key):
+                    outputFile.write(escapeCsvField(table[key]) & ",")
+                else:
+                    outputFile.write(",")
+            outputFile.write("\p")
+        let fileSize = getFileSize(output)
+        outputFile.close()
+        echo ""
+        echo "Saved CSV results to " & output & " (" & formatFileSize(fileSize) & ")"
+
+    # After the for loop, check if jsonOutput is not blank and then write the JSON responses to a file
+    if jsonOutput != "":
+        var jsonOutputFile = open(jsonOutput, fmWrite)
+        let jsonArray = newJArray() # create empty JSON array
+        for jsonResponse in jsonResponses: # iterate over jsonResponse sequence
+            jsonArray.add(jsonResponse) # add each jsonResponse to jsonArray
+        jsonOutputFile.write(jsonArray.pretty)
+        jsonOutputFile.close()
+        let fileSize = getFileSize(jsonOutput)
+        echo "Saved JSON responses to " & jsonOutput & " (" & formatFileSize(fileSize) & ")"
+
+    # Print elapsed time
+    echo ""
+    let endTime = epochTime()
+    let elapsedTime = int(endTime - startTime)
+    let hours = elapsedTime div 3600
+    let minutes = (elapsedTime mod 3600) div 60
+    let seconds = elapsedTime mod 60
+    echo "Elapsed time: ", $hours & " hours, " & $minutes & " minutes, " & $seconds & " seconds"
+    echo ""

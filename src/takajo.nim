@@ -1,6 +1,8 @@
 import algorithm
 import cligen
 import json
+import malebolgia
+import malebolgia / ticketlocks
 import nancy
 import puppy
 import re
@@ -12,7 +14,6 @@ import suru
 import tables
 import terminal
 import times
-import threadpool
 import uri
 import os
 import std/enumerate
