@@ -93,12 +93,13 @@ proc vtIpLookup(apiKey: string, ipList: string, jsonOutput: string = "", output:
     var results = newSeq[VirusTotalResult]()
     var L = initTicketLock() # protects `results`
     m.awaitAll:
-      for ipAddress in lines:
+      for i, ipAddress in lines:
           inc bar
           bar.update(1000000000) # refresh every second
           m.spawn queryIpAPI(ipAddress, headers, addr results, addr L) # run queries in parallel
           # Sleep to respect the rate limit.
-          sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
+          if i < len(lines) - 1:
+            sleep(int(timePerRequest * 1000)) # Convert to milliseconds.
 
     for r in results:
         seqOfResultsTables.add(r.resTable)
