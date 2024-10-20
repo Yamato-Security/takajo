@@ -54,7 +54,6 @@ jobs:
           Copy-Item -Path templates -Destination release-binaries/ -Recurse
           mkdir -p release-binaries/src/takajopkg/web/
           Copy-Item -Path src/takajopkg/web/static -Destination release-binaries/src/takajopkg/web/ -Recurse
-          mkdir -p release-binaries/src/takajopkg/web/static/js
           New-Item -Path release-binaries/src/takajopkg/web/static/js/common.js -ItemType file
 
       - name: Package and Zip - Unix
