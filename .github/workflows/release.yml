@@ -52,6 +52,8 @@ jobs:
           Copy-Item -Path pcre64.dll -Destination release-binaries/
           Copy-Item -Path sqlite3_64.dll -Destination release-binaries/
           Copy-Item -Path templates -Destination release-binaries/ -Recurse
+          mkdir -p release-binaries/src/takajopkg/web/
+          Copy-Item -Path src/takajopkg/web/static -Destination release-binaries/src/takajopkg/web/ -Recurse
 
       - name: Package and Zip - Unix
         if: matrix.os != 'windows-latest'
@@ -60,6 +62,8 @@ jobs:
           cp takajo release-binaries/
           cp mitre-attack.json release-binaries/
           cp -r templates release-binaries/
+          mkdir -p release-binaries/src/takajopkg/web/
+          cp -r src/takajopkg/web/static release-binaries/src/takajopkg/web/
           case ${{ matrix.os }} in
             'ubuntu-latest')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu ;;
