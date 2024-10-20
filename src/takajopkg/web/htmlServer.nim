@@ -271,9 +271,10 @@ proc htmlServer*(port: int = 8089, quiet: bool = false, timeline: string, rulepa
 
     let settings = newSettings(
         appName = sqliteoutput,
-        debug = true,
+        debug = false,
         port = Port(port)
     )
+    echo "Takajo is serving at http://localhost:" & $port
 
     let app = newApp(settings = settings)
     app.addRoute(urls.urlPatterns, "")    
