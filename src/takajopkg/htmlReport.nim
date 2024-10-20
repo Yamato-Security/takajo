@@ -748,5 +748,3 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     echo ""
     echo "Please open \"" & output & "/index.html\""
     echo ""
-
-
