@@ -48,8 +48,19 @@ proc computer*(ctx: Context) {.async.} =
 
     let rule_title = ctx.request.queryParams.getOrDefault("rule_title", "")
     if rule_title != "":
-        custom_query &= " AND rule_title = ?"
-        params.add(rule_title)
+        let rule_title_list = rule_title.split(",")
+        custom_query &= " AND rule_title IN ("
+        var count = 0
+        let rule_title_list_last = len(rule_title_list) - 1
+        for rule_title in rule_title_list:
+            #custom_query &= "'" & rule_title & "'"
+            custom_query &= "?"
+            if count != rule_title_list_last:
+                custom_query &= ","
+            count += 1
+            params.add(rule_title)
+        custom_query &= ")"
+        
 
     let severities = ctx.request.queryParams.getOrDefault("severities", "")
     if severities != "":
@@ -71,7 +82,7 @@ proc computer*(ctx: Context) {.async.} =
         let path = getDBPath(ctx)
         let db = open(path , "", "", "")
 
-        var query = """select rule_title, rule_file, level, level_order, computer, min(timestamp) as start_date, max(timestamp) as end_date, count(*) as count
+        var query = """select rule_title, rule_file, level, level_order, computer, min(datetime(timestamp, 'localtime')) as start_date, max(datetime(timestamp, 'localtime')) as end_date, count(*) as count
                         from timelines
                         where """ & custom_query &  """
                         group by rule_title, level, computer
@@ -125,8 +136,8 @@ proc sidemenu*(ctx: Context) {.async.} =
                             rule_title,
                             computer,
                             COUNT(computer) AS computer_total,
-                            MIN(timestamp) AS first_date,
-                            MAX(timestamp) AS last_date
+                            MIN(datetime(timestamp, 'localtime')) AS first_date,
+                            MAX(datetime(timestamp, 'localtime')) AS last_date
                         FROM timelines
                         GROUP BY level_order, rule_title, computer
                         ORDER BY level_order, rule_title, computer;

@@ -118,7 +118,7 @@ proc list*(ctx: Context) {.async.} =
         var dates_with_most_total_detections = db.getAllRows(sql query, params) 
 
         query = """SELECT level, level_order, rule_title, computer, COUNT(*) AS alert_count, 
-                    MIN(DATE(timestamp)) AS first_seen, MAX(DATE(timestamp)) AS last_seen
+                    MIN(DATE(datetime(timestamp, 'localtime'))) AS first_seen, MAX(DATE(datetime(timestamp, 'localtime'))) AS last_seen
                     FROM timelines
                     GROUP BY level, rule_title, computer
                     ORDER BY level_order DESC
