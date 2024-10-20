@@ -34,12 +34,17 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
     # create sqlite file or open exist database file.
     let db = open(sqliteoutput, "", "", "")
     try:
-        # drop tables
-        var dropTableSQL = sql"""DROP TABLE timelines"""
-        db.exec(dropTableSQL)
 
-        dropTableSQL = sql"""DROP TABLE rule_files"""
-        db.exec(dropTableSQL)
+        # drop tables
+        try:
+            var dropTableSQL = sql"""DROP TABLE timelines"""
+            db.exec(dropTableSQL)
+        
+            dropTableSQL = sql"""DROP TABLE rule_files"""
+            db.exec(dropTableSQL)
+        except:
+            discard
+
 
         # create timelines table
         var createTableSQL = sql"""CREATE TABLE timelines (
