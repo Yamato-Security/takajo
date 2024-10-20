@@ -1,7 +1,7 @@
 import db_connector/db_sqlite
 import streams
 
-const HtmlReportMsg = "This command will create static HTML summary reports for rules and computers with detections"
+const HtmlReportMsg = "This command will create HTML summary reports for rules and computers with detections"
 
 import os, strutils
 
@@ -26,8 +26,6 @@ proc copyDirectory(src: string, dest: string) =
 # sqliteoutput: save results to a SQLite database
 # timeline: Hayabusa JSONL timeline file or directory
 proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, sqliteoutput: string = "html-report.sqlite", skipProgressBar: bool = false, ) =
-
-    const rulesUrl = "https://github.com/Yamato-Security/hayabusa-rules/blob/main"
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())
@@ -206,7 +204,6 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     # start analysis timeline
     # obtain datas from SQLite
     var query = sql"""select rule_title, rule_file, level, level_order, computer, min(timestamp) as start_date, max(timestamp) as end_date, count(*) as count
-    
                         from timelines
                         group by rule_title, level, computer
                         order by level_order
@@ -280,82 +277,26 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     #
     # obtain rule file path
     #  
-    proc findRuleFileWithName(dir: string, fileName: string) :(string,string) =
+    proc findRuleFileWithName(dir: string, fileName: string) :string =
         
         var foundPath = ""
-        var entryPath = ""
         for entry in walkDir(dir):
             let path = os.lastPathPart(entry.path)
             
             if entry.kind == pcFile and path == fileName:
                 foundPath = absolutePath(entry.path)
-                entryPath = entry.path
                 break
             elif entry.kind == pcDir:
-                (foundPath, entryPath) = findRuleFileWithName(entry.path, fileName)
+                foundPath = findRuleFileWithName(entry.path, fileName)
                 if foundPath != "":
                     break
         
-        return (foundPath, entryPath)
+        return foundPath
 
     const severity_order = @["info", "low", "med", "high", "critical"]
     const severity_color = @["blue", "green", "yellow", "orange", "red"]
 
     var rulepath_list = initTable[string, string]()
-    var entrypath_list = initTable[string, string]()
-    for level_order, alerts in pairs(levels):
-        for alert in alerts:
-            if rulepath != "":
-                let (rule_filepath, entry_path) = findRuleFileWithName(rulepath, alert.rule_file)
-                if not rulepath_list.hasKey(alert.title):
-                    rulepath_list[alert.title] = rule_filepath
-                    entrypath_list[alert.title] = entry_path
-                   
-    try:
-        try:
-            let dropTableSQL = sql"""DROP TABLE rule_files"""
-            db.exec(dropTableSQL)
-        except:
-            discard
-
-        # create timelines table
-        let createTableSQL = sql"""CREATE TABLE rule_files (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            alert_title TEXT,
-            rule_path TEXT
-        )"""
-        db.exec(createTableSQL)
-        
-        db.exec(sql"BEGIN")
-        var recordCount = 0
-        for alert_title, entry_path in entrypath_list:
-            try:
-                let insertSQL = """INSERT INTO rule_files (
-                    alert_title,
-                    rule_path
-                ) VALUES (?, ?)"""
-                
-                let pos = rule_path.find(rulepath)
-                let rule_url = rulesUrl & entry_path[pos + rulepath.len .. ^1]
-
-                var stmt = db.prepare(insertSQL)
-                stmt.bindParams(alert_title, rule_url)
-                let bres = db.tryExec(stmt)
-                finalize(stmt)
-                recordCount += 1
-                if recordCount %% 10000 == 0:
-                    db.exec(sql"COMMIT")
-                    db.exec(sql"BEGIN")
-                
-            except CatchableError as e:
-                echo "Invalid rule: ", alert_title
-
-        db.exec(sql"COMMIT")        
-        echo ""
-    except CatchableError as e:
-        echo "Error: rule data create failed!, ", e.msg
-        discard
-        return
 
     #
     # create a side menu
@@ -375,7 +316,12 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
             ret &= "<li><button class=\"toggle-btn\" data-severity=\"" & severity_order[level_order] & "\" ><i class=\"icon fas fa-chevron-right\"></i>" & severity_order[level_order] & " alerts (" & totalAlerts.intToStr & ")</button><ul class=\"submenu\">"
 
             for alert in alerts:
-                var rule_filepath = rulepath_list[alert.title]
+                var rule_file_path = ""
+                if rulepath != "":
+                    rule_filepath = findRuleFileWithName(rulepath, alert.rule_file)
+                    if not rulepath_list.hasKey(alert.title):
+                        rulepath_list[alert.title] = rule_filepath
+
                 ret &= "<li class=\"font-semibold\"><a style=\"font-size:10pt !important;\" href=\"" & rule_filepath & "\">■" & alert.title & " (" & alert.count.intToStr & ")</a><ul>"
             
                 for computer in alert.computers:
@@ -511,7 +457,11 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
             ret &= "</tr></thead><tbody>"
 
             for alert in tmp_alerts:
-                var rule_filepath = rulepath_list[alert.title]
+                var rule_file_path = ""
+                if rulepath != "":
+                    rule_filepath = findRuleFileWithName(rulepath, alert.rule_file)
+                    if not rulepath_list.hasKey(alert.title):
+                        rulepath_list[alert.title] = rule_filepath
 
                 ret &= "<tr class=\"border-b border-gray-100\">"
                 ret &= "<td class=\"p-3 font-medium\">" & alert.count.intToStr & "</td>"
@@ -625,7 +575,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
 
         # obtain datas from SQLite
-        query = sql"""select level, level_order, date(datetime(timestamp, 'localtime')) AS date, count(*) as count
+        query = sql"""select level, level_order, DATE(timestamp) as date, count(*) as count
                         from timelines
                         where computer = ?
                         group by date, level_order
@@ -686,12 +636,11 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         
         for rule in detectedRules:
             var rule_filepath = ""
-            var entry_path = ""
             if rulepath_list.hasKey(rule[0]):
                 rule_filepath = rulepath_list[rule[0]]
             else:
                 # In the case of info, there is no data, so make here
-                (rule_filepath,entry_path) = findRuleFileWithName(rulepath, rule[0])
+                rule_filepath = findRuleFileWithName(rulepath, rule[0])
                 rulepath_list[rule[0]] = rule_filepath
 
             temp_html &= "<tr class=\"border-b border-gray-100\">"
@@ -763,10 +712,8 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     let sourceDir = "./templates/webfonts"
     let destinationDir = "./" & output & "/webfonts"
     copyDirectory(sourceDir, destinationDir)
-        
+    
     echo "HTML report completed."
     echo ""
     echo "Please open \"" & output & "/index.html\""
     echo ""
-
-

@@ -166,14 +166,19 @@ when isMainModule:
             htmlServer, cmdName = "html-server",
             doc = "create a dynamic web server to view the HTML summary reports",
             help = {
-                "sqlite": "sqlite database to build the HTML reports",
+                "quiet": "do not display the launch banner (default: false)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
+                "rulepath": "hayabusa rules directory path",
+                "sqliteoutput": "save results to a SQLite database (default: html-report.sqlite)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
+                "clobber": "overwrite the SQLite file when saving (default: false)",
                 "port": "web server port number"
-            }
-            ,
+            },
             short = {
-                "sqlite": 's',
                 "port": 'p',
-            }            
+                "clobber": 'C',
+                "sqlite-output": 's',
+            }
         ],
         [
             listDomains, cmdName = "list-domains",

@@ -1,6 +1,4 @@
 import prologue
-import ./computers
-#import ../views/views
 
 proc index*(ctx: Context) {.async.} =
   await ctx.staticFileResponse("index.htm", "src/takajopkg/web/static")
@@ -9,8 +7,6 @@ proc index*(ctx: Context) {.async.} =
 # Computer Page
 #
 proc computer*(ctx: Context) {.async.} =
-  let computer = ctx.request.queryParams.getOrDefault("computer", "")
-  
   await ctx.staticFileResponse("content.htm", "src/takajopkg/web/static")
 
 #
