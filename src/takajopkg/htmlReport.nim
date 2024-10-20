@@ -406,7 +406,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     #
     # create a summary
     #
-    proc printSummaryData(data: Table[int, SummaryInfo]): (string, string) =
+    proc printSummaryData(data: Table[int, SummaryInfo], date_with_most_total_detection_list: seq[Row]): (string, string) =
 
         var detections = ""
         
@@ -423,19 +423,50 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
             detections &= "</tr>"
 
         var date_with_most_total_detections = ""
-        for level_order in countdown(4, 0):
-            if not data.hasKey(level_order):
-                continue 
-            let info = data[level_order]
+        # for level_order in countdown(4, 0):
+        for value in date_with_most_total_detection_list:
+            let key = parseInt(value[0])
             date_with_most_total_detections &= "<tr class=\"border-b border-gray-100\">"
-            date_with_most_total_detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[level_order] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[level_order] & "-800\">" & severity_order[level_order] & "</td>"
-            date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & info.mostTotalDate & "</td>"
-            date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & $info.mostTotalCount & "</td>"
+            date_with_most_total_detections &= "<td class=\"p-3 font-medium\"><div class=\"inline-block rounded-full bg-" & severity_color[key] & "-100 px-2 py-1 text-xs font-semibold leading-4 text-" & severity_color[key] & "-800\">" & severity_order[key] & "</td>"
+            date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & value[1] & "</td>"
+            date_with_most_total_detections &= "<td class=\"p-3 font-medium\">" & value[2] & "</td>"
             date_with_most_total_detections &= "</tr>"
 
         return (detections, date_with_most_total_detections)
 
-    let (detections, date_with_most_total_detections) = printSummaryData(summaryData)
+    query = sql"""WITH max_detections AS (
+                    SELECT
+                        level_order,
+                        DATE(timestamp) AS detection_date,
+                        COUNT(*) AS detection_count
+                    FROM timelines
+                    GROUP BY level_order, detection_date
+                ),
+                max_date_per_level AS (
+                    SELECT
+                        level_order,
+                        detection_date,
+                        detection_count,
+                        ROW_NUMBER() OVER (PARTITION BY level_order ORDER BY detection_count DESC) AS rn
+                    FROM max_detections
+                )
+                SELECT
+                    level_order AS Severity,
+                    detection_date AS "Number of detections",
+                    detection_count AS "Detection rate"
+                FROM max_date_per_level
+                WHERE rn = 1
+                ORDER BY CASE level_order
+                    WHEN 4 THEN 1
+                    WHEN 3 THEN 2
+                    WHEN 2 THEN 3
+                    WHEN 1 THEN 4
+                    WHEN 0 THEN 5
+                    ELSE 6
+                END;
+                """
+    var dates_with_most_total_detection_list = db.getAllRows(query) 
+    let (detections, date_with_most_total_detections) = printSummaryData(summaryData, dates_with_most_total_detection_list)
     
     # Rule Summary
     proc printDetectionRuleList(levels: seq[(int, seq[Alert])], rulepath: string, rulepath_list: var Table[string, string]): string = 
@@ -575,7 +606,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
 
         # obtain datas from SQLite
-        query = sql"""select level, level_order, DATE(timestamp) as date, count(*) as count
+        query = sql"""select level, level_order, date(datetime(timestamp, 'localtime')) as date, count(*) as count
                         from timelines
                         where computer = ?
                         group by date, level_order
