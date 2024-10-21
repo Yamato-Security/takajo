@@ -18,3 +18,6 @@ proc computer_summary*(ctx: Context) {.async.} =
 
 proc commonjs*(ctx: Context) {.async.} = 
   await ctx.staticFileResponse("js/common.js", "src/takajopkg/web/static")
+
+proc favicon*(ctx: Context) {.async.} = 
+  await ctx.staticFileResponse("img/favicon.png", "src/takajopkg/web/static")
