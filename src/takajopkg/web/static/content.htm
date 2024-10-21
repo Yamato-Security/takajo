@@ -548,6 +548,8 @@
               <input type="text" name="last_date" id="last_date" value="" placeholder="to date" class="flatpickr-input rounded-lg border border-zinc-200 py-2 pe-3 ps-10 leading-6 placeholder-zinc-500">
               <button id="fetchData" class="button relative h-10 overflow-hidden rounded-md border border-neutral-200 bg-transparent px-6 text-neutral-950 before:absolute before:bottom-0 before:left-0 before:block before:h-full before:w-full before:-translate-x-full before:bg-neutral-100 before:transition-transform hover:before:translate-x-0"><span class="relative">Search</span></button>
               &nbsp;
+              <button id="clearData" class="button relative h-10 overflow-hidden rounded-md border border-neutral-200 bg-transparent px-6 text-neutral-950 before:absolute before:bottom-0 before:left-0 before:block before:h-full before:w-full before:-translate-x-full before:bg-neutral-100 before:transition-transform hover:before:translate-x-0"><span class="relative">Clear</span></button>
+              &nbsp;
               <button role="link" id="pastdays-btn" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100">past 30 days</button>
             </div>
             <script>
@@ -559,7 +561,15 @@
               document.getElementById("pastdays-btn").addEventListener('click', () => {
                 pastdays = true;
                 getComputerData();
-              })
+              });
+
+              document.getElementById("clearData").addEventListener('click', () => {
+                pastdays = false;
+                document.getElementById('first_date').value = "";
+                document.getElementById('last_date').value = "";
+                checkAllCheckboxes();
+                getComputerData();
+              });
 
             </script>
 
