@@ -56,7 +56,7 @@ proc list*(ctx: Context) {.async.} =
             severity_query &= dbQuote(severity)
         custom_query &= " AND level IN (" & severity_query & ")"
 
-    echo custom_query
+    # echo custom_query
 
     #
     # query to DB
