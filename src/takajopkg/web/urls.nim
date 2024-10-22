@@ -10,6 +10,7 @@ const urlPatterns* = @[
     pattern("/computer", controller.computer),
     pattern("/computer/summary", controller.computer_summary),
     pattern("/js/common.js", controller.commonjs),
+    pattern("/img/favicon.png", controller.favicon),
     pattern("/api/computer", computers.computer),
     pattern("/api/computer/summary", computers.summary),
     pattern("/api/summary", summary.list),
