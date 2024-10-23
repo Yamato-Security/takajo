@@ -256,7 +256,7 @@ proc initialServer(port: int) =
 #
 # Server Settings
 # 
-proc htmlServer*(port: int = 8089, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, sqliteoutput: string = "html-report.sqlite", skipProgressBar: bool = false) =
+proc htmlServer*(port: int = 8823, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, sqliteoutput: string = "html-report.sqlite", skipProgressBar: bool = false) =
     
     let ret = createSQLite(quiet, timeline, rulepath, clobber, sqliteoutput, skipProgressBar)
     if ret == false:

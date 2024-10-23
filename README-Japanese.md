@@ -69,6 +69,13 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
         - [ルールサマリ](#ルールサマリ)
         - [コンピュータサマリ](#コンピュータサマリ)
         - [ルール一覧](#ルール一覧)
+    - [`html-server`コマンド](#html-serverコマンド)
+      - [`html-server` command example](#html-server-command-example)
+      - [`html-server`スクリーンショット](#html-serverスクリーンショット)
+        - [ルール一覧](#ルール一覧-1)
+        - [コンピュータサマリ](#コンピュータサマリ-1)
+        - [日付フィルタリング](#日付フィルタリング)
+        - [ルールフィルタリング](#ルールフィルタリング)
   - [Listコマンド](#listコマンド-1)
     - [`list-domains`コマンド](#list-domainsコマンド)
       - [`list-domains`コマンドの使用例](#list-domainsコマンドの使用例)
@@ -190,6 +197,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 
 ## HTMLコマンド
 * `html-report`: ルールと検出されたコンピュータのHTMLサマリレポートを作成する
+* `html-server`: HTMLサマリレポートを確認するために、動的にウェブサーバを立ち上げる
 
 ## Listコマンド
 * `list-domains`: `vt-domain-lookup`コマンドで使用する、重複のないドメインのリストを作成する
@@ -324,7 +332,7 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 このコマンドは、サマリレポートの作成に必要なデータの高速検索を実行するために、まずインデックス化されたSQLiteデータベースファイルを作成します。
 
 * 入力: JSONL
-* プロファイル: Any verbose profile
+* プロファイル: `verbose`/`super-verbose`プロファイル
 * 出力: コンピュータ名とメインページの`index.html`に基づいた個別のHTMLサマリレポート
 
 必須オプション:
@@ -373,6 +381,67 @@ takajo.exe html-report -t ../hayabusa/hayabusa-results.jsonl -o htmlreport -r ..
 ##### ルール一覧
 
 ![html-report-rule-list](screenshots/html-report-3-rule-list.png)
+
+### `html-server`コマンド
+
+HTMLサマリレポートを確認するために、動的にウェブサーバを立ち上げます。
+このコマンドは、サマリレポートの作成に必要なデータの高速検索を実行するために、まずインデックス化されたSQLiteデータベースファイルを作成します。
+`html-report`コマンドと似ていますが、よりスケーラブルで日付やルールのフィルタリングが可能です。
+
+* 入力: JSONL
+* プロファイル: `verbose`/`super-verbose`プロファイル
+* 出力: デフォルトでは、`http://localhost:8823`で待ち受ける
+
+必須オプション:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインのファイル名またはディレクトリ名
+
+任意オプション:
+
+- `-C, --clobber`: 保存時にSQLiteファイルを上書きする (デフォルト: `false`)
+- `-p, --port`: ウェブサーバのポート番号
+- `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
+- `-r, --rulepath`: Hayabusaルールディレクトリへのパス (※必須ではないが、ルールファイルへのリンクを作成するために必要。）)
+- `-s, --skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
+- `-s, --sqliteoutput`: 結果をSQLiteデータベースに保存する (デフォルト: `html-report.sqlite`)
+
+#### `html-server` command example
+
+HayabusaでJSONLタイムラインを出力する:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+または
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p super-verbose
+```
+
+ウェブサーバを起動する:
+
+```
+takajo.exe html-server -t ../hayabusa/hayabusa-results.jsonl -r ../hayabusa/rules
+```
+
+#### `html-server`スクリーンショット
+
+##### ルール一覧
+
+![html-server-rules-list](screenshots/html-server-1-rules-list.png)
+
+##### コンピュータサマリ
+
+![html-server-computer-summary](screenshots/html-server-2-computer-summary.png)
+
+##### 日付フィルタリング
+
+![html-server-date-filtering](screenshots/html-server-3-date-filtering.png)
+
+##### ルールフィルタリング
+
+![html-server-rule-filtering](screenshots/html-server-4-rule-filtering.png)
 
 ## Listコマンド
 

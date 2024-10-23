@@ -69,6 +69,13 @@ Takajō means ["Falconer"](https://en.wikipedia.org/wiki/Falconry) in Japanese a
         - [Rule Summary](#rule-summary)
         - [Computer Summary](#computer-summary)
         - [Rule List](#rule-list)
+    - [`html-server` command](#html-server-command)
+      - [`html-report` command example](#html-report-command-example-1)
+      - [`html-server` screenshots](#html-server-screenshots)
+        - [Rules List](#rules-list)
+        - [Computer Summary](#computer-summary-1)
+        - [Rule Filtering](#rule-filtering)
+        - [Rule Filtering](#rule-filtering-1)
   - [List Commands](#list-commands-1)
     - [`list-domains` command](#list-domains-command)
       - [`list-domains` command examples](#list-domains-command-examples)
@@ -187,7 +194,8 @@ Then you can compile from source with the following command:
 * `extract-scriptblocks`: extract and reassemble PowerShell EID 4104 script block logs
 
 ## HTML Commands
-* `html-report`: create HTML summary reports for rules and computers with detections
+* `html-report`: create static HTML summary reports
+* `html-server`: create a dynamic web server to view HTML summary reports
 
 ## List Commands
 * `list-domains`: create a list of unique domains to be used with `vt-domain-lookup`
@@ -375,6 +383,67 @@ takajo.exe html-report -t ../hayabusa/hayabusa-results.jsonl -o htmlreport -r ..
 ##### Rule List
 
 ![html-report-rule-list](screenshots/html-report-3-rule-list.png)
+
+### `html-server` command
+
+Create a dynamic web server to view HTML summary reports.
+This command first creates an indexed SQLite database file in order to perform fast lookups on the data needed to create the summary reports.
+It is similar to the `html-report` command but is more scalable and allows for filtering on dates and rules.
+
+* Input: JSONL
+* Profile: Any verbose profile
+* Output: By default, will listen on `http://localhost:8823`
+
+Required options:
+
+- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory
+
+Options:
+
+- `-C, --clobber`: overwrite the SQLite file when saving (default: `false`)
+- `-p, --port`: web server port number
+- `-q, --quiet`: do not display the launch banner (default: `false`)
+- `-r, --rulepath`: path to the Hayabusa rules directory (this is optional but needed to create correct links to the rule files)
+- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
+- `-s, --sqliteoutput`: save results to a SQLite database (default: `html-report.sqlite`)
+
+#### `html-report` command example
+
+Prepare the JSONL timeline with Hayabusa:
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+```
+
+or
+
+```
+hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p super-verbose
+```
+
+Start the web server:
+
+```
+takajo.exe html-server -t ../hayabusa/hayabusa-results.jsonl -r ../hayabusa/rules
+```
+
+#### `html-server` screenshots
+
+##### Rules List
+
+![html-server-rules-list](screenshots/html-server-1-rules-list.png)
+
+##### Computer Summary
+
+![html-server-computer-summary](screenshots/html-server-2-computer-summary.png)
+
+##### Rule Filtering
+
+![html-server-date-filtering](screenshots/html-server-3-date-filtering.png)
+
+##### Rule Filtering
+
+![html-server-rule-filtering](screenshots/html-server-4-rule-filtering.png)
 
 ## List Commands
 
