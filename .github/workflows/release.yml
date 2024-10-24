@@ -72,7 +72,7 @@ jobs:
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu ;;
             'macos-latest')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-aarch64 ;;
-            'macos-12')
+            'macos-13')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-x64 ;;
           esac
 
@@ -87,7 +87,7 @@ jobs:
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu" >> $GITHUB_OUTPUT ;;
             'macos-latest')
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-mac-aarch64" >> $GITHUB_OUTPUT ;;
-            'macos-12')
+            'macos-13')
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-mac-x64" >> $GITHUB_OUTPUT ;;
           esac
 
