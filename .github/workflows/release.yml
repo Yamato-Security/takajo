@@ -124,7 +124,7 @@ jobs:
             ./*.pdf
 
   upload-all-platforms:
-    needs:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Download All Artifacts
