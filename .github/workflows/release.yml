@@ -159,4 +159,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: all-packages
-          path: all-packages/*
+          path: all-packages/*.zip
