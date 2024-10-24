@@ -33,12 +33,12 @@ jobs:
           nimble update
 
       - name: Build Takajo binary
-        if: matrix.os != 'macos-12'
+        if: matrix.os != 'macos-13'
         run: |
           nimble build -d:release --threads:on
 
       - name: Build Takajo binary for Intel Mac
-        if: matrix.os == 'macos-12'
+        if: matrix.os == 'macos-13'
         run: |
           nimble build -d:release --threads:on --os:macosx --cpu:amd64 
 
