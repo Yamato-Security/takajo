@@ -44,7 +44,7 @@ jobs:
           cd hayabusa
           git fetch --prune --unshallow
           LATEST_VER=`git describe --tags --abbrev=0`
-          URL="https://github.com/Yamato-Security/hayabusa/releases/download/${LATEST_VER}/hayabusa-${LATEST_VER#v}-linux-intel.zip"
+          URL="https://github.com/Yamato-Security/hayabusa/releases/download/${LATEST_VER}/hayabusa-${LATEST_VER#v}-lin-x64-gnu.zip"
           mkdir tmp
           cd tmp
           curl -OL $URL
@@ -53,6 +53,9 @@ jobs:
           ./hayabusa-${LATEST_VER#v}-lin-x64-gnu update-rules
           ./hayabusa-${LATEST_VER#v}-lin-x64-gnu csv-timeline -d ../../hayabusa-sample-evtx -w -p super-verbose -o ../../takajo/timeline.csv
           ./hayabusa-${LATEST_VER#v}-lin-x64-gnu json-timeline -d ../../hayabusa-sample-evtx -L -w -p super-verbose -o ../../takajo/timeline.jsonl
+
+      - name: run extract-credentials
+        run: cd takajo && ./takajo eextract-credentials -t timeline.jsonl -o credentials.csv
 
       - name: run extract-scriptblocks
         run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl
@@ -65,6 +68,9 @@ jobs:
 
       - name: run extract-scriptblocks(-l)
         run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl -o scriptblocks -l informational
+
+      - name: run html-report
+        run: cd takajo && ./takajo html-report -t timeline.jsonl -o out
 
       - name: run list-domain(-o)
         run: cd takajo && ./takajo list-domains -t timeline.jsonl -o domains.txt
