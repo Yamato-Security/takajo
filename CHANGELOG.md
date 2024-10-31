@@ -1,5 +1,11 @@
 # Changes
 
+## 2.7.1 [2024/10/31] Halloween Release
+
+**Bug Fixes:**
+
+- The Source IP Address and Source Computer fields for `4624` successful logon events in the logon timeline were backwards. (#208) (@fukusuket)
+
 ## 2.7.0 [2024/10/24] SecTor Release
 
 **New Features:**
