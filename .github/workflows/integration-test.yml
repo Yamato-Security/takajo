@@ -55,7 +55,7 @@ jobs:
           ./hayabusa-${LATEST_VER#v}-lin-x64-gnu json-timeline -d ../../hayabusa-sample-evtx -L -w -p super-verbose -o ../../takajo/timeline.jsonl
 
       - name: run extract-credentials
-        run: cd takajo && ./takajo eextract-credentials -t timeline.jsonl -o credentials.csv
+        run: cd takajo && ./takajo extract-credentials -t timeline.jsonl -o credentials.csv
 
       - name: run extract-scriptblocks
         run: cd takajo && ./takajo extract-scriptblocks -t timeline.jsonl
