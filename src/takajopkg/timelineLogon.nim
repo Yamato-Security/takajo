@@ -11,6 +11,7 @@ type
                 string]] # Sequences are immutable so need to create a sequence of pointers to tables so we can update ["ElapsedTime"]
         seqOfLogoffEventTables*: seq[Table[string, string]] # This sequence can be immutable
         logoffEvents*: Table[string, string] = initTable[string, string]()
+        rdpLogoffEvents*: Table[string, seq[string]] = initTable[string, seq[string]]()
         adminLogonEvents*: Table[string, string] = initTable[string, string]()
         EID_21_count*: int = 0 # RDP Logon
         EID_23_count*: int = 0 # RDP Logoff
@@ -213,7 +214,10 @@ method analyze*(self: TimelineLogonCmd, x: HayabusaJson) =
             let key = jsonLine.Details["SessID"].getStr() & ":" &
                     jsonLine.Computer & ":" & tgtUser
             let logoffTime = jsonLine.Timestamp
-            self.logoffEvents[key] = logoffTime
+            if self.rdpLogoffEvents.hasKey(key):
+                self.rdpLogoffEvents[key].add(logoffTime)
+            else:
+                self.rdpLogoffEvents[key] = @[logoffTime]
         if self.outputLogoffEvents:
             var singleResultTable = newTable[string, string]()
             singleResultTable["Event"] = ruleTitle
@@ -231,6 +235,12 @@ method analyze*(self: TimelineLogonCmd, x: HayabusaJson) =
             singleResultTable["LID"] = details.extractStr("SessID")
             self.seqOfResultsTables.add(singleResultTable)
 
+proc calculateDuration(logonTime: string, logoffTime: string, timeFormat: string): Duration =
+    let logonTime = if logonTime.endsWith("Z"): logonTime.replace("Z", "") else: logonTime[0 ..< logonTime.len - 7]
+    let logoffTime = if logoffTime.endsWith("Z"): logoffTime.replace("Z", "") else: logoffTime[0 ..< logoffTime.len - 7]
+    let parsedLogoffTime = parse(padString(logoffTime, '0', timeFormat), timeFormat)
+    let parsedLogonTime = parse(padString(logonTime, '0', timeFormat), timeFormat)
+    return parsedLogoffTime - parsedLogonTime
 
 method resultOutput*(self: TimelineLogonCmd) =
     if self.displayTable:
@@ -242,26 +252,24 @@ method resultOutput*(self: TimelineLogonCmd) =
     if self.calculateElapsedTime:
         for tableOfResults in self.seqOfResultsTables:
             if tableOfResults["EventID"] == "4624" or tableOfResults["EventID"] == "21":
-                var logoffTime = ""
                 var logonTime = tableOfResults["Timestamp"]
-
                 let key = tableOfResults["LID"] & ":" & tableOfResults[
                         "TargetComputer"] & ":" & tableOfResults["TargetUser"]
                 if self.logoffEvents.hasKey(key):
-                    logoffTime = self.logoffEvents[key]
+                    let logoffTime = self.logoffEvents[key]
                     if logoffTime > logonTime:
                         tableOfResults[]["LogoffTime"] = logoffTime
-                        logonTime = if logonTime.endsWith("Z"): logonTime.replace(
-                                "Z", "") else: logonTime[0 ..< logonTime.len - 7]
-                        logoffTime = if logoffTime.endsWith(
-                                "Z"): logoffTime.replace("Z", "") else: logoffTime[
-                                0 ..< logofftime.len - 7]
-                        let parsedLogoffTime = parse(padString(logoffTime, '0',
-                                timeFormat), timeFormat)
-                        let parsedLogonTime = parse(padString(logonTime, '0',
-                                timeFormat), timeFormat)
-                        let duration = parsedLogoffTime - parsedLogonTime
+                        let duration = calculateDuration(logonTime, logoffTime, timeFormat)
                         tableOfResults[]["ElapsedTime"] = formatDuration(duration)
+                elif self.rdpLogoffEvents.hasKey(key):
+                    var logoffTimes = self.rdpLogoffEvents[key]
+                    logoffTimes.sort()
+                    for logoffTime in logoffTimes:
+                        if logoffTime > logonTime:
+                            tableOfResults[]["LogoffTime"] = logoffTime
+                            let duration = calculateDuration(logonTime, logoffTime, timeFormat)
+                            tableOfResults[]["ElapsedTime"] = formatDuration(duration)
+                            break
 
     # Find admin logons
     for tableOfResults in self.seqOfResultsTables:
@@ -338,6 +346,10 @@ method resultOutput*(self: TimelineLogonCmd) =
     outputFile.write("\p")
 
     ## Write contents
+    self.seqOfResultsTables.sort(proc(a, b: TableRef[string, string]): int =
+        if a["Timestamp"] < b["Timestamp"]: return -1
+        if a["Timestamp"] > b["Timestamp"]: return 1
+        return 0)
     for table in self.seqOfResultsTables:
         for key in header:
             if table.hasKey(key):
