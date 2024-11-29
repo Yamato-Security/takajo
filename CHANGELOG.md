@@ -1,5 +1,11 @@
 # Changes
 
+## x.x.x [xxxx/xx/xx]
+
+**Enhancements:**
+
+- RDP logon and logoff information has been added to the `timeline-logon` timeline. #209 (@fukusuket)
+
 ## 2.7.1 [2024/10/31] Halloween Release
 
 **Bug Fixes:**

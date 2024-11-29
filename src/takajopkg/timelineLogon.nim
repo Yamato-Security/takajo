@@ -11,7 +11,10 @@ type
                 string]] # Sequences are immutable so need to create a sequence of pointers to tables so we can update ["ElapsedTime"]
         seqOfLogoffEventTables*: seq[Table[string, string]] # This sequence can be immutable
         logoffEvents*: Table[string, string] = initTable[string, string]()
+        rdpLogoffEvents*: Table[string, seq[string]] = initTable[string, seq[string]]()
         adminLogonEvents*: Table[string, string] = initTable[string, string]()
+        EID_21_count*: int = 0 # RDP Logon
+        EID_23_count*: int = 0 # RDP Logoff
         EID_4624_count* = 0 # Successful logon
         EID_4625_count* = 0 # Failed logon
         EID_4634_count* = 0 # Logoff
@@ -24,7 +27,7 @@ type
 
 method filter*(self: TimelineLogonCmd, x: HayabusaJson): bool =
     return x.EventId == 4624 or x.EventId == 4625 or x.EventId == 4634 or
-            x.EventId == 4647 or x.EventId == 4648 or x.EventId == 4672
+            x.EventId == 4647 or x.EventId == 4648 or x.EventId == 4672 or x.EventId == 21 or x.EventId == 23
 
 method analyze*(self: TimelineLogonCmd, x: HayabusaJson) =
     let ruleTitle = x.RuleTitle
@@ -174,6 +177,71 @@ method analyze*(self: TimelineLogonCmd, x: HayabusaJson) =
             singleResultTable["LID"] = details.extractStr("LID")
             self.seqOfResultsTables.add(singleResultTable)
 
+    #EID 21 Logon
+    if ruleTitle == "RDP Logon":
+        inc self.EID_21_count
+        var singleResultTable = newTable[string, string]()
+        singleResultTable["Event"] = ruleTitle
+        singleResultTable["Timestamp"] = jsonLine.Timestamp
+        singleResultTable["Channel"] = jsonLine.Channel
+        singleResultTable["EventID"] = "21"
+        let details = jsonLine.Details
+        singleResultTable["TargetComputer"] = jsonLine.Computer
+        singleResultTable["SourceIP"] = details.extractStr("SrcIP")
+        let userDetail = details.extractStr("TgtUser")
+        if userDetail.contains("\\"):
+            let parts = userDetail.split("\\")
+            singleResultTable["TargetDomainName"] = parts[0]
+            singleResultTable["TargetUser"] = parts[1]
+        else:
+            singleResultTable["TargetUser"] = userDetail
+        singleResultTable["LID"] = details.extractStr("SessID")
+        singleResultTable["LogoffTime"] = ""
+        singleResultTable["ElapsedTime"] = ""
+        self.seqOfResultsTables.add(singleResultTable)
+
+    #EID 23 RDP Logoff
+    if ruleTitle == "RDP Logoff":
+        inc self.EID_23_count
+        # If we want to calculate ElapsedTime
+        let details = jsonLine.Details
+        if self.calculateElapsedTime:
+            # Create the key in the format of LID:Computer:User with a value of the timestamp
+            var tgtUser = details.extractStr("TgtUser")
+            if tgtUser.contains("\\"):
+                let parts = tgtUser.split("\\")
+                tgtUser = parts[1]
+            let key = jsonLine.Details["SessID"].getStr() & ":" &
+                    jsonLine.Computer & ":" & tgtUser
+            let logoffTime = jsonLine.Timestamp
+            if self.rdpLogoffEvents.hasKey(key):
+                self.rdpLogoffEvents[key].add(logoffTime)
+            else:
+                self.rdpLogoffEvents[key] = @[logoffTime]
+        if self.outputLogoffEvents:
+            var singleResultTable = newTable[string, string]()
+            singleResultTable["Event"] = ruleTitle
+            singleResultTable["Timestamp"] = jsonLine.Timestamp
+            singleResultTable["Channel"] = jsonLine.Channel
+            singleResultTable["TargetComputer"] = jsonLine.Computer
+            singleResultTable["EventID"] = "23"
+            let userDetail = details.extractStr("TgtUser")
+            if userDetail.contains("\\"):
+                let parts = userDetail.split("\\")
+                singleResultTable["TargetDomainName"] = parts[0]
+                singleResultTable["TargetUser"] = parts[1]
+            else:
+                singleResultTable["TargetUser"] = userDetail
+            singleResultTable["LID"] = details.extractStr("SessID")
+            self.seqOfResultsTables.add(singleResultTable)
+
+proc calculateDuration(logonTime: string, logoffTime: string, timeFormat: string): Duration =
+    let logonTime = if logonTime.endsWith("Z"): logonTime.replace("Z", "") else: logonTime[0 ..< logonTime.len - 7]
+    let logoffTime = if logoffTime.endsWith("Z"): logoffTime.replace("Z", "") else: logoffTime[0 ..< logoffTime.len - 7]
+    let parsedLogoffTime = parse(padString(logoffTime, '0', timeFormat), timeFormat)
+    let parsedLogonTime = parse(padString(logonTime, '0', timeFormat), timeFormat)
+    return parsedLogoffTime - parsedLogonTime
+
 method resultOutput*(self: TimelineLogonCmd) =
     if self.displayTable:
         echo ""
@@ -183,28 +251,25 @@ method resultOutput*(self: TimelineLogonCmd) =
     # Calculating the logon elapsed time (default)
     if self.calculateElapsedTime:
         for tableOfResults in self.seqOfResultsTables:
-            if tableOfResults["EventID"] == "4624":
-                var logoffTime = ""
+            if tableOfResults["EventID"] == "4624" or tableOfResults["EventID"] == "21":
                 var logonTime = tableOfResults["Timestamp"]
-
                 let key = tableOfResults["LID"] & ":" & tableOfResults[
                         "TargetComputer"] & ":" & tableOfResults["TargetUser"]
                 if self.logoffEvents.hasKey(key):
-                    logoffTime = self.logoffEvents[key]
-                    tableOfResults[]["LogoffTime"] = logoffTime
-                    logonTime = if logonTime.endsWith("Z"): logonTime.replace(
-                            "Z", "") else: logonTime[0 ..< logonTime.len - 7]
-                    logoffTime = if logoffTime.endsWith(
-                            "Z"): logoffTime.replace("Z", "") else: logoffTime[
-                            0 ..< logofftime.len - 7]
-                    let parsedLogoffTime = parse(padString(logoffTime, '0',
-                            timeFormat), timeFormat)
-                    let parsedLogonTime = parse(padString(logonTime, '0',
-                            timeFormat), timeFormat)
-                    let duration = parsedLogoffTime - parsedLogonTime
-                    tableOfResults[]["ElapsedTime"] = formatDuration(duration)
-                else:
-                    logoffTime = "n/a"
+                    let logoffTime = self.logoffEvents[key]
+                    if logoffTime > logonTime:
+                        tableOfResults[]["LogoffTime"] = logoffTime
+                        let duration = calculateDuration(logonTime, logoffTime, timeFormat)
+                        tableOfResults[]["ElapsedTime"] = formatDuration(duration)
+                elif self.rdpLogoffEvents.hasKey(key):
+                    var logoffTimes = self.rdpLogoffEvents[key]
+                    logoffTimes.sort()
+                    for logoffTime in logoffTimes:
+                        if logoffTime > logonTime:
+                            tableOfResults[]["LogoffTime"] = logoffTime
+                            let duration = calculateDuration(logonTime, logoffTime, timeFormat)
+                            tableOfResults[]["ElapsedTime"] = formatDuration(duration)
+                            break
 
     # Find admin logons
     for tableOfResults in self.seqOfResultsTables:
@@ -241,7 +306,11 @@ method resultOutput*(self: TimelineLogonCmd) =
          padString("EID 4648 (Explicit Logon): " & intToStr(
                  self.EID_4648_count).insertSep(','), ' ', 80) &
          padString("EID 4672 (Admin Logon): " & intToStr(
-                 self.EID_4672_count).insertSep(','), ' ', 80)
+                 self.EID_4672_count).insertSep(','), ' ', 80) &
+         padString("EID 21 (RDP Logon): " & intToStr(
+                 self.EID_21_count).insertSep(','), ' ', 80) &
+         padString("EID 23 (RDP Logoff): " & intToStr(
+                 self.EID_23_count).insertSep(','), ' ', 80)
     if self.displayTable:
         echo ""
         echo "Found logon events:"
@@ -256,7 +325,12 @@ method resultOutput*(self: TimelineLogonCmd) =
                 self.EID_4648_count).insertSep(',')
         echo "EID 4672 (Admin Logon): ", intToStr(
                 self.EID_4672_count).insertSep(',')
+        echo "EID 21 (RDP Logon): ", intToStr(
+                self.EID_21_count).insertSep(',')
+        echo "EID 23 (RDP Logoff): ", intToStr(
+                self.EID_23_count).insertSep(',')
         echo ""
+
 
     # Save results
     var outputFile = open(self.output, fmWrite)
@@ -272,6 +346,10 @@ method resultOutput*(self: TimelineLogonCmd) =
     outputFile.write("\p")
 
     ## Write contents
+    self.seqOfResultsTables.sort(proc(a, b: TableRef[string, string]): int =
+        if a["Timestamp"] < b["Timestamp"]: return -1
+        if a["Timestamp"] > b["Timestamp"]: return 1
+        return 0)
     for table in self.seqOfResultsTables:
         for key in header:
             if table.hasKey(key):

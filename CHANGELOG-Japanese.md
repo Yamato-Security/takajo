@@ -1,5 +1,11 @@
 # 変更点
 
+## x.x.x [xxxx/xx/xx]
+
+**改善:**
+
+- RDPログオンとログオフの情報が`timeline-logon`タイムラインに追加された。 #209 (@fukusuket)
+
 ## 2.7.1 [2024/10/31] Halloween Release
 
 **バグ修正:**
