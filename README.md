@@ -1291,7 +1291,7 @@ This command extracts TTPs and create a JSON file to visualize in [MITRE ATT&CK 
 
 * Input: JSONL
 * Profile: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)
-* Output: Terminal or CSV
+* Output: JSON
 
 Required options:
 
@@ -1326,31 +1326,30 @@ Open [https://mitre-attack.github.io/attack-navigator/](https://mitre-attack.git
 
 This command extracts TTPs from Sigma and create a JSON file to visualize in [MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/).
 
-* Input: JSONL
-* Profile: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)
-* Output: Terminal or CSV
+* Input: Sigma rules directory
+* Output: JSON
 
 Required options:
 
-- `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
+- `-r, --ruleDir <SIGMA-DIR>`: Sigma rules directory
 
 Options:
 
-- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `sigma-rules-heatmap.json`)
+- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (default: `mitre-attack-navigator.json`)
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `ttp-visualize-sigma` command examples
 
-Prepare JSONL timeline with Hayabusa:
+Clone the Sigma repository:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+git clone https://github.com/SigmaHQ/sigma.git
 ```
 
-Extract out the TTPs from Sigma and save to `sigma-rules-heatmap.json`:
+Extract out the TTPs from Sigma and save to `mitre-attack-navigator.json`:
 
 ```
-takajo.exe ttp-visualize-sigma -t ../hayabusa/timeline.jsonl
+takajo.exe ttp-visualize-sigma -r ../sigma
 ```
 ## VirusTotal Commands
 

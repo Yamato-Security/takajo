@@ -1314,31 +1314,30 @@ takajo.exe ttp-visualize -t ../hayabusa/timeline.jsonl
 
 TTPsをSigmaルールから抽出し、[MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)で視覚化するための JSON ファイルを作成します。
 
-* 入力: JSONL
-* プロファイル: A profile that outputs `%MitreTactics%` and `%MitreTags%` fields. (Ex: `verbose`, `all-field-info-verbose`, `super-verbose`)
-* 出力: ターミナル または CSV
+* 入力: Sigmaルールディレクトリ
+* 出力: JSON
 
 必須オプション:
 
-- `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
+- `-r, --ruleDir <SIGMA-DIR>`: Sigmaルールディレクトリ
 
 任意オプション:
 
-- `-o, --output <JSON-FILE>`: the JSON file to save the results to. (デフォルト: `sigma-rules-heatmap.json`)
+- `-o, --output <JSON-FILE>`: 結果を保存するJSONファイル (デフォルト: `sigma-rules-heatmap.json`)
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
 #### `ttp-visualize-sigma`コマンドの使用例
 
-HayabusaでJSONLタイムラインを作成する:
+Sigmaリポジトリをクローンします:
 
 ```
-hayabusa.exe json-timeline -d <EVTX-DIR> -L -o timeline.jsonl -w -p verbose
+git clone https://github.com/SigmaHQ/sigma.git
 ```
 
 TTPsを抽出し `sigma-rules-heatmap.json`に保存します。:
 
 ```
-takajo.exe ttp-visualize-sigma -t ../hayabusa/timeline.jsonl
+takajo.exe ttp-visualize-sigma -r ../sigma
 ```
 
 ## VirusTotalコマンド
