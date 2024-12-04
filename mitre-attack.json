@@ -15,7 +15,7 @@
         "Technique": "Data Obfuscation"
     },
     "T1001.003": {
-        "Sub-Technique": "Protocol Impersonation",
+        "Sub-Technique": "Protocol or Service Impersonation",
         "Tactic": "Command and Control",
         "Technique": "Data Obfuscation"
     },
@@ -259,6 +259,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Obfuscated Files or Information"
     },
+    "T1027.014": {
+        "Sub-Technique": "Polymorphic Code",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
     "T1029": {
         "Sub-Technique": "-",
         "Tactic": "Exfiltration",
@@ -321,6 +326,11 @@
     },
     "T1036.009": {
         "Sub-Technique": "Break Process Trees",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.010": {
+        "Sub-Technique": "Masquerade Account Name",
         "Tactic": "Defense Evasion",
         "Technique": "Masquerading"
     },
@@ -594,6 +604,11 @@
         "Tactic": "Execution",
         "Technique": "Command and Scripting Interpreter"
     },
+    "T1059.011": {
+        "Sub-Technique": "Lua",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
     "T1068": {
         "Sub-Technique": "-",
         "Tactic": "Discovery",
@@ -669,6 +684,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Indicator Removal"
     },
+    "T1070.010": {
+        "Sub-Technique": "Relocate Malware",
+        "Tactic": "Defense Evasion",
+        "Technique": "Indicator Removal"
+    },
     "T1071": {
         "Sub-Technique": "-",
         "Tactic": "Command and Control",
@@ -691,6 +711,11 @@
     },
     "T1071.004": {
         "Sub-Technique": "DNS",
+        "Tactic": "Command and Control",
+        "Technique": "Application Layer Protocol"
+    },
+    "T1071.005": {
+        "Sub-Technique": "Publish/Subscribe Protocols",
         "Tactic": "Command and Control",
         "Technique": "Application Layer Protocol"
     },
@@ -854,6 +879,11 @@
         "Tactic": "Privilege Escalation",
         "Technique": "Account Manipulation"
     },
+    "T1098.007": {
+        "Sub-Technique": "Additional Local or Domain Groups",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Account Manipulation"
+    },
     "T1102": {
         "Sub-Technique": "-",
         "Tactic": "Command and Control",
@@ -986,6 +1016,11 @@
     },
     "T1127.001": {
         "Sub-Technique": "MSBuild",
+        "Tactic": "Defense Evasion",
+        "Technique": "Trusted Developer Utilities Proxy Execution"
+    },
+    "T1127.002": {
+        "Sub-Technique": "ClickOnce",
         "Tactic": "Defense Evasion",
         "Technique": "Trusted Developer Utilities Proxy Execution"
     },
@@ -1259,6 +1294,16 @@
         "Tactic": "Collection",
         "Technique": "Data from Information Repositories"
     },
+    "T1213.004": {
+        "Sub-Technique": "Customer Relationship Management Software",
+        "Tactic": "Collection",
+        "Technique": "Data from Information Repositories"
+    },
+    "T1213.005": {
+        "Sub-Technique": "Messaging Applications",
+        "Tactic": "Collection",
+        "Technique": "Data from Information Repositories"
+    },
     "T1216": {
         "Sub-Technique": "-",
         "Tactic": "Defense Evasion",
@@ -1394,6 +1439,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Execution Guardrails"
     },
+    "T1480.002": {
+        "Sub-Technique": "Mutual Exclusion",
+        "Tactic": "Defense Evasion",
+        "Technique": "Execution Guardrails"
+    },
     "T1482": {
         "Sub-Technique": "-",
         "Tactic": "Discovery",
@@ -1416,6 +1466,11 @@
     },
     "T1485": {
         "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Data Destruction"
+    },
+    "T1485.001": {
+        "Sub-Technique": "Lifecycle-Triggered Deletion",
         "Tactic": "Impact",
         "Technique": "Data Destruction"
     },
@@ -1456,6 +1511,26 @@
     },
     "T1496": {
         "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Resource Hijacking"
+    },
+    "T1496.001": {
+        "Sub-Technique": "Compute Hijacking",
+        "Tactic": "Impact",
+        "Technique": "Resource Hijacking"
+    },
+    "T1496.002": {
+        "Sub-Technique": "Bandwidth Hijacking",
+        "Tactic": "Impact",
+        "Technique": "Resource Hijacking"
+    },
+    "T1496.003": {
+        "Sub-Technique": "SMS Pumping",
+        "Tactic": "Impact",
+        "Technique": "Resource Hijacking"
+    },
+    "T1496.004": {
+        "Sub-Technique": "Cloud Service Hijacking",
         "Tactic": "Impact",
         "Technique": "Resource Hijacking"
     },
@@ -1756,6 +1831,11 @@
     },
     "T1546.016": {
         "Sub-Technique": "Installer Packages",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
+    "T1546.017": {
+        "Sub-Technique": "Udev Rules",
         "Tactic": "Privilege Escalation",
         "Technique": "Event Triggered Execution"
     },
@@ -2084,6 +2164,11 @@
         "Tactic": "Collection",
         "Technique": "Adversary-in-the-Middle"
     },
+    "T1557.004": {
+        "Sub-Technique": "Evil Twin",
+        "Tactic": "Collection",
+        "Technique": "Adversary-in-the-Middle"
+    },
     "T1558": {
         "Sub-Technique": "-",
         "Tactic": "Credential Access",
@@ -2106,6 +2191,11 @@
     },
     "T1558.004": {
         "Sub-Technique": "AS-REP Roasting",
+        "Tactic": "Credential Access",
+        "Technique": "Steal or Forge Kerberos Tickets"
+    },
+    "T1558.005": {
+        "Sub-Technique": "Ccache Files",
         "Tactic": "Credential Access",
         "Technique": "Steal or Forge Kerberos Tickets"
     },
@@ -3183,6 +3273,11 @@
         "Sub-Technique": "-",
         "Tactic": "Command and Control",
         "Technique": "Hide Infrastructure"
+    },
+    "T1666": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Modify Cloud Resource Hierarchy"
     },
     "TA0001": {
         "Sub-Technique": "-",
