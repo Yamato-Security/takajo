@@ -5,6 +5,7 @@
 **改善:**
 
 - RDPログオンとログオフの情報が`timeline-logon`タイムラインに追加された。 #209 (@fukusuket)
+- MITRE ATT&CKをバージョン16.1に更新した。 (#219) (@fukusuket) 
 
 ## 2.7.1 [2024/10/31] Halloween Release
 
