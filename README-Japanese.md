@@ -1210,10 +1210,10 @@ Security 4698 イベントからスケジュールタスク作成を抽出し、
 必須オプション:
 
 - `-t, --timeline <JSONL-FILE-OR-DIR>`: HayabusaのJSONLタイムラインまたはディレクトリ
+- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
 
 任意オプション:
 
-- `-o, --output <CSV-FILE>`: 結果を保存するCSVファイル
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 
 #### `timeline-tasks`コマンドの使用例

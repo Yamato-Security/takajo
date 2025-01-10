@@ -1174,11 +1174,11 @@ Create a CSV timeline of suspicious processes.
 Required options:
 
 - `-t, --timeline <JSONL-FILE-OR-DIR>`: Hayabusa JSONL timeline file or directory of JSONL files
+- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 
 Options:
 
 - `-l, --level <LEVEL>`: specify the minimum alert level (default: `high`)
-- `-o, --output <CSV-FILE>`: the CSV file to save the results to (default: `stdout`)
 - `-q, --quiet`: do not display logo. (default: `false`)
 
 #### `timeline-suspicious-processes` command examples
