@@ -57,27 +57,31 @@ proc splitCsvTimeline(makeMultiline: bool = false, output: string = "output",
             var computerName = splitFields[computerColumnNum]
             computerName = computerName[1 .. computerName.len -
                     2] # Remove surrounding double quotes
+            let computerNames = computerName.split("¦")
+            for computerName in computerNames:
+                let computerName = computerName.strip()
+                if computerName.len == 0:
+                    continue
+                # If it is the first time we see this computer name, then record it in a str sequence, create a file,
+                # write the CSV headers and current row.
+                if not filesTable.hasKey(computerName):
+                    let filename = output & "/" & computerName & "-HayabusaResults.csv"
+                    filenameSequence.add(filename)
+                    var outputFile = open(filename, fmWrite)
+                    filesTable[computerName] = outputFile
+                    outputFile.write(csvHeader)
+                    outputFile.write("\p")
+                    flushFile(outputFile) # Flush buffer after writing to file
 
-            # If it is the first time we see this computer name, then record it in a str sequence, create a file,
-            # write the CSV headers and current row.
-            if not filesTable.hasKey(computerName):
-                let filename = output & "/" & computerName & "-HayabusaResults.csv"
-                filenameSequence.add(filename)
-                var outputFile = open(filename, fmWrite)
-                filesTable[computerName] = outputFile
-                outputFile.write(csvHeader)
+                # Use the file from the table and write the line.
+                var outputFile = filesTable[computerName]
+                if makeMultiline == true:
+                    currentLine = currentLine.replace("¦", "\n")
+                    outputFile.write(currentLine)
+                else:
+                    outputFile.write(currentLine)
                 outputFile.write("\p")
-                flushFile(outputFile) # Flush buffer after writing to file
-
-            # Use the file from the table and write the line.
-            var outputFile = filesTable[computerName]
-            if makeMultiline == true:
-                currentLine = currentLine.replace("¦", "\n")
-                outputFile.write(currentLine)
-            else:
-                outputFile.write(currentLine)
-            outputFile.write("\p")
-            flushFile(outputFile)
+                flushFile(outputFile)
         inc bar
         bar.finish()
 
