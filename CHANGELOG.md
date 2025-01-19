@@ -7,6 +7,10 @@
 - RDP logon and logoff information has been added to the `timeline-logon` timeline. #209 (@fukusuket)
 - MITRE ATT&CK updated to version 16.1. (#219) (@fukusuket) 
 
+**Bug Fixes:**
+
+- The `split-csv-timeline` command would create separate timelines for correlation events but now they are properly added to the correct computer timelines. (#211) (@fukusuket)
+
 ## 2.7.1 [2024/10/31] Halloween Release
 
 **Bug Fixes:**
