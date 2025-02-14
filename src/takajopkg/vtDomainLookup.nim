@@ -7,7 +7,6 @@ proc queryDomainAPI(domain:string, headers: httpheaders.HttpHeaders, results: pt
     let response = get("https://www.virustotal.com/api/v3/domains/" & encodeUrl(domain), headers)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
-    var malicious = false
     singleResultTable["Domain"] = domain
     singleResultTable["Link"] = "https://www.virustotal.com/gui/domain/" & domain
     singleResultTable["Response"] = intToStr(response.code)

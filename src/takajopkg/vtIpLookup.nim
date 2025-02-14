@@ -4,7 +4,6 @@ proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders, results: ptr
     let response = get("https://www.virustotal.com/api/v3/ip_addresses/" & ipAddress, headers)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
-    var malicious = false
     singleResultTable["IP-Address"] = ipAddress
     singleResultTable["Link"] = "https://www.virustotal.com/gui/ip_addresses/" & ipAddress
     singleResultTable["Response"] = intToStr(response.code)

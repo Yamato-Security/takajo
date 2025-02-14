@@ -434,7 +434,6 @@ proc getTimeFormat*(ts: seq[TableRef[string, string]]): string =
     if ts.len() == 0:
         return ""
     let t = ts[0]["Timestamp"]
-    let length = t.len()
     if t.endsWith("Z"): # --ISO-8601
         return "yyyy-MM-dd'T'HH:mm:ss'.'ffffff"
     elif t.contains("AM") or t.contains("PM"): # --US-time
@@ -449,7 +448,7 @@ proc getTimeFormat*(ts: seq[TableRef[string, string]]): string =
     for s in ts:
         try:
             let timeFormat = "MM-dd-yyyy HH:mm:ss'.'fff"
-            let x = parse(padString(s["Timestamp"], '0', timeFormat), timeFormat)
+            let _ = parse(padString(s["Timestamp"], '0', timeFormat), timeFormat)
         except CatchableError:
             return "dd-MM-yyyy HH:mm:ss'.'fff" # --European-time
     return "MM-dd-yyyy HH:mm:ss'.'fff" # --US-military-time

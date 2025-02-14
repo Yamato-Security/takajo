@@ -201,7 +201,7 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
                         db.exec(sql"COMMIT")
                         db.exec(sql"BEGIN")
                     
-                except CatchableError as e:
+                except CatchableError:
                     echo "Invalid JSON line: ", line
 
         var rule_path = ""

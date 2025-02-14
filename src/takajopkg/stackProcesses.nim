@@ -14,7 +14,7 @@ method filter*(self: StackProcessesCmd, x: HayabusaJson): bool =
 method analyze*(self: StackProcessesCmd, x: HayabusaJson) =
   let getStackKey = proc(x: HayabusaJson): (string, seq[string]) = (x.Details[
       "Proc"].getStr("N/A"), @[""])
-  let (stackKey, otherColumn) = getStackKey(x)
+  let (stackKey, _) = getStackKey(x)
   stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackProcessesCmd) =

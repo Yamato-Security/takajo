@@ -15,7 +15,7 @@ method analyze*(self: StackComputersCmd, x: HayabusaJson) =
     if self.sourceComputers:
       stackKey = getJsonValue(x.Details, @["SrcComp"])
     return (stackKey, @[""])
-  let (stackKey, otherColumn) = getStackKey(x)
+  let (stackKey, _) = getStackKey(x)
   stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackComputersCmd) =

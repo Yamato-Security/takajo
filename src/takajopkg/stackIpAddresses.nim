@@ -15,7 +15,7 @@ method analyze*(self: StackIpAddressesCmd, x: HayabusaJson) =
   let key = if self.targetIpAddresses: "TgtIP" else: "SrcIP"
   let getStackKey = proc(x: HayabusaJson): (string, seq[string]) = (
         getJsonValue(x.Details, @[key]), @[""])
-  let (stackKey, otherColumn) = getStackKey(x)
+  let (stackKey, _) = getStackKey(x)
   stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackIpAddressesCmd) =

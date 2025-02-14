@@ -30,8 +30,6 @@ proc splitJsonTimeline(output: string = "output", quiet: bool = false,
     bar.setup()
 
     for timelinePath in filePaths:
-        var inputFile = open(timelinePath, FileMode.fmRead)
-
         for line in lines(timeline):
             inc bar
             bar.update(1000000000) # refresh every second

@@ -6,7 +6,6 @@ proc queryHashAPI(hash:string, headers: httpheaders.HttpHeaders, results: ptr se
     let response = get("https://www.virustotal.com/api/v3/files/" & hash, headers)
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
-    var malicious = false
     singleResultTable["Hash"] = hash
     singleResultTable["Link"] = "https://www.virustotal.com/gui/file/" & hash
     singleResultTable["Response"] = intToStr(response.code)

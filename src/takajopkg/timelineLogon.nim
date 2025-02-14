@@ -171,7 +171,6 @@ method analyze*(self: TimelineLogonCmd, x: HayabusaJson) =
             singleResultTable["Channel"] = jsonLine.Channel
             singleResultTable["EventID"] = "4672"
             singleResultTable["TargetComputer"] = jsonLine.Computer
-            let eventId = jsonLine.EventID
             let details = jsonLine.Details
             singleResultTable["TargetUser"] = details.extractStr("TgtUser")
             singleResultTable["LID"] = details.extractStr("LID")
