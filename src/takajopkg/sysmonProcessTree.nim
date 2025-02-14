@@ -51,7 +51,6 @@ proc moveProcessObjectToChild(mvSource: processObject,
         target: var processObject, output: var processObject) =
     ## Procedure for moving a process object to a child process
     for i, childProc in target.children:
-        let s = output.children.len
         if childProc.processGUID == mvSource.parentProcessGUID and
                 output.children.len - 1 >= i:
             # Added to a separate table because assertion errors occur when the number of elements changes during iteration
@@ -121,7 +120,6 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
         for line in lines(timelinePath):
             let
                 jsonLine = parseJson(line)
-                timeStamp = jsonLine["Timestamp"].getStr("N/A")
                 channel = jsonLine["Channel"].getStr("N/A")
                 eventId = jsonLine["EventID"].getInt(0)
                 ruleTitle = jsonLine["RuleTitle"].getStr("N/A")

@@ -3,8 +3,6 @@ import streams
 
 const HtmlReportMsg = "This command will create HTML summary reports for rules and computers with detections"
 
-import os, strutils
-
 proc copyDirectory(src: string, dest: string) =
     if not dirExists(src):
         return
@@ -184,7 +182,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         db.exec(sql"COMMIT")
                         db.exec(sql"BEGIN")
                     
-                except CatchableError as e:
+                except CatchableError:
                     echo "Invalid JSON line: ", line
 
         db.exec(sql"COMMIT")

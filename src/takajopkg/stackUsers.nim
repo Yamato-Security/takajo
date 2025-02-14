@@ -45,7 +45,7 @@ method analyze*(self: StackUsersCmd, x: HayabusaJson) =
           stackKey = ""
           continue
     return (stackKey, @[""])
-  let (stackKey, otherColumn) = getStackKey(x)
+  let (stackKey, _) = getStackKey(x)
   stackResult(stackKey, self.stack, self.level, x)
 
 method resultOutput*(self: StackUsersCmd) =

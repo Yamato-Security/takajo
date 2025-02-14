@@ -17,8 +17,7 @@ method filter*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson): bool =
 method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
   # Found a Security 4688 process creation event
   var
-    eventId, pidInt = 0
-    channel, cmdLine, company, computer, description, eventLevel, eventType,
+    cmdLine, company, computer, description, eventLevel, eventType,
         hashes, hash_MD5, hash_SHA1, hash_SHA256, hash_IMPHASH,
         lid, lguid, ruleAuthor, ruleTitle, parentCmdline,
         parentGuid, parentPid, pidStr, process, processGuid, product, timestamp, user = ""
