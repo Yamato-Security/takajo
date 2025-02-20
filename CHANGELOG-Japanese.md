@@ -1,6 +1,6 @@
 # 変更点
 
-## x.x.x [xxxx/xx/xx]
+## 2.8.0 [2025/02/22] Ninja Day Release
 
 **改善:**
 
