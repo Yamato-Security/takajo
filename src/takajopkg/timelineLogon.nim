@@ -15,6 +15,8 @@ type
         adminLogonEvents*: Table[string, string] = initTable[string, string]()
         EID_21_count*: int = 0 # RDP Logon
         EID_23_count*: int = 0 # RDP Logoff
+        EID_302_count*: int = 0 # RDS GTW Logon
+        EID_303_count*: int = 0 # RDS GTW Logoff
         EID_4624_count* = 0 # Successful logon
         EID_4625_count* = 0 # Failed logon
         EID_4634_count* = 0 # Logoff
@@ -27,7 +29,8 @@ type
 
 method filter*(self: TimelineLogonCmd, x: HayabusaJson): bool =
     return x.EventId == 4624 or x.EventId == 4625 or x.EventId == 4634 or
-            x.EventId == 4647 or x.EventId == 4648 or x.EventId == 4672 or x.EventId == 21 or x.EventId == 23
+            x.EventId == 4647 or x.EventId == 4648 or x.EventId == 4672 or 
+            x.EventId == 21 or x.EventId == 23 or x.EventId == 302 or x.EventId == 303
 
 method analyze*(self: TimelineLogonCmd, x: HayabusaJson) =
     let ruleTitle = x.RuleTitle
@@ -234,6 +237,54 @@ method analyze*(self: TimelineLogonCmd, x: HayabusaJson) =
             singleResultTable["LID"] = details.extractStr("SessID")
             self.seqOfResultsTables.add(singleResultTable)
 
+    #EID 302 RDS GTW Logon
+    if ruleTitle == "RDS GTW Logon":
+        inc self.EID_302_count
+        var singleResultTable = newTable[string, string]()
+        singleResultTable["Event"] = ruleTitle
+        singleResultTable["Timestamp"] = jsonLine.Timestamp
+        singleResultTable["Channel"] = jsonLine.Channel
+        singleResultTable["EventID"] = "302"
+        let details = jsonLine.Details
+        singleResultTable["TargetComputer"] = jsonLine.Computer
+        singleResultTable["SourceIP"] = details.extractStr("SrcIP")
+        singleResultTable["TargetUser"] = details.extractStr("TgtUser")
+        let userDetail = details.extractStr("TgtUser")
+        if userDetail.contains("\\"):
+            let parts = userDetail.split("\\")
+            singleResultTable["TargetDomainName"] = parts[0]
+            singleResultTable["TargetUser"] = parts[1]
+        else:
+            singleResultTable["TargetUser"] = userDetail
+        singleResultTable["LogoffTime"] = ""
+        singleResultTable["ElapsedTime"] = ""
+        self.seqOfResultsTables.add(singleResultTable)
+
+    #EID 303 RDS GTW Logoff
+    if ruleTitle == "RDS GTW Logoff":
+        inc self.EID_303_count
+        if self.outputLogoffEvents:
+            var singleResultTable = newTable[string, string]()
+            singleResultTable["Event"] = ruleTitle
+            singleResultTable["Timestamp"] = jsonLine.Timestamp
+            singleResultTable["Channel"] = jsonLine.Channel
+            singleResultTable["EventID"] = "303"
+            let details = jsonLine.Details
+            singleResultTable["TargetComputer"] = jsonLine.Computer
+            singleResultTable["SourceIP"] = details.extractStr("SrcIP")
+            singleResultTable["TargetUser"] = details.extractStr("TgtUser")
+            let userDetail = details.extractStr("TgtUser")
+            if userDetail.contains("\\"):
+                let parts = userDetail.split("\\")
+                singleResultTable["TargetDomainName"] = parts[0]
+                singleResultTable["TargetUser"] = parts[1]
+            else:
+                singleResultTable["TargetUser"] = userDetail
+            singleResultTable["LogoffTime"] = ""
+            singleResultTable["ElapsedTime"] = ""
+            self.seqOfResultsTables.add(singleResultTable)
+
+
 proc calculateDuration(logonTime: string, logoffTime: string, timeFormat: string): Duration =
     let logonTime = if logonTime.endsWith("Z"): logonTime.replace("Z", "") else: logonTime[0 ..< logonTime.len - 7]
     let logoffTime = if logoffTime.endsWith("Z"): logoffTime.replace("Z", "") else: logoffTime[0 ..< logoffTime.len - 7]
@@ -309,7 +360,12 @@ method resultOutput*(self: TimelineLogonCmd) =
          padString("EID 21 (RDP Logon): " & intToStr(
                  self.EID_21_count).insertSep(','), ' ', 80) &
          padString("EID 23 (RDP Logoff): " & intToStr(
-                 self.EID_23_count).insertSep(','), ' ', 80)
+                 self.EID_23_count).insertSep(','), ' ', 80) &
+         padString("EID 302 (RDS GTW Logon): " & intToStr(
+                 self.EID_302_count).insertSep(','), ' ', 80) &
+         padString("EID 303 (RDP GTW Logoff): " & intToStr(
+                 self.EID_303_count).insertSep(','), ' ', 80)
+    
     if self.displayTable:
         echo ""
         echo "Found logon events:"
@@ -328,6 +384,10 @@ method resultOutput*(self: TimelineLogonCmd) =
                 self.EID_21_count).insertSep(',')
         echo "EID 23 (RDP Logoff): ", intToStr(
                 self.EID_23_count).insertSep(',')
+        echo "EID 302 (RDS GTW Logon): ", intToStr(
+                self.EID_302_count).insertSep(',')
+        echo "EID 303 (RDP GTW Logoff): ", intToStr(
+                self.EID_303_count).insertSep(',')
         echo ""
 
 
