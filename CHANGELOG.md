@@ -1,10 +1,16 @@
 # Changes
 
+## 2.9.0 [xxxx/xx/xx]
+
+**Enhancements:**
+
+- Graceful exit and warning when Takajo is not run from the unzipped directory. (#230) (@fukusuket)
+
 ## 2.8.0 [2025/02/22] Ninja Day Release
 
 **Enhancements:**
 
-- RDP logon and logoff information has been added to the `timeline-logon` timeline. #209 (@fukusuket)
+- RDP logon and logoff information has been added to the `timeline-logon` timeline. (#209) (@fukusuket)
 - MITRE ATT&CK updated to version 16.1. (#219) (@fukusuket) 
 
 **Bug Fixes:**
