@@ -109,6 +109,8 @@ when isMainModule:
         example_ttp_summary & example_ttp_visualize & example_ttp_visualize_sigma &
         example_vt_domain_lookup & example_vt_hash_lookup & example_vt_ip_lookup
 
+    checkTakajoDir()
+
     if paramCount() == 0:
         styledEcho(fgGreen, outputLogo())
     dispatchMulti(

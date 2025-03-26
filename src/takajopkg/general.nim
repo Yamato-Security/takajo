@@ -12,6 +12,17 @@ import takajoTerminal
 
 from std/streams import newFileStream
 
+proc checkTakajoDir*() =
+  let currentDir = getCurrentDir()
+  var found = false
+  for file in walkFiles("*"):
+    if file == "takajo" or file == "takajo.exe":
+      found = true
+      break
+  if not found:
+    echo "The Takajo executable does not exist in the current directory. Please run it from the directory where you unzipped Takajo."
+    quit(1)
+
 
 proc getJsonValue*(jsonResponse: JsonNode, keys: seq[string],
         default: string = "Unknown"): string =
