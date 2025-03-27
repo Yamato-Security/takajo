@@ -5,6 +5,7 @@
 **改善:**
 
 - 解凍されたディレクトリからTakajoが実行されなかった場合、グレースフルエグジットと警告を出す。 (#230) (@fukusuket)
+- `timeline-logon`コマンドにRDS Gateway Logonイベントを追加した。 (#233) (@fukusuket)
 
 ## 2.8.0 [2025/02/22] Ninja Day Release
 
