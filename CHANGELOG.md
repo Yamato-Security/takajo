@@ -5,6 +5,7 @@
 **Enhancements:**
 
 - Graceful exit and warning when Takajo is not run from the unzipped directory. (#230) (@fukusuket)
+- Added RDS Gateway Logon events to the `timeline-logon` command. (#233) (@fukusuket)
 
 ## 2.8.0 [2025/02/22] Ninja Day Release
 
