@@ -103,8 +103,8 @@ when isMainModule:
         examples &
         example_automagic &
         example_extract_credentials & example_extract_scriptblocks & example_html_report & example_html_server &
-        example_metrics_computer &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
+        example_metrics_computer &
         example_split_csv_timeline & example_split_json_timeline &
         example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_ip_addresses & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks & example_stack_users &
         example_sysmon_process_tree &
