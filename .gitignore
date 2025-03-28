@@ -137,7 +137,6 @@ dmypy.json
 .DS_Store
 
 # Hayabusa results
-*.csv
 *.json
 *.jsonl
 *.html
