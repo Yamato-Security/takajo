@@ -1,4 +1,4 @@
-const ComputerMetricsMsg = "This commands extract computer metrics from System 6009 and 6013 event logs."
+const ComputerMetricsMsg = "This command creates computer metrics from System 6009 and 6013 event logs."
 
 type
   ComputerMetricsCmd* = ref object of AbstractCmd
