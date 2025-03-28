@@ -66,7 +66,6 @@ when isMainModule:
     clCfg.version = "2.8.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
-    const example_metrics_computer = "  metrics-computer -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o metrics-computer.csv\p"
     const example_extract_credentials = "  extract-credentials -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o credentials.csv\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low]  [--skipProgressBar] -o scriptblock-logs\p"
     const example_html_report = "  html-report -t ../hayabusa/timeline.jsonl -o ./output -r ../hayabusa/rules [--sqlite-output html-report.sqlite] [--clobber] [--skipProgressBar] \p"
@@ -76,6 +75,7 @@ when isMainModule:
     const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ipAddresses.txt\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
+    const example_metrics_computer = "  metrics-computer -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o metrics-computer.csv\p"
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
     const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] [--skipProgressBar] -o cmdlines.csv\p"
@@ -101,8 +101,9 @@ when isMainModule:
 
     clCfg.useMulti = "Version: 2.8.0 Ninja Day Releaase\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples &
-        example_automagic & example_metrics_computer &
+        example_automagic &
         example_extract_credentials & example_extract_scriptblocks & example_html_report & example_html_server &
+        example_metrics_computer &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
         example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_ip_addresses & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks & example_stack_users &
