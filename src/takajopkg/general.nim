@@ -389,7 +389,7 @@ proc outputElapsedTime*(startTime: float) =
             $seconds & " seconds"
     echo ""
 
-proc checkArgs*(quiet: bool = false, timeline: string, level: string,
+proc checkArgs*(quiet: bool = false, timeline: string, level: string = "informational",
         ext: string = ".jsonl") =
     if not quiet:
         styledEcho(fgGreen, outputLogo())
