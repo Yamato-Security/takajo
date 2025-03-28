@@ -14,8 +14,8 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
   else:
     createDir(output)
 
-  # computer-metrics -t ../hayabusa/timeline.jsonl -o case-1/computer-metrics.csv
-  let cmd0 = ComputerMetricsCmd(name: "computer-metrics",
+  # computer-metrics -t ../hayabusa/timeline.jsonl -o case-1/ComputerMetrics.csv
+  let cmd0 = ComputerMetricsCmd(name: "Computer-metrics",
     skipProgressBar: skipProgressBar,
     displayTable: displayTable,
     timeline: timeline, output: output & "/computer-metrics.csv")
