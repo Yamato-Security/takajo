@@ -44,7 +44,7 @@ method analyze*(self: ComputerMetricsCmd, x: HayabusaJson) =
 
 method resultOutput*(self: ComputerMetricsCmd) =
     var savedFiles = "n/a"
-    let results = "Unique computers:" & intToStr(self.count.len).insertSep(',')
+    let results = "Unique computers: " & intToStr(self.count.len).insertSep(',')
     let sortedCounts = toSeq(pairs(self.count)).sorted(proc(a, b: (string, int)): int = cmp(b[1], a[1]))
     if self.output != "":
         if self.count.len == 0:
