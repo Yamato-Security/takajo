@@ -15,10 +15,10 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
     createDir(output)
 
   # computer-metrics -t ../hayabusa/timeline.jsonl -o case-1/ComputerMetrics.csv
-  let cmd0 = ComputerMetricsCmd(name: "Computer-metrics",
+  let cmd0 = ComputerMetricsCmd(name: "computer-metrics",
     skipProgressBar: skipProgressBar,
     displayTable: displayTable,
-    timeline: timeline, output: output & "/computer-metrics.csv")
+    timeline: timeline, output: output & "/ComputerMetrics.csv")
 
   # extract-scriptblocks -t ../hayabusa/timeline.jsonl -l <level> -o case-1/scriptblock-logs/
   let cmd1 = ExtractScriptBlocksCmd(name: "extract-scriptblocks",
