@@ -1,13 +1,13 @@
-const ComputerMetricsMsg = "This command creates computer metrics from System 6009 and 6013 event logs."
+const metricsComputerMsg = "This command creates computer metrics from System 6009 and 6013 event logs."
 
 type
-  ComputerMetricsCmd* = ref object of AbstractCmd
+  metricsComputerCmd* = ref object of AbstractCmd
     windowsVersions*: Table[string, string] = initTable[string, string]()
     header* = @["Computer", "OS information", "UpTime", "Timezone", "Events"]
     count*: CountTable[string] = initCountTable[string]()
     records* = Table[string, array[3, string]]()
 
-method filter*(self: ComputerMetricsCmd, x: HayabusaJson): bool =
+method filter*(self: metricsComputerCmd, x: HayabusaJson): bool =
   return true
 
 proc formatUptime(uptime: int): string =
@@ -21,7 +21,7 @@ proc formatUptime(uptime: int): string =
   let years = uptime div 31104000
   return &"{years}Y {months}M {days}d {hours}h {minutes}m {seconds}s"
 
-method analyze*(self: ComputerMetricsCmd, x: HayabusaJson) =
+method analyze*(self: metricsComputerCmd, x: HayabusaJson) =
     let ruleTitle = x.RuleTitle
     let jsonLine = x
     let computer = jsonLine.Computer
@@ -42,7 +42,7 @@ method analyze*(self: ComputerMetricsCmd, x: HayabusaJson) =
         self.records[computer][1] = uptime
         self.records[computer][2] = timezone
 
-method resultOutput*(self: ComputerMetricsCmd) =
+method resultOutput*(self: metricsComputerCmd) =
     var savedFiles = "n/a"
     let results = "Unique computers: " & intToStr(self.count.len).insertSep(',')
     let sortedCounts = toSeq(pairs(self.count)).sorted(proc(a, b: (string, int)): int = cmp(b[1], a[1]))
@@ -99,15 +99,15 @@ proc readWindowsVersions(filePath: string): Table[string, string] =
       versions[key] = value
   return versions
 
-proc computerMetrics(skipProgressBar: bool = false, output: string = "", quiet: bool = false, timeline: string) =
+proc metricsComputer(skipProgressBar: bool = false, output: string = "", quiet: bool = false, timeline: string) =
   checkArgs(quiet, timeline)
   var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
   for timelinePath in filePaths:
-    let cmd = ComputerMetricsCmd(
+    let cmd = metricsComputerCmd(
                 skipProgressBar: skipProgressBar,
                 timeline: timelinePath,
                 output: output,
                 name: "computer-metrics",
-                msg: ComputerMetricsMsg)
+                msg: metricsComputerMsg)
     cmd.windowsVersions = readWindowsVersions("conf/windows_versions.csv")
     cmd.analyzeJSONLFile()

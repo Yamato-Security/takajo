@@ -27,7 +27,7 @@ import takajopkg/takajoCore
 import takajopkg/takajoTerminal
 import takajopkg/ttpResult
 import takajopkg/vtResult
-include takajopkg/computerMetrics
+include takajopkg/metricsComputer
 include takajopkg/extractCredentials
 include takajopkg/extractScriptblocks
 include takajopkg/listDomains
@@ -66,7 +66,7 @@ when isMainModule:
     clCfg.version = "2.8.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
-    const example_computer_metrics = "  computer-metrics -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o computer-metrics.csv\p"
+    const example_metrics_computer = "  metrics-computer -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o metrics-computer.csv\p"
     const example_extract_credentials = "  extract-credentials -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o credentials.csv\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low]  [--skipProgressBar] -o scriptblock-logs\p"
     const example_html_report = "  html-report -t ../hayabusa/timeline.jsonl -o ./output -r ../hayabusa/rules [--sqlite-output html-report.sqlite] [--clobber] [--skipProgressBar] \p"
@@ -101,7 +101,7 @@ when isMainModule:
 
     clCfg.useMulti = "Version: 2.8.0 Ninja Day Releaase\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples &
-        example_automagic & example_computer_metrics &
+        example_automagic & example_metrics_computer &
         example_extract_credentials & example_extract_scriptblocks & example_html_report & example_html_server &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_split_csv_timeline & example_split_json_timeline &
@@ -129,7 +129,7 @@ when isMainModule:
             }
         ],
         [
-            computerMetrics, cmdName = "computer-metrics",
+            metricsComputer, cmdName = "metrics-computer",
             doc = "create a CSV file with computer metrics",
             help = {
                 "output": "save results to a CSV file (default: stdout)",

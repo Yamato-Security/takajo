@@ -14,12 +14,6 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
   else:
     createDir(output)
 
-  # computer-metrics -t ../hayabusa/timeline.jsonl -o case-1/ComputerMetrics.csv
-  let cmd0 = ComputerMetricsCmd(name: "computer-metrics",
-    skipProgressBar: skipProgressBar,
-    displayTable: displayTable,
-    timeline: timeline, output: output & "/ComputerMetrics.csv")
-
   # extract-scriptblocks -t ../hayabusa/timeline.jsonl -l <level> -o case-1/scriptblock-logs/
   let cmd1 = ExtractScriptBlocksCmd(name: "extract-scriptblocks",
     level: level, skipProgressBar: skipProgressBar,
@@ -45,6 +39,12 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
   # list-ip-addresses -t ../hayabusa/timeline.jsonl -o case-1/IP-Addresses.txt
   let cmd5 = ListIpAddressesCmd(name: "list-ip-addresses",
     displayTable: displayTable, timeline: timeline, output: output & "/ListIP-Addresses.txt")
+
+  # metrics-computer -t ../hayabusa/timeline.jsonl -o case-1/metricsComputer.csv
+  let cmd0 = metricsComputerCmd(name: "metrics-computer",
+    skipProgressBar: skipProgressBar,
+    displayTable: displayTable,
+    timeline: timeline, output: output & "/metricsComputer.csv")
 
   # stack-cmdlines -t ../hayabusa/timeline.jsonl --level <leve> -o case-1/cmdlines.csv
   let cmd6 = StackCmdlineCmd(name: "stack-cmdlines", level: level,
@@ -146,7 +146,7 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
     displayTable: displayTable, timeline: timeline, output: output & "/MitreTTP-Heatmap.json")
 
   # execute all command
-  let cmds = @[cmd0, cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, cmd8, cmd9, cmd10,
+  let cmds = @[cmd1, cmd2, cmd3, cmd4, cmd5, cmd0, cmd6, cmd7, cmd8, cmd9, cmd10,
         cmd11, cmd12, cmd122, cmd13, cmd14, cmd15, cmd16, cmd17, cmd18, cmd19,
         cmd20,
         cmd21, cmd22, cmd23, cmd24, cmd25]
