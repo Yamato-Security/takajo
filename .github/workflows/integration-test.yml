@@ -110,11 +110,11 @@ jobs:
       - name: run list-unused-rules(-o)
         run: cd takajo && ./takajo list-unused-rules -t timeline.csv -r ../hayabusa/tmp/rules -o unused-rules.txt
 
-      - name: run metrics-computer
-        run: cd takajo && ./takajo lmetrics-computer -t timeline.jsonl
+      - name: run metrics-computers
+        run: cd takajo && ./takajo metrics-computers -t timeline.jsonl
 
-      - name: run metrics-computer(-o)
-        run: cd takajo && ./takajo lmetrics-computer -t timeline.jsonl -o metrics-computer.csv
+      - name: run metrics-computers(-o)
+        run: cd takajo && ./takajo metrics-computers -t timeline.jsonl -o metrics-computers.csv
 
       - name: run split-csv-timeline
         run: cd takajo && ./takajo split-csv-timeline -t timeline.csv
