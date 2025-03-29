@@ -2,6 +2,10 @@
 
 ## 2.9.0 [xxxx/xx/xx]
 
+**新機能:**
+
+- Hayabusaの`computer-metrics`コマンドと同じ情報（コンピュータ別のイベント数、稼働時間、タイムゾーン）を取り出す`metrics-computers`コマンドを追加した。 (#234) (@fukusuket)
+
 **改善:**
 
 - 解凍されたディレクトリからTakajoが実行されなかった場合、グレースフルエグジットと警告を出す。 (#230) (@fukusuket)
