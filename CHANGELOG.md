@@ -2,6 +2,10 @@
 
 ## 2.9.0 [xxxx/xx/xx]
 
+**New Features:**
+
+- `metrics-computers` command that extracts out the same info as Hayabusa's `computer-metrics` command (number of events by computers, OS info, uptime, timezone) (#234) (@fukusuket)
+
 **Enhancements:**
 
 - Graceful exit and warning when Takajo is not run from the unzipped directory. (#230) (@fukusuket)
