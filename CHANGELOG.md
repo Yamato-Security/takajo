@@ -4,7 +4,7 @@
 
 **New Features:**
 
-- `metrics-computers` command that extracts out the same info as Hayabusa's `computer-metrics` command (number of events by computers, uptime, timezone) (#234) (@fukusuket)
+- `metrics-computers` command that extracts out the same info as Hayabusa's `computer-metrics` command (number of events by computers, OS info, uptime, timezone) (#234) (@fukusuket)
 
 **Enhancements:**
 
