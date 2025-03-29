@@ -40,11 +40,11 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
   let cmd5 = ListIpAddressesCmd(name: "list-ip-addresses",
     displayTable: displayTable, timeline: timeline, output: output & "/ListIP-Addresses.txt")
 
-  # metrics-computer -t ../hayabusa/timeline.jsonl -o case-1/metricsComputer.csv
-  let cmd0 = metricsComputerCmd(name: "metrics-computer",
+  # metrics-computers -t ../hayabusa/timeline.jsonl -o case-1/metricsComputers.csv
+  let cmd0 = metricsComputersCmd(name: "metrics-computers",
     skipProgressBar: skipProgressBar,
     displayTable: displayTable,
-    timeline: timeline, output: output & "/metricsComputer.csv")
+    timeline: timeline, output: output & "/metricsComputers.csv")
 
   # stack-cmdlines -t ../hayabusa/timeline.jsonl --level <leve> -o case-1/cmdlines.csv
   let cmd6 = StackCmdlineCmd(name: "stack-cmdlines", level: level,

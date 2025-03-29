@@ -27,7 +27,7 @@ import takajopkg/takajoCore
 import takajopkg/takajoTerminal
 import takajopkg/ttpResult
 import takajopkg/vtResult
-include takajopkg/metricsComputer
+include takajopkg/metricsComputers
 include takajopkg/extractCredentials
 include takajopkg/extractScriptblocks
 include takajopkg/listDomains
@@ -75,7 +75,7 @@ when isMainModule:
     const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ipAddresses.txt\p"
     const example_list_undetected_evtx = "  list-undetected-evtx -t ../hayabusa/timeline.csv -e ../hayabusa-sample-evtx\p"
     const example_list_unused_rules = "  list-unused-rules -t ../hayabusa/timeline.csv -r ../hayabusa/rules\p"
-    const example_metrics_computer = "  metrics-computer -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o metrics-computer.csv\p"
+    const example_metrics_computers = "  metrics-computers -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o metrics-computer.csv\p"
     const example_split_csv_timeline = "  split-csv-timeline -t ../hayabusa/timeline.csv [--makeMultiline] -o case-1-csv\p"
     const example_split_json_timeline = "  split-json-timeline -t ../hayabusa/timeline.jsonl -o case-1-json\p"
     const example_stack_cmdlines = "  stack-cmdlines -t ../hayabusa/timeline.jsonl [--level low] [--skipProgressBar] -o cmdlines.csv\p"
@@ -104,7 +104,7 @@ when isMainModule:
         example_automagic &
         example_extract_credentials & example_extract_scriptblocks & example_html_report & example_html_server &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
-        example_metrics_computer &
+        example_metrics_computers &
         example_split_csv_timeline & example_split_json_timeline &
         example_stack_cmdlines & example_stack_computers & example_stack_dns & example_stack_ip_addresses & example_stack_logons & example_stack_processes & example_stack_services & example_stack_tasks & example_stack_users &
         example_sysmon_process_tree &
@@ -130,8 +130,8 @@ when isMainModule:
             }
         ],
         [
-            metricsComputer, cmdName = "metrics-computer",
-            doc = "create a CSV file with computer metrics",
+            metricsComputers, cmdName = "metrics-computers",
+            doc = "extract out metrics of events, uptime, timezone, etc... from computers",
             help = {
                 "output": "save results to a CSV file (default: stdout)",
                 "quiet": "do not display the launch banner (default: false)",
