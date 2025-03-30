@@ -46,6 +46,12 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
     displayTable: displayTable,
     timeline: timeline, output: output & "/metricsComputers.csv")
 
+  # metrics-users -t ../hayabusa/timeline.jsonl -o case-1/metricsUsers.csv
+  let cmd01 = metricsUsersCmd(name: "metrics-users",
+    skipProgressBar: skipProgressBar,
+    displayTable: displayTable,
+    timeline: timeline, output: output & "/metricsUsers.csv")
+
   # stack-cmdlines -t ../hayabusa/timeline.jsonl --level <leve> -o case-1/cmdlines.csv
   let cmd6 = StackCmdlineCmd(name: "stack-cmdlines", level: level,
     displayTable: displayTable, timeline: timeline, output: output & "/StackCmdlines.csv")
@@ -146,7 +152,7 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
     displayTable: displayTable, timeline: timeline, output: output & "/MitreTTP-Heatmap.json")
 
   # execute all command
-  let cmds = @[cmd1, cmd2, cmd3, cmd4, cmd5, cmd0, cmd6, cmd7, cmd8, cmd9, cmd10,
+  let cmds = @[cmd1, cmd2, cmd3, cmd4, cmd5, cmd0, cmd01, cmd6, cmd7, cmd8, cmd9, cmd10,
         cmd11, cmd12, cmd122, cmd13, cmd14, cmd15, cmd16, cmd17, cmd18, cmd19,
         cmd20,
         cmd21, cmd22, cmd23, cmd24, cmd25]
