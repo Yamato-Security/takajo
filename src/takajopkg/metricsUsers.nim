@@ -15,7 +15,7 @@ proc getDetailValue(details: JsonNode, key: string): string =
 
 method filter*(self: metricsUsersCmd, x: HayabusaJson): bool =
     let sid = getDetailValue(x.ExtraFieldInfo, "TargetUserSid")
-    if sid == "S-1-5-18":
+    if sid == "S-1-5-17" or sid == "S-1-5-18" or sid == "S-1-5-19" or sid == "S-1-5-20":
         return false
     return x.EventId == 4624 or x.EventId == 4625 or x.EventId == 4634 or
             x.EventId == 4647 or x.EventId == 4648 or x.EventId == 4672 or
