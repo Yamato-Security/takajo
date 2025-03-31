@@ -5,6 +5,7 @@
 **新機能:**
 
 - Hayabusaの`computer-metrics`コマンドと同じ情報（コンピュータ別のイベント数、OS情報、稼働時間、タイムゾーン）を取り出す`metrics-computers`コマンドを追加した。 (#234) (@fukusuket)
+- `metrics-users`コマンドは、各コンピュータにログオンしたユーザのサマリーを作成する。 (#237) (@fukusuket)
 
 **改善:**
 
