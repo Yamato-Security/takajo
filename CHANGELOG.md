@@ -5,6 +5,7 @@
 **New Features:**
 
 - `metrics-computers` command that extracts out the same info as Hayabusa's `computer-metrics` command (number of events by computers, OS info, uptime, timezone) (#234) (@fukusuket)
+- `metrics-users` command to create out a summary of users that have logged on to each computer. (#237) (@fukusuket)
 
 **Enhancements:**
 

@@ -116,6 +116,12 @@ jobs:
       - name: run metrics-computers(-o)
         run: cd takajo && ./takajo metrics-computers -t timeline.jsonl -o metrics-computers.csv
 
+      - name: run metrics-users
+        run: cd takajo && ./takajo metrics-users -t timeline.jsonl
+
+      - name: run metrics-users(-o)
+        run: cd takajo && ./takajo metrics-users -t timeline.jsonl -o metrics-users.csv
+
       - name: run split-csv-timeline
         run: cd takajo && ./takajo split-csv-timeline -t timeline.csv
 
