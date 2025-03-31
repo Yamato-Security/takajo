@@ -1,6 +1,6 @@
 # Changes
 
-## 2.9.0 [xxxx/xx/xx]
+## 2.9.0 [2025/04/02] - Vegemite Release
 
 **New Features:**
 
