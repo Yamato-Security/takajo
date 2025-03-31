@@ -2,22 +2,24 @@ const metricsUsersMsg = "This command creates user metrics from logon events."
 
 type
   metricsUsersCmd* = ref object of AbstractCmd
-    header* = @["TargetComputer", "User", "SID", "Logon Count", "Source"]
+    header* = @["Target Computer", "User", "SID", "Logon Count", "Source"]
     count*: CountTable[string] = initCountTable[string]()
     userSidMap*: Table[string, string] = initTable[string, string]()
     userSourceMap*: Table[string, HashSet[string]] = initTable[string, HashSet[string]]()
-
-
-method filter*(self: metricsUsersCmd, x: HayabusaJson): bool =
-    return x.EventId == 4624 or x.EventId == 4625 or x.EventId == 4634 or
-            x.EventId == 4647 or x.EventId == 4648 or x.EventId == 4672 or
-            x.EventId == 21 or x.EventId == 23 or x.EventId == 302 or x.EventId == 303
 
 proc getDetailValue(details: JsonNode, key: string): string =
   if details.hasKey(key):
     return details[key].getStr("N/A")
   else:
     return "N/A"
+
+method filter*(self: metricsUsersCmd, x: HayabusaJson): bool =
+    let sid = getDetailValue(x.ExtraFieldInfo, "TargetUserSid")
+    if sid == "S-1-5-18":
+        return false
+    return x.EventId == 4624 or x.EventId == 4625 or x.EventId == 4634 or
+            x.EventId == 4647 or x.EventId == 4648 or x.EventId == 4672 or
+            x.EventId == 21 or x.EventId == 23 or x.EventId == 302 or x.EventId == 303
 
 method analyze*(self: metricsUsersCmd, x: HayabusaJson) =
   let rule = x.RuleTitle
