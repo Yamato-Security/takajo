@@ -1,5 +1,11 @@
 # 変更点
 
+## 2.9.1 [2025/04/10] - Sakura Release
+
+**バグ修正:**
+
+- Takajo実行ファイルは`takajo.exe`にリネームしないと実行されなかった。 (#240) (@fukusuket)
+
 ## 2.9.0 [2025/04/02] - Vegemite Release
 
 **新機能:**

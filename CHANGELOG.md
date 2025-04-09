@@ -1,5 +1,11 @@
 # Changes
 
+## 2.9.1 [2025/04/10] - Sakura Release
+
+**Bug Fixes:**
+
+- The Takajo executable would not be executed unless renamed to `takajo.exe`. (#240) (@fukusuket)
+
 ## 2.9.0 [2025/04/02] - Vegemite Release
 
 **New Features:**
