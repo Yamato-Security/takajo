@@ -1,3 +1,4 @@
+import cligen
 import json
 import re
 import std/os
@@ -10,13 +11,15 @@ import terminal
 import times
 import takajoTerminal
 
+
 from std/streams import newFileStream
 
 proc checkTakajoDir*() =
   let currentDir = getCurrentDir()
   var found = false
   for file in walkFiles("*"):
-    if file == "takajo" or file == "takajo.exe":
+    let takajoBinary = "takajo-" & $clCfg.version & "-"
+    if file.startsWith(takajoBinary) or file == "takajo"  or file == "takajo.exe":
       found = true
       break
   if not found:
