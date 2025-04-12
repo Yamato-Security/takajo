@@ -1,5 +1,15 @@
 # 変更点
 
+## 2.9.2 [2025/04/12] - Sakura Release
+
+**改善:**
+
+- `metrics-computer`コマンドは稼働時間をより正確に計算する。 (#243) (@fukusuket)
+
+**Bug Fixes:**
+
+- `metrics-computer`コマンドに必要な設定ファイルが含まれていなかったため、失敗していた。 (#244) (@fukusuket) 
+
 ## 2.9.1 [2025/04/10] - Sakura Release
 
 **バグ修正:**

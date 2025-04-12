@@ -1,5 +1,15 @@
 # Changes
 
+## 2.9.2 [2025/04/12] - Sakura Release
+
+**Enhancements:**
+
+- The `metrics-computer` command computes the uptime more accurately. (#243) (@fukusuket)
+
+**Bug Fixes:**
+
+- The config files needed for the `metrics-computer` command were not included so it would fail. (#244) (@fukusuket) 
+
 ## 2.9.1 [2025/04/10] - Sakura Release
 
 **Bug Fixes:**
