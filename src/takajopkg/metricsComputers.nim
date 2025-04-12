@@ -1,4 +1,4 @@
-const metricsComputersMsg = "This command creates computer metrics from System 12,6005,6009 and 6013 event logs."
+const metricsComputersMsg = "This command creates computer metrics from System 12, 6005, 6009 and 6013 event logs."
 
 type
   metricsComputersCmd* = ref object of AbstractCmd
