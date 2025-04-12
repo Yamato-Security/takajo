@@ -47,6 +47,7 @@ jobs:
         run: |
           mkdir -p release-binaries
           Copy-Item -Path takajo.exe -Destination release-binaries/
+          Copy-Item -Path conf -Destination release-binaries/ -Recurse
           mv release-binaries/takajo.exe release-binaries/takajo-${{ github.event.inputs.release_ver }}-win-x64.exe
           Copy-Item -Path mitre-attack.json -Destination release-binaries/
           Copy-Item -Path pcre64.dll -Destination release-binaries/
@@ -61,6 +62,7 @@ jobs:
         run: |
           mkdir -p release-binaries
           cp takajo release-binaries/
+          cp -r conf release-binaries/
           cp mitre-attack.json release-binaries/
           cp -r templates release-binaries/
           mkdir -p release-binaries/src/takajopkg/web/
