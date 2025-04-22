@@ -64,7 +64,7 @@ include takajopkg/web/htmlServer
 
 
 when isMainModule:
-    clCfg.version = "2.9.2"
+    clCfg.version = "2.10.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_extract_credentials = "  extract-credentials -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o credentials.csv\p"
