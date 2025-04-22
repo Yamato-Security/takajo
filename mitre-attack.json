@@ -264,6 +264,21 @@
         "Tactic": "Defense Evasion",
         "Technique": "Obfuscated Files or Information"
     },
+    "T1027.015": {
+        "Sub-Technique": "Compression",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.016": {
+        "Sub-Technique": "Junk Code Insertion",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.017": {
+        "Sub-Technique": "SVG Smuggling",
+        "Tactic": "Defense Evasion",
+        "Technique": "Obfuscated Files or Information"
+    },
     "T1029": {
         "Sub-Technique": "-",
         "Tactic": "Exfiltration",
@@ -295,7 +310,7 @@
         "Technique": "Masquerading"
     },
     "T1036.003": {
-        "Sub-Technique": "Rename System Utilities",
+        "Sub-Technique": "Rename Legitimate Utilities",
         "Tactic": "Defense Evasion",
         "Technique": "Masquerading"
     },
@@ -305,7 +320,7 @@
         "Technique": "Masquerading"
     },
     "T1036.005": {
-        "Sub-Technique": "Match Legitimate Name or Location",
+        "Sub-Technique": "Match Legitimate Resource Name or Location",
         "Tactic": "Defense Evasion",
         "Technique": "Masquerading"
     },
@@ -331,6 +346,11 @@
     },
     "T1036.010": {
         "Sub-Technique": "Masquerade Account Name",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
+    "T1036.011": {
+        "Sub-Technique": "Overwrite Process Arguments",
         "Tactic": "Defense Evasion",
         "Technique": "Masquerading"
     },
@@ -606,6 +626,11 @@
     },
     "T1059.011": {
         "Sub-Technique": "Lua",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.012": {
+        "Sub-Technique": "Hypervisor CLI",
         "Tactic": "Execution",
         "Technique": "Command and Scripting Interpreter"
     },
@@ -1024,6 +1049,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Trusted Developer Utilities Proxy Execution"
     },
+    "T1127.003": {
+        "Sub-Technique": "JamPlus",
+        "Tactic": "Defense Evasion",
+        "Technique": "Trusted Developer Utilities Proxy Execution"
+    },
     "T1129": {
         "Sub-Technique": "-",
         "Tactic": "Defense Evasion",
@@ -1147,7 +1177,17 @@
     "T1176": {
         "Sub-Technique": "-",
         "Tactic": "Persistence",
-        "Technique": "Browser Extensions"
+        "Technique": "Software Extensions"
+    },
+    "T1176.001": {
+        "Sub-Technique": "Browser Extensions",
+        "Tactic": "Persistence",
+        "Technique": "Software Extensions"
+    },
+    "T1176.002": {
+        "Sub-Technique": "IDE Extensions",
+        "Tactic": "Persistence",
+        "Technique": "Software Extensions"
     },
     "T1185": {
         "Sub-Technique": "-",
@@ -1236,6 +1276,11 @@
     },
     "T1204.003": {
         "Sub-Technique": "Malicious Image",
+        "Tactic": "Execution",
+        "Technique": "User Execution"
+    },
+    "T1204.004": {
+        "Sub-Technique": "Malicious Copy and Paste",
         "Tactic": "Execution",
         "Technique": "User Execution"
     },
@@ -1402,7 +1447,22 @@
     "T1219": {
         "Sub-Technique": "-",
         "Tactic": "Command and Control",
-        "Technique": "Remote Access Software"
+        "Technique": "Remote Access Tools"
+    },
+    "T1219.001": {
+        "Sub-Technique": "IDE Tunneling",
+        "Tactic": "Command and Control",
+        "Technique": "Remote Access Tools"
+    },
+    "T1219.002": {
+        "Sub-Technique": "Remote Desktop Software",
+        "Tactic": "Command and Control",
+        "Technique": "Remote Access Tools"
+    },
+    "T1219.003": {
+        "Sub-Technique": "Remote Access Hardware",
+        "Tactic": "Command and Control",
+        "Technique": "Remote Access Tools"
     },
     "T1220": {
         "Sub-Technique": "-",
@@ -1621,6 +1681,11 @@
     },
     "T1505.005": {
         "Sub-Technique": "Terminal Services DLL",
+        "Tactic": "Persistence",
+        "Technique": "Server Software Component"
+    },
+    "T1505.006": {
+        "Sub-Technique": "vSphere Installation Bundles",
         "Tactic": "Persistence",
         "Technique": "Server Software Component"
     },
@@ -2394,6 +2459,16 @@
         "Tactic": "Defense Evasion",
         "Technique": "Hide Artifacts"
     },
+    "T1564.013": {
+        "Sub-Technique": "Bind Mounts",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
+    "T1564.014": {
+        "Sub-Technique": "Extended Attributes",
+        "Tactic": "Defense Evasion",
+        "Technique": "Hide Artifacts"
+    },
     "T1565": {
         "Sub-Technique": "-",
         "Tactic": "Impact",
@@ -2499,6 +2574,11 @@
         "Tactic": "Execution",
         "Technique": "System Services"
     },
+    "T1569.003": {
+        "Sub-Technique": "Systemctl",
+        "Tactic": "Execution",
+        "Technique": "System Services"
+    },
     "T1570": {
         "Sub-Technique": "-",
         "Tactic": "Command and Control",
@@ -2535,12 +2615,7 @@
         "Technique": "Hijack Execution Flow"
     },
     "T1574.001": {
-        "Sub-Technique": "DLL Search Order Hijacking",
-        "Tactic": "Defense Evasion",
-        "Technique": "Hijack Execution Flow"
-    },
-    "T1574.002": {
-        "Sub-Technique": "DLL Side-Loading",
+        "Sub-Technique": "DLL",
         "Tactic": "Defense Evasion",
         "Technique": "Hijack Execution Flow"
     },
@@ -3278,6 +3353,46 @@
         "Sub-Technique": "-",
         "Tactic": "Defense Evasion",
         "Technique": "Modify Cloud Resource Hierarchy"
+    },
+    "T1667": {
+        "Sub-Technique": "-",
+        "Tactic": "Impact",
+        "Technique": "Email Bombing"
+    },
+    "T1668": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "Exclusive Control"
+    },
+    "T1669": {
+        "Sub-Technique": "-",
+        "Tactic": "Initial Access",
+        "Technique": "Wi-Fi Networks"
+    },
+    "T1671": {
+        "Sub-Technique": "-",
+        "Tactic": "Persistence",
+        "Technique": "Cloud Application Integration"
+    },
+    "T1672": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Email Spoofing"
+    },
+    "T1673": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Virtual Machine Discovery"
+    },
+    "T1674": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "Input Injection"
+    },
+    "T1675": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "ESXi Administration Command"
     },
     "TA0001": {
         "Sub-Technique": "-",

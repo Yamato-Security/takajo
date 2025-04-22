@@ -32,8 +32,8 @@ proc outputTTPResult*(stackedMitreTags: Table[string, string],
     let jsonObj = %* {
                         "name": name,
                         "versions": {
-                            "attack": "14",
-                            "navigator": "4.9.1",
+                            "attack": "17",
+                            "navigator": "5.1.0",
                             "layer": "4.5"
       },
       "domain": "enterprise-attack",
