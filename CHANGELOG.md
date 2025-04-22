@@ -1,5 +1,11 @@
 # Changes
 
+## x.x.x [xxxx/xx/xx]
+
+**Enhancements:**
+
+- MITRE ATT&CK data updated to v17 for `ttp-visualize-sigma` and `ttp-visualize` commands. (#247) (@fukusuket)
+
 ## 2.9.2 [2025/04/12] - Sakura Release
 
 **Enhancements:**
