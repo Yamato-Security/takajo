@@ -28,8 +28,18 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
         styledEcho(fgGreen, outputLogo())
 
     if fileExists(sqliteoutput) and clobber == false:
-        echo sqliteoutput & " already exists. Please add the -C, --clobber option to overwrite the file."
-        return false
+        # echo sqliteoutput & " already exists. Please add the -C, --clobber option to overwrite the file."
+        echo sqliteoutput & " already exists. It looks like you have already processed the JSONL file. Do you want to use this file (Y/n):"
+        
+        while true:
+            let input = stdin.readLine().strip()
+            if input.toLowerAscii() == "y":
+                break
+            elif input.toLowerAscii() == "n":
+                return false
+            else:
+                echo "無効な入力です"
+        
 
     # create sqlite file or open exist database file.
     let db = open(sqliteoutput, "", "", "")
