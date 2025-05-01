@@ -5,6 +5,7 @@
 **改善:**
 
 - `ttp-visualize-sigma`と`ttp-visualize`コマンドのため、MITRE ATT&CKデータをv17に更新した。 (#247) (@fukusuket)
+- `html-server`コマンドを複数回実行しても、JSONLタイムラインを再分析する必要はない。 (#232)(@nishikawaakira)
 
 ## 2.9.2 [2025/04/12] - Sakura Release
 
