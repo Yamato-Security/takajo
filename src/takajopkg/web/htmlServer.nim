@@ -257,7 +257,7 @@ proc initialServer(port: int) =
 
     html = html.replace("[%PORT%]", $port)
     
-    var write = open("./src/takajopkg/web/static/js/common.js", FileMode.fmWrite)
+    var write = open("./templates/static/js/common.js", FileMode.fmWrite)
     write.writeLine(html)
     write.close()
 
@@ -281,7 +281,7 @@ proc htmlServer*(port: int = 8823, quiet: bool = false, timeline: string, rulepa
     let settings = newSettings(
         appName = sqliteoutput,
         debug = false,
-        port = Port(port)
+        port = Port(port)        
     )
     echo "You can access the HTML summary reports at http://localhost:" & $port
 
