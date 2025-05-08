@@ -5,7 +5,8 @@
 **Enhancements:**
 
 - MITRE ATT&CK data updated to v17 for `ttp-visualize-sigma` and `ttp-visualize` commands. (#247) (@fukusuket)
-- You don't need to reanalyze the JSONL timeline when running `html-server` command multiple times. (#232)(@nishikawaakira)
+- You don't need to reanalyze the JSONL timeline when running `html-server` command multiple times. (#232) (@nishikawaakira)
+- Files are now better organized. (#242)  (nishikawaakira)
 
 ## 2.9.2 [2025/04/12] - Sakura Release
 
