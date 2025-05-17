@@ -80,11 +80,11 @@ method resultOutput*(self: ListHashesCmd) =
       padString(impHashOutputFilename & " (" & formatFileSize(impHashFileSize) &
           ")", ' ', 80)
   let results = "" &
-      padString("MD5: " & intToStr(self.md5hashCount).insertSep(','), ' ', 80) &
+      padString("MD5: " & intToStr(self.md5hashCount).insertSep(','), ' ', 80) & "\n" &
       padString("SHA1: " & intToStr(self.sha1hashCount).insertSep(','), ' ',
-          80) &
+          80) & "\n" &
       padString("SHA256: " & intToStr(self.sha256hashCount).insertSep(','), ' ',
-          80) &
+          80) & "\n" &
       padString("Import: " & intToStr(self.impHashCount).insertSep(','), ' ', 80)
   if self.displayTable:
     echo ""
