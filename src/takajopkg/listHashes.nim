@@ -72,20 +72,20 @@ method resultOutput*(self: ListHashesCmd) =
   let impHashFileSize = getFileSize(impHashOutputFilename)
   let savedFiles = "" &
       padString(md5outputFilename & " (" & formatFileSize(md5FileSize) & ")",
-          ' ', 80) &
+          ' ', 100) &
       padString(sha1outputFilename & " (" & formatFileSize(sha1FileSize) & ")",
-          ' ', 80) &
+          ' ', 100) &
       padString(sha256outputFilename & " (" & formatFileSize(sha256FileSize) &
-          ")", ' ', 80) &
+          ")", ' ', 100) &
       padString(impHashOutputFilename & " (" & formatFileSize(impHashFileSize) &
-          ")", ' ', 80)
+          ")", ' ', 100)
   let results = "" &
-      padString("MD5: " & intToStr(self.md5hashCount).insertSep(','), ' ', 80) &
+      padString("MD5: " & intToStr(self.md5hashCount).insertSep(','), ' ', 100) & "\n" &
       padString("SHA1: " & intToStr(self.sha1hashCount).insertSep(','), ' ',
-          80) &
+          100) & "\n" &
       padString("SHA256: " & intToStr(self.sha256hashCount).insertSep(','), ' ',
-          80) &
-      padString("Import: " & intToStr(self.impHashCount).insertSep(','), ' ', 80)
+          100) & "\n" &
+      padString("Import: " & intToStr(self.impHashCount).insertSep(','), ' ', 100)
   if self.displayTable:
     echo ""
     echo "Saved files:"

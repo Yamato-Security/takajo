@@ -8,13 +8,17 @@
 - `html-server`コマンドを複数回実行しても、JSONLタイムラインを再分析する必要はない。 (#232)(@nishikawaakira)
 - ファイルが整理された。 (#242)  (nishikawaakira)
 
+**バグ修正:**
+
+- `automagic` サマリーテーブルの壊れた出力を修正した。 (#250) (@fukusuket)
+
 ## 2.9.2 [2025/04/12] - Sakura Release
 
 **改善:**
 
 - `metrics-computer`コマンドは稼働時間をより正確に計算する。 (#243) (@fukusuket)
 
-**Bug Fixes:**
+**バグ修正:**
 
 - `metrics-computer`コマンドに必要な設定ファイルが含まれていなかったため、失敗していた。 (#244) (@fukusuket) 
 
