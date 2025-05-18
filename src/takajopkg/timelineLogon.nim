@@ -346,25 +346,25 @@ method resultOutput*(self: TimelineLogonCmd) =
                     tableOfResults[]["AdminLogon"] = "Yes"
     let results = "" &
          padString("EID 4624 (Successful Logon): " & intToStr(
-                 self.EID_4624_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_4624_count).insertSep(','), ' ', 100) &
          padString("EID 4625 (Failed Logon): " & intToStr(
-                 self.EID_4625_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_4625_count).insertSep(','), ' ', 100) &
          padString("EID 4634 (Logoff): " & intToStr(
-                 self.EID_4634_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_4634_count).insertSep(','), ' ', 100) &
          padString("EID 4647 (User Initiated Logoff): " & intToStr(
-                 self.EID_4647_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_4647_count).insertSep(','), ' ', 100) &
          padString("EID 4648 (Explicit Logon): " & intToStr(
-                 self.EID_4648_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_4648_count).insertSep(','), ' ', 100) &
          padString("EID 4672 (Admin Logon): " & intToStr(
-                 self.EID_4672_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_4672_count).insertSep(','), ' ', 100) &
          padString("EID 21 (RDP Logon): " & intToStr(
-                 self.EID_21_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_21_count).insertSep(','), ' ', 100) &
          padString("EID 23 (RDP Logoff): " & intToStr(
-                 self.EID_23_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_23_count).insertSep(','), ' ', 100) &
          padString("EID 302 (RDS GTW Logon): " & intToStr(
-                 self.EID_302_count).insertSep(','), ' ', 80) & "\n" &
+                 self.EID_302_count).insertSep(','), ' ', 100) &
          padString("EID 303 (RDP GTW Logoff): " & intToStr(
-                 self.EID_303_count).insertSep(','), ' ', 80)
+                 self.EID_303_count).insertSep(','), ' ', 100)
     
     if self.displayTable:
         echo ""
