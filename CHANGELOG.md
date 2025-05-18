@@ -8,6 +8,10 @@
 - You don't need to reanalyze the JSONL timeline when running `html-server` command multiple times. (#232) (@nishikawaakira)
 - Files are now better organized. (#242)  (nishikawaakira)
 
+**Bug Fixes:**
+
+- Fixed broken output in the `automagic` summary table. (#250) (@fukusuket)
+
 ## 2.9.2 [2025/04/12] - Sakura Release
 
 **Enhancements:**
