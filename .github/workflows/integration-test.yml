@@ -281,8 +281,5 @@ jobs:
       - name: run ttp-visualize-sigma
         run: cd takajo && ./takajo ttp-visualize-sigma -r ../hayabusa/tmp/rules
 
-      - name: run html-server
-        run: cd takajo && ./takajo html-server -t timeline.jsonl
-
       - name: run automagic
         run: cd takajo && ./takajo automagic -t timeline.jsonl
