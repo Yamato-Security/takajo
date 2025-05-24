@@ -133,7 +133,7 @@ jobs:
       - name: Upload Artifacts(all-platforms)
         uses: actions/upload-artifact@v4
         with:
-          name: hayabusa-${{ github.event.inputs.release_ver }}-all-platforms
+          name: takajo-${{ github.event.inputs.release_ver }}-all-platforms
           path: all-packages/*
           include-hidden-files: true
 
