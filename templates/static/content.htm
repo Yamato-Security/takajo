@@ -93,11 +93,11 @@
 
             // console.log(JSON.stringify(data, null, 2));
             // Severity Summary
-            document.getElementById("critical_num").innerText = data.computer_counts[0];
-            document.getElementById("high_num").innerText = data.computer_counts[1];
-            document.getElementById("medium_num").innerText = data.computer_counts[2];
-            document.getElementById("low_num").innerText = data.computer_counts[3];
-            document.getElementById("info_num").innerText = data.computer_counts[4];
+            document.getElementById("critical_num").innerText = parseInt(data.computer_counts[0]).toLocaleString();
+            document.getElementById("high_num").innerText = parseInt(data.computer_counts[1]).toLocaleString();
+            document.getElementById("medium_num").innerText = parseInt(data.computer_counts[2]).toLocaleString();
+            document.getElementById("low_num").innerText = parseInt(data.computer_counts[3]).toLocaleString();
+            document.getElementById("info_num").innerText = parseInt(data.computer_counts[4]).toLocaleString();
 
             // Graph
             labels = [...new Set(data.graph_data.map(item => item[2]))];
@@ -214,7 +214,7 @@
 
                 // Count
                 const countCell = document.createElement("td");
-                countCell.textContent = alert[7];
+                countCell.textContent = parseInt(alert[7]).toLocaleString();
                 countCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
                 row.appendChild(countCell);
 

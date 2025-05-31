@@ -67,13 +67,13 @@
 
               // Total Detections
               const titleCell = document.createElement("td");
-              titleCell.textContent = summary[1] + " / " + summary[3];
+              titleCell.textContent = parseInt(summary[1]).toLocaleString() + " / " + summary[3] + "%";
               titleCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
               row.appendChild(titleCell);
 
               // Unique Detections
               const countCell = document.createElement("td");
-              countCell.textContent = summary[2] + " / " + summary[4];
+              countCell.textContent = parseInt(summary[2]).toLocaleString() + " / " + summary[4] + "%";
               countCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
               row.appendChild(countCell);
 
@@ -94,15 +94,15 @@
               severityCell.append(severityDev)
               row.appendChild(severityCell);
 
-              // Total Detections
+              // 	Number of detections
               const titleCell = document.createElement("td");
               titleCell.textContent = dates_with_most_total_detection[1];
               titleCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
               row.appendChild(titleCell);
 
-              // Unique Detections
+              // 	Detection rate
               const countCell = document.createElement("td");
-              countCell.textContent = dates_with_most_total_detection[2];
+              countCell.textContent = parseInt(dates_with_most_total_detection[2]).toLocaleString();
               countCell.classList.add("min-w-[180px]", "py-3", "pe-3", "text-start", "text-sm", "font-semibold", "uppercase", "tracking-wider", "text-slate-700");
               row.appendChild(countCell);
 
@@ -127,7 +127,7 @@
               summary[level][rule_title].total_alerts += parseInt(alert_count, 10);
               summary[level][rule_title].computers.push({
                 computer,
-                alert_count: parseInt(alert_count, 10),
+                alert_count: parseInt(alert_count, 10).toLocaleString(),
                 first_seen,
                 last_seen
               });
@@ -177,7 +177,7 @@
 
                 const alert_cell = document.createElement("td");
                 alert_cell.classList.add("p-3","font-medium");
-                alert_cell.textContent = rule['total_alerts'];
+                alert_cell.textContent = rule['total_alerts'].toLocaleString();
                 tbody_tr.appendChild(alert_cell);
 
                 const title_cell = document.createElement("td");

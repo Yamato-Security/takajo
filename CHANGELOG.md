@@ -1,5 +1,11 @@
 # Changes
 
+## x.x.x [xxxx/xx/xx]
+
+**Enhancements:**
+
+- Improved readability in the `html-server` report. (#204) (@nishikawaakira)
+
 ## 2.10.0 [2025/05/20] - AUSCERT/SINCON Release
 
 **Enhancements:**
