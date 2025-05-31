@@ -334,17 +334,17 @@ function getComputerSummary() {
 
             computer.classList.add("p-3", "font-medium");
             computer.innerText = summary[0];
-
+            
             crit.classList.add("p-3", "font-medium");
-            crit.innerText = summary[1];
+            crit.innerText = parseInt(summary[1]).toLocaleString();
             high.classList.add("p-3", "font-medium");
-            high.innerText = summary[2];
+            high.innerText = parseInt(summary[2]).toLocaleString();
             med.classList.add("p-3", "font-medium");
-            med.innerText = summary[3];
+            med.innerText = parseInt(summary[3]).toLocaleString();
             low.classList.add("p-3", "font-medium");
-            low.innerText = summary[4];
+            low.innerText = parseInt(summary[4]).toLocaleString();
             info.classList.add("p-3", "font-medium");
-            info.innerText = summary[5];
+            info.innerText = parseInt(summary[5]).toLocaleString();
 
             tr.appendChild(computer);
             tr.appendChild(crit);

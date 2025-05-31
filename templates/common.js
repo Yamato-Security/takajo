@@ -102,7 +102,7 @@ async function sidemenu() {
           btn.dataset.severity = severity_message[severity].toLowerCase();
           i.classList.add("icon","fas","fa-chevron-right");
           btn.appendChild(i);
-          btn.append(severity_message[severity].toLowerCase() + " alerts (" + total_numlist[severity] + ")");
+          btn.append(severity_message[severity].toLowerCase() + " alerts (" + total_numlist[severity].toLocaleString() + ")");
           li.appendChild(btn);
 
           let sortedDetections = Object.entries(rule_numlist[severity]).sort((a, b) => b[1] - a[1]);
@@ -116,7 +116,7 @@ async function sidemenu() {
 
             let sub_a = document.createElement('a');
             sub_a.style.cssText = "font-size: 10pt !important";
-            sub_a.innerText = "■" + item[0] + " (" + item[1] + ")";
+            sub_a.innerText = "■" + item[0] + " (" + item[1].toLocaleString() + ")";
             sub_a.target = "_blank";
             global_rules.forEach(rule => {
                 if (rule[0] == item[0]) {
@@ -140,7 +140,7 @@ async function sidemenu() {
                 alert_a.style.cssText = "font-size:10pt !important;";
                 alert_a.dataset.class = severity_message[severity].toLowerCase();
                 alert_a.href = "/computer?computer=" + encodeURI(alert[2]) + "#" + severity_message[severity].toLowerCase();
-                alert_a.innerText = alert[2] + " (" + alert[3] + ") (" + formatDate(alert[4]) + " ~ " + formatDate(alert[5]) + " )";
+                alert_a.innerText = alert[2] + " (" + parseInt(alert[3]).toLocaleString() + ") (" + formatDate(alert[4]) + " ~ " + formatDate(alert[5]) + " )";
                 alert_li.appendChild(alert_a);
                 
                 sub_ul.appendChild(alert_li);
@@ -189,7 +189,7 @@ async function sidemenu() {
             a.style.cssText = "font-size:10pt !important;";
             a.href = "/computer?computer=" + encodeURI(computer[0]) + "#computer";
             a.classList.add("sidemenu","inline-flex","items-center","gap-2","rounded-lg","px-2","py-1","text-sm","font-semibold","text-slate-600","transition","hover:bg-indigo-100","hover:text-indigo-900");
-            a.innerText = computer[0] + "(" + computer[1] + ")";
+            a.innerText = computer[0] + "(" + computer[1].toLocaleString() + ")";
             li.appendChild(a);
             computer_list_ul.appendChild(li);
         });
