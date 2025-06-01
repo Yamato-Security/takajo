@@ -220,9 +220,7 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
                 rule_path
             ) VALUES (?, ?)"""
             
-            var local_rule_path = findRuleFileWithName(rulepath, rulepath, rule_file)
-            echo local_rule_path , " & " , rule_path , " & " , rule_file
-                    
+            var local_rule_path = findRuleFileWithName(rulepath, rulepath, rule_file)                    
             var stmt = db.prepare(insertSQL)
             stmt.bindParams(rule_title, local_rule_path)
             let bres = db.tryExec(stmt)
