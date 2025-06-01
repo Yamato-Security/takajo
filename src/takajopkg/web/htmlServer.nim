@@ -6,21 +6,20 @@ const rulesUrl = "https://github.com/Yamato-Security/hayabusa-rules/blob/main"
 #
 # obtain rule file path
 #  
-proc findRuleFileWithName(dir: string, fileName: string) :string =
+proc findRuleFileWithName(original_dir: string, dir: string, fileName: string) :string =
     
-    var rule_url = ""
+    var l_rule_url = ""
     for entry in walkDir(dir):
-        let path = os.lastPathPart(entry.path)
-        
+        let path = os.lastPathPart(entry.path)        
         if entry.kind == pcFile and path == fileName:
-            rule_url = rulesUrl & "/" & entry.path
+            l_rule_url = rulesUrl & entry.path.replace(original_dir, "")
             break
         elif entry.kind == pcDir:
-            rule_url = findRuleFileWithName(entry.path, fileName)
-            if rule_url != "":
+            l_rule_url = findRuleFileWithName(original_dir, entry.path, fileName)
+            if l_rule_url != "":
                 break
     
-    return rulesUrl
+    return l_rule_url
 
 proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clobber: bool = false, sqliteoutput: string = "html-report.sqlite", skipProgressBar: bool = false): bool =
 
@@ -39,7 +38,6 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
             else:
                 echo "Invalid input"
         
-
     # create sqlite file or open exist database file.
     let db = open(sqliteoutput, "", "", "")
     try:
@@ -53,7 +51,6 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
             db.exec(dropTableSQL)
         except:
             discard
-
 
         # create timelines table
         var createTableSQL = sql"""CREATE TABLE timelines (
@@ -99,7 +96,9 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
 
         db.exec(sql"BEGIN")
         var recordCount = 0
-        var alert_title_list: seq[string] = @[]
+        #var alert_title_list: seq[string] = @[]
+        var alert_title_list: seq[(string, string)] = @[]
+
 
         while not fileStream.atEnd:
             let line = fileStream.readLine()
@@ -129,9 +128,10 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
                     let record_id = jsonObj["RecordID"].getStr()
                     let rule_file = jsonObj["RuleFile"].getStr()
                     let evtx_file = jsonObj["EvtxFile"].getStr()
+            
+                    if (rule_title, rule_file) notin alert_title_list:
+                        alert_title_list.add((rule_title, rule_file))
 
-                    if not (rule_title in alert_title_list):
-                        alert_title_list.add(rule_title)
 
                     var level_order = -1
                     if level == "crit":
@@ -213,17 +213,18 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
                 except CatchableError:
                     echo "Invalid JSON line: ", line
 
-        var rule_path = ""
-        for value in alert_title_list:
+        # 修正: alert_title_list を処理する際に tuple を展開
+        for (rule_title, rule_file) in alert_title_list:
             let insertSQL = """INSERT INTO rule_files (
                 alert_title,
                 rule_path
             ) VALUES (?, ?)"""
-
-            rule_path = findRuleFileWithName(rulepath, value)
+            
+            var local_rule_path = findRuleFileWithName(rulepath, rulepath, rule_file)
+            echo local_rule_path , " & " , rule_path , " & " , rule_file
                     
             var stmt = db.prepare(insertSQL)
-            stmt.bindParams(value, rule_path)
+            stmt.bindParams(rule_title, local_rule_path)
             let bres = db.tryExec(stmt)
             doAssert(bres)
             finalize(stmt)
