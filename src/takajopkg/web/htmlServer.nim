@@ -1,7 +1,7 @@
 import prologue
 import urls
 
-const rulesUrl = "https://github.com/Yamato-Security/hayabusa-rules/blob/main"
+# const rulesUrl = "https://github.com/Yamato-Security/hayabusa-rules/blob/main"
 
 #
 # obtain rule file path
@@ -12,7 +12,8 @@ proc findRuleFileWithName(original_dir: string, dir: string, fileName: string) :
     for entry in walkDir(dir):
         let path = os.lastPathPart(entry.path)        
         if entry.kind == pcFile and path == fileName:
-            l_rule_url = rulesUrl & entry.path.replace(original_dir, "")
+            # l_rule_url = rulesUrl & entry.path.replace(original_dir, "")
+            l_rule_url = entry.path            
             break
         elif entry.kind == pcDir:
             l_rule_url = findRuleFileWithName(original_dir, entry.path, fileName)
