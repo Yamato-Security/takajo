@@ -1,8 +1,6 @@
 import prologue
 import urls
 
-# const rulesUrl = "https://github.com/Yamato-Security/hayabusa-rules/blob/main"
-
 #
 # obtain rule file path
 #  
@@ -12,7 +10,6 @@ proc findRuleFileWithName(original_dir: string, dir: string, fileName: string) :
     for entry in walkDir(dir):
         let path = os.lastPathPart(entry.path)        
         if entry.kind == pcFile and path == fileName:
-            # l_rule_url = rulesUrl & entry.path.replace(original_dir, "")
             l_rule_url = entry.path            
             break
         elif entry.kind == pcDir:
@@ -97,7 +94,6 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
 
         db.exec(sql"BEGIN")
         var recordCount = 0
-        #var alert_title_list: seq[string] = @[]
         var alert_title_list: seq[(string, string)] = @[]
 
 
@@ -214,7 +210,6 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
                 except CatchableError:
                     echo "Invalid JSON line: ", line
 
-        # 修正: alert_title_list を処理する際に tuple を展開
         for (rule_title, rule_file) in alert_title_list:
             let insertSQL = """INSERT INTO rule_files (
                 alert_title,

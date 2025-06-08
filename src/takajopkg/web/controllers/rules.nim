@@ -2,7 +2,6 @@ import json
 import prologue
 import db_connector/db_sqlite
 import strutils
-import yaml
 
 proc getDBPath(ctx: Context) : string =
     let settings = getOrDefault(ctx.gScope.settings, "prologue")
@@ -41,7 +40,7 @@ proc getRuleContent*(ctx: Context) {.async.} =
 
     let query = """SELECT rule_path FROM rule_files WHERE alert_title = ?"""
     let alertTitle = ctx.request.queryParams["alert_title"]
-    if alertTitle.isNil:
+    if alertTitle == "":
       let response = %*{"message": "alert_title parameter is required"}
       resp jsonResponse(response, Http400)
       return

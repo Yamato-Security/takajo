@@ -120,7 +120,7 @@ async function sidemenu() {
             sub_a.target = "_blank";
             global_rules.forEach(rule => {
                 if (rule[0] == item[0]) {
-                    sub_a.href = rule[1];
+                    sub_a.href = "/rule/content?alert_title=" + item[0] + "#" + severity_message[severity].toLowerCase();
                     return;
                 }
             });
