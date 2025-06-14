@@ -28,8 +28,8 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
         echo sqliteoutput & " already exists. It looks like you have already processed the JSONL file. Do you want to use this file (Y/n):"
         
         while true:
-            let input = stdin.readLine().strip()
-            if input.toLowerAscii() == "y":
+            let input = stdin.readLine().strip()            
+            if input == "" or input.toLowerAscii() == "y":
                 return true # use already sqlite file
             elif input.toLowerAscii() == "n":
                 break # create new sqlite file

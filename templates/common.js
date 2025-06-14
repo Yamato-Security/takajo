@@ -117,7 +117,6 @@ async function sidemenu() {
             let sub_a = document.createElement('a');
             sub_a.style.cssText = "font-size: 10pt !important";
             sub_a.innerText = "■" + item[0] + " (" + item[1].toLocaleString() + ")";
-            sub_a.target = "_blank";
             global_rules.forEach(rule => {
                 if (rule[0] == item[0]) {
                     sub_a.href = "/rule/content?alert_title=" + item[0] + "#" + severity_message[severity].toLowerCase();
