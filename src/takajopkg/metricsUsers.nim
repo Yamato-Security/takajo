@@ -22,7 +22,6 @@ method filter*(self: metricsUsersCmd, x: HayabusaJson): bool =
             x.EventId == 21 or x.EventId == 23 or x.EventId == 302 or x.EventId == 303
 
 method analyze*(self: metricsUsersCmd, x: HayabusaJson) =
-  let rule = x.RuleTitle
   let computer = x.Computer
   let eventID = x.EventID
   let sid = getDetailValue(x.ExtraFieldInfo, "TargetUserSid")

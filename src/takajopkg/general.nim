@@ -15,7 +15,6 @@ import takajoTerminal
 from std/streams import newFileStream
 
 proc checkTakajoDir*() =
-  let currentDir = getCurrentDir()
   var found = false
   for file in walkFiles("*"):
     let takajoBinary = "takajo-" & $clCfg.version & "-"
