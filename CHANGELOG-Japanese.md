@@ -5,6 +5,7 @@
 **改善:**
 
 - `html-server`レポートの可読性を改善した。 (#204) (@nishikawaakira)
+- ルールリンクをクリックすると、Sigmaルールがブラウザに表示されるようになった。 (#257) (@nishikawaakira)
 
 ## 2.10.0 [2025/05/20] - AUSCERT/SINCON Release
 

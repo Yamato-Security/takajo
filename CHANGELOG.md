@@ -5,6 +5,7 @@
 **Enhancements:**
 
 - Improved readability in the `html-server` report. (#204) (@nishikawaakira)
+- Sigma rules are now displayed in the browser if you click on the link. (#257) (@nishikawaakira)
 
 ## 2.10.0 [2025/05/20] - AUSCERT/SINCON Release
 
