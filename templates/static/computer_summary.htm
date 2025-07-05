@@ -323,7 +323,27 @@ function getComputerSummary() {
         console.log(data)
         let tbody = document.getElementById('computer-tbody');
         data.summary.forEach(summary => {
+
+            var critical_num = parseInt(summary[1]);
+            var high_num = parseInt(summary[2]);
+            var medium_num = parseInt(summary[3]);
+            var low_num = parseInt(summary[4]);
+            var info_num = parseInt(summary[5]);
+            var bg_color = "";
+            if (critical_num > 0) {
+              bg_color = 'bg-red-500';
+            } else if (high_num > 0) {
+              bg_color = 'bg-orange-500';
+            } else if (medium_num > 0) {
+              bg_color = 'bg-yellow-500';
+            } else if (low_num > 0) {
+              bg_color = 'bg-green-500';
+            }
+
             let tr = document.createElement('tr');
+            if (bg_color !== "") {
+              tr.classList.add(bg_color);
+            }
             let computer = document.createElement('td');
             let crit = document.createElement('td');
             let high = document.createElement('td');
@@ -336,15 +356,15 @@ function getComputerSummary() {
             computer.innerText = summary[0];
             
             crit.classList.add("p-3", "font-medium");
-            crit.innerText = parseInt(summary[1]).toLocaleString();
+            crit.innerText = critical_num.toLocaleString();
             high.classList.add("p-3", "font-medium");
-            high.innerText = parseInt(summary[2]).toLocaleString();
+            high.innerText = high_num.toLocaleString();
             med.classList.add("p-3", "font-medium");
-            med.innerText = parseInt(summary[3]).toLocaleString();
+            med.innerText = medium_num.toLocaleString();
             low.classList.add("p-3", "font-medium");
-            low.innerText = parseInt(summary[4]).toLocaleString();
+            low.innerText = low_num.toLocaleString();
             info.classList.add("p-3", "font-medium");
-            info.innerText = parseInt(summary[5]).toLocaleString();
+            info.innerText = info_num.toLocaleString();
 
             tr.appendChild(computer);
             tr.appendChild(crit);
