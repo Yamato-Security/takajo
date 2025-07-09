@@ -5,7 +5,7 @@ proc queryIpAPI(ipAddress:string, headers: httpheaders.HttpHeaders, results: ptr
     var jsonResponse = %* {}
     var singleResultTable = newTable[string, string]()
     singleResultTable["IP-Address"] = ipAddress
-    singleResultTable["Link"] = "https://www.virustotal.com/gui/ip_addresses/" & ipAddress
+    singleResultTable["Link"] = "https://www.virustotal.com/gui/ip-address/" & ipAddress
     singleResultTable["Response"] = intToStr(response.code)
     if response.code == 200:
         jsonResponse = parseJson(response.body)

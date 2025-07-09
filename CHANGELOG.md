@@ -8,6 +8,10 @@
 - Sigma rules are now displayed in the browser if you click on the link. (#257) (@nishikawaakira)
 - Added colors to the Computer Summary page in the `html-server` command. (#201) (@nishikawaakira)
 
+**Bug Fixes:**
+
+- The URL link in the result of the `vt-ip-lookup` command was incorrect. (#259) (@fukusuket)
+
 ## 2.10.0 [2025/05/20] - AUSCERT/SINCON Release
 
 **Enhancements:**
