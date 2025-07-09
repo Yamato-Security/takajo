@@ -1,11 +1,12 @@
 # Changes
 
-## x.x.x [xxxx/xx/xx]
+## 2.11.0 [2025/08/05] - Blackhat Arsenal Release
 
 **Enhancements:**
 
 - Improved readability in the `html-server` report. (#204) (@nishikawaakira)
 - Sigma rules are now displayed in the browser if you click on the link. (#257) (@nishikawaakira)
+- Added colors to the Computer Summary page in the `html-server` command. (#201) (@nishikawaakira)
 
 ## 2.10.0 [2025/05/20] - AUSCERT/SINCON Release
 
