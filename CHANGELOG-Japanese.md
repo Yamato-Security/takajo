@@ -7,6 +7,10 @@
 - `html-server`レポートの可読性を改善した。 (#204) (@nishikawaakira)
 - ルールリンクをクリックすると、Sigmaルールがブラウザに表示されるようになった。 (#257) (@nishikawaakira)
 
+**バグ修正:**
+
+- `vt-ip-lookup`コマンドの結果のURLリンクが間違っていました。 (#259) (@fukusuket)
+
 ## 2.10.0 [2025/05/20] - AUSCERT/SINCON Release
 
 **改善:**
