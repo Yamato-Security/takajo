@@ -7,6 +7,7 @@
 - Improved readability in the `html-server` report. (#204) (@nishikawaakira)
 - Sigma rules are now displayed in the browser if you click on the link. (#257) (@nishikawaakira)
 - Added colors to the Computer Summary page in the `html-server` command. (#201) (@nishikawaakira)
+- `html-server` report now supports sorting of rules by Count, First Date and Last Date. (#199) (@nishikawaakira)
 
 **Bug Fixes:**
 

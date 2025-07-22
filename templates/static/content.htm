@@ -253,6 +253,52 @@
         display: none !important;
       }
 
+      .sort-arrow {
+        user-select: none;
+        margin-left: 5px;
+      }
+      
+      th {
+        position: relative;
+      }
+
+      .sorted-th {
+        cursor: pointer;        
+      }
+
+      th .sort-arrow { 
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid black;
+        opacity: 0;
+      }
+
+      th.sorted-asc .sort-active {
+        transform: rotate(180deg) translateY(4px);
+        opacity: 1;
+      }
+
+      th.sorted-asc .sort-deactive {
+        transform: rotate(180deg) translateY(4px);
+        opacity: 0.3;
+      }
+      
+      th.sorted-desc .sort-active {
+        opacity: 1;
+      }
+      
+      th.sorted-desc .sort-deactive {
+        opacity: 0.3;
+      }
+
+
       #side-menu ul {
         border-top:1px solid #999;
         border-bottom:1px solid #f1f6fc;
@@ -586,15 +632,15 @@
             <br>
             <button role="link" onclick="uncheckAllCheckboxes()" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100">Exclude all rules</button>
 
-            <table class="min-w-full align-middle text-sm">
+            <table class="min-w-full align-middle text-sm" id="sortable_table">
               <thead>
                 <tr class="border-b-2 border-slate-100">
                   <th class="min-w-[40px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700"></th>  
                   <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">Alert Title</th>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">Severity</th>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">Count</th>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">First Date</th>
-                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700">Last Date</th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700 sorted-th sorted-desc"><span class="sort-arrow sort-active" id="header-severity"></span>Severity</th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700 sorted-th sorted-desc"><span class="sort-arrow sort-deactive" id="header-count"></span>Count</th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700 sorted-th sorted-desc"><span class="sort-arrow sort-deactive" id="header-first-date"></span>First Date</th>
+                  <th class="min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700 sorted-th sorted-desc"><span class="sort-arrow sort-deactive" id="header-last-date"></span>Last Date</th>
                 </tr>
               </thead>
               <tbody id="detection-rule-list-body"></tbody>
@@ -675,6 +721,105 @@
     return '&rule_title=' + values.map(value => `${encodeURIComponent(value)}`).join(',');
   }
   
+  function isAlpha(str) {
+    return /^[a-zA-Z]+$/.test(str);
+  }
+  function isNumeric(str) {
+    return /^[0-9|,]+$/.test(str);
+  }
+
+  function sortTable(table, col, reverse) {
+    var tbody = table.tBodies[0];
+    var tr = Array.prototype.slice.call(tbody.rows);
+    
+    tr.sort(function(a, b) {
+        
+      if (isAlpha(a.cells[col].textContent.trim()) || isAlpha(b.cells[col].textContent.trim())) {
+          // Severity comparison
+          var severityOrder = {
+              'Information': 0,
+              'Low': 1,
+              'Medium': 2,
+              'High': 3,
+              'Critical': 4
+          }
+
+          if (severityOrder[a.cells[col].textContent.trim()] == undefined ||
+              severityOrder[b.cells[col].textContent.trim()] == undefined) {
+            return;
+          }
+
+          var aNum = severityOrder[a.cells[col].textContent.trim()];
+          var bNum = severityOrder[b.cells[col].textContent.trim()];
+          return reverse ? bNum - aNum : aNum - bNum;
+      } else if (isNumeric(a.cells[col].textContent.trim()) && isNumeric(b.cells[col].textContent.trim())) {          
+          // Numeric comparison
+          var aNum = parseFloat(a.cells[col].textContent.trim());
+          var bNum = parseFloat(b.cells[col].textContent.trim());
+          return reverse ? bNum - aNum : aNum - bNum;
+      } else {
+          // Date comparison
+          var aDate = new Date(a.cells[col].textContent.trim());
+          var bDate = new Date(b.cells[col].textContent.trim());
+          return reverse ? bDate - aDate : aDate - bDate;
+      }
+        
+    });
+    tr.forEach(function(row) {
+        tbody.appendChild(row);
+    });
+  }
+  function makeSortable(table) {
+    var headers = table.querySelectorAll('th');
+    
+    headers.forEach(function(header, index) {
+      if (index < 2) return; 
+
+      header.addEventListener('click', function() {
+        var isAsc = header.classList.contains('sorted-asc');
+        resetSortIndicators(headers);
+        if (isAsc) {
+          sortTable(table, index, true);
+          header.classList.remove('sorted-asc');
+          header.classList.add('sorted-desc');
+        } else {
+          sortTable(table, index, false);
+          header.classList.remove('sorted-desc');
+          header.classList.add('sorted-asc');          
+        }
+
+        /*
+        let severity_header = document.getElementById('header-severity');
+        let count_header = document.getElementById('header-count');
+        let first_date_header = document.getElementById('header-first-date');
+        let last_date_header = document.getElementById('header-last-date');
+        if (severity_header.getElementsByClassName('sort-active').length == 0) {
+          severity_header.classList.remove('sort-deactive');
+          severity_header.classList.add('sort-active');
+        } else {
+          severity_header.classList.add('sort-deactive');
+          severity_header.classList.remove('sort-active');
+        }
+          */
+        let span = this.querySelector('span');
+        span.classList.remove('sort-deactive');
+        span.classList.add('sort-active');      
+      });
+    });
+  }
+
+  function resetSortIndicators(headers) {    
+    headers.forEach(function(header, index) {
+      if (index < 2) return; 
+      let sort_active = header.querySelector('span');
+      sort_active.classList.remove('sort-active');
+      sort_active.classList.add('sort-deactive');      
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    makeSortable(document.getElementById('sortable_table'));
+  });
 </script>
   </body>
 </html>
