@@ -8,6 +8,7 @@
 - ルールリンクをクリックすると、Sigmaルールがブラウザに表示されるようになった。 (#257) (@nishikawaakira)
 - `html-server`コマンドのComputer Summaryページに色を追加した。 (#201) (@nishikawaakira)
 - `html-server`レポートが、カウント、最初の日付、最後の日付によるルールのソートをサポートするようになった。 (#199) (@nishikawaakira)
+- 検出ルール一覧は現在、`html-server`の検索とリンクされている。 (#264) (@nishikawaakira)
 
 **バグ修正:**
 
