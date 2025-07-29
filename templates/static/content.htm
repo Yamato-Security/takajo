@@ -91,7 +91,6 @@
           })
           .then(data => {
 
-            // console.log(JSON.stringify(data, null, 2));
             // Severity Summary
             document.getElementById("critical_num").innerText = parseInt(data.computer_counts[0]).toLocaleString();
             document.getElementById("high_num").innerText = parseInt(data.computer_counts[1]).toLocaleString();
@@ -173,9 +172,10 @@
               return b[7] - a[7];
             });
 
-            const tbody = document.getElementById("detection-rule-list-body")
+            const tbody = document.getElementById("detection-rule-list-body")            
             if (tbody.innerHTML == "") {
               alerts.forEach(alert => {
+              
                 const row = document.createElement("tr");
 
                 // Checkbox
@@ -232,9 +232,37 @@
 
                 // 行を <tbody> に追加
                 tbody.appendChild(row);
+              
               });
             }
+            else {
 
+              const rows = tbody.querySelectorAll('tr');
+              
+              rows.forEach((row, index) => {
+                const tds = row.querySelectorAll('td');
+                const a = tds[1].querySelector('a');
+                var is_found = false;
+
+                alerts.forEach(alert => {
+                  if (a.innerText.toLowerCase() == alert[0].toLowerCase()) {
+                    tds['3'].textContent = parseInt(alert[7]).toLocaleString();
+                    tds['4'].textContent = formatDate(alert[5]);
+                    tds['5'].textContent = formatDate(alert[6]);
+                    
+                    is_found = true;
+                    return;
+                  }
+                });
+
+                if (is_found === false) {
+                  tds['3'].textContent = 0;
+                  tds['4'].textContent = '';
+                  tds['5'].textContent = '';
+                }
+              });
+            }
+              
           })
           .catch(error => {
             console.log(error.message)
@@ -611,29 +639,12 @@
                 <option value="90">past 90 days</option>
               </select>
               <br>
-              <!--
-              <div style="margin-top:8px;">
-                <button role="link" id="today-btn" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100 margin-right-10" style="margin-right:10px;">today</button>
-                <button role="link" id="pastday-btn" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100" style="margin-right:10px;">past day</button>
-                <button role="link" id="past3days-btn" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100" style="margin-right:10px;">past 3 days</button>
-                <button role="link" id="past7days-btn" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100" style="margin-right:10px;">past 7 days</button>
-                <button role="link" id="past30days-btn" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100" style="margin-right:10px;">past 30 days</button>
-                <button role="link" id="past90days-btn" class="relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100" style="margin-right:10px;">past 90 days</button>
-              </div>
-              -->
             </div>
             <script>
               document.getElementById('fetchData').addEventListener('click', () => {
                 pastdays = false;
                 getComputerData();
               });
-
-              /*
-              document.getElementById("pastdays-btn").addEventListener('click', () => {
-                pastdays = true;
-                getComputerData();
-              });
-              */
 
               document.getElementById("pastdays-select").addEventListener('change', (event) => {
                 const value = event.target.value;

@@ -8,6 +8,7 @@
 - Sigma rules are now displayed in the browser if you click on the link. (#257) (@nishikawaakira)
 - Added colors to the Computer Summary page in the `html-server` command. (#201) (@nishikawaakira)
 - `html-server` report now supports sorting of rules by Count, First Date and Last Date. (#199) (@nishikawaakira)
+- Detection rule list is linked to the search now for `html-server`. (#264) (@nishikawaakira)
 
 **Bug Fixes:**
 
