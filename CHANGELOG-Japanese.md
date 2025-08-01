@@ -1,6 +1,6 @@
 # 変更点
 
-## 2.11.0 [2025/08/05] - Blackhat Arsenal Release
+## 2.11.0 [2025/08/01] - Blackhat Arsenal Release
 
 **改善:**
 
