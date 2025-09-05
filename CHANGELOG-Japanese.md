@@ -1,5 +1,11 @@
 # 変更点
 
+## 2.12.0 [xxxx/xx/xx]
+
+**改善:**
+
+- `html-server`コマンドは完全にオフラインで動作するようになった。 (#267) (@nishikawaakira)
+
 ## 2.11.0 [2025/08/01] - Blackhat Arsenal Release
 
 **改善:**

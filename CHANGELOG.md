@@ -1,5 +1,11 @@
 # Changes
 
+## 2.12.0 [xxxx/xx/xx]
+
+**Enhancements:**
+
+- `html-server` command now runs completely offline. (#267) (@nishikawaakira)
+
 ## 2.11.0 [2025/08/01] - Blackhat Arsenal Release
 
 **Enhancements:**

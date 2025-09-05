@@ -21,9 +21,14 @@ proc computer_summary*(ctx: Context) {.async.} =
 proc rule_content*(ctx: Context) {.async.} =
   await ctx.staticFileResponse("rule.htm", "templates/static")
 
-
-proc commonjs*(ctx: Context) {.async.} = 
-  await ctx.staticFileResponse("js/common.js", "templates/static")
-
 proc favicon*(ctx: Context) {.async.} = 
   await ctx.staticFileResponse("img/favicon.png", "templates/static")
+
+proc js_handler*(ctx: Context) {.async.} =
+  await ctx.staticFileResponse(ctx.request.url.path, "templates/static")
+
+proc css_handler*(ctx: Context) {.async.} =
+  await ctx.staticFileResponse(ctx.request.url.path, "templates/static")
+
+proc webfonts_handler*(ctx: Context) {.async.} =
+  await ctx.staticFileResponse(ctx.request.url.path, "templates/static")
