@@ -126,7 +126,7 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
 
   # timeline-logon -t ../hayabusa/timeline.jsonl -o case-1/LogonTimeline.csv
   let cmd20 = TimelineLogonCmd(name: "timeline-logon",
-    displayTable: displayTable, timeline: timeline, output: output & "/TimelineLogon.csv")
+    displayTable: displayTable, timeline: timeline, output: output & "/TimelineLogon.csv", calculateElapsedTime: true)
 
   # timeline-partition-diagnostic -t ../hayabusa/timeline.jsonl -o case-1/PartitionDiagnosticTimeline.csv
   let cmd21 = TimelinePartitionDiagnosticCmd(
