@@ -1,10 +1,14 @@
 # 変更点
 
-## 2.12.0 [xxxx/xx/xx]
+## 2.12.0 [2025/10/10] - Binary Day Release
 
 **改善:**
 
 - `html-server`コマンドは完全にオフラインで動作するようになった。 (#267) (@nishikawaakira)
+
+**バグ修正:**
+
+- `automagic`は、`LogoffTime`列を正しく生成していなかった。 (#269) (@fukusuket)
 
 ## 2.11.0 [2025/08/01] - Blackhat Arsenal Release
 
