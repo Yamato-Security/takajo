@@ -1,10 +1,14 @@
 # Changes
 
-## 2.12.0 [xxxx/xx/xx]
+## 2.12.0 [2025/10/10] - Binary Day Release
 
 **Enhancements:**
 
 - `html-server` command now runs completely offline. (#267) (@nishikawaakira)
+
+**Bug Fixes:**
+
+- `automagic` was not properly generating the `LogoffTime` column. (#269) (@fukusuket)
 
 ## 2.11.0 [2025/08/01] - Blackhat Arsenal Release
 
