@@ -1,5 +1,11 @@
 # Changes
 
+## 2.13.0 [2025/10/18] - Tenshinhan Day Release
+
+**Bug Fixes:**
+
+- Added input validation to prevent conversion errors. (#271) (@fukusuket)
+
 ## 2.12.0 [2025/10/10] - Binary Day Release
 
 **Enhancements:**
