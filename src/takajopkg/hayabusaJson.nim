@@ -31,9 +31,36 @@ proc convertJsonNodeToSeq(jsonNode: JsonNode, key:string): seq[string] =
             res.add(element.getStr())
     return res
 
+proc hasRequiredHayabusaKeys(jsonLine: JsonNode): bool =
+    if jsonLine.kind != JObject:
+        return false
+
+    const stringKeys = [
+        "Timestamp", "RuleTitle", "Computer", "Channel", "Level",
+        "RuleAuthor", "RuleModifiedDate", "Status", "Provider",
+        "RuleCreationDate", "RuleFile", "EvtxFile"
+    ]
+    const objectKeys = ["Details", "ExtraFieldInfo"]
+
+    for key in stringKeys:
+        if not jsonLine.hasKey(key) or jsonLine[key].kind != JString:
+            return false
+
+    for key in objectKeys:
+        if not jsonLine.hasKey(key):
+            return false
+        if jsonLine[key].kind notin {JObject, JArray}:
+            return false
+
+    return true
+
 proc parseLine*(line:string): Option[HayabusaJson] =
   try:
-      return some(line.fromJson(HayabusaJson))
+    let jsonLine = parseJson(line)
+    if not hasRequiredHayabusaKeys(jsonLine):
+        return none(HayabusaJson)
+    else:
+        return some(line.fromJson(HayabusaJson)) 
   except CatchableError:
       # countルールは、EventID: "-" となりint型に変換できないため、EventID:0のHayabusaJsonオブジェクトを作成
       try:
