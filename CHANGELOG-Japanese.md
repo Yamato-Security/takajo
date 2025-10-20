@@ -1,5 +1,11 @@
 # 変更点
 
+## 2.13.1 [2025/10/20] - Tenshinhan Day Release
+
+**バグ修正:**
+
+- 前回のバグ修正では、Hayabusaに`-p super-verbose`オプションを指定しなかった場合、正しい出力が得られなかった。 (@fukusuket)
+
 ## 2.13.0 [2025/10/18] - Tenshinhan Day Release
 
 **バグ修正:**
