@@ -35,11 +35,7 @@ proc hasRequiredHayabusaKeys(jsonLine: JsonNode): bool =
     if jsonLine.kind != JObject:
         return false
 
-    const stringKeys = [
-        "Timestamp", "RuleTitle", "Computer", "Channel", "Level",
-        "RuleAuthor", "RuleModifiedDate", "Status", "Provider",
-        "RuleCreationDate", "RuleFile", "EvtxFile"
-    ]
+    const stringKeys = ["Timestamp", "RuleTitle", "Level", "Computer", "Channel"]
     const objectKeys = ["Details", "ExtraFieldInfo"]
 
     for key in stringKeys:
@@ -57,10 +53,10 @@ proc hasRequiredHayabusaKeys(jsonLine: JsonNode): bool =
 proc parseLine*(line:string): Option[HayabusaJson] =
   try:
     let jsonLine = parseJson(line)
-    if not hasRequiredHayabusaKeys(jsonLine):
-        return none(HayabusaJson)
-    else:
+    if hasRequiredHayabusaKeys(jsonLine):
         return some(line.fromJson(HayabusaJson)) 
+    else:
+        return none(HayabusaJson)
   except CatchableError:
       # countルールは、EventID: "-" となりint型に変換できないため、EventID:0のHayabusaJsonオブジェクトを作成
       try:
