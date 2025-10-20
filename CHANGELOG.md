@@ -1,5 +1,11 @@
 # Changes
 
+## 2.13.1 [2025/10/20] - Tenshinhan Day Release
+
+**Bug Fixes:**
+
+- The previous bug fix did not result in correct output if `-p super-verbose` was not supplied with Hayabusa. (@fukusuket)
+
 ## 2.13.0 [2025/10/18] - Tenshinhan Day Release
 
 **Bug Fixes:**
