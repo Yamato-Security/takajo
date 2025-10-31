@@ -1,5 +1,11 @@
 # Changes
 
+## 2.14.0 [xxxx/xx/xx]
+
+**Enhancements:**
+
+- Updated the `mitre-attack.json` output to support MITRE ATT&CK to v18. (#274) (@fukusuket)
+
 ## 2.13.1 [2025/10/20] - Tenshinhan Day Release
 
 **Bug Fixes:**

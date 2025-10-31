@@ -71,7 +71,7 @@
     },
     "T1006": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Discovery",
         "Technique": "Direct Volume Access"
     },
     "T1007": {
@@ -354,6 +354,11 @@
         "Tactic": "Defense Evasion",
         "Technique": "Masquerading"
     },
+    "T1036.012": {
+        "Sub-Technique": "Browser Fingerprint",
+        "Tactic": "Defense Evasion",
+        "Technique": "Masquerading"
+    },
     "T1037": {
         "Sub-Technique": "-",
         "Tactic": "Privilege Escalation",
@@ -631,6 +636,11 @@
     },
     "T1059.012": {
         "Sub-Technique": "Hypervisor CLI",
+        "Tactic": "Execution",
+        "Technique": "Command and Scripting Interpreter"
+    },
+    "T1059.013": {
+        "Sub-Technique": "Container CLI/API",
         "Tactic": "Execution",
         "Technique": "Command and Scripting Interpreter"
     },
@@ -1284,6 +1294,11 @@
         "Tactic": "Execution",
         "Technique": "User Execution"
     },
+    "T1204.005": {
+        "Sub-Technique": "Malicious Library",
+        "Tactic": "Execution",
+        "Technique": "User Execution"
+    },
     "T1205": {
         "Sub-Technique": "-",
         "Tactic": "Command and Control",
@@ -1346,6 +1361,11 @@
     },
     "T1213.005": {
         "Sub-Technique": "Messaging Applications",
+        "Tactic": "Collection",
+        "Technique": "Data from Information Repositories"
+    },
+    "T1213.006": {
+        "Sub-Technique": "Databases",
         "Tactic": "Collection",
         "Technique": "Data from Information Repositories"
     },
@@ -1610,7 +1630,7 @@
         "Technique": "Virtualization/Sandbox Evasion"
     },
     "T1497.003": {
-        "Sub-Technique": "Time Based Evasion",
+        "Sub-Technique": "Time Based Checks",
         "Tactic": "Discovery",
         "Technique": "Virtualization/Sandbox Evasion"
     },
@@ -1696,6 +1716,11 @@
     },
     "T1518.001": {
         "Sub-Technique": "Security Software Discovery",
+        "Tactic": "Discovery",
+        "Technique": "Software Discovery"
+    },
+    "T1518.002": {
+        "Sub-Technique": "Backup Software Discovery",
         "Tactic": "Discovery",
         "Technique": "Software Discovery"
     },
@@ -1904,6 +1929,11 @@
         "Tactic": "Privilege Escalation",
         "Technique": "Event Triggered Execution"
     },
+    "T1546.018": {
+        "Sub-Technique": "Python Startup Hooks",
+        "Tactic": "Privilege Escalation",
+        "Technique": "Event Triggered Execution"
+    },
     "T1547": {
         "Sub-Technique": "-",
         "Tactic": "Privilege Escalation",
@@ -2055,7 +2085,7 @@
         "Technique": "Unsecured Credentials"
     },
     "T1552.003": {
-        "Sub-Technique": "Bash History",
+        "Sub-Technique": "Shell History",
         "Tactic": "Credential Access",
         "Technique": "Unsecured Credentials"
     },
@@ -2376,6 +2406,11 @@
     },
     "T1562.012": {
         "Sub-Technique": "Disable or Modify Linux Audit System",
+        "Tactic": "Defense Evasion",
+        "Technique": "Impair Defenses"
+    },
+    "T1562.013": {
+        "Sub-Technique": "Disable or Modify Network Device Firewall",
         "Tactic": "Defense Evasion",
         "Technique": "Impair Defenses"
     },
@@ -3393,6 +3428,31 @@
         "Sub-Technique": "-",
         "Tactic": "Execution",
         "Technique": "ESXi Administration Command"
+    },
+    "T1677": {
+        "Sub-Technique": "-",
+        "Tactic": "Execution",
+        "Technique": "Poisoned Pipeline Execution"
+    },
+    "T1678": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Delay Execution"
+    },
+    "T1679": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Evasion",
+        "Technique": "Selective Exclusion"
+    },
+    "T1680": {
+        "Sub-Technique": "-",
+        "Tactic": "Discovery",
+        "Technique": "Local Storage Discovery"
+    },
+    "T1681": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Search Threat Vendor Data"
     },
     "TA0001": {
         "Sub-Technique": "-",
