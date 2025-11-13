@@ -1,6 +1,6 @@
 # Changes
 
-## 2.14.0 [xxxx/xx/xx]
+## 2.14.0 [2025/11/15] - CODE BLUE Release
 
 **Enhancements:**
 
