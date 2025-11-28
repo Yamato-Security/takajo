@@ -1,10 +1,7 @@
+import general
 import json, streams, strutils, sequtils
 
 const ConvertFlattenJsonMsg = "Convert and flatten Hayabusa JSONL files by merging nested fields and concatenating arrays."
-
-type
-  ConvertFlattenJsonCmd* = ref object of AbstractCmd
-    outputFile: File
 
 # Function to concatenate arrays using " ¦ " as the separator
 proc concatArray(jsonObj: JsonNode, key: string): string =
@@ -40,46 +37,34 @@ proc flattenJson(jsonObj: JsonNode): JsonNode =
       flatJson[key] = %concatenated
   return flatJson
 
-method filter*(self: ConvertFlattenJsonCmd, x: HayabusaJson): bool =
-  return true
-
-method analyze*(self: ConvertFlattenJsonCmd, x: HayabusaJson) =
-  var jsonObj = %* {
-    "Timestamp": x.Timestamp,
-    "RuleTitle": x.RuleTitle,
-    "Computer": x.Computer,
-    "Channel": x.Channel,
-    "Level": x.Level,
-    "EventID": x.EventID,
-    "RuleAuthor": x.RuleAuthor,
-    "RuleModifiedDate": x.RuleModifiedDate,
-    "Status": x.Status,
-    "RecordID": x.RecordID,
-    "Details": x.Details,
-    "ExtraFieldInfo": x.ExtraFieldInfo,
-    "Provider": x.Provider,
-    "RuleCreationDate": x.RuleCreationDate,
-    "RuleFile": x.RuleFile,
-    "EvtxFile": x.EvtxFile,
-    "MitreTags": %x.MitreTags,
-    "MitreTactics": %x.MitreTactics,
-    "OtherTags": %x.OtherTags
-  }
-  let flattened = flattenJson(jsonObj)
-  self.outputFile.writeLine($flattened)
-
-method resultOutput*(self: ConvertFlattenJsonCmd) =
-  self.outputFile.close()
-
 proc convertFlattenJson(output: string = "", quiet: bool = false, skipProgressBar: bool = false, timeline: string) =
   checkArgs(quiet, timeline, "informational")
   var filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
-  for timelinePath in filePaths:
-    let cmd = ConvertFlattenJsonCmd(
-                skipProgressBar: skipProgressBar,
-                timeline: timelinePath,
-                output: output,
-                name: "convert-flatten-json",
-                msg: ConvertFlattenJsonMsg)
-    cmd.outputFile = open(output, fmWrite)
-    cmd.analyzeJSONLFile()
+  let outputStream = newFileStream(output, fmWrite)
+  defer:
+    outputStream.close()
+
+  let startTime = epochTime()
+  var bar: SuruBar
+  if not skipProgressBar:
+    bar = initSuruBar()
+    bar[0].total = countJsonlAndStartMsg("convert-flatten-json", ConvertFlattenJsonMsg, timeline)
+    bar.setup()
+
+  let fileInfo = getFileInfo(timeline)
+  if (fileInfo.kind == pcDir or fileInfo.kind == pcLinkToDir):
+    filePaths = getTargetExtFileLists(timeline, ".jsonl", true)
+  for path in filePaths:
+    for line in lines(path):
+      if not skipProgressBar:
+        inc bar
+        bar.update(1000000000)
+      try:
+        let jsonObj = parseJson(line)
+        let flattenedJson = flattenJson(jsonObj)
+        outputStream.writeLine(flattenedJson)
+      except:
+        echo "Skipping invalid JSON line: ", line
+  if not skipProgressBar:
+    bar.finish()
+  outputElapsedTime(startTime)
