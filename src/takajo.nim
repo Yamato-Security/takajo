@@ -27,6 +27,7 @@ import takajopkg/takajoCore
 import takajopkg/takajoTerminal
 import takajopkg/ttpResult
 import takajopkg/vtResult
+include takajopkg/convertFlattenJson
 include takajopkg/extractCredentials
 include takajopkg/extractScriptblocks
 include takajopkg/listDomains
@@ -67,6 +68,7 @@ when isMainModule:
     clCfg.version = "2.14.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
+    const example_convert_flatten_json = "  convert-flatten-json -t ../hayabusa/timeline.jsonl -o ../hayabusa/timeline-flattened.jsonl\p"
     const example_extract_credentials = "  extract-credentials -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o credentials.csv\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low]  [--skipProgressBar] -o scriptblock-logs\p"
     const example_html_report = "  html-report -t ../hayabusa/timeline.jsonl -o ./output -r ../hayabusa/rules [--sqlite-output html-report.sqlite] [--clobber] [--skipProgressBar] \p"
@@ -103,7 +105,7 @@ when isMainModule:
 
     clCfg.useMulti = "Version: 2.14.0 CODE BLUE Release\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples &
-        example_automagic &
+        example_automagic & example_convert_flatten_json &
         example_extract_credentials & example_extract_scriptblocks & example_html_report & example_html_server &
         example_list_domains & example_list_hashes & example_list_ip_addresses & example_list_undetected_evtx & example_list_unused_rules &
         example_metrics_computers & example_metrics_users &
@@ -126,6 +128,16 @@ when isMainModule:
                 "displayTable": "display the results table (default: false)",
                 "level": "specify the minimum alert level (default: informational)",
                 "output": "output directory (default: case-1)",
+                "quiet": "do not display the launch banner (default: false)",
+                "skipProgressBar": "do not display the progress bar (default: false)",
+                "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
+            }
+        ],
+        [
+            convertFlattenJson, cmdName = "convert-flatten-json",
+            doc = "convert a Hayabusa JSONL timeline to a flattened JSONL timeline",
+            help = {
+                "output": "save results to a csv file",
                 "quiet": "do not display the launch banner (default: false)",
                 "skipProgressBar": "do not display the progress bar (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any)",
