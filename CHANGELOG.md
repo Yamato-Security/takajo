@@ -1,5 +1,11 @@
 # Changes
 
+## 2.15.0 [xxxx/xx/xx]
+
+**Bug Fixes:**
+
+- Fixed a parsing bug in the `automagic` command. (#278) (@fukusuket)
+
 ## 2.14.0 [2025/11/15] - CODE BLUE Release
 
 **Enhancements:**

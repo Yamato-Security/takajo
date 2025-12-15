@@ -42,6 +42,10 @@ proc calculateTimeDifference(uptime: string, lastTime: string): int =
     except CatchableError:
         format = "dd-MM-yyyy HH:mm:ss'.'fff" # --European-time
     format = "MM-dd-yyyy HH:mm:ss'.'fff" # --US-military-time
+  if format.len - 2 > uptime.len:
+    return 0
+  if format.len - 2 > lastTime.len:
+    return 0
   let uptimeTime = parse(uptime[0 ..< format.len - 2], format)
   let lastTimeTime = parse(lastTime[0 ..< format.len - 2], format)
   return int((lastTimeTime - uptimeTime).inSeconds)

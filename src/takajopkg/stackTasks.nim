@@ -15,10 +15,15 @@ proc decodeEntity*(txt: string): string =
 
 method analyze*(self: StackTasksCmd, x: HayabusaJson) =
   let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
-    let user = x.Details["User"].getStr("N/A")
-    let name = x.Details["Name"].getStr("N/A")
-    let content = x.Details["Content"].getStr("N/A").replace("\\r\\n", "")
-    let node = parseXml(content)
+    let user = getJsonValue(x.Details, @["User"])
+    let name = getJsonValue(x.Details, @["Name"])
+    let content = getJsonValue(x.Details, @["Content"]).replace("\\r\\n", "")
+    var node: XmlNode
+    try:
+      node = parseXml(content)
+    except:
+      let stackKey = user & " -> " & name & " -> " & "parsing_error"
+      return (stackKey, @[name, "parsing_error", "parsing_error"])
     let commands = node.findAll("Command")
     var command = ""
     var args = ""
