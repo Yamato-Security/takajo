@@ -14,8 +14,8 @@ method filter*(self: StackServicesCmd, x: HayabusaJson): bool =
 
 method analyze*(self: StackServicesCmd, x: HayabusaJson) =
   let getStackKey = proc(x: HayabusaJson): (string, seq[string]) =
-    let svc = x.Details["Svc"].getStr("N/A")
-    let pat = x.Details["Path"].getStr("N/A")
+    let svc = getJsonValue(x.Details, @["Svc"])
+    let pat = getJsonValue(x.Details, @["Path"])
     let stackKey = svc & " -> " & pat
     return (stackKey, @[svc, pat])
   let (stackKey, otherColumn) = getStackKey(x)
