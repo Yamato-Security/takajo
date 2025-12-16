@@ -278,7 +278,6 @@ proc countLinesInTimeline*(filePath: string, quiet: bool = false,
             for i in 0 ..< bytesRead:
                 if buffer[i] == '\n':
                     inc(count)
-        inc(count)
         file.close()
     if not quiet:
         echo "Total lines: ", intToStr(count).insertSep(',')

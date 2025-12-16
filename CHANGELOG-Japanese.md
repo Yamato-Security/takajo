@@ -2,6 +2,10 @@
 
 ## 2.15.0 [xxxx/xx/xx]
 
+**新機能:**
+
+- TimesketchにJSONLデータをインポートするための`convert-flatten-json`コマンドを追加した。 (#277) (@fukusuket)
+
 **バグ修正:**
 
 - `automagic`コマンドのパースバグを修正した。 (#278) (@fukusuket)
