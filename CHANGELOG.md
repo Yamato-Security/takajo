@@ -9,6 +9,7 @@
 **Bug Fixes:**
 
 - Fixed a parsing bug in the `automagic` command. (#278) (@fukusuket)
+- Handle missing `RecordID` in JSON parsing for HTML report and server commands. (#279) (@fukusuket)
 
 ## 2.14.0 [2025/11/15] - CODE BLUE Release
 
