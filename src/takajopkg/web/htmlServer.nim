@@ -122,7 +122,9 @@ proc createSQLite*(quiet: bool = false, timeline: string, rulepath: string, clob
                     let computer = jsonObj["Computer"].getStr()
                     let channel = jsonObj["Channel"].getStr()
                     let event_id = jsonObj["EventID"].getInt()
-                    let record_id = jsonObj["RecordID"].getStr()
+                    var record_id = ""
+                    if "RecordID" in jsonObj:
+                        record_id = jsonObj["RecordID"].getStr()
                     let rule_file = jsonObj["RuleFile"].getStr()
                     let evtx_file = jsonObj["EvtxFile"].getStr()
             
@@ -283,4 +285,3 @@ proc htmlServer*(port: int = 8823, quiet: bool = false, timeline: string, rulepa
     let app = newApp(settings = settings)
     app.addRoute(urls.urlPatterns, "")    
     app.run()
-
