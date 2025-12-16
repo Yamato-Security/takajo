@@ -3,6 +3,15 @@ import json, streams, strutils, sequtils
 
 const ConvertFlattenJsonMsg = "Convert and flatten Hayabusa JSONL files by merging nested fields and concatenating arrays."
 
+proc normalizeScalar(value: JsonNode): JsonNode =
+  case value.kind
+  of JBool:
+    return %($value.getBool())
+  of JInt:
+    return %($value.getInt())
+  else:
+    return value
+
 # Function to concatenate arrays using " ¦ " as the separator
 proc concatArray(jsonObj: JsonNode, key: string): string =
   if key in jsonObj and jsonObj[key].kind == JArray:
@@ -18,17 +27,17 @@ proc flattenJson(jsonObj: JsonNode): JsonNode =
   # Copy top-level fields except "Details", "ExtraFieldInfo", and array fields
   for key, value in jsonObj.pairs:
     if key notin ["Details", "ExtraFieldInfo", "OtherTags", "MitreTags", "MitreTactics"]:
-      flatJson[key] = value
+      flatJson[key] = normalizeScalar(value)
 
   # Merge "Details" fields into the root
   if "Details" in jsonObj:
     for key, value in jsonObj["Details"].pairs:
-      flatJson[key] = value
+      flatJson[key] = normalizeScalar(value)
 
   # Merge "ExtraFieldInfo" fields into the root
   if "ExtraFieldInfo" in jsonObj:
     for key, value in jsonObj["ExtraFieldInfo"].pairs:
-      flatJson[key] = value
+      flatJson[key] = normalizeScalar(value)
 
   # Concatenate arrays only if they have data
   for key in ["OtherTags", "MitreTags", "MitreTactics"]:
