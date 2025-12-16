@@ -2,6 +2,10 @@
 
 ## 2.15.0 [xxxx/xx/xx]
 
+**New Features:**
+
+- Added a `convert-flatten-json` command for importing JSONL data into Timesketch. (#277) (@fukusuket)
+
 **Bug Fixes:**
 
 - Fixed a parsing bug in the `automagic` command. (#278) (@fukusuket)
