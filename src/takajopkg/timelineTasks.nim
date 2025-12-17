@@ -78,9 +78,8 @@ method resultOutput*(self: TimelineTasksCmd) =
 
     ## Write CSV header
     let header = concat(basicHeader, detailedHeader)
-    for h in header:
-      outputFile.write(h & ",")
-    outputFile.write("\p")
+    let headerLine = header.join(",")
+    outputFile.write(headerLine & "\p")
 
     ## Write contents
     for (basicTable, detailedTable) in self.rowData:

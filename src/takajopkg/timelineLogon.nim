@@ -400,9 +400,8 @@ method resultOutput*(self: TimelineLogonCmd) =
             "TargetUserSID", "TargetDomainName", "TargetLinkedLID"]
 
     ## Write CSV header
-    for h in header:
-        outputFile.write(h & ",")
-    outputFile.write("\p")
+    let headerLine = header.join(",")
+    outputFile.write(headerLine & "\p")
 
     ## Write contents
     self.seqOfResultsTables.sort(proc(a, b: TableRef[string, string]): int =
