@@ -82,7 +82,7 @@ proc computer*(ctx: Context) {.async.} =
         let path = getDBPath(ctx)
         let db = open(path , "", "", "")
 
-        var query = """select rule_title, rule_file, level, level_order, computer, min(datetime(timestamp, 'localtime')) as start_date, max(datetime(timestamp, 'localtime')) as end_date, count(*) as count
+        var query = """select rule_title, rule_file, level, level_order, computer, min(datetime(timestamp)) as start_date, max(datetime(timestamp)) as end_date, count(*) as count
                         from timelines
                         where """ & custom_query &  """
                         group by rule_title, level, computer
@@ -101,7 +101,7 @@ proc computer*(ctx: Context) {.async.} =
                     """
         let computer_counts = db.getRow(sql query, params) 
 
-        query = """select level, level_order, date(datetime(timestamp, 'localtime')) AS date, count(*) as count
+        query = """select level, level_order, date(datetime(timestamp)) AS date, count(*) as count
                         from timelines
                         where """ & custom_query &  """
                         group by date, level_order
@@ -136,8 +136,8 @@ proc sidemenu*(ctx: Context) {.async.} =
                             rule_title,
                             computer,
                             COUNT(computer) AS computer_total,
-                            MIN(datetime(timestamp, 'localtime')) AS first_date,
-                            MAX(datetime(timestamp, 'localtime')) AS last_date
+                            MIN(datetime(timestamp)) AS first_date,
+                            MAX(datetime(timestamp)) AS last_date
                         FROM timelines
                         GROUP BY level_order, rule_title, computer
                         ORDER BY level_order, rule_title, computer;
