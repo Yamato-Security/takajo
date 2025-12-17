@@ -136,8 +136,8 @@ proc sidemenu*(ctx: Context) {.async.} =
                             rule_title,
                             computer,
                             COUNT(computer) AS computer_total,
-                            MIN(datetime(timestamp) AS first_date,
-                            MAX(datetime(timestamp) AS last_date
+                            MIN(datetime(timestamp)) AS first_date,
+                            MAX(datetime(timestamp)) AS last_date
                         FROM timelines
                         GROUP BY level_order, rule_title, computer
                         ORDER BY level_order, rule_title, computer;
