@@ -11,6 +11,7 @@
 - Fixed a parsing bug in the `automagic` command. (#278) (@fukusuket)
 - Handle missing `RecordID` in JSON parsing for HTML report and server commands. (#279) (@fukusuket)
 - Dates in the `html-server` was being converted to local time. (#281) (@fukusuket)
+- OS information was not included in the computer metrics output with `automagic`. (#286) (@fukusuket)
 
 ## 2.14.0 [2025/11/15] - CODE BLUE Release
 

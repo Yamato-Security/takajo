@@ -11,6 +11,7 @@
 - `automagic`コマンドのパースバグを修正した。 (#278) (@fukusuket)
 - HTMLレポートおよびサーバコマンドのJSON解析における`RecordID`の欠落を処理できるようにした。 (#279) (@fukusuket)
 - `html-server`の日付は、ローカル時間に変更されていた。 (#281) (@fukusuket)
+- `automagic`によるコンピューターメトリクスの出力にはOS情報が含まれていなかった。 (#286) (@fukusuket)
 
 ## 2.14.0 [2025/11/15] - CODE BLUE Release
 
