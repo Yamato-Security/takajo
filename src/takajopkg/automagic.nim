@@ -41,10 +41,11 @@ proc autoMagic(level: string = "informational", skipProgressBar: bool = false,
     displayTable: displayTable, timeline: timeline, output: output & "/ListIP-Addresses.txt")
 
   # metrics-computers -t ../hayabusa/timeline.jsonl -o case-1/MetricsComputers.csv
+  let windowsVersions = readWindowsVersions("conf/windows_versions.csv")
   let cmd0 = metricsComputersCmd(name: "metrics-computers",
     skipProgressBar: skipProgressBar,
     displayTable: displayTable,
-    timeline: timeline, output: output & "/MetricsComputers.csv")
+    timeline: timeline, output: output & "/MetricsComputers.csv", windowsVersions: windowsVersions)
 
   # metrics-users -t ../hayabusa/timeline.jsonl -o case-1/MetricsUsers.csv
   let cmd01 = metricsUsersCmd(name: "metrics-users",
