@@ -11,6 +11,8 @@
 - `automagic`コマンドのパースバグを修正した。 (#278) (@fukusuket)
 - HTMLレポートおよびサーバコマンドのJSON解析における`RecordID`の欠落を処理できるようにした。 (#279) (@fukusuket)
 - `html-server`の日付は、ローカル時間に変更されていた。 (#281) (@fukusuket)
+- タイムラインCSVファイルのヘッダーに余分なコンマが含まれており、読み込み時に問題を引き起こしていた。(#282) (@fukusuket)
+- `html-server`コマンドの壊れたリンクを修正した。 (#280) (@fukusuket)
 
 ## 2.14.0 [2025/11/15] - CODE BLUE Release
 
