@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-15, macos-26]
+        os: [windows-latest, ubuntu-latest, macos-latest, macos-15-intel]
 
     steps:
       - name: Checkout Repository
@@ -33,12 +33,12 @@ jobs:
           nimble update
 
       - name: Build Takajo binary
-        if: matrix.os != 'macos-15'
+        if: matrix.os != 'macos-15-intel'
         run: |
           nimble build -d:release --threads:on
 
       - name: Build Takajo binary for Intel Mac
-        if: matrix.os == 'macos-15'
+        if: matrix.os == 'macos-15-intel'
         run: |
           nimble build -d:release --threads:on --os:macosx --cpu:amd64 
 
@@ -67,9 +67,9 @@ jobs:
           case ${{ matrix.os }} in
             'ubuntu-latest')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu ;;
-            'macos-26')
+            'macos-latest')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-aarch64 ;;
-            'macos-15')
+            'macos-15-intel')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-x64 ;;
           esac
 
@@ -82,9 +82,9 @@ jobs:
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-win-x64" >> $GITHUB_OUTPUT ;;
             'ubuntu-latest')
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu" >> $GITHUB_OUTPUT ;;
-            'macos-26')
+            'macos-latest')
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-mac-aarch64" >> $GITHUB_OUTPUT ;;
-            'macos-15')
+            'macos-15-intel')
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-mac-x64" >> $GITHUB_OUTPUT ;;
           esac
 
@@ -96,13 +96,13 @@ jobs:
             release-binaries/*
 
       - name: Setup node
-        if: matrix.os == 'macos-26'
+        if: matrix.os == 'macos-latest'
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Create PDF
-        if: matrix.os == 'macos-26'
+        if: matrix.os == 'macos-latest'
         run: |
           npm i -g md-to-pdf
           md-to-pdf ./*.md --md-file-encoding utf-8
@@ -112,7 +112,7 @@ jobs:
           mv ./CHANGELOG-Japanese.pdf ./CHANGELOG-${{ github.event.inputs.release_ver }}-Japanese.pdf
 
       - name: Upload Document Artifacts
-        if: matrix.os == 'macos-26'
+        if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
           name: documents
