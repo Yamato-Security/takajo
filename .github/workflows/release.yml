@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest, macos-15]
+        os: [windows-latest, ubuntu-latest, macos-15, ]
 
     steps:
       - name: Checkout Repository
@@ -67,7 +67,7 @@ jobs:
           case ${{ matrix.os }} in
             'ubuntu-latest')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu ;;
-            'macos-latest')
+            'macos-26')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-aarch64 ;;
             'macos-15')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-x64 ;;
@@ -82,7 +82,7 @@ jobs:
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-win-x64" >> $GITHUB_OUTPUT ;;
             'ubuntu-latest')
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu" >> $GITHUB_OUTPUT ;;
-            'macos-latest')
+            'macos-26')
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-mac-aarch64" >> $GITHUB_OUTPUT ;;
             'macos-15')
               echo "artifact_name=takajo-${{ github.event.inputs.release_ver }}-mac-x64" >> $GITHUB_OUTPUT ;;
@@ -96,13 +96,13 @@ jobs:
             release-binaries/*
 
       - name: Setup node
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-26'
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Create PDF
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-26'
         run: |
           npm i -g md-to-pdf
           md-to-pdf ./*.md --md-file-encoding utf-8
@@ -112,7 +112,7 @@ jobs:
           mv ./CHANGELOG-Japanese.pdf ./CHANGELOG-${{ github.event.inputs.release_ver }}-Japanese.pdf
 
       - name: Upload Document Artifacts
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-26'
         uses: actions/upload-artifact@v4
         with:
           name: documents
