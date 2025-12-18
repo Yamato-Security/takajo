@@ -1,6 +1,6 @@
 # Changes
 
-## 2.15.0 [xxxx/xx/xx]
+## 2.15.0 [2025/12/20] - Winter Release
 
 **New Features:**
 
