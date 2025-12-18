@@ -196,7 +196,7 @@
                 titleCellA.target = "_blank";
                 global_rules.forEach(rule => {
                     if (rule[0] == alert[0]) {
-                        titleCellA.href = rule[1];
+                        titleCellA.href = "rule/content?alert_title=" + rule[0];
                         return;
                     }
                 });
