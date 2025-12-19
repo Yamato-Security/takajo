@@ -6,6 +6,7 @@ import std/options
 type HayabusaJson* = ref object
     Timestamp*: string
     RuleTitle*: string
+    RuleID*: string
     Computer*: string
     Channel*: string
     Level*: string
@@ -35,7 +36,7 @@ proc hasRequiredHayabusaKeys(jsonLine: JsonNode): bool =
     if jsonLine.kind != JObject:
         return false
 
-    const stringKeys = ["Timestamp", "RuleTitle", "Level", "Computer", "Channel"]
+    const stringKeys = ["Timestamp", "RuleTitle", "RuleID", "Level", "Computer", "Channel"]
     const objectKeys = ["Details", "ExtraFieldInfo"]
 
     for key in stringKeys:
@@ -64,6 +65,7 @@ proc parseLine*(line:string): Option[HayabusaJson] =
           let x = HayabusaJson(
                 Timestamp: getJsonValue(jsonLine, @["Timestamp"]),
                 RuleTitle: getJsonValue(jsonLine, @["RuleTitle"]),
+                RuleID: getJsonValue(jsonLine, @["RuleID"]),
                 Computer: getJsonValue(jsonLine, @["Computer"]),
                 Channel: getJsonValue(jsonLine, @["Channel"]),
                 Level: getJsonValue(jsonLine, @["Level"]),
