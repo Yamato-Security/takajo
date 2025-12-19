@@ -19,7 +19,7 @@ method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
   var
     cmdLine, company, computer, description, eventLevel, eventType,
         hashes, hash_MD5, hash_SHA1, hash_SHA256, hash_IMPHASH,
-        lid, lguid, ruleAuthor, ruleTitle, parentCmdline,
+        lid, lguid, ruleAuthor, ruleTitle, ruleId, parentCmdline,
         parentGuid, parentPid, pidStr, process, processGuid, product, timestamp, user = ""
   let jsonLine = x
   if x.Channel == "Sec" and x.EventId == 4688 and isMinLevel(x.Level, self.level):
@@ -32,6 +32,7 @@ method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
     timestamp = jsonLine.Timestamp
     eventLevel = jsonLine.Level
     ruleTitle = jsonLine.RuleTitle
+    ruleId = jsonLine.RuleID
     computer = jsonLine.Computer
     process = jsonLine.Details["Proc"].getStr()
     pidStr = $jsonLine.Details["PID"].getInt()
@@ -55,6 +56,7 @@ method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
       echo "Level: " & eventLevel
       echo "Rule: " & ruleTitle
       echo "RuleAuthor: " & ruleAuthor
+      echo "RuleID: " & ruleId
       echo "Cmdline: " & cmdLine
       echo "Process: " & process
       echo "PID: " & pidStr
@@ -69,6 +71,7 @@ method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
       singleResultTable["Level"] = eventLevel
       singleResultTable["Rule"] = ruleTitle
       singleResultTable["RuleAuthor"] = ruleAuthor
+      singleResultTable["RuleID"] = ruleId
       singleResultTable["Cmdline"] = cmdLine
       singleResultTable["Process"] = process
       singleResultTable["PID"] = pidStr
@@ -84,6 +87,7 @@ method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
     timestamp = jsonLine.Timestamp
     eventLevel = jsonLine.Level
     ruleTitle = jsonLine.RuleTitle
+    ruleId = jsonLine.RuleID
     computer = jsonLine.Computer
     process = jsonLine.Details["Proc"].getStr()
     pidStr = $jsonLine.Details["PID"].getInt()
@@ -132,6 +136,7 @@ method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
       echo "Level: " & eventLevel
       echo "Rule: " & ruleTitle
       echo "RuleAuthor: " & ruleAuthor
+      echo "RuleID: " & ruleId
       echo "Cmdline: " & cmdLine
       echo "Process: " & process
       echo "PID: " & pidStr
@@ -158,6 +163,7 @@ method analyze*(self: TimelineSuspiciousProcessesCmd, x: HayabusaJson) =
       singleResultTable["Level"] = eventLevel
       singleResultTable["Rule"] = ruleTitle
       singleResultTable["RuleAuthor"] = ruleAuthor
+      singleResultTable["RuleID"] = ruleId
       singleResultTable["Cmdline"] = cmdLine
       singleResultTable["Process"] = process
       singleResultTable["PID"] = pidStr
@@ -184,7 +190,7 @@ method resultOutput*(self: TimelineSuspiciousProcessesCmd) =
       self.suspicousProcessCount_Sysmon_1 > 0): # Save results to CSV
         # Open file to save results
     let header = ["Timestamp", "Computer", "Type", "Level", "Rule",
-        "RuleAuthor", "Cmdline", "Process", "PID", "User", "LID", "LGUID",
+        "RuleAuthor", "RuleID", "Cmdline", "Process", "PID", "User", "LID", "LGUID",
         "ProcessGUID", "ParentCmdline", "ParentPID", "ParentPGUID",
         "Description", "Product", "Company", "MD5 Hash", "SHA1 Hash",
         "SHA256 Hash", "Import Hash"]
