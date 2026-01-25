@@ -45,7 +45,7 @@ method analyze*(self: metricsUsersCmd, x: HayabusaJson) =
     sourceIP = getDetailValue(x.Details, "SrcIP")
     if eventID == 4624:
       sourceComp = getDetailValue(x.Details, "SrcComp")
-    if eventID == 21 or eventID == 303 or eventID == 4624 or eventID == 4648:
+    if eventID == 21 or eventID == 302 or eventID == 4624 or eventID == 4648:
         self.count.inc(key)
   if not self.userSidMap.hasKey(key) or (self.userSidMap[key] == "N/A" and sid != "N/A"):
     self.userSidMap[key] = sid
