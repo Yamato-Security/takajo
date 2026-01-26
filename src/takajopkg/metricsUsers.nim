@@ -6,10 +6,10 @@ type
     count*: CountTable[string] = initCountTable[string]()
     failedCount*: CountTable[string] = initCountTable[string]()
     userSidMap*: Table[string, string] = initTable[string, string]()
-    userSuccessSrcIPMap*: Table[string, HashSet[string]] = initTable[string, HashSet[string]]()
-    userFailedSrcIPMap*: Table[string, HashSet[string]] = initTable[string, HashSet[string]]()
-    userSuccessHostMap*: Table[string, HashSet[string]] = initTable[string, HashSet[string]]()
-    userFailedHostMap*: Table[string, HashSet[string]] = initTable[string, HashSet[string]]()
+    userSuccessSrcIPMap*: Table[string, CountTable[string]] = initTable[string, CountTable[string]]()
+    userFailedSrcIPMap*: Table[string, CountTable[string]] = initTable[string, CountTable[string]]()
+    userSuccessHostMap*: Table[string, CountTable[string]] = initTable[string, CountTable[string]]()
+    userFailedHostMap*: Table[string, CountTable[string]] = initTable[string, CountTable[string]]()
 
 proc getDetailValue(details: JsonNode, key: string): string =
   if details.hasKey(key):
@@ -50,37 +50,52 @@ method analyze*(self: metricsUsersCmd, x: HayabusaJson) =
   if not self.userSidMap.hasKey(key) or (self.userSidMap[key] == "N/A" and sid != "N/A"):
     self.userSidMap[key] = sid
   if not self.userSuccessSrcIPMap.hasKey(key):
-    self.userSuccessSrcIPMap[key] = initHashSet[string]()
+    self.userSuccessSrcIPMap[key] = initCountTable[string]()
   if not self.userFailedSrcIPMap.hasKey(key):
-    self.userFailedSrcIPMap[key] = initHashSet[string]()
+    self.userFailedSrcIPMap[key] = initCountTable[string]()
   if not self.userSuccessHostMap.hasKey(key):
-    self.userSuccessHostMap[key] = initHashSet[string]()
+    self.userSuccessHostMap[key] = initCountTable[string]()
   if not self.userFailedHostMap.hasKey(key):
-    self.userFailedHostMap[key] = initHashSet[string]()
-  
+    self.userFailedHostMap[key] = initCountTable[string]()
+
   if sourceIP != "N/A" and sourceIP != "-":
     let sources = sourceIP.split(" ¦ ")
     for src in sources:
       if src != "" and src != "-":
-        self.userSuccessSrcIPMap[key].incl(src)
+        self.userSuccessSrcIPMap[key].inc(src)
 
   if sourceFailIP != "N/A" and sourceFailIP != "-":
     let sources = sourceFailIP.split(" ¦ ")
     for src in sources:
       if src != "" and src != "-":
-        self.userFailedSrcIPMap[key].incl(src)
-  
+        self.userFailedSrcIPMap[key].inc(src)
+
   if sourceComp != "N/A" and sourceComp != "-":
     let sources = sourceComp.split(" ¦ ")
     for src in sources:
       if src != "" and src != "-":
-        self.userSuccessHostMap[key].incl(src)
- 
+        self.userSuccessHostMap[key].inc(src)
+
   if sourceFailComp != "N/A" and sourceFailComp != "-":
     let sources = sourceFailComp.split(" ¦ ")
     for src in sources:
       if src != "" and src != "-":
-        self.userFailedHostMap[key].incl(src)
+        self.userFailedHostMap[key].inc(src)
+
+proc formatCountTable(ct: CountTable[string]): string =
+  if ct.len == 0:
+    return "N/A"
+  let sorted = toSeq(pairs(ct)).sorted(proc(a, b: (string, int)): int =
+    if cmp(b[1], a[1]) == 0:
+      cmp(a[0], b[0])
+    else:
+      cmp(b[1], a[1])
+  )
+  result = ""
+  for i, entry in sorted:
+    if i > 0:
+      result.add(" ¦ ")
+    result.add(entry[0] & " (" & intToStr(entry[1]).insertSep(',') & ")")
 
 proc buildColumns(key: string, count: int, self: metricsUsersCmd): seq[string] =
     let computer = key.split("|")[0]
@@ -93,23 +108,23 @@ proc buildColumns(key: string, count: int, self: metricsUsersCmd): seq[string] =
     var sourceComp = "N/A"
     var sourceFailComp = "N/A"
     if self.userSuccessSrcIPMap.hasKey(key):
-        source = self.userSuccessSrcIPMap[key].toSeq().join(" ¦ ")
+        source = formatCountTable(self.userSuccessSrcIPMap[key])
     if self.userFailedSrcIPMap.hasKey(key):
-        sourceFail = self.userFailedSrcIPMap[key].toSeq().join(" ¦ ")
+        sourceFail = formatCountTable(self.userFailedSrcIPMap[key])
     if self.userSuccessHostMap.hasKey(key):
-        sourceComp = self.userSuccessHostMap[key].toSeq().join(" ¦ ")
+        sourceComp = formatCountTable(self.userSuccessHostMap[key])
     if self.userFailedHostMap.hasKey(key):
-        sourceFailComp = self.userFailedHostMap[key].toSeq().join(" ¦ ")
+        sourceFailComp = formatCountTable(self.userFailedHostMap[key])
     return @[computer, user, sid, intToStr(self.count.getOrDefault(key, 0)).insertSep(','), source, sourceComp, intToStr(self.failedCount.getOrDefault(key, 0)).insertSep(','), sourceFail, sourceFailComp]
 
 method resultOutput*(self: metricsUsersCmd) =
     var savedFiles = "n/a"
     let results = "Unique users: " & intToStr(self.count.len).insertSep(',')
     let sortedCounts = toSeq(pairs(self.count)).sorted(proc(a, b: (string, int)): int =
-      if cmp(b[1], a[1]) == 0:
-        cmp(a[0], b[0])
-      else:
-        cmp(b[1], a[1])
+        if cmp(b[1], a[1]) == 0:
+            cmp(a[0], b[0])
+        else:
+            cmp(b[1], a[1])
     )
     if self.output != "":
         if self.count.len == 0:
