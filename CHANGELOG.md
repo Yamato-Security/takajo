@@ -1,5 +1,11 @@
 # Changes
 
+## x.x.x [xxxx/xx/xx]
+
+**Enhancements:**
+
+- Improved the `metrics-user` output so it separates successful logons and failed logons per user. We also added the total number of logons to identify outliers. (#294) (@fukusuket)
+
 ## 2.15.0 [2025/12/20] - Winter Release
 
 **New Features:**
