@@ -1,6 +1,6 @@
 # 変更点
 
-## x.x.x [xxxx/xx/xx]
+## 2.15.1 [2026/01/31] - Daikanpa Release
 
 **Enhancements:**
 
