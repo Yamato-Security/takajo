@@ -27,6 +27,7 @@ import takajopkg/takajoCore
 import takajopkg/takajoTerminal
 import takajopkg/ttpResult
 import takajopkg/vtResult
+import takajopkg/dbAdapter
 include takajopkg/convertFlattenJson
 include takajopkg/extractCredentials
 include takajopkg/extractScriptblocks
@@ -71,8 +72,8 @@ when isMainModule:
     const example_convert_flatten_json = "  convert-flatten-json -t ../hayabusa/timeline.jsonl -o ../hayabusa/timeline-flattened.jsonl\p"
     const example_extract_credentials = "  extract-credentials -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o credentials.csv\p"
     const example_extract_scriptblocks = "  extract-scriptblocks -t ../hayabusa/timeline.jsonl [--level low]  [--skipProgressBar] -o scriptblock-logs\p"
-    const example_html_report = "  html-report -t ../hayabusa/timeline.jsonl -o ./output -r ../hayabusa/rules [--sqlite-output html-report.sqlite] [--clobber] [--skipProgressBar] \p"
-    const example_html_server = "  html-server -t ../hayabusa/timeline.jsonl [-r ../hayabusa/rules] [-p 8823] [--sqlite-output html-report.sqlite] [--clobber] [--skipProgressBar] \p"
+    const example_html_report = "  html-report -t ../hayabusa/timeline.jsonl -o ./output -r ../hayabusa/rules [--sqlite] [--dboutput html-report.duckdb] [--clobber] [--skipProgressBar] \p"
+    const example_html_server = "  html-server -t ../hayabusa/timeline.jsonl [-r ../hayabusa/rules] [-p 8823] [--sqlite] [--dboutput html-report.duckdb] [--clobber] [--skipProgressBar] \p"
     const example_list_domains = "  list-domains -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o domains.txt\p"
     const example_list_hashes = "  list-hashes -t ../hayabusa/case-1.jsonl [--skipProgressBar] -o case-1\p"
     const example_list_ip_addresses = "  list-ip-addresses -t ../hayabusa/timeline.jsonl [--skipProgressBar] -o ipAddresses.txt\p"
@@ -172,13 +173,14 @@ when isMainModule:
                 "quiet": "do not display the launch banner (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
                 "rulepath": "hayabusa rules directory path",
-                "sqliteoutput": "save results to a SQLite database (default: html-report.sqlite)",
+                "dboutput": "save results to a database file (default: html-report.duckdb or html-report.sqlite with --sqlite)",
+                "sqlite": "use SQLite backend instead of DuckDB (default: false)",
                 "skipProgressBar": "do not display the progress bar (default: false)",
-                "clobber": "overwrite the SQLite file when saving (default: false)",
+                "clobber": "overwrite the database file when saving (default: false)",
             },
             short = {
                 "clobber": 'C',
-                "sqlite-output": 's',
+                "dboutput": 's',
                 "output": 'o'
             }
         ],
@@ -189,15 +191,16 @@ when isMainModule:
                 "quiet": "do not display the launch banner (default: false)",
                 "timeline": "Hayabusa JSONL timeline file or directory (profile: any verbose profile)",
                 "rulepath": "hayabusa rules directory path",
-                "sqliteoutput": "save results to a SQLite database (default: html-report.sqlite)",
+                "dboutput": "save results to a database file (default: html-report.duckdb or html-report.sqlite with --sqlite)",
+                "sqlite": "use SQLite backend instead of DuckDB (default: false)",
                 "skipProgressBar": "do not display the progress bar (default: false)",
-                "clobber": "overwrite the SQLite file when saving (default: false)",
+                "clobber": "overwrite the database file when saving (default: false)",
                 "port": "web server port number"
             },
             short = {
                 "port": 'p',
                 "clobber": 'C',
-                "sqlite-output": 's',
+                "dboutput": 's',
             }
         ],
         [

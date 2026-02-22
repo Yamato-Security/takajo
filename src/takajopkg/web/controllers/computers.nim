@@ -1,8 +1,8 @@
 import json
 import prologue
-import db_connector/db_sqlite
 import strutils
 import times
+import ../../dbAdapter
 
 proc getDBPath(ctx: Context) : string =
     let settings = getOrDefault(ctx.gScope.settings, "prologue")
@@ -44,7 +44,7 @@ proc computer*(ctx: Context) {.async.} =
         custom_query &= " AND timestamp >= ? "
         let thirtyDaysAgo = now() - (30.days)
         params.add(format(thirtyDaysAgo, "yyyy-MM-dd") & " 00:00:00")
-        
+
 
     let rule_title = ctx.request.queryParams.getOrDefault("rule_title", "")
     if rule_title != "":
@@ -53,14 +53,13 @@ proc computer*(ctx: Context) {.async.} =
         var count = 0
         let rule_title_list_last = len(rule_title_list) - 1
         for rule_title in rule_title_list:
-            #custom_query &= "'" & rule_title & "'"
             custom_query &= "?"
             if count != rule_title_list_last:
                 custom_query &= ","
             count += 1
             params.add(rule_title)
         custom_query &= ")"
-        
+
 
     let severities = ctx.request.queryParams.getOrDefault("severities", "")
     if severities != "":
@@ -69,26 +68,24 @@ proc computer*(ctx: Context) {.async.} =
         for severity in severity_ary:
             if severity_query.len > 0:
                 severity_query &= ", "
-            severity_query &= dbQuote(severity)
+            severity_query &= quoteStr(severity)
         custom_query &= " AND level IN (" & severity_query & ")"
-
-    # echo custom_query
-    # echo params
 
     #
     # query to DB
     #
     try:
         let path = getDBPath(ctx)
-        let db = open(path , "", "", "")
+        let backend = detectBackend(path)
+        var db = openDb(path, backend)
 
         var query = """select rule_title, rule_file, level, level_order, computer, min(datetime(timestamp)) as start_date, max(datetime(timestamp)) as end_date, count(*) as count
                         from timelines
                         where """ & custom_query &  """
-                        group by rule_title, level, computer
+                        group by rule_title, rule_file, level, level_order, computer
                         order by level_order
                         """
-        var alerts = db.getAllRows(sql query, params) 
+        var alerts = db.getAllRows(query, params)
 
         query = """SELECT
                     SUM(CASE WHEN level = 'crit' THEN 1 ELSE 0 END) AS critical_count,
@@ -99,15 +96,17 @@ proc computer*(ctx: Context) {.async.} =
                     FROM timelines
                     where """ & custom_query &  """
                     """
-        let computer_counts = db.getRow(sql query, params) 
+        let computer_counts = db.getRow(query, params)
 
         query = """select level, level_order, date(datetime(timestamp)) AS date, count(*) as count
                         from timelines
                         where """ & custom_query &  """
-                        group by date, level_order
+                        group by date, level, level_order
                         order by date, level_order
                         """
-        let graph_data = db.getAllRows(sql query, params) 
+        let graph_data = db.getAllRows(query, params)
+
+        db.closeDb()
 
         let response = %* {
             "alerts": alerts,
@@ -129,9 +128,10 @@ proc sidemenu*(ctx: Context) {.async.} =
     #
     try:
         let path = getDBPath(ctx)
-        let db = open(path , "", "", "")
+        let backend = detectBackend(path)
+        var db = openDb(path, backend)
 
-        var query = sql"""SELECT 
+        var query = """SELECT
                             level as severity,
                             rule_title,
                             computer,
@@ -139,10 +139,12 @@ proc sidemenu*(ctx: Context) {.async.} =
                             MIN(datetime(timestamp)) AS first_date,
                             MAX(datetime(timestamp)) AS last_date
                         FROM timelines
-                        GROUP BY level_order, rule_title, computer
+                        GROUP BY level, level_order, rule_title, computer
                         ORDER BY level_order, rule_title, computer;
                     """
         var sidemenu = db.getAllRows(query)
+        db.closeDb()
+
         let response = %* {
             "sidemenu": sidemenu
         }
@@ -163,9 +165,10 @@ proc summary*(ctx: Context) {.async.} =
     #
     try:
         let path = getDBPath(ctx)
-        let db = open(path , "", "", "")
+        let backend = detectBackend(path)
+        var db = openDb(path, backend)
 
-        var query = sql"""SELECT
+        var query = """SELECT
                         computer,
                         SUM(CASE WHEN level = 'crit' THEN 1 ELSE 0 END) AS "Critical Alerts",
                         SUM(CASE WHEN level = 'high' THEN 1 ELSE 0 END) AS "High Alerts",
@@ -184,6 +187,8 @@ proc summary*(ctx: Context) {.async.} =
                         "Informational Alerts" DESC;
                     """
         var summary = db.getAllRows(query)
+        db.closeDb()
+
         let response = %* {
             "summary": summary
         }

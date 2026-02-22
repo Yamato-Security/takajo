@@ -1,7 +1,7 @@
 import json
 import prologue
-import db_connector/db_sqlite
 import strutils
+import ../../dbAdapter
 
 proc getDBPath(ctx: Context) : string =
     let settings = getOrDefault(ctx.gScope.settings, "prologue")
@@ -14,10 +14,13 @@ proc list*(ctx: Context) {.async.} =
     #
     try:
         let path = getDBPath(ctx)
-        let db = open(path , "", "", "")
+        let backend = detectBackend(path)
+        var db = openDb(path, backend)
 
         let query = """SELECT alert_title, rule_path FROM rule_files"""
-        let rules = db.getAllRows(sql query) 
+        let rules = db.getAllRows(query)
+
+        db.closeDb()
 
         let response = %* {
             "rules": rules
@@ -36,7 +39,8 @@ proc getRuleContent*(ctx: Context) {.async.} =
   #
   try:
     let path = getDBPath(ctx)
-    let db = open(path, "", "", "")
+    let backend = detectBackend(path)
+    var db = openDb(path, backend)
 
     let query = """SELECT rule_path FROM rule_files WHERE alert_title = ?"""
     let alertTitle = ctx.request.queryParams["alert_title"]
@@ -45,7 +49,9 @@ proc getRuleContent*(ctx: Context) {.async.} =
       resp jsonResponse(response, Http400)
       return
 
-    let rulePathRow = db.getRow(sql query, alertTitle)
+    let rulePathRow = db.getRow(query, alertTitle)
+    db.closeDb()
+
     if rulePathRow.len == 0:
       let response = %*{"message": "No rule found for the given alert_title"}
       resp jsonResponse(response, Http404)
@@ -55,7 +61,7 @@ proc getRuleContent*(ctx: Context) {.async.} =
     let yamlContent = readFile(rulePath)
 
     let response = %*{
-      "alert_title": alert_title,
+      "alert_title": alertTitle,
       "rule_path": rulePath,
       "yaml_content": yamlContent
     }

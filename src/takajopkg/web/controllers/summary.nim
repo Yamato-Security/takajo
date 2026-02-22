@@ -1,8 +1,8 @@
 import json
 import prologue
-import db_connector/db_sqlite
 import strutils
 import times
+import ../../dbAdapter
 
 proc getDBPath(ctx: Context) : string =
     let settings = getOrDefault(ctx.gScope.settings, "prologue")
@@ -53,17 +53,16 @@ proc list*(ctx: Context) {.async.} =
         for severity in severity_ary:
             if severity_query.len > 0:
                 severity_query &= ", "
-            severity_query &= dbQuote(severity)
+            severity_query &= quoteStr(severity)
         custom_query &= " AND level IN (" & severity_query & ")"
-
-    # echo custom_query
 
     #
     # query to DB
     #
     try:
         let path = getDBPath(ctx)
-        let db = open(path , "", "", "")
+        let backend = detectBackend(path)
+        var db = openDb(path, backend)
 
         var query = """SELECT level,
                         COUNT(*) AS total_detections,
@@ -82,7 +81,7 @@ proc list*(ctx: Context) {.async.} =
                             ELSE 6
                         END;
                         """
-        var summary = db.getAllRows(sql query, params) 
+        var summary = db.getAllRows(query, params)
 
         query = """WITH max_detections AS (
                     SELECT
@@ -115,15 +114,17 @@ proc list*(ctx: Context) {.async.} =
                     ELSE 6
                 END;
                 """
-        var dates_with_most_total_detections = db.getAllRows(sql query, params) 
+        var dates_with_most_total_detections = db.getAllRows(query, params)
 
-        query = """SELECT level, level_order, rule_title, computer, COUNT(*) AS alert_count, 
+        query = """SELECT level, level_order, rule_title, computer, COUNT(*) AS alert_count,
                     MIN(DATE(timestamp)) AS first_seen, MAX(DATE(timestamp)) AS last_seen
                     FROM timelines
-                    GROUP BY level, rule_title, computer
+                    GROUP BY level, level_order, rule_title, computer
                     ORDER BY level_order DESC
                 """
-        var all_alerts = db.getAllRows(sql query, params) 
+        var all_alerts = db.getAllRows(query, params)
+
+        db.closeDb()
 
         let response = %* {
             "summary": summary,
