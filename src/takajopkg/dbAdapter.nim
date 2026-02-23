@@ -9,7 +9,8 @@ when defined(macosx):
   {.passC: "-I/opt/homebrew/include -I/usr/local/include".}
   {.passL: "-L/opt/homebrew/lib -L/usr/local/lib -lduckdb".}
 elif defined(windows):
-  {.passL: "-lduckdb".}
+  {.passC: "-Iduckdb_lib".}
+  {.passL: "-Lduckdb_lib -lduckdb".}
 else:
   {.passL: "-lduckdb".}
 
