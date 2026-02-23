@@ -5,8 +5,13 @@ import strutils
 # DuckDB C API bindings (minimal subset needed for this project)
 # =============================================================================
 
-{.passC: "-I/opt/homebrew/include".}
-{.passL: "-L/opt/homebrew/lib -lduckdb".}
+when defined(macosx):
+  {.passC: "-I/opt/homebrew/include -I/usr/local/include".}
+  {.passL: "-L/opt/homebrew/lib -L/usr/local/lib -lduckdb".}
+elif defined(windows):
+  {.passL: "-lduckdb".}
+else:
+  {.passL: "-lduckdb".}
 
 type
   DuckDBDatabase {.importc: "struct _duckdb_database", header: "<duckdb.h>".} = object
