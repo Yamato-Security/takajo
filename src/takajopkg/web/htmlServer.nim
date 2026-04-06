@@ -1,6 +1,8 @@
 import prologue
 import urls
 
+const HtmlServerMsg = "This command will create a web server that hosts a dynamic summaries for rules and computers with detections."
+
 #
 # obtain rule file path
 #
@@ -69,7 +71,7 @@ proc createDatabase*(quiet: bool = false, timeline: string, rulepath: string, cl
         var bar: SuruBar
         if not skipProgressBar:
             bar = initSuruBar()
-            bar[0].total = countJsonlAndStartMsg("html-report", HtmlReportMsg, timeline)
+            bar[0].total = countJsonlAndStartMsg("html-server", HtmlServerMsg, timeline)
             bar.setup()
 
         db.beginTransaction()
