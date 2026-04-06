@@ -169,6 +169,28 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 
 > ※ 64ビットのWindows、IntelおよびArmベースのmacOS用のリリースバイナリを提供していますが、Linux用のMUSLバイナリを提供することは現時点では困難なため、Linuxには提供していません。
 
+## 必要条件
+
+`html-report`と`html-server`コマンドは、高速な分析クエリのためにデフォルトで[DuckDB](https://duckdb.org/)をデータベースバックエンドとして使用します。
+これらのコマンドを使用する前にDuckDBをインストールする必要があります。
+DuckDBをインストールしたくない場合は、`--sqlite`フラグを使用してSQLiteを代わりに使用できます。
+
+### macOS (Homebrew)
+
+```
+brew install duckdb
+```
+
+### Windows (winget)
+
+```
+winget install DuckDB.cli
+```
+
+### Linux
+
+[DuckDBインストールガイド](https://duckdb.org/docs/installation/)を参照してください。
+
 ## Gitクローン
 
 以下の`git clone`コマンドでレポジトリをダウンロードし、ソースコードからコンパイルして使用することも可能です：
@@ -180,6 +202,7 @@ Takajōは、日本語で["鷹狩りのスキルに優れた人"](https://en.wik
 ## アドバンス: ソースコードからのコンパイル（任意）
 
 まず、[choosenim](https://github.com/nim-lang/choosenim)でNimをインストールして下さい。
+また、コンパイル時にDuckDBのCライブラリが必要なため、DuckDBもインストールしてください（[必要条件](#必要条件)を参照）。
 その後、以下のコマンドでソースコードからコンパイルできます:
 
 ```
@@ -329,7 +352,7 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 ### `html-report`コマンド
 
 ルールと検出されたコンピュータのHTMLサマリレポートを作成します。
-このコマンドは、サマリレポートの作成に必要なデータの高速検索を実行するために、まずインデックス化されたSQLiteデータベースファイルを作成します。
+このコマンドは、サマリレポートの作成に必要なデータの高速検索を実行するために、まずインデックス化されたDuckDBデータベースファイル（デフォルト）またはSQLiteデータベースファイルを作成します。
 
 * 入力: JSONL
 * プロファイル: `verbose`/`super-verbose`プロファイル
@@ -343,10 +366,11 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 
 任意オプション:
 
-- `-C, --clobber`: 保存時にSQLiteファイルを上書きする (デフォルト: `false`)
+- `-C, --clobber`: 保存時にデータベースファイルを上書きする (デフォルト: `false`)
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
-- `-s, --skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
-- `-s, --sqliteoutput`: 結果をSQLiteデータベースに保存する (デフォルト: `html-report.sqlite`)
+- `-s, --dboutput`: 結果をデータベースファイルに保存する (デフォルト: `html-report.duckdb`、`--sqlite`指定時は`html-report.sqlite`)
+- `--skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
+- `--sqlite`: DuckDBの代わりにSQLiteバックエンドを使用する (デフォルト: `false`)
 
 #### `html-report`コマンドの使用例
 
@@ -385,7 +409,7 @@ takajo.exe html-report -t ../hayabusa/hayabusa-results.jsonl -o htmlreport -r ..
 ### `html-server`コマンド
 
 HTMLサマリレポートを確認するために、動的にウェブサーバを立ち上げます。
-このコマンドは、サマリレポートの作成に必要なデータの高速検索を実行するために、まずインデックス化されたSQLiteデータベースファイルを作成します。
+このコマンドは、サマリレポートの作成に必要なデータの高速検索を実行するために、まずインデックス化されたDuckDBデータベースファイル（デフォルト）またはSQLiteデータベースファイルを作成します。
 `html-report`コマンドと似ていますが、よりスケーラブルで日付やルールのフィルタリングが可能です。
 
 * 入力: JSONL
@@ -398,12 +422,13 @@ HTMLサマリレポートを確認するために、動的にウェブサーバ�
 
 任意オプション:
 
-- `-C, --clobber`: 保存時にSQLiteファイルを上書きする (デフォルト: `false`)
-- `-p, --port`: ウェブサーバのポート番号
+- `-C, --clobber`: 保存時にデータベースファイルを上書きする (デフォルト: `false`)
+- `-p, --port`: ウェブサーバのポート番号 (デフォルト: `8823`)
 - `-q, --quiet`: ロゴを出力しない (デフォルト: `false`)
 - `-r, --rulepath`: Hayabusaルールディレクトリへのパス (※必須ではないが、ルールファイルへのリンクを作成するために必要。）)
-- `-s, --skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
-- `-s, --sqliteoutput`: 結果をSQLiteデータベースに保存する (デフォルト: `html-report.sqlite`)
+- `-s, --dboutput`: 結果をデータベースファイルに保存する (デフォルト: `html-report.duckdb`、`--sqlite`指定時は`html-report.sqlite`)
+- `--skipProgressBar`: プログレスバーを出力しない (デフォルト: `false`)
+- `--sqlite`: DuckDBの代わりにSQLiteバックエンドを使用する (デフォルト: `false`)
 
 #### `html-server` command example
 

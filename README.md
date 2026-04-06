@@ -167,6 +167,28 @@ Please download the latest stable version of Takajo with compiled binaries or co
 
 > Note: we provide release binaries for 64-bit Windows and Intel and Arm-based macOS but not Linux because it is difficult to provide MUSL binaries for Linux at the moment.
 
+## Requirements
+
+The `html-report` and `html-server` commands use [DuckDB](https://duckdb.org/) as the default database backend for fast analytical queries.
+You need to install DuckDB before using these commands.
+You can use the `--sqlite` flag to use SQLite instead if you do not want to install DuckDB.
+
+### macOS (Homebrew)
+
+```
+brew install duckdb
+```
+
+### Windows (winget)
+
+```
+winget install DuckDB.cli
+```
+
+### Linux
+
+Please refer to the [DuckDB installation guide](https://duckdb.org/docs/installation/).
+
 ## Git cloning
 
 You can git clone the repository with the following command and compile binary from source code:
@@ -178,6 +200,7 @@ You can git clone the repository with the following command and compile binary f
 ## Advanced: Compiling From Source (Optional)
 
 First, install Nim with [choosenim](https://github.com/nim-lang/choosenim).
+You also need to install DuckDB (see [Requirements](#requirements)) since the DuckDB C library is required at compile time.
 Then you can compile from source with the following command:
 
 ```
@@ -331,7 +354,7 @@ takajo.exe extract-scriptblocks -t ../hayabusa/timeline.jsonl
 ### `html-report` command
 
 Create HTML summary reports for rules and computers with detections.
-This command first creates an indexed SQLite database file in order to perform fast lookups on the data needed to create the summary reports.
+This command first creates an indexed DuckDB database file (default) or SQLite database file in order to perform fast lookups on the data needed to create the summary reports.
 
 * Input: JSONL
 * Profile: Any verbose profile
@@ -345,10 +368,11 @@ Required options:
 
 Options:
 
-- `-C, --clobber`: overwrite the SQLite file when saving (default: `false`)
+- `-C, --clobber`: overwrite the database file when saving (default: `false`)
 - `-q, --quiet`: do not display the launch banner (default: `false`)
-- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
-- `-s, --sqliteoutput`: save results to a SQLite database (default: `html-report.sqlite`)
+- `-s, --dboutput`: save results to a database file (default: `html-report.duckdb` or `html-report.sqlite` with `--sqlite`)
+- `--skipProgressBar`: do not display the progress bar (default: `false`)
+- `--sqlite`: use SQLite backend instead of DuckDB (default: `false`)
 
 #### `html-report` command example
 
@@ -387,7 +411,7 @@ takajo.exe html-report -t ../hayabusa/hayabusa-results.jsonl -o htmlreport -r ..
 ### `html-server` command
 
 Create a dynamic web server to view HTML summary reports.
-This command first creates an indexed SQLite database file in order to perform fast lookups on the data needed to create the summary reports.
+This command first creates an indexed DuckDB database file (default) or SQLite database file in order to perform fast lookups on the data needed to create the summary reports.
 It is similar to the `html-report` command but is more scalable and allows for filtering on dates and rules.
 
 * Input: JSONL
@@ -400,12 +424,13 @@ Required options:
 
 Options:
 
-- `-C, --clobber`: overwrite the SQLite file when saving (default: `false`)
-- `-p, --port`: web server port number
+- `-C, --clobber`: overwrite the database file when saving (default: `false`)
+- `-p, --port`: web server port number (default: `8823`)
 - `-q, --quiet`: do not display the launch banner (default: `false`)
 - `-r, --rulepath`: path to the Hayabusa rules directory (this is optional but needed to create correct links to the rule files)
-- `-s, --skipProgressBar`: do not display the progress bar (default: `false`)
-- `-s, --sqliteoutput`: save results to a SQLite database (default: `html-report.sqlite`)
+- `-s, --dboutput`: save results to a database file (default: `html-report.duckdb` or `html-report.sqlite` with `--sqlite`)
+- `--skipProgressBar`: do not display the progress bar (default: `false`)
+- `--sqlite`: use SQLite backend instead of DuckDB (default: `false`)
 
 #### `html-report` command example
 

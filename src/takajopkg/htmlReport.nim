@@ -1,4 +1,3 @@
-import db_connector/db_sqlite
 import streams
 
 const HtmlReportMsg = "This command will create HTML summary reports for rules and computers with detections"
@@ -21,45 +20,30 @@ proc copyDirectory(src: string, dest: string) =
 
 
 # output: HTML reports directory name
-# sqliteoutput: save results to a SQLite database
+# dboutput: save results to a database file
 # timeline: Hayabusa JSONL timeline file or directory
-proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, sqliteoutput: string = "html-report.sqlite", skipProgressBar: bool = false, ) =
+# sqlite: use SQLite backend (default: false, uses DuckDB)
+proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath: string = "", clobber: bool = false, dboutput: string = "", sqlite: bool = false, skipProgressBar: bool = false) =
 
     if not quiet:
         styledEcho(fgGreen, outputLogo())
 
-    if fileExists(sqliteoutput) and clobber == false:
-        echo sqliteoutput & " already exists. Please add the -C, --clobber option to overwrite the file."
+    let backend = if sqlite: backendSQLite else: backendDuckDB
+    let actualDbOutput = if dboutput != "": dboutput
+                         elif sqlite: "html-report.sqlite"
+                         else: "html-report.duckdb"
+
+    if fileExists(actualDbOutput) and clobber == false:
+        echo actualDbOutput & " already exists. Please add the -C, --clobber option to overwrite the file."
         return
 
-    # create sqlite file or open exist database file.
-    let db = open(sqliteoutput, "", "", "")
+    # create database file
+    var db = openDb(actualDbOutput, backend)
     try:
-        try:
-            let dropTableSQL = sql"""DROP TABLE timelines"""
-            db.exec(dropTableSQL)
-        except:
-            discard
+        db.exec("DROP TABLE IF EXISTS timelines")
 
         # create timelines table
-        let createTableSQL = sql"""CREATE TABLE timelines (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            rule_title TEXT,
-            level TEXT,
-            level_order INTEGER,
-            computer TEXT,
-            channel TEXT,
-            event_id INTEGER,
-            record_id TEXT,
-            rule_file TEXT,
-            evtx_file TEXT,
-            rule_author TEXT,
-            rule_modified_date TEXT,
-            rule_creation_date TEXT,
-            status TEXT
-        )"""
-        db.exec(createTableSQL)
+        db.createTimelinesTable()
 
         # read from timeline file
         # open timeline file
@@ -67,21 +51,21 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
         if fileStream == nil:
             echo "Failed to open file: ", timeline
-        
+
         var bar: SuruBar
         if not skipProgressBar:
             bar = initSuruBar()
             bar[0].total = countJsonlAndStartMsg("html-report", HtmlReportMsg, timeline)
             bar.setup()
 
-        db.exec(sql"BEGIN")
+        db.beginTransaction()
         var recordCount = 0
         while not fileStream.atEnd:
             let line = fileStream.readLine()
             if line.len > 0:
                 try:
                     #
-                    # write to sqlite
+                    # write to database
                     #
 
                     let jsonObj = parseJson(line)
@@ -129,13 +113,13 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
                     if "RuleAuthor" in jsonObj:
                         rule_author = jsonObj["RuleAuthor"].getStr()
-                    
+
                     if "RuleModifiedDate" in jsonObj:
                         rule_modified_date = jsonObj["RuleModifiedDate"].getStr()
 
                     if "Status" in jsonObj:
                         status = jsonObj["Status"].getStr()
-                    
+
                     if "RuleCreationDate" in jsonObj:
                         rule_creation_date = jsonObj["RuleCreationDate"].getStr()
 
@@ -155,39 +139,36 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         rule_creation_date,
                         status
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
-                    
-                    var stmt = db.prepare(insertSQL)
-                    stmt.bindParams(timestamp, 
-                        rule_title, 
-                        level, 
-                        level_order,
-                        computer, 
-                        channel, 
-                        event_id, 
-                        record_id, 
-                        rule_file, 
-                        evtx_file, 
-                        rule_author, 
-                        rule_modified_date, 
-                        rule_creation_date, 
+
+                    let bres = db.insertRow(insertSQL, timestamp,
+                        rule_title,
+                        level,
+                        $level_order,
+                        computer,
+                        channel,
+                        $event_id,
+                        record_id,
+                        rule_file,
+                        evtx_file,
+                        rule_author,
+                        rule_modified_date,
+                        rule_creation_date,
                         status)
-                    let bres = db.tryExec(stmt)
-                                        
+
                     doAssert(bres)
-                    finalize(stmt)
                     recordCount += 1
                     if not skipProgressBar:
                         inc bar
                         bar.update(1000000000)
 
                     if recordCount %% 10000 == 0:
-                        db.exec(sql"COMMIT")
-                        db.exec(sql"BEGIN")
-                    
+                        db.commitTransaction()
+                        db.beginTransaction()
+
                 except CatchableError:
                     echo "Invalid JSON line: ", line
 
-        db.exec(sql"COMMIT")
+        db.commitTransaction()
         fileStream.close()
         if not skipProgressBar:
             bar.finish()
@@ -198,30 +179,30 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         echo "Error: Database file not created!, ", e.msg
         discard
         return
-    
+
     echo "Creating HTML report. Please wait.\p"
 
     # start analysis timeline
-    # obtain datas from SQLite
-    var query = sql"""select rule_title, rule_file, level, level_order, computer, min(datetime(timestamp)) as start_date, max(datetime(timestamp)) as end_date, count(*) as count
+    # obtain datas from database
+    var queryStr = """select rule_title, rule_file, level, level_order, computer, min(datetime(timestamp)) as start_date, max(datetime(timestamp)) as end_date, count(*) as count
                         from timelines
-                        group by rule_title, level, computer
+                        group by rule_title, rule_file, level, level_order, computer
                         order by level_order
                         """
-    var alerts = db.getAllRows(query)
-    
+    var alerts = db.getAllRows(queryStr)
+
 
     # obtain computer summary
-    query = sql"""select computer, COUNT(*) AS count
+    queryStr = """select computer, COUNT(*) AS count
                         from timelines
                         group by computer
                         having COUNT(*) > 1
                         order by count desc
                         """
-    var computers = db.getAllRows(query)
+    var computers = db.getAllRows(queryStr)
 
     # obtain computer severities
-    query = sql"""SELECT
+    queryStr = """SELECT
                     computer,
                     SUM(CASE WHEN level = 'crit' THEN 1 ELSE 0 END) AS critical_count,
                     SUM(CASE WHEN level = 'high' THEN 1 ELSE 0 END) AS high_count,
@@ -232,13 +213,13 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                     GROUP BY computer
                     ORDER BY critical_count DESC, high_count DESC, medium_count DESC, low_count DESC, informational_count DESC
                     """
-    let computer_counts = db.getAllRows(query)
-    
+    let computer_counts = db.getAllRows(queryStr)
+
     # data formatting
     type
         Computer = tuple[name: string, count: int, start_date: string, end_date: string]
         Alert = tuple[title: string, rule_file: string, level: string, count: int, computers: seq[Computer]]
-    
+
     var levels = initTable[int, seq[Alert]]()
 
     proc findAlert(alerts: seq[Alert], rule_title: string): int =
@@ -276,13 +257,13 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
     #
     # obtain rule file path
-    #  
+    #
     proc findRuleFileWithName(dir: string, fileName: string) :string =
-        
+
         var foundPath = ""
         for entry in walkDir(dir):
             let path = os.lastPathPart(entry.path)
-            
+
             if entry.kind == pcFile and path == fileName:
                 foundPath = absolutePath(entry.path)
                 break
@@ -290,7 +271,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                 foundPath = findRuleFileWithName(entry.path, fileName)
                 if foundPath != "":
                     break
-        
+
         return foundPath
 
     const severity_order = @["info", "low", "med", "high", "critical"]
@@ -305,9 +286,9 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         var ret = ""
 
         for level_order, alerts in pairs(levels):
-            
+
             # do not display info for sidebar
-            if level_order == 0: 
+            if level_order == 0:
                 continue
 
             var totalAlerts = 0
@@ -323,7 +304,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         rulepath_list[alert.title] = rule_filepath
 
                 ret &= "<li class=\"font-semibold\"><a style=\"font-size:10pt !important;\" href=\"" & rule_filepath & "\">■" & alert.title & " (" & alert.count.intToStr & ")</a><ul>"
-            
+
                 for computer in alert.computers:
                     ret &= "<li style=\"border-bottom:3px;\"><a data-class=\"" & severity_order[level_order] & "\" style=\"font-size:10pt !important;\" href=\"./" & computer.name & ".html\" class=\"sidemenu link inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer.name & " (" & computer.count.intToStr & ") (" & computer.start_date & " ~ " & computer.end_date & ")</a><li>"
 
@@ -333,11 +314,11 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
     let sidemenu = printSideMenu(levels, rulepath, rulepath_list)
 
-    proc printSideMenuComputer(computers: seq[seq[string]]): string = 
+    proc printSideMenuComputer(computers: seq[seq[string]]): string =
         var ret = ""
         for computer in computers:
             ret &= "<li><a data-class=\"computer\" style=\"font-size:10pt !important;\" href=\"./" & computer[0] & ".html\" class=\"sidemenu inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900\">" & computer[0] & "(" & computer[1] & ")</a></li>"
-        
+
         return ret
 
     let sidemenucomputers = printSideMenuComputer(computers)
@@ -356,7 +337,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     # data aggregation
     #
     proc collectSummaryData(levels: Table[int, seq[Alert]]): Table[int, SummaryInfo] =
-    
+
         var totalDetections = 0
         var uniqueDetections = 0
         var summaryData = initTable[int, SummaryInfo]()
@@ -368,7 +349,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
             for alert in alerts:
                 totalCount += alert.count
-            
+
                 for computer in alert.computers:
                     let date = computer.start_date.split(" ")[0]
                     if dateCounts.hasKey(date):
@@ -406,13 +387,13 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     #
     # create a summary
     #
-    proc printSummaryData(data: Table[int, SummaryInfo], date_with_most_total_detection_list: seq[Row]): (string, string) =
+    proc printSummaryData(data: Table[int, SummaryInfo], date_with_most_total_detection_list: seq[seq[string]]): (string, string) =
 
         var detections = ""
-        
+
         for level_order in countdown(4, 0):
             if not data.hasKey(level_order):
-                continue 
+                continue
             let info = data[level_order]
             let tmp_total_percent = info.totalPercent.formatFloat(ffDecimal, 2)
             let tmp_unique_percent = info.uniquePercent.formatFloat(ffDecimal, 2)
@@ -423,7 +404,6 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
             detections &= "</tr>"
 
         var date_with_most_total_detections = ""
-        # for level_order in countdown(4, 0):
         for value in date_with_most_total_detection_list:
             let key = parseInt(value[0])
             date_with_most_total_detections &= "<tr class=\"border-b border-gray-100\">"
@@ -434,7 +414,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
         return (detections, date_with_most_total_detections)
 
-    query = sql"""WITH max_detections AS (
+    queryStr = """WITH max_detections AS (
                     SELECT
                         level_order,
                         DATE(timestamp) AS detection_date,
@@ -465,11 +445,11 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                     ELSE 6
                 END;
                 """
-    var dates_with_most_total_detection_list = db.getAllRows(query) 
+    var dates_with_most_total_detection_list = db.getAllRows(queryStr)
     let (detections, date_with_most_total_detections) = printSummaryData(summaryData, dates_with_most_total_detection_list)
-    
+
     # Rule Summary
-    proc printDetectionRuleList(levels: seq[(int, seq[Alert])], rulepath: string, rulepath_list: var Table[string, string]): string = 
+    proc printDetectionRuleList(levels: seq[(int, seq[Alert])], rulepath: string, rulepath_list: var Table[string, string]): string =
         var ret = ""
         const severity_order = @["Information", "Low", "Medium", "High", "Critical"]
 
@@ -513,7 +493,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
     # read template file
     var f: File = open("./templates/index.template", FileMode.fmRead)
-    
+
     var html = ""
     while f.endOfFile == false :
         html &= f.readLine()
@@ -526,16 +506,16 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     html = html.replace("[%DETECTIONS%]", detections)
     html = html.replace("[%DATE_WITH_MOST_TOTAL_DETECTIONS%]", date_with_most_total_detections)
     html = html.replace("[%DETECTION_RULE_LIST%]", detection_rule_list)
-    
+
     # output HTML
-    let output_path = "./" & output 
+    let output_path = "./" & output
     if not dirExists(output_path):
         try:
             createDir(output_path)
         except OSError as e:
             echo "Failed to create directory: ", e.msg
             return
- 
+
     var write: File = open(output_path & "/index.html", FileMode.fmWrite)
     write.writeLine(html)
     write.close()
@@ -545,11 +525,10 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         ComputerSummary = object
             totalDetections: Table[int, int]
             detectionsByDate: Table[string, seq[int]]
-            #detectedRules: seq[(string, string, int)]
             detectedRules: seq[(string, int, int, string, string)]
 
     var computerSummaries = initTable[string, ComputerSummary]()
-    
+
     for level_order, alerts in pairs(levels):
         for alert in alerts:
             for computer in alert.computers:
@@ -573,9 +552,9 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                 let date = computer.start_date.split(" ")[0]  # only the date portion is acquired.
                 if not compSummary.detectionsByDate.hasKey(date):
                     compSummary.detectionsByDate[date] = @[0, 0, 0, 0, 0]
-                
+
                 compSummary.detectionsByDate[date][level_order] += computer.count
-                
+
                 # List of detected rules
                 if not ((alert.title, level_order, alert.count, computer.start_date, computer.end_date) in compSummary.detectedRules):
                     compSummary.detectedRules.add((alert.title, level_order, alert.count, computer.start_date, computer.end_date))
@@ -585,10 +564,10 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
 
     for compName, summary in pairs(computerSummaries):
-        
+
         # read template file
         var f: File = open("./templates/content.template", FileMode.fmRead)
-    
+
         var html = ""
         while f.endOfFile == false :
             html &= f.readLine()
@@ -598,22 +577,20 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         html = html.replace("[%PAGE_TITLE%]", compName)
         html = html.replace("[%SIDE_MENU%]", sidemenu)
         html = html.replace("[%SIDE_MENU_COMPUTER%]", sidemenucomputers)
-    
-        # html = html.replace("[%CONTENT%]", summaryHtml)
 
         for level_order, count in pairs(summary.totalDetections):
             html = html.replace("[%" & severity_order[level_order].toUpper & "_NUM%]", count.intToStr)
 
 
-        # obtain datas from SQLite
-        query = sql"""select level, level_order, date(datetime(timestamp, 'localtime')) as date, count(*) as count
+        # obtain datas from database
+        queryStr = """select level, level_order, date(datetime(timestamp, 'localtime')) as date, count(*) as count
                         from timelines
                         where computer = ?
-                        group by date, level_order
+                        group by date, level, level_order
                         order by date, level_order
                         """
-        var computer_alerts = db.getAllRows(query, compName)
-        
+        var computer_alerts = db.getAllRows(queryStr, compName)
+
         # Display data in sorted order
         type
             SeverityTable = Table[int, string]
@@ -627,20 +604,20 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
             for index in 0..4:
                 severityTable[index] = "0"
             severityTable[parseInt(alert[1])] = alert[3]
-            date_table[alert[2]] = severityTable    
-        
+            date_table[alert[2]] = severityTable
+
         let date_list = date_table.keys.toSeq.sorted()
         for date in date_list:
             for index in 0..4:
                 datasets_html[index] &= date_table[date][index] & ","
-                 
-            date_html &= "'" & date & "'," 
+
+            date_html &= "'" & date & "',"
         date_html = date_html[0..^2]
 
         for index in 0..4:
             if datasets_html[index].endsWith(","):
                 datasets_html[index] = datasets_html[index][0..^2]
-        
+
         html = html.replace("[%DATE_STR%]", date_html)
         html = html.replace("[%CRITICAL_GRAPH%]", datasets_html[4])
         html = html.replace("[%HIGH_GRAPH%]", datasets_html[3])
@@ -656,7 +633,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
         temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">First Date</th>"
         temp_html &= "<th class=\"min-w-[180px] py-3 pe-3 text-start text-sm font-semibold uppercase tracking-wider text-slate-700\">Last Date</th>"
         temp_html &= "</tr></thead><tbody>"
-        
+
         # sort by severity order
         proc severityCompare(a, b: (string, int, int, string, string)): int =
             let firstComparison = cmp(a[1], b[1])
@@ -664,7 +641,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                 return firstComparison
             return cmp(a[2], b[2])
         let detectedRules = summary.detectedRules.sorted(severityCompare, Descending)
-        
+
         for rule in detectedRules:
             var rule_filepath = ""
             if rulepath_list.hasKey(rule[0]):
@@ -690,9 +667,9 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
 
     #
-    # close sqlite file
+    # close database file
     #
-    db.close()
+    db.closeDb()
 
     #
     # create commputer summary
@@ -743,7 +720,7 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
     let sourceDir = "./templates/webfonts"
     let destinationDir = "./" & output & "/webfonts"
     copyDirectory(sourceDir, destinationDir)
-    
+
     echo "HTML report completed."
     echo ""
     echo "Please open \"" & output & "/index.html\""
