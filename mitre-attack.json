@@ -106,7 +106,7 @@
     },
     "T1014": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Rootkit"
     },
     "T1016": {
@@ -191,92 +191,97 @@
     },
     "T1027": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.001": {
         "Sub-Technique": "Binary Padding",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.002": {
         "Sub-Technique": "Software Packing",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.003": {
         "Sub-Technique": "Steganography",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.004": {
         "Sub-Technique": "Compile After Delivery",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.005": {
         "Sub-Technique": "Indicator Removal from Tools",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.006": {
         "Sub-Technique": "HTML Smuggling",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.007": {
         "Sub-Technique": "Dynamic API Resolution",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.008": {
         "Sub-Technique": "Stripped Payloads",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.009": {
         "Sub-Technique": "Embedded Payloads",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.010": {
         "Sub-Technique": "Command Obfuscation",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.011": {
         "Sub-Technique": "Fileless Storage",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.012": {
         "Sub-Technique": "LNK Icon Smuggling",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.013": {
         "Sub-Technique": "Encrypted/Encoded File",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.014": {
         "Sub-Technique": "Polymorphic Code",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.015": {
         "Sub-Technique": "Compression",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.016": {
         "Sub-Technique": "Junk Code Insertion",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1027.017": {
         "Sub-Technique": "SVG Smuggling",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
+        "Technique": "Obfuscated Files or Information"
+    },
+    "T1027.018": {
+        "Sub-Technique": "Invisible Unicode",
+        "Tactic": "Stealth",
         "Technique": "Obfuscated Files or Information"
     },
     "T1029": {
@@ -296,67 +301,67 @@
     },
     "T1036": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.001": {
         "Sub-Technique": "Invalid Code Signature",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.002": {
         "Sub-Technique": "Right-to-Left Override",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.003": {
         "Sub-Technique": "Rename Legitimate Utilities",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.004": {
         "Sub-Technique": "Masquerade Task or Service",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.005": {
         "Sub-Technique": "Match Legitimate Resource Name or Location",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.006": {
         "Sub-Technique": "Space after Filename",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.007": {
         "Sub-Technique": "Double File Extension",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.008": {
         "Sub-Technique": "Masquerade File Type",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.009": {
         "Sub-Technique": "Break Process Trees",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.010": {
         "Sub-Technique": "Masquerade Account Name",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.011": {
         "Sub-Technique": "Overwrite Process Arguments",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1036.012": {
         "Sub-Technique": "Browser Fingerprint",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Masquerading"
     },
     "T1037": {
@@ -411,7 +416,7 @@
     },
     "T1047": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Windows Management Instrumentation"
     },
     "T1048": {
@@ -481,67 +486,67 @@
     },
     "T1055": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.001": {
         "Sub-Technique": "Dynamic-link Library Injection",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.002": {
         "Sub-Technique": "Portable Executable Injection",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.003": {
         "Sub-Technique": "Thread Execution Hijacking",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.004": {
         "Sub-Technique": "Asynchronous Procedure Call",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.005": {
         "Sub-Technique": "Thread Local Storage",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.008": {
         "Sub-Technique": "Ptrace System Calls",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.009": {
         "Sub-Technique": "Proc Memory",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.011": {
         "Sub-Technique": "Extra Window Memory Injection",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.012": {
         "Sub-Technique": "Process Hollowing",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.013": {
         "Sub-Technique": "Process Doppelg\u00e4nging",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.014": {
         "Sub-Technique": "VDSO Hijacking",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1055.015": {
         "Sub-Technique": "ListPlanting",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Process Injection"
     },
     "T1056": {
@@ -581,7 +586,7 @@
     },
     "T1059.001": {
         "Sub-Technique": "PowerShell",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Command and Scripting Interpreter"
     },
     "T1059.002": {
@@ -591,7 +596,7 @@
     },
     "T1059.003": {
         "Sub-Technique": "Windows Command Shell",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Command and Scripting Interpreter"
     },
     "T1059.004": {
@@ -601,7 +606,7 @@
     },
     "T1059.005": {
         "Sub-Technique": "Visual Basic",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Command and Scripting Interpreter"
     },
     "T1059.006": {
@@ -611,7 +616,7 @@
     },
     "T1059.007": {
         "Sub-Technique": "JavaScript",
-        "Tactic": "Execution",
+        "Tactic": "Stealth",
         "Technique": "Command and Scripting Interpreter"
     },
     "T1059.008": {
@@ -671,57 +676,47 @@
     },
     "T1070": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
-        "Technique": "Indicator Removal"
-    },
-    "T1070.001": {
-        "Sub-Technique": "Clear Windows Event Logs",
-        "Tactic": "Defense Evasion",
-        "Technique": "Indicator Removal"
-    },
-    "T1070.002": {
-        "Sub-Technique": "Clear Linux or Mac System Logs",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1070.003": {
         "Sub-Technique": "Clear Command History",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1070.004": {
         "Sub-Technique": "File Deletion",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1070.005": {
         "Sub-Technique": "Network Share Connection Removal",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1070.006": {
         "Sub-Technique": "Timestomp",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1070.007": {
         "Sub-Technique": "Clear Network Connection History and Configurations",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1070.008": {
         "Sub-Technique": "Clear Mailbox Data",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1070.009": {
         "Sub-Technique": "Clear Persistence",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1070.010": {
         "Sub-Technique": "Relocate Malware",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indicator Removal"
     },
     "T1071": {
@@ -781,22 +776,22 @@
     },
     "T1078.001": {
         "Sub-Technique": "Default Accounts",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Valid Accounts"
     },
     "T1078.002": {
         "Sub-Technique": "Domain Accounts",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Valid Accounts"
     },
     "T1078.003": {
         "Sub-Technique": "Local Accounts",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Valid Accounts"
     },
     "T1078.004": {
         "Sub-Technique": "Cloud Accounts",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Valid Accounts"
     },
     "T1080": {
@@ -951,7 +946,7 @@
     },
     "T1106": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Native API"
     },
     "T1110": {
@@ -986,7 +981,7 @@
     },
     "T1112": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify Registry"
     },
     "T1113": {
@@ -1046,27 +1041,27 @@
     },
     "T1127": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Trusted Developer Utilities Proxy Execution"
     },
     "T1127.001": {
         "Sub-Technique": "MSBuild",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Trusted Developer Utilities Proxy Execution"
     },
     "T1127.002": {
         "Sub-Technique": "ClickOnce",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Trusted Developer Utilities Proxy Execution"
     },
     "T1127.003": {
         "Sub-Technique": "JamPlus",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Trusted Developer Utilities Proxy Execution"
     },
     "T1129": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Shared Modules"
     },
     "T1132": {
@@ -1086,37 +1081,37 @@
     },
     "T1133": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "External Remote Services"
     },
     "T1134": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Access Token Manipulation"
     },
     "T1134.001": {
         "Sub-Technique": "Token Impersonation/Theft",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Access Token Manipulation"
     },
     "T1134.002": {
         "Sub-Technique": "Create Process with Token",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Access Token Manipulation"
     },
     "T1134.003": {
         "Sub-Technique": "Make and Impersonate Token",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Access Token Manipulation"
     },
     "T1134.004": {
         "Sub-Technique": "Parent PID Spoofing",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Access Token Manipulation"
     },
     "T1134.005": {
         "Sub-Technique": "SID-History Injection",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Access Token Manipulation"
     },
     "T1135": {
@@ -1126,7 +1121,7 @@
     },
     "T1136": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Create Account"
     },
     "T1136.001": {
@@ -1181,7 +1176,7 @@
     },
     "T1140": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Deobfuscate/Decode Files or Information"
     },
     "T1176": {
@@ -1241,7 +1236,7 @@
     },
     "T1197": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "BITS Jobs"
     },
     "T1199": {
@@ -1261,7 +1256,7 @@
     },
     "T1202": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Indirect Command Execution"
     },
     "T1203": {
@@ -1316,7 +1311,7 @@
     },
     "T1207": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Rogue Domain Controller"
     },
     "T1210": {
@@ -1326,8 +1321,8 @@
     },
     "T1211": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
-        "Technique": "Exploitation for Defense Evasion"
+        "Tactic": "Stealth",
+        "Technique": "Exploitation for Stealth"
     },
     "T1212": {
         "Sub-Technique": "-",
@@ -1371,17 +1366,17 @@
     },
     "T1216": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Script Proxy Execution"
     },
     "T1216.001": {
         "Sub-Technique": "PubPrn",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Script Proxy Execution"
     },
     "T1216.002": {
         "Sub-Technique": "SyncAppvPublishingServer",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Script Proxy Execution"
     },
     "T1217": {
@@ -1391,77 +1386,77 @@
     },
     "T1218": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.001": {
         "Sub-Technique": "Compiled HTML File",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.002": {
         "Sub-Technique": "Control Panel",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.003": {
         "Sub-Technique": "CMSTP",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.004": {
         "Sub-Technique": "InstallUtil",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.005": {
         "Sub-Technique": "Mshta",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.007": {
         "Sub-Technique": "Msiexec",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.008": {
         "Sub-Technique": "Odbcconf",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.009": {
         "Sub-Technique": "Regsvcs/Regasm",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.010": {
         "Sub-Technique": "Regsvr32",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.011": {
         "Sub-Technique": "Rundll32",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.012": {
         "Sub-Technique": "Verclsid",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.013": {
         "Sub-Technique": "Mavinject",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.014": {
         "Sub-Technique": "MMC",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1218.015": {
         "Sub-Technique": "Electron Applications",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "System Binary Proxy Execution"
     },
     "T1219": {
@@ -1486,42 +1481,42 @@
     },
     "T1220": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "XSL Script Processing"
     },
     "T1221": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Template Injection"
     },
     "T1222": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "File and Directory Permissions Modification"
     },
     "T1222.001": {
-        "Sub-Technique": "Windows File and Directory Permissions Modification",
-        "Tactic": "Defense Evasion",
+        "Sub-Technique": "Windows Permissions",
+        "Tactic": "Defense Impairment",
         "Technique": "File and Directory Permissions Modification"
     },
     "T1222.002": {
-        "Sub-Technique": "Linux and Mac File and Directory Permissions Modification",
-        "Tactic": "Defense Evasion",
+        "Sub-Technique": "Linux and Mac Permissions",
+        "Tactic": "Defense Impairment",
         "Technique": "File and Directory Permissions Modification"
     },
     "T1480": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Execution Guardrails"
     },
     "T1480.001": {
         "Sub-Technique": "Environmental Keying",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Execution Guardrails"
     },
     "T1480.002": {
         "Sub-Technique": "Mutual Exclusion",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Execution Guardrails"
     },
     "T1482": {
@@ -1531,17 +1526,17 @@
     },
     "T1484": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Domain or Tenant Policy Modification"
     },
     "T1484.001": {
         "Sub-Technique": "Group Policy Modification",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Domain or Tenant Policy Modification"
     },
     "T1484.002": {
         "Sub-Technique": "Trust Modification",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Domain or Tenant Policy Modification"
     },
     "T1485": {
@@ -1761,7 +1756,7 @@
     },
     "T1535": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Unused/Unsupported Cloud Regions"
     },
     "T1537": {
@@ -1781,32 +1776,32 @@
     },
     "T1542": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Pre-OS Boot"
     },
     "T1542.001": {
         "Sub-Technique": "System Firmware",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Pre-OS Boot"
     },
     "T1542.002": {
         "Sub-Technique": "Component Firmware",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Pre-OS Boot"
     },
     "T1542.003": {
         "Sub-Technique": "Bootkit",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Pre-OS Boot"
     },
     "T1542.004": {
         "Sub-Technique": "ROMMONkit",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Pre-OS Boot"
     },
     "T1542.005": {
         "Sub-Technique": "TFTP Boot",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Pre-OS Boot"
     },
     "T1543": {
@@ -2011,37 +2006,37 @@
     },
     "T1548": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Abuse Elevation Control Mechanism"
     },
     "T1548.001": {
         "Sub-Technique": "Setuid and Setgid",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Abuse Elevation Control Mechanism"
     },
     "T1548.002": {
         "Sub-Technique": "Bypass User Account Control",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Abuse Elevation Control Mechanism"
     },
     "T1548.003": {
         "Sub-Technique": "Sudo and Sudo Caching",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Abuse Elevation Control Mechanism"
     },
     "T1548.004": {
         "Sub-Technique": "Elevated Execution with Prompt",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Abuse Elevation Control Mechanism"
     },
     "T1548.005": {
         "Sub-Technique": "Temporary Elevated Cloud Access",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Abuse Elevation Control Mechanism"
     },
     "T1548.006": {
         "Sub-Technique": "TCC Manipulation",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Abuse Elevation Control Mechanism"
     },
     "T1550": {
@@ -2116,37 +2111,37 @@
     },
     "T1553": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Subvert Trust Controls"
     },
     "T1553.001": {
         "Sub-Technique": "Gatekeeper Bypass",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Subvert Trust Controls"
     },
     "T1553.002": {
         "Sub-Technique": "Code Signing",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Subvert Trust Controls"
     },
     "T1553.003": {
         "Sub-Technique": "SIP and Trust Provider Hijacking",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Subvert Trust Controls"
     },
     "T1553.004": {
         "Sub-Technique": "Install Root Certificate",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Subvert Trust Controls"
     },
     "T1553.005": {
         "Sub-Technique": "Mark-of-the-Web Bypass",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Subvert Trust Controls"
     },
     "T1553.006": {
         "Sub-Technique": "Code Signing Policy Modification",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Subvert Trust Controls"
     },
     "T1554": {
@@ -2245,7 +2240,7 @@
         "Technique": "Adversary-in-the-Middle"
     },
     "T1557.001": {
-        "Sub-Technique": "LLMNR/NBT-NS Poisoning and SMB Relay",
+        "Sub-Technique": "Name Resolution Poisoning and SMB Relay",
         "Tactic": "Collection",
         "Technique": "Adversary-in-the-Middle"
     },
@@ -2349,71 +2344,6 @@
         "Tactic": "Impact",
         "Technique": "Disk Wipe"
     },
-    "T1562": {
-        "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.001": {
-        "Sub-Technique": "Disable or Modify Tools",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.002": {
-        "Sub-Technique": "Disable Windows Event Logging",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.003": {
-        "Sub-Technique": "Impair Command History Logging",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.004": {
-        "Sub-Technique": "Disable or Modify System Firewall",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.006": {
-        "Sub-Technique": "Indicator Blocking",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.007": {
-        "Sub-Technique": "Disable or Modify Cloud Firewall",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.008": {
-        "Sub-Technique": "Disable or Modify Cloud Logs",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.009": {
-        "Sub-Technique": "Safe Mode Boot",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.010": {
-        "Sub-Technique": "Downgrade Attack",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.011": {
-        "Sub-Technique": "Spoof Security Alerting",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.012": {
-        "Sub-Technique": "Disable or Modify Linux Audit System",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
-    "T1562.013": {
-        "Sub-Technique": "Disable or Modify Network Device Firewall",
-        "Tactic": "Defense Evasion",
-        "Technique": "Impair Defenses"
-    },
     "T1563": {
         "Sub-Technique": "-",
         "Tactic": "Lateral Movement",
@@ -2431,77 +2361,77 @@
     },
     "T1564": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.001": {
         "Sub-Technique": "Hidden Files and Directories",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.002": {
         "Sub-Technique": "Hidden Users",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.003": {
         "Sub-Technique": "Hidden Window",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.004": {
         "Sub-Technique": "NTFS File Attributes",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.005": {
         "Sub-Technique": "Hidden File System",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.006": {
         "Sub-Technique": "Run Virtual Instance",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.007": {
         "Sub-Technique": "VBA Stomping",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.008": {
         "Sub-Technique": "Email Hiding Rules",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.009": {
         "Sub-Technique": "Resource Forking",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.010": {
         "Sub-Technique": "Process Argument Spoofing",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.011": {
         "Sub-Technique": "Ignore Process Interrupts",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.012": {
         "Sub-Technique": "File/Path Exclusions",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.013": {
         "Sub-Technique": "Bind Mounts",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1564.014": {
         "Sub-Technique": "Extended Attributes",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hide Artifacts"
     },
     "T1565": {
@@ -2526,7 +2456,7 @@
     },
     "T1566": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Phishing"
     },
     "T1566.001": {
@@ -2646,97 +2576,97 @@
     },
     "T1574": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.001": {
         "Sub-Technique": "DLL",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.004": {
         "Sub-Technique": "Dylib Hijacking",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.005": {
         "Sub-Technique": "Executable Installer File Permissions Weakness",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.006": {
         "Sub-Technique": "Dynamic Linker Hijacking",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.007": {
         "Sub-Technique": "Path Interception by PATH Environment Variable",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.008": {
         "Sub-Technique": "Path Interception by Search Order Hijacking",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.009": {
         "Sub-Technique": "Path Interception by Unquoted Path",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.010": {
         "Sub-Technique": "Services File Permissions Weakness",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.011": {
         "Sub-Technique": "Services Registry Permissions Weakness",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.012": {
         "Sub-Technique": "COR_PROFILER",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.013": {
         "Sub-Technique": "KernelCallbackTable",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1574.014": {
         "Sub-Technique": "AppDomainManager",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Hijack Execution Flow"
     },
     "T1578": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify Cloud Compute Infrastructure"
     },
     "T1578.001": {
         "Sub-Technique": "Create Snapshot",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify Cloud Compute Infrastructure"
     },
     "T1578.002": {
         "Sub-Technique": "Create Cloud Instance",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify Cloud Compute Infrastructure"
     },
     "T1578.003": {
         "Sub-Technique": "Delete Cloud Instance",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify Cloud Compute Infrastructure"
     },
     "T1578.004": {
         "Sub-Technique": "Revert Cloud Instance",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify Cloud Compute Infrastructure"
     },
     "T1578.005": {
         "Sub-Technique": "Modify Cloud Compute Configurations",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify Cloud Compute Infrastructure"
     },
     "T1580": {
@@ -3136,7 +3066,7 @@
     },
     "T1598": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Phishing for Information"
     },
     "T1598.001": {
@@ -3161,42 +3091,42 @@
     },
     "T1599": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Network Boundary Bridging"
     },
     "T1599.001": {
         "Sub-Technique": "Network Address Translation Traversal",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Network Boundary Bridging"
     },
     "T1600": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Weaken Encryption"
     },
     "T1600.001": {
         "Sub-Technique": "Reduce Key Space",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Weaken Encryption"
     },
     "T1600.002": {
         "Sub-Technique": "Disable Crypto Hardware",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Weaken Encryption"
     },
     "T1601": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify System Image"
     },
     "T1601.001": {
         "Sub-Technique": "Patch System Image",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify System Image"
     },
     "T1601.002": {
         "Sub-Technique": "Downgrade System Image",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify System Image"
     },
     "T1602": {
@@ -3271,17 +3201,17 @@
     },
     "T1610": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Execution",
         "Technique": "Deploy Container"
     },
     "T1611": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Privilege Escalation",
         "Technique": "Escape to Host"
     },
     "T1612": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Build Image on Host"
     },
     "T1613": {
@@ -3311,7 +3241,7 @@
     },
     "T1620": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Reflective Code Loading"
     },
     "T1621": {
@@ -3326,7 +3256,7 @@
     },
     "T1647": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Plist File Modification"
     },
     "T1648": {
@@ -3364,11 +3294,6 @@
         "Tactic": "Discovery",
         "Technique": "Log Enumeration"
     },
-    "T1656": {
-        "Sub-Technique": "-",
-        "Tactic": "Lateral Movement",
-        "Technique": "Impersonation"
-    },
     "T1657": {
         "Sub-Technique": "-",
         "Tactic": "Impact",
@@ -3386,7 +3311,7 @@
     },
     "T1666": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Defense Impairment",
         "Technique": "Modify Cloud Resource Hierarchy"
     },
     "T1667": {
@@ -3408,11 +3333,6 @@
         "Sub-Technique": "-",
         "Tactic": "Persistence",
         "Technique": "Cloud Application Integration"
-    },
-    "T1672": {
-        "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
-        "Technique": "Email Spoofing"
     },
     "T1673": {
         "Sub-Technique": "-",
@@ -3436,12 +3356,12 @@
     },
     "T1678": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Delay Execution"
     },
     "T1679": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "Selective Exclusion"
     },
     "T1680": {
@@ -3453,6 +3373,116 @@
         "Sub-Technique": "-",
         "Tactic": "Reconnaissance",
         "Technique": "Search Threat Vendor Data"
+    },
+    "T1682": {
+        "Sub-Technique": "-",
+        "Tactic": "Reconnaissance",
+        "Technique": "Query Public AI Services"
+    },
+    "T1683": {
+        "Sub-Technique": "-",
+        "Tactic": "Resource Development",
+        "Technique": "Generate Content"
+    },
+    "T1683.001": {
+        "Sub-Technique": "Written Content",
+        "Tactic": "Resource Development",
+        "Technique": "Generate Content"
+    },
+    "T1683.002": {
+        "Sub-Technique": "Audio-Visual Content",
+        "Tactic": "Resource Development",
+        "Technique": "Generate Content"
+    },
+    "T1684": {
+        "Sub-Technique": "-",
+        "Tactic": "Stealth",
+        "Technique": "Social Engineering"
+    },
+    "T1684.001": {
+        "Sub-Technique": "Impersonation",
+        "Tactic": "Stealth",
+        "Technique": "Social Engineering"
+    },
+    "T1684.002": {
+        "Sub-Technique": "Email Spoofing",
+        "Tactic": "Stealth",
+        "Technique": "Social Engineering"
+    },
+    "T1685": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify Tools"
+    },
+    "T1685.001": {
+        "Sub-Technique": "Disable or Modify Windows Event Log",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify Tools"
+    },
+    "T1685.002": {
+        "Sub-Technique": "Disable or Modify Cloud Log",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify Tools"
+    },
+    "T1685.003": {
+        "Sub-Technique": "Modify or Spoof Tool UI",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify Tools"
+    },
+    "T1685.004": {
+        "Sub-Technique": "Disable or Modify Linux Audit System Log",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify Tools"
+    },
+    "T1685.005": {
+        "Sub-Technique": "Clear Windows Event Logs",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify Tools"
+    },
+    "T1685.006": {
+        "Sub-Technique": "Clear Linux or Mac System Logs",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify Tools"
+    },
+    "T1686": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify System Firewall"
+    },
+    "T1686.001": {
+        "Sub-Technique": "Cloud Firewall",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify System Firewall"
+    },
+    "T1686.002": {
+        "Sub-Technique": "Network Device Firewall",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify System Firewall"
+    },
+    "T1686.003": {
+        "Sub-Technique": "Windows Host Firewall",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify System Firewall"
+    },
+    "T1687": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Impairment",
+        "Technique": "Exploitation for Defense Impairment"
+    },
+    "T1688": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Impairment",
+        "Technique": "Safe Mode Boot"
+    },
+    "T1689": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Impairment",
+        "Technique": "Downgrade Attack"
+    },
+    "T1690": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Impairment",
+        "Technique": "Prevent Command History Logging"
     },
     "TA0001": {
         "Sub-Technique": "-",
@@ -3476,7 +3506,7 @@
     },
     "TA0005": {
         "Sub-Technique": "-",
-        "Tactic": "Defense Evasion",
+        "Tactic": "Stealth",
         "Technique": "-"
     },
     "TA0006": {
@@ -3522,6 +3552,11 @@
     "TA0043": {
         "Sub-Technique": "-",
         "Tactic": "Reconnaissance",
+        "Technique": "-"
+    },
+    "TA0112": {
+        "Sub-Technique": "-",
+        "Tactic": "Defense Impairment",
         "Technique": "-"
     }
 }

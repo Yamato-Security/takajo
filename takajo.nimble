@@ -1,6 +1,6 @@
 # Package
 
-version       = "2.15.1"
+version       = "2.15.2"
 author        = "Yamato Security @SecurityYamato"
 description   = "Takajo is an analyzer for Hayabusa results."
 license       = "AGPL-3.0"
