@@ -1,5 +1,12 @@
 # Changes
 
+## 2.16.0 [2026/04/29] - Showa Day Release
+
+**Enhancements:**
+
+- Add DuckDB as the default database backend for `html-report` and `html-server` commands, with `--sqlite` flag to use SQLite as a fallback. DuckDB provides 4-24x faster analytical queries and ~7x smaller file sizes. (#298) (@nishikawaakira)
+- Support for MITRE ATT&CK v19. (@fukusuket)
+
 ## 2.15.1 [2026/01/31] - Daikanpa Release
 
 **Enhancements:**

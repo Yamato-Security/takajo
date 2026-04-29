@@ -1,5 +1,12 @@
 # 変更点
 
+## 2.16.0 [2026/04/29] - Showa Day Release
+
+**Enhancements:**
+
+- `html-report`と`html-server`コマンドのデフォルトのデータベースバックエンドとして DuckDB を追加し、フォールバックとして SQLite を使用するための`--sqlite`フラグを用意する。DuckDB は分析クエリを 4～24 倍高速化し、ファイルサイズを約 7 分の 1 に削減する。 (#298) (@nishikawaakira)
+- MITRE ATT&CK v19に対応した。 (@fukusuket)
+
 ## 2.15.1 [2026/01/31] - Daikanpa Release
 
 **Enhancements:**

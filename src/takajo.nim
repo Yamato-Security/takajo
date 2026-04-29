@@ -66,7 +66,7 @@ include takajopkg/web/htmlServer
 
 
 when isMainModule:
-    clCfg.version = "2.15.1"
+    clCfg.version = "2.16.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_convert_flatten_json = "  convert-flatten-json -t ../hayabusa/timeline.jsonl -o ../hayabusa/timeline-flattened.jsonl\p"
@@ -104,7 +104,7 @@ when isMainModule:
     const example_vt_hash_lookup = "  vt-hash-lookup -a <API-KEY> --hashList case-1-MD5-hashes.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
     const example_vt_ip_lookup = "  vt-ip-lookup -a <API-KEY> --ipList ipAddresses.txt -r 1000 -o results.csv --jsonOutput responses.json\p"
 
-    clCfg.useMulti = "Version: 2.15.1 - Daikanpa Release\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
+    clCfg.useMulti = "Version: " & clCfg.version & "\pUsage: takajo.exe <COMMAND>\p\pCommands:\p$subcmds\pCommand help: $command help <COMMAND>\p\p" &
         examples &
         example_automagic & example_convert_flatten_json &
         example_extract_credentials & example_extract_scriptblocks & example_html_report & example_html_server &

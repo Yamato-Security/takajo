@@ -9,6 +9,7 @@ on:
       branch_or_tag:
         required: true
         default: "main"
+
 jobs:
   release:
     runs-on: ${{ matrix.os }}
@@ -18,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.branch_or_tag }}
 
