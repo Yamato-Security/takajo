@@ -3,9 +3,6 @@ name: Integration-Test
 on:
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   takajo-integration-test:
     runs-on: ubuntu-latest
@@ -17,7 +14,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: clone takajo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           path: takajo
@@ -38,14 +35,14 @@ jobs:
           cd ../
 
       - name: clone hayabusa
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: Yamato-Security/hayabusa
           submodules: recursive
           path: hayabusa
 
       - name: clone hayabusa-sample-evtx
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: Yamato-Security/hayabusa-sample-evtx
           path: hayabusa-sample-evtx
