@@ -23,6 +23,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install libpcre3 libpcre3-dev
+          sudo curl https://install.duckdb.org | sh
           cd takajo
           nimble update
           nimble build -d:release --threads:on
