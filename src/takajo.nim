@@ -66,7 +66,7 @@ include takajopkg/web/htmlServer
 
 
 when isMainModule:
-    clCfg.version = "2.15.2"
+    clCfg.version = "2.16.0"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_convert_flatten_json = "  convert-flatten-json -t ../hayabusa/timeline.jsonl -o ../hayabusa/timeline-flattened.jsonl\p"
