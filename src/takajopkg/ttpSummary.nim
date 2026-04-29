@@ -31,13 +31,15 @@ type
                    "Persistence": "05. ",
                    "Privilege Escalation": "06. ",
                    "Defense Evasion": "07. ",
-                   "Credential Access": "08. ",
-                   "Discovery": "09. ",
-                   "Lateral Movement": "10. ",
-                   "Collection": "11. ",
-                   "Exfiltration": "12. ",
-                   "Command and Control": "13. ",
-                   "Impact": "14. "}.toTable
+                   "Stealth": "07. ",
+                   "Defense Impairment": "08. ",
+                   "Credential Access": "09. ",
+                   "Discovery": "10. ",
+                   "Lateral Movement": "11. ",
+                   "Collection": "12. ",
+                   "Exfiltration": "13. ",
+                   "Command and Control": "14. ",
+                   "Impact": "15. "}.toTable
 
 method analyze*(self: TTPSummaryCmd, x: HayabusaJson) =
     try:
@@ -47,7 +49,7 @@ method analyze*(self: TTPSummaryCmd, x: HayabusaJson) =
                 continue
             let res = self.attack[tag]
             let dat = res["Tactic"].getStr()
-            let tac = self.tac_no[dat] & dat
+            let tac = self.tac_no.getOrDefault(dat, "  . ") & dat
             let tec = res["Technique"].getStr()
             let sub = res["Sub-Technique"].getStr()
             let rul = x.RuleTitle
