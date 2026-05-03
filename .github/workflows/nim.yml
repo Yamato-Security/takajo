@@ -1,5 +1,8 @@
 name: Nim
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches:
@@ -26,8 +29,8 @@ jobs:
             }
     runs-on: ${{ matrix.info.os }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: jiro4989/setup-nim-action@v2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: '2.x' # default is 'stable'
           repo-token: ${{ secrets.GITHUB_TOKEN }}

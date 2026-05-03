@@ -1,5 +1,8 @@
 name: Integration-Test
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 
@@ -8,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: setup Nim
-        uses: jiro4989/setup-nim-action@v2
+        uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: '2.x' # default is 'stable'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: clone takajo
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           path: takajo
@@ -35,14 +38,14 @@ jobs:
           cd ../
 
       - name: clone hayabusa
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: Yamato-Security/hayabusa
           submodules: recursive
           path: hayabusa
 
       - name: clone hayabusa-sample-evtx
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: Yamato-Security/hayabusa-sample-evtx
           path: hayabusa-sample-evtx
