@@ -94,11 +94,14 @@ jobs:
           cp -r templates release-binaries/
           cp templates/common.js release-binaries/templates/static/js/
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            sudo apt-get update
+            sudo apt-get install -y patchelf
             cp libduckdb.so release-binaries/
           fi
           case ${{ matrix.os }} in
             'ubuntu-latest')
-                mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu ;;
+                mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu
+                patchelf --set-rpath '$ORIGIN' release-binaries/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu ;;
             'macos-latest')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-mac-aarch64 ;;
             'macos-15-intel')
