@@ -41,6 +41,7 @@ jobs:
           sudo cp duckdb_lib/duckdb.h /usr/local/include/
           sudo cp duckdb_lib/libduckdb.so /usr/local/lib/
           sudo ldconfig
+          cp duckdb_lib/libduckdb.so .
 
       - name: Install DuckDB (Windows)
         if: matrix.os == 'windows-latest'
@@ -79,6 +80,7 @@ jobs:
           Copy-Item -Path mitre-attack.json -Destination release-binaries/
           Copy-Item -Path pcre64.dll -Destination release-binaries/
           Copy-Item -Path sqlite3_64.dll -Destination release-binaries/
+          Copy-Item -Path duckdb.dll -Destination release-binaries/
           Copy-Item -Path templates -Destination release-binaries/ -Recurse
           Copy-Item -Path templates/common.js release-binaries/templates/static/js/
 
@@ -91,6 +93,9 @@ jobs:
           cp mitre-attack.json release-binaries/
           cp -r templates release-binaries/
           cp templates/common.js release-binaries/templates/static/js/
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            cp libduckdb.so release-binaries/
+          fi
           case ${{ matrix.os }} in
             'ubuntu-latest')
                 mv release-binaries/takajo release-binaries/takajo-${{ github.event.inputs.release_ver }}-lin-x64-gnu ;;
