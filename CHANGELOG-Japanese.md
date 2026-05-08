@@ -1,15 +1,21 @@
 # 変更点
 
+## 2.16.1 [2026/05/09] - Golden Week Release
+
+**バグ修正:**
+
+- Takajo 2.16.0は、duckdbのDLLが欠落していたため、Windows OSでは実行できなかった。 (#303) (@fukusuket)
+
 ## 2.16.0 [2026/04/29] - Showa Day Release
 
-**Enhancements:**
+**改善:**
 
 - `html-report`と`html-server`コマンドのデフォルトのデータベースバックエンドとして DuckDB を追加し、フォールバックとして SQLite を使用するための`--sqlite`フラグを用意する。DuckDB は分析クエリを 4～24 倍高速化し、ファイルサイズを約 7 分の 1 に削減する。 (#298) (@nishikawaakira)
 - MITRE ATT&CK v19に対応した。 (@fukusuket)
 
 ## 2.15.1 [2026/01/31] - Daikanpa Release
 
-**Enhancements:**
+**改善:**
 
 - `metrics-user`の出力を改善し、ユーザごとに「成功したログオン」と「失敗したログオン」を分けて表示するようにした。また、異常値（アウトライア）を特定できるよう、ログオンの合計回数も追加した。 (#294) (@fukusuket)
 
