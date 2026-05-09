@@ -1,11 +1,11 @@
 import algorithm
 import cligen
+import regex
 import json
 import malebolgia
 import malebolgia / ticketlocks
 import nancy
 import puppy
-import re
 import sets
 import sequtils
 import strformat

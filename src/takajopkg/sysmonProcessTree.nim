@@ -65,8 +65,7 @@ proc moveProcessObjectToChild(mvSource: processObject,
             moveProcessObjectToChild(mvSource, c, output.children[i])
 
 proc isGUID(processGuid: string): bool =
-    let guidRegex = re(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$")
-    return processGuid.find(guidRegex) != -1
+    return processGuid.contains(re2"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$")
 
 proc createProcessObj(jsonLine: JsonNode, isParent: bool): processObject =
     var foundProcTbl = initTable[string, string]()
