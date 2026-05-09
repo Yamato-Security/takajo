@@ -190,8 +190,6 @@ winget install DuckDB.cli
 ### Linux
 
 ```
-sudo apt update
-sudo apt install libpcre2 libpcre2-dev
 wget -q https://github.com/duckdb/duckdb/releases/download/v1.4.4/libduckdb-linux-amd64.zip
 unzip -o libduckdb-linux-amd64.zip -d duckdb_lib
 sudo cp duckdb_lib/duckdb.h /usr/local/include/
