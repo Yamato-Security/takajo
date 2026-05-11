@@ -1,11 +1,11 @@
 import algorithm
 import cligen
+import regex
 import json
 import malebolgia
 import malebolgia / ticketlocks
 import nancy
 import puppy
-import re
 import sets
 import sequtils
 import strformat
@@ -66,7 +66,7 @@ include takajopkg/web/htmlServer
 
 
 when isMainModule:
-    clCfg.version = "2.16.0"
+    clCfg.version = "2.16.1"
     const examples = "Examples:\p"
     const example_automagic = "  automagic -t ../hayabusa/timeline.jsonl [--level low] [--displayTable] -o case-1\p"
     const example_convert_flatten_json = "  convert-flatten-json -t ../hayabusa/timeline.jsonl -o ../hayabusa/timeline-flattened.jsonl\p"

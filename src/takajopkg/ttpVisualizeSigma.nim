@@ -22,17 +22,22 @@ proc ttpVisualizeSigma(output: string = "mitre-attack-navigator.json", quiet: bo
 
     var stackedMitreTags = initTable[string, string]()
     var stackedMitreTagsCount = initTable[string, int]()
-    let titleRegex = re"^title:\s*([^🛂]+)🛂"
-    let attackRegex = re"^.*attack\.([a-zA-Z0-9\.]+)\s*🛂"
     for yaml in yamlPathes:
         inc bar
         bar.update(1000000000) # refresh every second
         let yaml_str = readFile(yaml).replace("\n", "🛂")
         var ruleTitle = ""
-        if yaml_str =~ titleRegex:
-            ruleTitle = matches[0]
-        if yaml_str =~ attackRegex:
-            for techniqueID in matches:
+        for line in yaml_str.split("🛂"):
+            let stripped = line.strip()
+            if stripped.startsWith("title:"):
+                ruleTitle = stripped["title:".len..^1].strip()
+                break
+        for line in yaml_str.split("🛂"):
+            let stripped = line.strip()
+            let idx = stripped.find("attack.")
+            if idx >= 0:
+                let afterAttack = stripped[idx + "attack.".len..^1]
+                let techniqueID = afterAttack.split({' ', '\t', ',', ']', '"', '\''})[0].strip()
                 if techniqueID.startsWith("t"):
                     let techniqueID = techniqueID.replace("t","T")
                     if stackedMitreTags.hasKey(techniqueID) and ruleTitle notin stackedMitreTags[techniqueID]:

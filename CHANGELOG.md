@@ -1,5 +1,11 @@
 # Changes
 
+## 2.16.1 [2026/05/09] - Golden Week Release
+
+**Bug Fixes:**
+
+- Takajo 2.16.0 was not able to run on Windows platforms due to missing the duckdb DLL. (#303) (@fukusuket)
+
 ## 2.16.0 [2026/04/29] - Showa Day Release
 
 **Enhancements:**

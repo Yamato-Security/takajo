@@ -20,21 +20,26 @@ method filter*(self: ExtractCredentialsCmd, x: HayabusaJson): bool =
 
 proc extractUserPass(cmd: string): (string, string) =
     let patterns = [
-      (re(r".*/user:([^\s/]+).*"), re(r".*/password:([^\s/]+).*")),  # for wmic
-      (re(r".*/U ([^\s/]+).*"), re(r".*/P ([^\s/]+).*")),  # for schtasks
-      (re(r".*net user ([^\s/]+)"), re(r".*?([^\s/]+) /add.*")),  # for net user
-      (re(r".*-u ([^\s/]+).*"), re(r".*-p ([^\s/]+).*"))  # for psexec
+      (re2".*/user:([^\s/]+).*", re2".*/password:([^\s/]+).*"),  # for wmic
+      (re2".*/U ([^\s/]+).*", re2".*/P ([^\s/]+).*"),  # for schtasks
+      (re2".*net user ([^\s/]+)", re2".*?([^\s/]+) /add.*"),  # for net user
+      (re2".*-u ([^\s/]+).*", re2".*-p ([^\s/]+).*")  # for psexec
     ]
 
     for (userPattern, passwordPattern) in patterns:
       var username = ""
       var password = ""
+      var m: RegexMatch2
 
-      if cmd =~ userPattern:
-        username = matches[0]
+      if cmd.find(userPattern, m):
+        let bounds = m.group(0)
+        if bounds.a <= bounds.b:
+          username = cmd[bounds]
 
-      if cmd =~ passwordPattern:
-        password = matches[0]
+      if cmd.find(passwordPattern, m):
+        let bounds = m.group(0)
+        if bounds.a <= bounds.b:
+          password = cmd[bounds]
 
       if username != "" and password != "":
         return (username, password)

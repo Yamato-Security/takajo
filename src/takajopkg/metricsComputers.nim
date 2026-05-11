@@ -60,14 +60,14 @@ method analyze*(self: metricsComputersCmd, x: HayabusaJson) =
     if not self.records.hasKey(computer):
         self.records[computer] = ["", "", "", ""]
     if eventID == 6009 and ruleTitle == "Computer Startup":
-        let ver = jsonLine.Details["MajorVer"].getStr("N/A").replace(".01", ".1").replace(".00", ".0").replace(re"\.$", "")
+        let ver = jsonLine.Details["MajorVer"].getStr("N/A").replace(".01", ".1").replace(".00", ".0").replace(re2"\.$", "")
         let num = jsonLine.Details["BuildNum"].getInt(0)
         let ver_num = ver & "," & $num
         if ver_num in self.windowsVersions:
             let osInfo = self.windowsVersions[ver_num]
             self.records[computer][0] = "Windows " & osInfo
     elif eventID == 6013 and ruleTitle == "Computer Uptime/Timezone":
-        let timezone = jsonLine.Details["Timezone"].getStr("N/A").replace(re"^\S+\s+", "")
+        let timezone = jsonLine.Details["Timezone"].getStr("N/A").replace(re2"^\S+\s+", "")
         self.records[computer][2] = timezone
     if channel == "Sys":
         let timestamp = jsonLine.Timestamp

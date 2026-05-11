@@ -1,6 +1,6 @@
 import cligen
 import json
-import re
+import regex
 import std/os
 import std/parsecsv
 import std/sequtils
@@ -304,43 +304,24 @@ proc isMinLevel*(levelInLog: string, userSetLevel: string): bool =
 
 proc isPrivateIP*(ip: string): bool =
     let
-        ipv4Private = re"^(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(192\.168\.\d{1,3}\.\d{1,3})$|^(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
-        ipv4MappedIPv6Private = re"^::ffff:(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^::ffff:(192\.168\.\d{1,3}\.\d{1,3})$|^::ffff:(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^::ffff:(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
-        ipv6Private = re"^fd[0-9a-f]{2}:|^fe80:"
-
-    if ip =~ ipv4Private or ip =~ ipv4MappedIPv6Private or ip =~ ipv6Private:
-        return true
-    else:
-        return false
+        ipv4Private = re2"^(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(192\.168\.\d{1,3}\.\d{1,3})$|^(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
+        ipv4MappedIPv6Private = re2"^::ffff:(10\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^::ffff:(192\.168\.\d{1,3}\.\d{1,3})$|^::ffff:(172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$|^::ffff:(127\.\d{1,3}\.\d{1,3}\.\d{1,3})$"
+        ipv6Private = re2"^fd[0-9a-f]{2}:|^fe80:"
+    return ip.contains(ipv4Private) or ip.contains(ipv4MappedIPv6Private) or ip.contains(ipv6Private)
 
 proc isMulticast*(address: string): bool =
-    # Define regex for IPv4 multicast addresses
-    let ipv4MulticastPattern = re"^(224\.0\.0\.0|22[5-9]\.|23[0-9]\.)"
-
-    # Define regex for IPv6 multicast addresses
-    let ipv6MulticastPattern = re"(?i)^ff[0-9a-f]{2}:"
-    # check if the address matches either of the multicast patterns
-    if address.find(ipv4MulticastPattern) >= 0 or address.find(
-            ipv6MulticastPattern) >= 0:
-        return true
-    return false
+    let ipv4MulticastPattern = re2"^(224\.0\.0\.0|22[5-9]\.|23[0-9]\.)"
+    let ipv6MulticastPattern = re2"(?i)^ff[0-9a-f]{2}:"
+    return address.contains(ipv4MulticastPattern) or address.contains(ipv6MulticastPattern)
 
 proc isLoopback*(address: string): bool =
-    # Define regex for IPv4 loopback addresses
-    let ipv4LoopbackPattern = re"^127\.0\.0\.1$"
-
-    # Define regex for IPv6 loopback addresses
-    let ipv6LoopbackPattern = re"^(?:0*:)*?:?0*1$"
-
-    # Check if the address matches either of the loopback patterns
-    if address.find(ipv4LoopbackPattern) >= 0 or address.find(
-            ipv6LoopbackPattern) >= 0:
-        return true
-    return false
+    let ipv4LoopbackPattern = re2"^127\.0\.0\.1$"
+    let ipv6LoopbackPattern = re2"^(?:0*:)*?:?0*1$"
+    return address.contains(ipv4LoopbackPattern) or address.contains(ipv6LoopbackPattern)
 
 proc isIpAddress*(s: string): bool =
-    let ipRegex = re(r"\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}")
-    return s.find(ipRegex) != -1
+    let ipRegex = re2"\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}"
+    return s.contains(ipRegex)
 
 proc extractDomain*(domain: string): string =
     let doubleTLDs = ["co.jp", "co.uk", "com.au", "org.au", "net.au", "com.br",

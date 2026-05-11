@@ -1,6 +1,6 @@
 # Package
 
-version       = "2.16.0"
+version       = "2.16.1"
 author        = "Yamato Security @SecurityYamato"
 description   = "Takajo is an analyzer for Hayabusa results."
 license       = "AGPL-3.0"
@@ -20,3 +20,4 @@ requires "malebolgia >= 1.3.2"
 requires "jsony >= 1.1.5"
 requires "db_connector >= 0.1.0"
 requires "prologue"
+requires "regex >= 0.25.0"
