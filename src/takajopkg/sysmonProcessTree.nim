@@ -222,7 +222,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
     # Collect and display command line info sorted by timestamp
     type cmdlineEntry = tuple[timeStamp: string, parentCmdline: string, cmdline: string]
     var cmdlineEntries: seq[cmdlineEntry] = @[]
-    for guid, procObj in stockedProcObjTbl:
+    for _, procObj in stockedProcObjTbl:
         if procObj.timeStamp != "N/A" and procObj.cmdline != "" and procObj.cmdline != "N/A":
             cmdlineEntries.add((procObj.timeStamp, procObj.parentCmdline, procObj.cmdline))
     cmdlineEntries.sort(proc(a, b: cmdlineEntry): int = cmp(a.timeStamp, b.timeStamp))
