@@ -4,6 +4,8 @@ type processObject = ref object
     processID: string
     processGUID: string
     parentProcessGUID: string
+    cmdline: string
+    parentCmdline: string
     children: seq[processObject]
 
 proc `==`*(a, b: processObject): bool =
@@ -81,7 +83,9 @@ proc createProcessObj(jsonLine: JsonNode, isParent: bool): processObject =
                            processID: $jsonLine["Details"]["ParentPID"].getInt(),
                            processGUID: jsonLine["Details"][
                                    "ParentPGUID"].getStr("N/A"),
-                           parentProcessGUID: "N/A")
+                           parentProcessGUID: "N/A",
+                           cmdline: "",
+                           parentCmdline: "")
     try:
         let eventProcessID = jsonLine["Details"]["PID"].getInt()
         foundProcTbl["PID"] = $eventProcessID
@@ -92,7 +96,9 @@ proc createProcessObj(jsonLine: JsonNode, isParent: bool): processObject =
             procName: jsonLine["Details"]["Proc"].getStr("N/A"),
             processID: foundProcTbl["PID"],
             processGUID: jsonLine["Details"]["PGUID"].getStr("N/A"),
-            parentProcessGUID: jsonLine["Details"]["ParentPGUID"].getStr("N/A"))
+            parentProcessGUID: jsonLine["Details"]["ParentPGUID"].getStr("N/A"),
+            cmdline: jsonLine["Details"]["Cmdline"].getStr("N/A"),
+            parentCmdline: jsonLine["Details"]["ParentCmdline"].getStr("N/A"))
 
 proc sysmonProcessTree(output: string = "", processGuid: string,
         quiet: bool = false, timeline: string) =
@@ -212,4 +218,29 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             else:
                 echo line
         echo ""
+
+    # Collect and display command line info sorted by timestamp
+    type cmdlineEntry = tuple[timeStamp: string, parentCmdline: string, cmdline: string]
+    var cmdlineEntries: seq[cmdlineEntry] = @[]
+    for guid, procObj in stockedProcObjTbl:
+        if procObj.timeStamp != "N/A" and procObj.cmdline != "" and procObj.cmdline != "N/A":
+            cmdlineEntries.add((procObj.timeStamp, procObj.parentCmdline, procObj.cmdline))
+    cmdlineEntries.sort(proc(a, b: cmdlineEntry): int = cmp(a.timeStamp, b.timeStamp))
+
+    var cmdlineOutSeq: seq[string] = @[]
+    cmdlineOutSeq.add("Command line info:")
+    cmdlineOutSeq.add("")
+    for entry in cmdlineEntries:
+        cmdlineOutSeq.add(entry.timeStamp & " " & entry.parentCmdline & " -> " & entry.cmdline)
+    cmdlineOutSeq.add("")
+
+    if output != "":
+        let f = open(output, fmAppend)
+        defer: f.close()
+        for line in cmdlineOutSeq:
+            f.writeLine(line)
+    else:
+        for line in cmdlineOutSeq:
+            echo line
+
     outputElapsedTime(startTime)
