@@ -229,7 +229,7 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
 
     if cmdlineEntries.len() > 0:
         var cmdlineOutSeq: seq[string] = @[]
-        cmdlineOutSeq.add("Command line info:")
+        cmdlineOutSeq.add("Command line timeline:")
         cmdlineOutSeq.add("")
         for entry in cmdlineEntries:
             cmdlineOutSeq.add(entry.timeStamp & " " & entry.parentCmdline & " -> " & entry.cmdline)

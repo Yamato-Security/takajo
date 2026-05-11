@@ -1,5 +1,11 @@
 # Changes
 
+## 2.17.0 [xxxx/xx/xx]
+
+**Enhancements:**
+
+- Added a command line timeline to the `sysmon-process-tree` command. (#305) (@fukusuket)
+
 ## 2.16.1 [2026/05/09] - Golden Week Release
 
 **Bug Fixes:**

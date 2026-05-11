@@ -1,5 +1,11 @@
 # 変更点
 
+## 2.17.0 [xxxx/xx/xx]
+
+**改善:**
+
+- `sysmon-process-tree`コマンドにコマンドラインのタイムラインを追加した。 (#305) (@fukusuket)
+
 ## 2.16.1 [2026/05/09] - Golden Week Release
 
 **バグ修正:**
