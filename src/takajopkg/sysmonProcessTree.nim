@@ -227,20 +227,21 @@ proc sysmonProcessTree(output: string = "", processGuid: string,
             cmdlineEntries.add((procObj.timeStamp, procObj.parentCmdline, procObj.cmdline))
     cmdlineEntries.sort(proc(a, b: cmdlineEntry): int = cmp(a.timeStamp, b.timeStamp))
 
-    var cmdlineOutSeq: seq[string] = @[]
-    cmdlineOutSeq.add("Command line info:")
-    cmdlineOutSeq.add("")
-    for entry in cmdlineEntries:
-        cmdlineOutSeq.add(entry.timeStamp & " " & entry.parentCmdline & " -> " & entry.cmdline)
-    cmdlineOutSeq.add("")
+    if cmdlineEntries.len() > 0:
+        var cmdlineOutSeq: seq[string] = @[]
+        cmdlineOutSeq.add("Command line info:")
+        cmdlineOutSeq.add("")
+        for entry in cmdlineEntries:
+            cmdlineOutSeq.add(entry.timeStamp & " " & entry.parentCmdline & " -> " & entry.cmdline)
+        cmdlineOutSeq.add("")
 
-    if output != "":
-        let f = open(output, fmAppend)
-        defer: f.close()
-        for line in cmdlineOutSeq:
-            f.writeLine(line)
-    else:
-        for line in cmdlineOutSeq:
-            echo line
+        if output != "":
+            let f = open(output, fmAppend)
+            defer: f.close()
+            for line in cmdlineOutSeq:
+                f.writeLine(line)
+        else:
+            for line in cmdlineOutSeq:
+                echo line
 
     outputElapsedTime(startTime)
