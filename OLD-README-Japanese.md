@@ -2,7 +2,7 @@
  <p>
      <img alt="Takajo Logō" src="logo.png" width="50%">
  </p>
- [ <a href="README.md"><b>English</b></a> ] | [ 日本語 ]
+ [ <a href="OLD-README.md"><b>English</b></a> ] | [ 日本語 ]
 </div>
 
 ---
