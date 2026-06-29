@@ -1,0 +1,111 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
+<div class="hb-hero" markdown>
+
+![Takajo](assets/logo.png){ .hb-logo }
+
+<p class="hb-tagline">
+<strong>Takajō</strong> (鷹匠) ist ein schneller Forensik-Analysator für
+<a href="https://github.com/Yamato-Security/hayabusa">Hayabusa</a>-Ergebnisse, erstellt von
+<a href="https://github.com/Yamato-Security">Yamato Security</a> und geschrieben in
+<a href="https://nim-lang.org/">Nim</a>. Takajō bedeutet
+<a href="https://en.wikipedia.org/wiki/Falconry">„Falkner“</a> auf Japanisch — es analysiert
+die „Fänge“ (Ergebnisse) von Hayabusa.
+</p>
+
+<div class="hb-cta" markdown>
+[Erste Schritte :material-rocket-launch:](getting-started/index.md){ .md-button .md-button--primary }
+[Befehlsreferenz :material-console:](commands/index.md){ .md-button }
+[Auf GitHub ansehen :fontawesome-brands-github:](https://github.com/Yamato-Security/takajo){ .md-button }
+</div>
+
+<p class="hb-badges">
+<a href="https://github.com/Yamato-Security/takajo/releases"><img src="https://img.shields.io/github/v/release/Yamato-Security/takajo?color=blue&label=Stable%20Version&style=flat"/></a>
+<a href="https://github.com/Yamato-Security/takajo/releases"><img src="https://img.shields.io/github/downloads/Yamato-Security/takajo/total?style=flat&label=GitHub%F0%9F%A6%85Downloads&color=blue"/></a>
+<a href="https://github.com/Yamato-Security/takajo/stargazers"><img src="https://img.shields.io/github/stars/Yamato-Security/takajo?style=flat&label=GitHub%F0%9F%A6%85Stars"/></a>
+<a href="https://codeblue.jp/2022/en/talks/?content=talks_24"><img src="https://img.shields.io/badge/CODE%20BLUE%20Bluebox-2022-blue"></a>
+<a href="https://www.seccon.jp/2022/seccon_workshop/windows.html"><img src="https://img.shields.io/badge/SECCON-2023-blue"></a>
+<a href="https://www.sans.org/cyber-security-training-events/digital-forensics-summit-2023/"><img src="https://img.shields.io/badge/SANS%20DFIR%20Summit-2023-blue"></a>
+<a href="https://bsides.tokyo/2024/"><img src="https://img.shields.io/badge/BSides%20Tokyo-2024-blue"></a>
+<a href="https://www.hacker.or.jp/hack-fes-2024/"><img src="https://img.shields.io/badge/Hack%20Fes.-2024-blue"></a>
+<a href="https://hitcon.org/2024/CMT/"><img src="https://img.shields.io/badge/HITCON-2024-blue"></a>
+<a href="https://www.blackhat.com/sector/2024/briefings/schedule/index.html#performing-dfir-and-threat-hunting-with-yamato-security-oss-tools-and-community-driven-knowledge-41347"><img src="https://img.shields.io/badge/SecTor-2024-blue"></a>
+<a href="https://twitter.com/SecurityYamato"><img src="https://img.shields.io/twitter/follow/SecurityYamato?style=social"/></a>
+</p>
+
+</div>
+
+---
+
+## Warum Takajō?
+
+<div class="grid cards" markdown>
+
+-   :material-flash:{ .lg .middle } __Eine einzige schnelle Binärdatei__
+
+    ---
+
+    Geschrieben in **Nim** — speichersicher, so schnell wie natives C und eine einzige eigenständige
+    Binärdatei auf jedem Betriebssystem.
+
+-   :material-file-chart:{ .lg .middle } __HTML-Berichte__
+
+    ---
+
+    Erstellen Sie HTML-Zusammenfassungsberichte Ihrer Hayabusa-Ergebnisse oder stellen Sie sie interaktiv bereit.
+
+-   :material-file-tree:{ .lg .middle } __Prozessbäume__
+
+    ---
+
+    Rekonstruieren und drucken Sie die **Prozessbäume** schädlicher Prozesse aus Sysmon-Protokollen.
+
+-   :material-layers-triple:{ .lg .middle } __Stacking-Analyse__
+
+    ---
+
+    Stapeln Sie Befehlszeilen, DNS-Anfragen, Anmeldungen, Prozesse, Dienste, Aufgaben und mehr, um
+    Ausreißer sichtbar zu machen.
+
+-   :material-timeline-clock:{ .lg .middle } __Fokussierte Zeitachsen__
+
+    ---
+
+    Erstellen Sie Zeitachsen für Anmeldungen, USB-Nutzung, verdächtige Prozesse und Aufgaben und teilen Sie
+    große CSV-/JSONL-Zeitachsen auf.
+
+-   :material-shield-search:{ .lg .middle } __TTPs & VirusTotal__
+
+    ---
+
+    Visualisieren Sie TTPs als Heatmaps im **MITRE ATT&CK Navigator** und schlagen Sie IPs,
+    Domains und Hashes auf **VirusTotal** nach.
+
+</div>
+
+## Schnellzugriffe
+
+<div class="grid cards" markdown>
+
+-   __:material-book-open-variant: Neu hier?__
+
+    Beginnen Sie mit der [Übersicht](overview/index.md) und gehen Sie dann zu
+    [Erste Schritte](getting-started/index.md), um Takajō herunterzuladen und auszuführen.
+
+-   __:material-console-line: Arbeiten mit der CLI?__
+
+    Durchsuchen Sie die [Befehlsliste](commands/index.md) und die Referenz je Kategorie —
+    [Extract](commands/extract.md), [HTML](commands/html.md), [Stack](commands/stack.md),
+    [Timeline](commands/timeline.md) und mehr.
+
+-   __:material-puzzle: Mehr erfahren?__
+
+    Erkunden Sie die [Begleitprojekte](resources/companion-projects.md), das
+    [Änderungsprotokoll](resources/changelog.md) und wie Sie
+    [beitragen](resources/contributing.md) können.
+
+</div>
