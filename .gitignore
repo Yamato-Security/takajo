@@ -156,3 +156,6 @@ output/*
 
 #SQLite files
 *.sqlite
+# MkDocs documentation site build output
+/website/site/
+!/website/requirements.txt
