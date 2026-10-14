@@ -61,7 +61,7 @@ jobs:
           chmod +x hayabusa-${LATEST_VER#v}-lin-x64-gnu
           ./hayabusa-${LATEST_VER#v}-lin-x64-gnu update-rules
           ./hayabusa-${LATEST_VER#v}-lin-x64-gnu dfir-timeline -d ../../hayabusa-sample-evtx -w -p super-verbose -o ../../takajo/timeline.csv -t csv
-          ./hayabusa-${LATEST_VER#v}-lin-x64-gnu dfir-timeline -d ../../hayabusa-sample-evtx -L -w -p super-verbose -o ../../takajo/timeline.jsonl -t jsonl
+          ./hayabusa-${LATEST_VER#v}-lin-x64-gnu dfir-timeline -d ../../hayabusa-sample-evtx -w -p super-verbose -o ../../takajo/timeline.jsonl -t jsonl
 
       - name: run extract-credentials
         run: cd takajo && ./takajo extract-credentials -t timeline.jsonl -o credentials.csv
