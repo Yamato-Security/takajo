@@ -3194,6 +3194,11 @@
         "Tactic": "Resource Development",
         "Technique": "Stage Capabilities"
     },
+    "T1608.007": {
+        "Sub-Technique": "AI Result Poisoning",
+        "Tactic": "Resource Development",
+        "Technique": "Stage Capabilities"
+    },
     "T1609": {
         "Sub-Technique": "-",
         "Tactic": "Execution",
@@ -3376,7 +3381,7 @@
     },
     "T1682": {
         "Sub-Technique": "-",
-        "Tactic": "Reconnaissance",
+        "Tactic": "Resource Development",
         "Technique": "Query Public AI Services"
     },
     "T1683": {
@@ -3444,6 +3449,11 @@
         "Tactic": "Defense Impairment",
         "Technique": "Disable or Modify Tools"
     },
+    "T1685.007": {
+        "Sub-Technique": "Impair Autonomous Defenses",
+        "Tactic": "Defense Impairment",
+        "Technique": "Disable or Modify Tools"
+    },
     "T1686": {
         "Sub-Technique": "-",
         "Tactic": "Defense Impairment",
@@ -3483,6 +3493,41 @@
         "Sub-Technique": "-",
         "Tactic": "Defense Impairment",
         "Technique": "Prevent Command History Logging"
+    },
+    "T1696": {
+        "Sub-Technique": "-",
+        "Tactic": "Stealth",
+        "Technique": "Anti-Automation Evasion"
+    },
+    "T1696.001": {
+        "Sub-Technique": "Automate CAPTCHA Completion",
+        "Tactic": "Stealth",
+        "Technique": "Anti-Automation Evasion"
+    },
+    "T1696.002": {
+        "Sub-Technique": "Avoid CAPTCHA",
+        "Tactic": "Stealth",
+        "Technique": "Anti-Automation Evasion"
+    },
+    "T1697": {
+        "Sub-Technique": "-",
+        "Tactic": "Credential Access",
+        "Technique": "Steal Application Specific Passwords"
+    },
+    "T1698": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Indirect Prompt Injection"
+    },
+    "T1699": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "Direct Prompt Injection"
+    },
+    "T1700": {
+        "Sub-Technique": "-",
+        "Tactic": "Exfiltration",
+        "Technique": "AI-Enabled Exfiltration"
     },
     "TA0001": {
         "Sub-Technique": "-",
