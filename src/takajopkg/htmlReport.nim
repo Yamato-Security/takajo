@@ -60,68 +60,48 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
 
         db.beginTransaction()
         var recordCount = 0
+        var lineNumber = 0
         while not fileStream.atEnd:
             let line = fileStream.readLine()
+            lineNumber += 1
             if line.len > 0:
+                var jsonObj: JsonNode
+                try:
+                    jsonObj = parseJson(line)
+                except JsonParsingError as e:
+                    echo "Invalid JSON at line ", lineNumber, ": ", e.msg
+                    continue
+
+                # parameter check
+                if not hasVerboseProfileFields(jsonObj):
+                    if not skipProgressBar:
+                        bar.finish()
+                    echo ""
+                    echo "Takajo needs information that is not included in the JSONL results."
+                    echo "Please re-run Hayabusa with \"-p verbose\" or \"-p super-verbose\" profiles."
+                    return
+
                 try:
                     #
                     # write to database
                     #
 
-                    let jsonObj = parseJson(line)
-
-                    # parameter check
-                    if "RuleFile" notin jsonObj or "EvtxFile" notin jsonObj:
-                        bar.finish()
-                        echo ""
-                        echo "Takajo needs information that is not included in the JSONL results."
-                        echo "Please re-run Hayabusa with \"-p verbose\" or \"-p super-verbose\" profiles."
-                        return
-
                     # common parameters
-                    let timestamp = jsonObj["Timestamp"].getStr()
-                    let rule_title = jsonObj["RuleTitle"].getStr()
-                    let level = jsonObj["Level"].getStr()
-                    let computer = jsonObj["Computer"].getStr()
-                    let channel = jsonObj["Channel"].getStr()
-                    let event_id = jsonObj["EventID"].getInt()
-                    var record_id = ""
-                    if "RecordID" in jsonObj:
-                        record_id = jsonObj["RecordID"].getStr()
-                    let rule_file = jsonObj["RuleFile"].getStr()
-                    let evtx_file = jsonObj["EvtxFile"].getStr()
+                    let record = toHtmlTimelineRecord(jsonObj)
 
                     var level_order = -1
-                    if level == "crit":
+                    if record.level == "crit":
                         level_order = 4
-                    elif level == "high":
+                    elif record.level == "high":
                         level_order = 3
-                    elif level == "med":
+                    elif record.level == "med":
                         level_order = 2
-                    elif level == "low":
+                    elif record.level == "low":
                         level_order = 1
-                    elif level == "info":
+                    elif record.level == "info":
                         level_order = 0
                     else:
                         continue # exclude
-
-                    # extra params
-                    var rule_author = ""
-                    var rule_modified_date = ""
-                    var status = ""
-                    var rule_creation_date = ""
-
-                    if "RuleAuthor" in jsonObj:
-                        rule_author = jsonObj["RuleAuthor"].getStr()
-
-                    if "RuleModifiedDate" in jsonObj:
-                        rule_modified_date = jsonObj["RuleModifiedDate"].getStr()
-
-                    if "Status" in jsonObj:
-                        status = jsonObj["Status"].getStr()
-
-                    if "RuleCreationDate" in jsonObj:
-                        rule_creation_date = jsonObj["RuleCreationDate"].getStr()
 
                     let insertSQL = """INSERT INTO timelines (
                         timestamp,
@@ -140,22 +120,23 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         status
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
 
-                    let bres = db.insertRow(insertSQL, timestamp,
-                        rule_title,
-                        level,
+                    let bres = db.insertRow(insertSQL, record.timestamp,
+                        record.ruleTitle,
+                        record.level,
                         $level_order,
-                        computer,
-                        channel,
-                        $event_id,
-                        record_id,
-                        rule_file,
-                        evtx_file,
-                        rule_author,
-                        rule_modified_date,
-                        rule_creation_date,
-                        status)
+                        record.computer,
+                        record.channel,
+                        $record.eventId,
+                        record.recordId,
+                        record.ruleFile,
+                        record.evtxFile,
+                        record.ruleAuthor,
+                        record.ruleModifiedDate,
+                        record.ruleCreationDate,
+                        record.status)
 
-                    doAssert(bres)
+                    if not bres:
+                        raise newException(IOError, "database insert failed")
                     recordCount += 1
                     if not skipProgressBar:
                         inc bar
@@ -165,8 +146,10 @@ proc htmlReport*(output: string, quiet: bool = false, timeline: string, rulepath
                         db.commitTransaction()
                         db.beginTransaction()
 
-                except CatchableError:
-                    echo "Invalid JSON line: ", line
+                except HtmlTimelineRecordError as e:
+                    echo "Invalid Hayabusa JSONL record at line ", lineNumber, ": ", e.msg
+                except CatchableError as e:
+                    echo "Failed to import Hayabusa JSONL record at line ", lineNumber, ": ", e.msg
 
         db.commitTransaction()
         fileStream.close()
