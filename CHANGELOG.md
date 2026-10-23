@@ -8,7 +8,7 @@
 
 **Bug Fixes:**
 
-- HTML timeline imports now preserve numeric `RecordID` values and report parse/import errors with line numbers without echoing complete evidence records. (#310) (@Shirofune-Security)
+- HTML timeline imports now preserve numeric `RecordID` values and report parse/import errors with line numbers without echoing complete evidence records. (#311) (@Shirofune-Security)
 
 ## 2.16.1 [2026/05/09] - Golden Week Release
 
