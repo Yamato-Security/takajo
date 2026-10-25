@@ -159,3 +159,6 @@ output/*
 # MkDocs documentation site build output
 /website/site/
 !/website/requirements.txt
+
+*.wal
+*.db
